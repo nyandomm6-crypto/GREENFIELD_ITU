@@ -13,6 +13,5 @@ public interface ValidationMailRepository extends JpaRepository<ValidationMail, 
     // chercher par token (important pour OTP)
     Optional<ValidationMail> findByToken(String token);
 
-    // optionnel: chercher par client
-    Optional<ValidationMail> findByClientId(Integer idClient);
+    ValidationMail findByClientId(Integer idClient);
 }

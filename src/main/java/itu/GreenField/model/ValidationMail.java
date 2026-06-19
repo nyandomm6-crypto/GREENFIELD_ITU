@@ -1,7 +1,6 @@
 package itu.GreenField.model;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -16,13 +15,18 @@ public class ValidationMail {
     @JoinColumn(name = "id_client", nullable = false)
     private Client client;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 5)
     private String token;
 
     @Column(name = "date_expiration", nullable = false)
     private LocalDateTime dateExpiration;
 
+    @Column(name = "est_verifie", nullable = false)
+    private Boolean estVerifie = false;
+
+    // ======================
     // GETTERS & SETTERS
+    // ======================
 
     public Integer getId() {
         return id;
@@ -54,5 +58,13 @@ public class ValidationMail {
 
     public void setDateExpiration(LocalDateTime dateExpiration) {
         this.dateExpiration = dateExpiration;
+    }
+
+    public Boolean getEstVerifie() {
+        return estVerifie;
+    }
+
+    public void setEstVerifie(Boolean estVerifie) {
+        this.estVerifie = estVerifie;
     }
 }

@@ -293,6 +293,6 @@ CREATE TABLE Notifications (
 CREATE TABLE validation_mail (
     id SERIAL PRIMARY KEY,
     id_client INT REFERENCES client (id) ON DELETE CASCADE,
-    token VARCHAR(255) NOT NULL,
+    token VARCHAR(5),
     date_expiration TIMESTAMP NOT NULL
 );
