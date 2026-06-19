@@ -2,22 +2,28 @@ package itu.GreenField.controller;
 
 import itu.GreenField.model.Client;
 import itu.GreenField.repository.ClientRepository;
+import itu.GreenField.service.ValidationMailService;
+import itu.GreenField.service.ValidationService;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AuthClientController {
-    private ClientRepository client;
 
-    public AuthClientController(ClientRepository client) {
-        this.client = client;
+    private ClientRepository clientRepository;
+    private ValidationService validationService;
+    private ValidationMailService validationMailService;
+
+    public AuthClientController(ClientRepository clientRepository, ValidationService validationService,
+            ValidationMailService validationMailService) {
+        this.clientRepository = clientRepository;
+        this.validationService = validationService;
+        this.validationMailService = validationMailService;
     }
 
     @GetMapping("/login")
@@ -30,15 +36,58 @@ public class AuthClientController {
         return "front/auth/signup";
     }
 
-    @PostMapping("/login")
-    public String traiterLogin(@RequestParam String email, @RequestParam String motDePasse) {
+    @GetMapping("/validation/email")
+    public String verifierMail() {
+        return "front/auth/email";
+    }
 
+    @PostMapping("/login")
+    public String traiterLogin(@RequestParam String email,
+            @RequestParam String motDePasse) {
         return "front/auth/dashboard";
     }
 
     @PostMapping("/signup")
-    public String traiterSignup(@RequestParam String email, @RequestParam String motDePasse) {
+    public String traiterSignup(
+            @RequestParam String email,
+            @RequestParam String motDePasse,
+            @RequestParam String nom,
+            @RequestParam String prenom,
+            @RequestParam String adresse,
+            @RequestParam String contact,
+            RedirectAttributes redirectAttributes) {
+
+        boolean valide = validationService
+                .validationSignup(email, motDePasse, nom, prenom, adresse, contact)
+                .isEmpty();
+        if (valide) {
+            Client client = new Client();
+            client.setMail(email);
+            client.setMotdepasse(motDePasse);
+            client.setNom(nom);
+            client.setPrenom(prenom);
+            client.setAdresse(adresse);
+            client.setContact(contact);
+            clientRepository.save(client);
+            validationMailService.send(email);
+            redirectAttributes.addFlashAttribute("email", email);
+
+            return "redirect:/validation/email";
+        }
+
         return "front/auth/signup";
     }
 
+    @PostMapping(value = "/validation", produces = "application/json")
+    @ResponseBody
+    public Map<String, String> validationSignup(
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String motDePasse,
+            @RequestParam(required = false) String nom,
+            @RequestParam(required = false) String prenom,
+            @RequestParam(required = false) String adresse,
+            @RequestParam(required = false) String contact) {
+
+        return validationService.validationSignup(email, motDePasse, nom, prenom, adresse, contact);
+    }
 }

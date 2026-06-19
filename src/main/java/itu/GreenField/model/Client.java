@@ -2,17 +2,12 @@ package itu.GreenField.model;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "client")
 public class Client {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -24,6 +19,7 @@ public class Client {
     private String prenom;
 
     private String adresse;
+
     private String contact;
 
     @Column(nullable = false, unique = true, length = 150)
@@ -31,6 +27,9 @@ public class Client {
 
     @Column(nullable = false, length = 255)
     private String motdepasse;
+
+    @Column(name = "est_verifie")
+    private Boolean estVerifie = false;
 
     @OneToMany(mappedBy = "client")
     private List<Commandes> commandes;
@@ -89,6 +88,14 @@ public class Client {
 
     public void setMotdepasse(String motdepasse) {
         this.motdepasse = motdepasse;
+    }
+
+    public Boolean getEstVerifie() {
+        return estVerifie;
+    }
+
+    public void setEstVerifie(Boolean estVerifie) {
+        this.estVerifie = estVerifie;
     }
 
     public List<Commandes> getCommandes() {

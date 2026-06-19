@@ -2,58 +2,94 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Signup</title>
+
+    <style>
+      .error {
+        color: red;
+        font-size: 12px;
+      }
+      input.error-border {
+        border: 2px solid red;
+      }
+      button:disabled {
+        background: gray;
+        cursor: not-allowed;
+      }
+    </style>
   </head>
+
   <body>
-    <main>
-      <h1>Signup</h1>
+    <h1>Signup</h1>
 
-      <div
-        class="message success"
-        th:if="${success}"
-        th:text="${success}"
-      ></div>
-      <div class="message error" th:if="${error}" th:text="${error}"></div>
+    <form id="signupForm" method="post" action="/signup">
+      <input name="nom" placeholder="Nom" /><br />
+      <span class="error" id="err-nom"></span>
 
-      <form th:action="@{/signup}" method="post">
-        <label>
-          Nom
-          <input type="text" name="nom" required />
-        </label>
+      <input name="prenom" placeholder="Prenom" /><br />
+      <span class="error" id="err-prenom"></span>
 
-        <label>
-          Prenom
-          <input type="text" name="prenom" required />
-        </label>
+      <input name="email" placeholder="Email" /><br />
+      <span class="error" id="err-email"></span>
 
-        <label>
-          Email
-          <input type="email" name="email" required />
-        </label>
+      <input name="adresse" placeholder="Adresse" /><br />
+      <span class="error" id="err-adresse"></span>
 
-        <label>
-          Adresse
-          <input type="text" name="adresse" required />
-        </label>
+      <input name="contact" placeholder="Contact" /><br />
+      <span class="error" id="err-contact"></span>
 
-        <label>
-          Contact
-          <input type="text" name="contact" required />
-        </label>
+      <input
+        name="motDePasse"
+        type="password"
+        placeholder="Mot de passe"
+      /><br />
+      <span class="error" id="err-motDePasse"></span>
 
-        <label>
-          Mot de passe
-          <input type="password" name="motDePasse" required />
-        </label>
+      <button id="btn" disabled>S'inscrire</button>
+    </form>
 
-        <label>
-          Confirmer le mot de passe
-          <input type="password" name="confirmerMotDePasse" required />
-        </label>
+    <script>
+      const inputs = document.querySelectorAll("input");
+      const btn = document.getElementById("btn");
 
-        <button type="submit">S'inscrire</button>
-      </form>
-    </main>
+      async function validate() {
+        const data = Object.fromEntries(
+          [...inputs].map((i) => [i.name, i.value]),
+        );
+
+        const res = await fetch("/validation", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(data),
+        });
+
+        const errors = await res.json();
+
+        let hasError = false;
+
+        // reset UI
+        inputs.forEach((i) => i.classList.remove("error-border"));
+        document
+          .querySelectorAll(".error")
+          .forEach((e) => (e.textContent = ""));
+
+        // show errors
+        for (let key in errors) {
+          hasError = true;
+
+          const input = document.querySelector(`[name="${key}"]`);
+          const error = document.getElementById("err-" + key);
+
+          if (input) input.classList.add("error-border");
+          if (error) error.textContent = errors[key];
+        }
+
+        // activer / désactiver bouton
+        btn.disabled = hasError;
+      }
+
+      // event simple
+      inputs.forEach((i) => i.addEventListener("input", validate));
+    </script>
   </body>
 </html>

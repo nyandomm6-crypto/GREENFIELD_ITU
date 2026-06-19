@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vérifier email</title>
+
+    <style>
+      .message {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+      }
+
+      .success {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      input {
+        padding: 8px;
+        width: 200px;
+        margin-top: 5px;
+      }
+
+      button:disabled {
+        background: gray;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>Vérification Email</h1>
+
+      <div
+        class="message success"
+        th:if="${success}"
+        th:text="${success}"
+      ></div>
+      <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+      <p>
+        Nous avons envoyé un code de vérification à votre adresse email :
+      <p>Code envoyé à : <b th:text="${email}"></b></p>
+      </p>
+
+      <form th:action="@{/validation/email}" method="post" id="formVerify">
+        <label>
+          Code de vérification
+          <input type="text" name="code" id="code" required />
+        </label>
+
+        <br /><br />
+
+        <button type="submit" id="btn" disabled>Vérifier</button>
+      </form>
+    </main>
+
+    <script>
+      const input = document.getElementById("code");
+      const btn = document.getElementById("btn");
+
+      input.addEventListener("input", () => {
+        btn.disabled = input.value.trim().length < 4;
+      });
+    </script>
+  </body>
+</html>

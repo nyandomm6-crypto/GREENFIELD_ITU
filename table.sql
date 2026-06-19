@@ -1,7 +1,8 @@
+-- Active: 1781870061268@@127.0.0.1@5433@greenfield
 CREATE DATABASE greenfield;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
-
+\c greenfield
 -- =====================================================
 -- TYPES ENUM
 -- =====================================================
@@ -149,7 +150,8 @@ CREATE TABLE Client (
     adresse VARCHAR(255),
     contact VARCHAR(50),
     mail VARCHAR(150) UNIQUE NOT NULL,
-    motdepasse VARCHAR(255) NOT NULL
+    motdepasse VARCHAR(255) NOT NULL,
+    estVerifier BOOLEAN DEFAULT FALSE
 );
 
 -- =====================================================
@@ -286,4 +288,11 @@ CREATE TABLE Notifications (
     idDemandeStock INT REFERENCES DemandeStock (id) ON DELETE SET NULL,
     dateNotification TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     envoyeur BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE validation_mail (
+    id SERIAL PRIMARY KEY,
+    id_client INT REFERENCES client (id) ON DELETE CASCADE,
+    token VARCHAR(255) NOT NULL,
+    date_expiration TIMESTAMP NOT NULL
 );

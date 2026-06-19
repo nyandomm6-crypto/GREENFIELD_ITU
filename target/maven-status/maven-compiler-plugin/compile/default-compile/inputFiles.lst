@@ -30,6 +30,7 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/model/TypeMessage.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/model/TypeMvt.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/model/TypePayement.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/model/ValidationMail.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/model/Vehicule.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/repository/CategorieProduitRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/repository/ClientRepository.java
@@ -49,6 +50,9 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/repository/TransfertsFilleRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/repository/TransfertsRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/repository/TresorerieRepository.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/repository/ValidationMailRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/repository/VehiculeRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/service/EnvoiEmail.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/service/UtilsService.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/service/ValidationMailService.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/GreenField/service/ValidationService.java
