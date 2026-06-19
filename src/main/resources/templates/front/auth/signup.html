@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup</title>
+  </head>
+  <body>
+    <main>
+      <h1>Signup</h1>
+
+      <div
+        class="message success"
+        th:if="${success}"
+        th:text="${success}"
+      ></div>
+      <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+      <form th:action="@{/signup}" method="post">
+        <label>
+          Nom
+          <input type="text" name="nom" required />
+        </label>
+
+        <label>
+          Prenom
+          <input type="text" name="prenom" required />
+        </label>
+
+        <label>
+          Email
+          <input type="email" name="email" required />
+        </label>
+
+        <label>
+          Adresse
+          <input type="text" name="adresse" required />
+        </label>
+
+        <label>
+          Contact
+          <input type="text" name="contact" required />
+        </label>
+
+        <label>
+          Mot de passe
+          <input type="password" name="motDePasse" required />
+        </label>
+
+        <label>
+          Confirmer le mot de passe
+          <input type="password" name="confirmerMotDePasse" required />
+        </label>
+
+        <button type="submit">S'inscrire</button>
+      </form>
+    </main>
+  </body>
+</html>
