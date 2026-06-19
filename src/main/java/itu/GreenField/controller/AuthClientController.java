@@ -41,6 +41,22 @@ public class AuthClientController {
         return "front/auth/email";
     }
 
+    @PostMapping("/validation/email")
+    public String verifierCode(@RequestParam String code,
+            @RequestParam String email,
+            RedirectAttributes redirectAttributes) {
+
+        if (!validationMailService.verifier(code, email)) {
+            redirectAttributes.addFlashAttribute("error", "Code de validation incorrect.");
+        } else {
+            redirectAttributes.addFlashAttribute("success", "Félicitations! Votre compte est maintenant valide.");
+        }
+
+        redirectAttributes.addFlashAttribute("email", email);
+
+        return "redirect:/validation/email";
+    }
+
     @PostMapping("/login")
     public String traiterLogin(@RequestParam String email,
             @RequestParam String motDePasse) {
