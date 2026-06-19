@@ -1,7 +1,8 @@
+-- Active: 1781870061268@@127.0.0.1@5433@greenfield
 CREATE DATABASE greenfield;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
-
+\c greenfield
 -- =====================================================
 -- TYPES ENUM
 -- =====================================================
@@ -135,7 +136,8 @@ CREATE TABLE Employes (
     motdepasse VARCHAR(255) NOT NULL,
     role f_role NOT NULL,
     idptdevente VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
-    est_actif BOOLEAN DEFAULT TRUE
+    est_actif BOOLEAN DEFAULT TRUE,
+    date DATE DEFAULT CURRENT_DATE
 );
 
 -- =====================================================
@@ -149,7 +151,9 @@ CREATE TABLE Client (
     adresse VARCHAR(255),
     contact VARCHAR(50),
     mail VARCHAR(150) UNIQUE NOT NULL,
-    motdepasse VARCHAR(255) NOT NULL
+    motdepasse VARCHAR(255) NOT NULL,
+    estVerifier BOOLEAN DEFAULT FALSE,
+    date DATE DEFAULT CURRENT_DATE
 );
 
 -- =====================================================
@@ -163,7 +167,8 @@ CREATE TABLE Vehicule (
     modele VARCHAR(50) NOT NULL,
     annee INT,
     capacite DECIMAL(10, 2),
-    statut statut_vehicule DEFAULT 'Disponible'
+    statut statut_vehicule DEFAULT 'Disponible',
+    date DATE DEFAULT CURRENT_DATE
 );
 
 -- =====================================================
@@ -173,10 +178,15 @@ CREATE TABLE Vehicule (
 CREATE TABLE MvtStock (
     id SERIAL PRIMARY KEY,
     type_mouvement type_mvt NOT NULL,
-    idproduit INT REFERENCES Produit (id) ON DELETE CASCADE,
     idptdevente VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
-    quantite INT NOT NULL,
     dateMvt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE MvtStockFille (
+    id SERIAL PRIMARY KEY,
+    idMvtStock INT REFERENCES MvtStock (id) ON DELETE CASCADE,
+    idproduit INT REFERENCES Produit (id) ON DELETE RESTRICT,
+    quantite INT NOT NULL
 );
 
 -- =====================================================
@@ -212,7 +222,8 @@ CREATE TABLE DetailsCommande (
 CREATE TABLE Paiement (
     id SERIAL PRIMARY KEY,
     idcommande INT REFERENCES Commandes (id) ON DELETE CASCADE,
-    statut statut_paiement DEFAULT 'Cree'
+    statut statut_paiement DEFAULT 'Cree',
+    date DATE DEFAULT CURRENT_DATE
 );
 
 CREATE TABLE PaiementFille (
@@ -231,7 +242,8 @@ CREATE TABLE Livraison (
     idvehicule INT REFERENCES Vehicule (id) ON DELETE SET NULL,
     idlivreur INT REFERENCES Employes (id) ON DELETE SET NULL,
     dateLivraison TIMESTAMP,
-    statutLivraison statut_livraison DEFAULT 'En_attente'
+    statutLivraison statut_livraison DEFAULT 'En_attente',
+    date DATE DEFAULT CURRENT_DATE
 );
 
 CREATE TABLE LivraisonFille (
@@ -286,4 +298,12 @@ CREATE TABLE Notifications (
     idDemandeStock INT REFERENCES DemandeStock (id) ON DELETE SET NULL,
     dateNotification TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     envoyeur BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE validation_mail (
+    id SERIAL PRIMARY KEY,
+    id_client INT REFERENCES client (id) ON DELETE CASCADE,
+    token VARCHAR(5),
+    est_verifie BOOLEAN DEFAULT FALSE,
+    date_expiration TIMESTAMP NOT NULL
 );

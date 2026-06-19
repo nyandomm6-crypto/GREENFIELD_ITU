@@ -1,5 +1,6 @@
 package itu.GreenField.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -47,6 +48,17 @@ public class Employes {
 
     @Column(name = "est_actif")
     private Boolean estActif;
+
+    @Column(name = "date")
+    private LocalDate date;
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
     @OneToMany(mappedBy = "livreur")
     private List<Livraison> livraisons;

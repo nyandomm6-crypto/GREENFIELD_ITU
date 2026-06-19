@@ -1,22 +1,12 @@
 package itu.GreenField.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "mvtstock")
 public class MvtStock {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -25,19 +15,19 @@ public class MvtStock {
     @Column(name = "type_mouvement", nullable = false)
     private TypeMvt typeMouvement;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idproduit")
-    private Produit produit;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idptdevente", referencedColumnName = "code")
+    @ManyToOne
+    @JoinColumn(name = "idptdevente", referencedColumnName = "code", nullable = true)
     private PointDeVente pointDeVente;
-
-    @Column(nullable = false)
-    private Integer quantite;
 
     @Column(name = "datemvt")
     private LocalDateTime dateMvt;
+
+    @PrePersist
+    public void prePersist() {
+        this.dateMvt = LocalDateTime.now();
+    }
+
+    // getters & setters
 
     public Integer getId() {
         return id;
@@ -55,28 +45,12 @@ public class MvtStock {
         this.typeMouvement = typeMouvement;
     }
 
-    public Produit getProduit() {
-        return produit;
-    }
-
-    public void setProduit(Produit produit) {
-        this.produit = produit;
-    }
-
     public PointDeVente getPointDeVente() {
         return pointDeVente;
     }
 
     public void setPointDeVente(PointDeVente pointDeVente) {
         this.pointDeVente = pointDeVente;
-    }
-
-    public Integer getQuantite() {
-        return quantite;
-    }
-
-    public void setQuantite(Integer quantite) {
-        this.quantite = quantite;
     }
 
     public LocalDateTime getDateMvt() {
