@@ -1,2 +1,0 @@
-- date : employe,client,paiement,vehicule
-- mvt stock fille
