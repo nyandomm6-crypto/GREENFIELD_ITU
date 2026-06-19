@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Signup</title>
+
+    <style>
+      .error {
+        color: red;
+        font-size: 12px;
+      }
+      input.error-border {
+        border: 2px solid red;
+      }
+      button:disabled {
+        background: gray;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Signup</h1>
+
+    <form id="signupForm" method="post" action="/signup">
+      <input name="nom" placeholder="Nom" /><br />
+      <span class="error" id="err-nom"></span>
+
+      <input name="prenom" placeholder="Prenom" /><br />
+      <span class="error" id="err-prenom"></span>
+
+      <input name="email" placeholder="Email" /><br />
+      <span class="error" id="err-email"></span>
+
+      <input name="adresse" placeholder="Adresse" /><br />
+      <span class="error" id="err-adresse"></span>
+
+      <input name="contact" placeholder="Contact" /><br />
+      <span class="error" id="err-contact"></span>
+
+      <input
+        name="motDePasse"
+        type="password"
+        placeholder="Mot de passe"
+      /><br />
+      <span class="error" id="err-motDePasse"></span>
+
+      <button id="btn" disabled>S'inscrire</button>
+    </form>
+
+    <script>
+      const inputs = document.querySelectorAll("input");
+      const btn = document.getElementById("btn");
+
+      async function validate() {
+        const data = Object.fromEntries(
+          [...inputs].map((i) => [i.name, i.value]),
+        );
+
+        const res = await fetch("/validation", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(data),
+        });
+
+        const errors = await res.json();
+
+        let hasError = false;
+
+        // reset UI
+        inputs.forEach((i) => i.classList.remove("error-border"));
+        document
+          .querySelectorAll(".error")
+          .forEach((e) => (e.textContent = ""));
+
+        // show errors
+        for (let key in errors) {
+          hasError = true;
+
+          const input = document.querySelector(`[name="${key}"]`);
+          const error = document.getElementById("err-" + key);
+
+          if (input) input.classList.add("error-border");
+          if (error) error.textContent = errors[key];
+        }
+
+        // activer / désactiver bouton
+        btn.disabled = hasError;
+      }
+
+      // event simple
+      inputs.forEach((i) => i.addEventListener("input", validate));
+    </script>
+  </body>
+</html>
