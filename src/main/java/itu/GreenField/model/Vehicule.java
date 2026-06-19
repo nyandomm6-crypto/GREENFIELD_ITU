@@ -1,6 +1,7 @@
 package itu.GreenField.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -37,8 +38,19 @@ public class Vehicule {
     @Enumerated(EnumType.STRING)
     private StatutVehicule statut;
 
+    @Column(name = "date")
+    private LocalDate date;
+
     @OneToMany(mappedBy = "vehicule")
     private List<Livraison> livraisons;
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
     public Integer getId() {
         return id;

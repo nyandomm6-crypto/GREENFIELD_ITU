@@ -1,5 +1,6 @@
 package itu.GreenField.model;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -28,8 +29,19 @@ public class Client {
     @Column(nullable = false, length = 255)
     private String motdepasse;
 
-    @Column(name = "est_verifie")
+    @Column(name = "estverifier")
     private Boolean estVerifie = false;
+
+    @Column(name = "date")
+    private LocalDate date;
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
     @OneToMany(mappedBy = "client")
     private List<Commandes> commandes;

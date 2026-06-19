@@ -1,5 +1,6 @@
 package itu.GreenField.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -29,6 +32,17 @@ public class Paiement {
 
     @OneToMany(mappedBy = "paiement")
     private List<PaiementFille> filles;
+
+    @Column(name = "date")
+    private LocalDate date;
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
     public Integer getId() {
         return id;
