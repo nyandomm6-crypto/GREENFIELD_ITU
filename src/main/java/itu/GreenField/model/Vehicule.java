@@ -1,4 +1,4 @@
-package itu.GreenField.model;
+package itu.greenfield.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

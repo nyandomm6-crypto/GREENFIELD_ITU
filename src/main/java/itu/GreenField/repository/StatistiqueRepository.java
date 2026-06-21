@@ -1,8 +1,11 @@
-package java.itu
+package itu.greenfield.repository;
 
-import com.greenfield.dto.ClientStatDto;
-import com.greenfield.dto.EvolutionVenteDto;
-import com.greenfield.dto.ProduitStatDto;
+import itu.greenfield.dto.ClientStatDto;
+import itu.greenfield.dto.EvolutionVenteDto;
+import itu.greenfield.dto.ProduitStatDto;
+import itu.greenfield.model.Produit;
+import itu.greenfield.model.Commandes;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface StatistiqueRepository extends JpaRepository<com.greenfield.model.Commandes, Integer> {
+public interface StatistiqueRepository extends JpaRepository<Commandes, Integer> {
 
     // --- FRONT-OFFICE ---
 
@@ -24,7 +27,7 @@ public interface StatistiqueRepository extends JpaRepository<com.greenfield.mode
 
     // Nouveaux produits (basé sur l'ID décroissant)
     @Query(value = "SELECT p FROM Produit p ORDER BY p.id DESC LIMIT 5")
-    List<com.greenfield.model.Produit> findNouveauxProduits();
+    List<Produit> findNouveauxProduits();
 
 
     // --- BACK-OFFICE ---

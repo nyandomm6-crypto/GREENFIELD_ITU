@@ -1,13 +1,13 @@
-package itu.GreenField.service;
+package itu.greenfield.service;
 
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import itu.GreenField.model.Client;
-import itu.GreenField.model.ValidationMail;
-import itu.GreenField.repository.ClientRepository;
-import itu.GreenField.repository.ValidationMailRepository;
+import itu.greenfield.model.Client;
+import itu.greenfield.model.ValidationMail;
+import itu.greenfield.repository.ClientRepository;
+import itu.greenfield.repository.ValidationMailRepository;
 
 @Service
 public class ValidationMailService {

@@ -1,7 +1,7 @@
-package itu.GreenField.controller;
+package itu.greenfield.controller;
 
-import itu.GreenField.service.EnvoiEmail;
-import itu.GreenField.service.UtilsService;
+import itu.greenfield.service.EnvoiEmail;
+import itu.greenfield.service.UtilsService;
 import java.io.File;
 import java.io.IOException;
 import org.springframework.stereotype.Controller;

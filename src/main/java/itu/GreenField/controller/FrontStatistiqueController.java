@@ -1,8 +1,8 @@
 package itu.greenfield.controller;
 
-import com.greenfield.dto.ProduitStatDto;
-import com.greenfield.model.Produit;
-import com.greenfield.service.StatistiqueService;
+import itu.greenfield.dto.ProduitStatDto;
+import itu.greenfield.model.Produit;
+import itu.greenfield.service.StatistiqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

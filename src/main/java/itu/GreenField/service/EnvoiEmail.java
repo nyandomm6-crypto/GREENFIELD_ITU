@@ -1,4 +1,4 @@
-package itu.GreenField.service;
+package itu.greenfield.service;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.*;

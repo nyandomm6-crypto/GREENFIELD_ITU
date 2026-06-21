@@ -1,8 +1,8 @@
-package itu.GreenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.GreenField.model.Livraison;
+import itu.greenfield.model.Livraison;
 
 public interface LivraisonRepository extends JpaRepository<Livraison, Integer> {
 }

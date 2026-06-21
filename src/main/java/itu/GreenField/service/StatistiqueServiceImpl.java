@@ -1,10 +1,10 @@
-package com.greenfield.service;
+package itu.greenfield.service;
 
-import com.greenfield.dto.ClientStatDto;
-import com.greenfield.dto.EvolutionVenteDto;
-import com.greenfield.dto.ProduitStatDto;
-import com.greenfield.model.Produit;
-import com.greenfield.repository.StatistiqueRepository;
+import itu.greenfield.dto.ClientStatDto;
+import itu.greenfield.dto.EvolutionVenteDto;
+import itu.greenfield.dto.ProduitStatDto;
+import itu.greenfield.model.Produit;
+import itu.greenfield.repository.StatistiqueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

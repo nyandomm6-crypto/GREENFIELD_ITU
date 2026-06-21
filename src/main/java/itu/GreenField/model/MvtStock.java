@@ -1,4 +1,4 @@
-package itu.GreenField.model;
+package itu.greenfield.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

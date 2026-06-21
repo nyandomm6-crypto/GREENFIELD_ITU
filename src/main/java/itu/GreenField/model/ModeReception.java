@@ -1,4 +1,4 @@
-package itu.GreenField.model;
+package itu.greenfield.model;
 
 public enum ModeReception {
     Retrait_Boutique,
