@@ -1,9 +1,11 @@
 package itu.greenfield.dto;
 
+import java.math.BigDecimal;
+
 public record ClientStatDto(
     Integer id,
     String nom,
     String prenom,
-    Double totalDepense
+    BigDecimal totalDepense
 ) {
 }

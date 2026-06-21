@@ -19,8 +19,8 @@ public interface StatistiqueRepository extends JpaRepository<Commandes, Integer>
     // --- FRONT-OFFICE ---
 
     // Top 5 produits les plus vendus
-    @Query(value = "SELECT new com.greenfield.dto.ProduitStatDto(p.id, p.nom, SUM(dc.quantite)) " +
-                   "FROM DetailsCommande dc JOIN dc.idproduit p " +
+    @Query(value = "SELECT new itu.greenfield.dto.ProduitStatDto(p.id, p.nom, SUM(dc.quantite)) " +
+                   "FROM DetailsCommande dc JOIN dc.produit p " +
                    "GROUP BY p.id, p.nom " +
                    "ORDER BY SUM(dc.quantite) DESC LIMIT 5")
     List<ProduitStatDto> findTop5ProduitsPlusVendus();
@@ -34,15 +34,15 @@ public interface StatistiqueRepository extends JpaRepository<Commandes, Integer>
 
     // Chiffre d'affaires / Bénéfice d'une catégorie (ex: 'Fromage')
     // Note : N'ayant pas de prix d'achat dans ta table Produit, on calcule le CA généré par la catégorie.
-    @Query(value = "SELECT COALESCE(SUM(dc.quantite * dc.pu_au_moment_achat), 0) " +
+    @Query(value = "SELECT COALESCE(SUM(dc.quantite * dc.puAuMomentAchat), 0) " +
                    "FROM DetailsCommande dc " +
-                   "JOIN dc.idproduit p " +
-                   "JOIN p.idcategorie c " +
+                   "JOIN dc.produit p " +
+                   "JOIN p.categorie c " +
                    "WHERE LOWER(c.libelle) LIKE LOWER(CONCAT('%', :categorie, '%'))")
     Double getChiffreAffairesParCategorie(@Param("categorie") String categorie);
 
     // Meilleure vente (courbe) : Evolution des ventes par jour
-    @Query(value = "SELECT new com.greenfield.dto.EvolutionVenteDto(CAST(c.datecommande AS localdate), SUM(c.total_general)) " +
+    @Query(value = "SELECT new itu.greenfield.dto.EvolutionVenteDto(CAST(c.datecommande AS localdate), SUM(c.totalGeneral)) " +
                    "FROM Commandes c " +
                    "WHERE c.statutCommande = 'Paye' " +
                    "GROUP BY CAST(c.datecommande AS localdate) " +
@@ -50,10 +50,10 @@ public interface StatistiqueRepository extends JpaRepository<Commandes, Integer>
     List<EvolutionVenteDto> findEvolutionDesVentes();
 
     // Top 5 meilleurs clients en ligne
-    @Query(value = "SELECT new com.greenfield.dto.ClientStatDto(cl.id, cl.nom, cl.prenom, SUM(c.total_general)) " +
-                   "FROM Commandes c JOIN c.idclient cl " +
+    @Query(value = "SELECT new itu.greenfield.dto.ClientStatDto(cl.id, cl.nom, cl.prenom, SUM(c.totalGeneral)) " +
+                   "FROM Commandes c JOIN c.client cl " +
                    "WHERE c.statutCommande = 'Paye' " +
                    "GROUP BY cl.id, cl.nom, cl.prenom " +
-                   "ORDER BY SUM(c.total_general) DESC LIMIT 5")
+                   "ORDER BY SUM(c.totalGeneral) DESC LIMIT 5")
     List<ClientStatDto> findTop5MeilleursClients();
 }
