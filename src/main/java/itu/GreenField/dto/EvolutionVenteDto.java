@@ -1,4 +1,4 @@
-package java.it.GreenField.dto;
+package itu.greenfield.dto;
 
 import java.time.LocalDate;
 
