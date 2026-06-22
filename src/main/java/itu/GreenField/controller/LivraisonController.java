@@ -1,6 +1,7 @@
 package itu.GreenField.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,7 @@ public class LivraisonController {
 
     @PostMapping("/livraison")
     public String saveLivraison(
-            @RequestParam(required = false) LocalDate date,
+            @RequestParam(required = false) LocalDateTime date,
             @RequestParam Integer idVehicule,
             @RequestParam Integer idEmploye,
             @RequestParam List<Integer> idCommandes) {
@@ -55,6 +56,7 @@ public class LivraisonController {
             System.out.println("Employe : " + idEmploye);
             System.out.println("Commandes : " + idCommandes);
         }
+        livraisonService.createLivraison(idVehicule, idEmploye, idCommandes, date);
 
         return "redirect:/livraison";
     }
