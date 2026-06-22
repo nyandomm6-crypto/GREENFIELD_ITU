@@ -3,6 +3,8 @@ package itu.greenfield.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,14 +34,18 @@ public class Produit {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idcategorie")
+    @JsonIgnoreProperties("produits")  // évite la boucle Produit -> CategorieProduit -> [produits] -> Produit
     private CategorieProduit categorie;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "produit")
     private List<DemandeStockFille> demandesStockFille;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "produit")
     private List<DetailsCommande> detailsCommande;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "produit")
     private List<TransfertsFille> transfertsFille;
 
