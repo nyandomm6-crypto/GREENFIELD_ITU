@@ -16,7 +16,11 @@ public class CommandesService {
     }
 
     public List<Commandes> getCommandesDispo() {
-        return commandesRepository.findAll();
+        return commandesRepository.findDispoCommandes();
+    }
+
+    public Commandes getCommandeById(Integer id) {
+        return commandesRepository.findById(id).orElse(null);
     }
 
 }
