@@ -70,6 +70,7 @@
                 type="button"
                 class="btn btn-success btn-sm"
                 th:if="${f.statutLivraisonFille.name() == 'En_attente'}"
+                th:attr="onclick=|valider(${f.id},${livraison.id})|"
               >
                 Valider
               </button>
@@ -113,7 +114,7 @@
                       <button
                         type="button"
                         class="btn btn-danger btn-sm"
-                        th:attr="onclick=|annuler(${f.id})|"
+                        th:attr="onclick=|annuler(${f.id},${livraison.id})|"
                       >
                         Confirmer annulation
                       </button>
@@ -124,11 +125,23 @@
                       <h6>Reporter livraison</h6>
 
                       <form
-                        th:action="@{'/livraison-fille/reporter/' + ${f.id}}"
-                        method="get"
+                        th:action="@{'/livraison-fille/reporter'}"
+                        method="post"
                       >
                         <label>Date de report :</label>
                         <input type="date" name="dateReport" required />
+                        <input
+                          type="hidden"
+                          name="id"
+                          th:value="${f.id}"
+                          required
+                        />
+                        <input
+                          type="hidden"
+                          name="idLivraison"
+                          th:value="${livraison.id}"
+                          required
+                        />
 
                         <br /><br />
 
@@ -161,7 +174,7 @@
 
     <!-- JS AJAX -->
     <script>
-      function annuler(id) {
+      function annuler(id, livraisonId) {
         fetch("/livraison-fille/annuler/" + id, {
           method: "POST",
         })
@@ -170,7 +183,23 @@
             return r.text();
           })
           .then(() => {
-            window.location.href = "/livraison/" + id;
+            window.location.href = "/livraison/" + livraisonId;
+          })
+          .catch((err) => {
+            alert("Erreur : " + err.message);
+          });
+      }
+
+      function valider(id, livraisonId) {
+        fetch("/livraison-fille/valider/" + id, {
+          method: "POST",
+        })
+          .then((r) => {
+            if (!r.ok) throw new Error("Erreur serveur");
+            return r.text();
+          })
+          .then(() => {
+            window.location.href = "/livraison/" + livraisonId;
           })
           .catch((err) => {
             alert("Erreur : " + err.message);

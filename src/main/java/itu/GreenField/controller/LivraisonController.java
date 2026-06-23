@@ -110,4 +110,19 @@ public class LivraisonController {
         // livraisonService.annulerLivraisonFille(id
         return true;
     }
+
+    @PostMapping("/livraison-fille/valider/{id}")
+    @ResponseBody
+    public boolean valider(@PathVariable Integer id) {
+        // livraisonService.validerLivraisonFille(id
+        return true;
+    }
+
+    @PostMapping("/livraison-fille/reporter")
+    public String reporterLivraisonFille(
+            @RequestParam Integer id,
+            @RequestParam Integer idLivraison,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateReport) {
+        return "redirect:/livraison/" + idLivraison;
+    }
 }
