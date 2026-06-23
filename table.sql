@@ -246,6 +246,8 @@ CREATE TABLE Livraison (
     date DATE DEFAULT CURRENT_DATE
 );
 
+drop table livraison;
+
 CREATE TABLE LivraisonFille (
     id SERIAL PRIMARY KEY,
     idLivraison INT REFERENCES Livraison (id) ON DELETE CASCADE,
@@ -307,3 +309,8 @@ CREATE TABLE validation_mail (
     est_verifie BOOLEAN DEFAULT FALSE,
     date_expiration TIMESTAMP NOT NULL
 );
+
+ALTER TABLE livraison ALTER COLUMN statutlivraison TYPE varchar(30);
+
+ALTER TABLE LivraisonFille
+ALTER COLUMN statutLivraisonFille TYPE varchar(30);
