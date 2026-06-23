@@ -207,6 +207,9 @@ CREATE TABLE Commandes (
     total_general DECIMAL(10, 2) NOT NULL
 );
 
+ALTER TABLE Commandes ALTER COLUMN statutCommande TYPE varchar(30);
+ALTER TABLE Commandes ALTER COLUMN mode_reception TYPE varchar(30);
+
 CREATE TABLE DetailsCommande (
     id SERIAL PRIMARY KEY,
     idcommande INT REFERENCES Commandes (id) ON DELETE CASCADE,
