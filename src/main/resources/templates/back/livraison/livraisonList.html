@@ -1,0 +1,82 @@
+<form id="filterForm">
+  <select name="statut">
+    <option value="">Filtrer par statut</option>
+    <option
+      th:each="statut : ${status}"
+      th:value="${statut}"
+      th:text="${statut}"
+    ></option>
+  </select>
+
+  <select name="idVehicule">
+    <option value="">Filtrer par véhicule</option>
+    <option
+      th:each="vehicule : ${vehicules}"
+      th:value="${vehicule.id}"
+      th:text="${vehicule.matricule}"
+    ></option>
+  </select>
+
+  <select name="idLivreur">
+    <option value="">Filtrer par livreur</option>
+    <option
+      th:each="livreur : ${livreurs}"
+      th:value="${livreur.id}"
+      th:text="${livreur.nom}"
+    ></option>
+  </select>
+
+  <label>
+    Date Début
+    <input type="date" name="dateDebut" />
+  </label>
+
+  <label>
+    Date Fin
+    <input type="date" name="dateFin" />
+  </label>
+
+  <button type="reset">Reset</button>
+</form>
+
+<div id="resultat">
+  <div th:each="livraison : ${livraisons}">
+    <p>
+      Livraison N°
+      <span th:text="${livraison.id}"></span>
+
+      <span th:text="${livraison.statutLivraison}"></span>
+
+      <button
+        th:if="${livraison.statutLivraison.name() == 'En_attente'}"
+        th:onclick="'validerLivraison(' + ${livraison.id} + ')'"
+      >
+        Valider
+      </button>
+      <button>voir détails</button>
+    </p>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("filterForm");
+
+    function chargerLivraisons() {
+      const params = new URLSearchParams(new FormData(form));
+
+      fetch("/livraisons/filter?" + params.toString())
+        .then((response) => response.text())
+        .then((html) => {
+          document.getElementById("resultat").innerHTML = html;
+        });
+    }
+
+    form.querySelectorAll("select,input").forEach((element) => {
+      element.addEventListener("change", chargerLivraisons);
+    });
+
+    form.addEventListener("reset", () => {
+      setTimeout(chargerLivraisons, 10);
+    });
+  });
+</script>

@@ -1,7 +1,8 @@
 package itu.GreenField.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -64,4 +65,42 @@ public class LivraisonService {
         return livraison.getId();
     }
 
+    public List<Livraison> getLivraisons() {
+        return livraisonRepository.findAll();
+    }
+
+    public List<StatutLivraison> getStatutLivraisons() {
+        StatutLivraison[] statuts = StatutLivraison.values();
+        return Arrays.asList(statuts);
+    }
+
+    public List<Livraison> filtrer(
+            StatutLivraison statut,
+            Integer idVehicule,
+            Integer idLivreur,
+            LocalDate dateDebut,
+            LocalDate dateFin) {
+
+        return livraisonRepository.findAll()
+                .stream()
+                .filter(l -> statut == null || l.getStatutLivraison() == statut)
+                .filter(l -> idVehicule == null ||
+                        (l.getVehicule() != null
+                                && l.getVehicule().getId().equals(idVehicule)))
+                .filter(l -> idLivreur == null ||
+                        (l.getLivreur() != null
+                                && l.getLivreur().getId().equals(idLivreur)))
+                .filter(l -> dateDebut == null ||
+                        (l.getDateLivraison() != null &&
+                                !l.getDateLivraison().toLocalDate().isBefore(dateDebut)))
+
+                .filter(l -> dateFin == null ||
+                        (l.getDateLivraison() != null &&
+                                !l.getDateLivraison().toLocalDate().isAfter(dateFin)))
+                .toList();
+    }
+
+    public Livraison getLivraisonById(Integer id) {
+        return livraisonRepository.getById(id);
+    }
 }
