@@ -12,7 +12,12 @@
       >
         Valider
       </button>
-      <button>voir détails</button>
+      <button
+        th:onclick="'detail(' + ${livraison.id} + ')'"
+        class="btn btn-info btn-sm"
+      >
+        voir détails
+      </button>
     </p>
   </div>
 </div>

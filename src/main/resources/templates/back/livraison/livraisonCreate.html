@@ -10,7 +10,7 @@
       <h1>Creation Livraison</h1>
       <div class="message error" th:if="${error}" th:text="${error}"></div>
 
-      <form th:action="@{/livraison}" method="post">
+      <form th:action="@{/livraison/create}" method="post">
         <label>
           Date
           <input type="datetime-local" name="date" />
