@@ -4,7 +4,7 @@ import itu.GreenField.service.ProduitService;
 import org.springframework.stereotype.Controller;
 import itu.GreenField.service.CommandesService;
 import itu.GreenField.service.ClientService;
-import itu.GreenField.dto.CommandeFormDto;
+import itu.GreenField.dto.CommandeBackFormDto;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,8 +42,8 @@ public class CommandeController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("commande-form") CommandeFormDto form) {
-        //commandeService.saveCommande(form);
+    public String save(@ModelAttribute("commande-form") CommandeBackFormDto form) {
+        commandeService.saveBackCommande(form);
         return "redirect:/commandes/list";
     }
 
