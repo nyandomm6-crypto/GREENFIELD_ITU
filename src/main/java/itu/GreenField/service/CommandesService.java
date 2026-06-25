@@ -1,6 +1,8 @@
 package itu.GreenField.service;
 
 import itu.GreenField.service.ProduitService;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import itu.GreenField.model.Produit;
 import itu.GreenField.repository.CommandesRepository;
 import itu.GreenField.repository.DetailsCommandeRepository;
 import itu.GreenField.model.StatutCommande;
+import itu.GreenField.model.TypeCommande;
 import itu.GreenField.model.DetailsCommande;
 
 @Service
@@ -43,7 +46,7 @@ public class CommandesService {
     }
 
     @Transactional
-    public void saveBackCommande(CommandeBackFormDto commandeFormDto) {
+    public void saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
         Integer clientId = commandeFormDto.getClientId();
         Client client = null;
         if (clientId != null) {
@@ -57,6 +60,7 @@ public class CommandesService {
 
         ModeReception modeReception = ModeReception.fromString(commandeFormDto.getModeReception());
         StatutCommande statusCommande = StatutCommande.En_cours;
+        TypeCommande typeCommande = TypeCommande.En_boutique;
 
         Commandes commande = new Commandes();
         commande.setClient(client);
@@ -66,6 +70,7 @@ public class CommandesService {
         commande.setHeureReceptionFin(commandeFormDto.getSqlTypeOfHeureReceptionFin());
         commande.setAdresseLivraison(commandeFormDto.getAddress());
         commande.setStatutCommande(statusCommande);
+        commande.setTypeCommande(typeCommande);
 
         /* Static pour le moment */
         if(commandeFormDto.getAddress() == null || modeReception == ModeReception.Retrait_Boutique){
@@ -73,12 +78,17 @@ public class CommandesService {
             commande.setPointDeVenteRetrait(pdv);
         }
 
-        commande.setFraisLivraison(5000.0);
-        commande = commandesRepository.save(commande);
-
-        int nbLines = commandeFormDto.getProduitMatricule().size();
+        /* Static pour le moment */
+        commande.setFraisLivraison(BigDecimal.valueOf(5000.0));
+        
         int qteTotal = 0;
-        double prixTotal = 0.0;
+        BigDecimal prixTotal = BigDecimal.ZERO;
+        
+        commande.setTotalProduits(qteTotal);
+        commande.setTotalGeneral(prixTotal);
+        
+        commande = commandesRepository.save(commande);
+        int nbLines = commandeFormDto.getProduitMatricule().size();
         for (int i = 0; i < nbLines; i++) {
             String matricule = commandeFormDto.getProduitMatricule().get(i);
             Integer quantite = commandeFormDto.getQte().get(i);
@@ -91,7 +101,7 @@ public class CommandesService {
             detailsCommandeRepository.save(detail);
 
             qteTotal += quantite;
-            prixTotal += ((double) quantite) * produit.getPu();
+            prixTotal = prixTotal.add((BigDecimal.valueOf(quantite)).multiply(produit.getPu()));
         }
 
         commande.setTotalProduits(qteTotal);
