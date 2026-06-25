@@ -1,7 +1,6 @@
 package itu.GreenField.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -35,6 +34,10 @@ public class Commandes {
     @Column(name = "mode_reception", nullable = false)
     private ModeReception modeReception;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type_commande")
+    private TypeCommande typeCommande;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idptdevente_retrait", referencedColumnName = "code")
     private PointDeVente pointDeVenteRetrait;
@@ -53,13 +56,13 @@ public class Commandes {
     private StatutCommande statutCommande;
 
     @Column(name = "frais_livraison", precision = 10, scale = 2)
-    private Double fraisLivraison;
+    private BigDecimal fraisLivraison;
 
-    @Column(name = "total_produits", nullable = false, precision = 10, scale = 2)
+    @Column(name = "total_produits")
     private Integer totalProduits;
 
     @Column(name = "total_general", nullable = false, precision = 10, scale = 2)
-    private Double totalGeneral;
+    private BigDecimal totalGeneral;
 
     @OneToMany(mappedBy = "commande")
     private List<DetailsCommande> details;
@@ -95,6 +98,14 @@ public class Commandes {
 
     public void setDatecommande(java.sql.Timestamp datecommande) {
         this.datecommande = datecommande;
+    }
+
+    public TypeCommande getTypeCommande() {
+        return typeCommande;
+    }
+
+    public void setTypeCommande(TypeCommande typeCommande) {
+        this.typeCommande = typeCommande;
     }
 
     public ModeReception getModeReception() {
@@ -145,11 +156,11 @@ public class Commandes {
         this.statutCommande = statutCommande;
     }
 
-    public Double getFraisLivraison() {
+    public BigDecimal getFraisLivraison() {
         return fraisLivraison;
     }
 
-    public void setFraisLivraison(Double fraisLivraison) {
+    public void setFraisLivraison(BigDecimal fraisLivraison) {
         this.fraisLivraison = fraisLivraison;
     }
 
@@ -161,11 +172,11 @@ public class Commandes {
         this.totalProduits = totalProduits;
     }
 
-    public Double getTotalGeneral() {
+    public BigDecimal getTotalGeneral() {
         return totalGeneral;
     }
 
-    public void setTotalGeneral(Double totalGeneral) {
+    public void setTotalGeneral(BigDecimal totalGeneral) {
         this.totalGeneral = totalGeneral;
     }
 
