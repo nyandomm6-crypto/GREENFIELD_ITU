@@ -223,6 +223,8 @@ ALTER TABLE Commandes DROP COLUMN plage_horaire_souhaitee;
 ALTER TABLE Commandes ADD COLUMN heure_reception_debut TIME;
 ALTER TABLE Commandes ADD COLUMN heure_reception_fin TIME;
 
+ALTER TABLE Commandes ALTER COLUMN total_produits TYPE INT;
+
 CREATE TABLE DetailsCommande (
     id SERIAL PRIMARY KEY,
     idcommande INT REFERENCES Commandes (id) ON DELETE CASCADE,
