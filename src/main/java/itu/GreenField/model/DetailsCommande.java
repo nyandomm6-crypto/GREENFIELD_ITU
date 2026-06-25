@@ -31,7 +31,7 @@ public class DetailsCommande {
     private Integer quantite;
 
     @Column(name = "pu_au_moment_achat", nullable = false, precision = 10, scale = 2)
-    private BigDecimal puAuMomentAchat;
+    private Double puAuMomentAchat;
 
     public Integer getId() {
         return id;
@@ -65,11 +65,11 @@ public class DetailsCommande {
         this.quantite = quantite;
     }
 
-    public BigDecimal getPuAuMomentAchat() {
+    public Double getPuAuMomentAchat() {
         return puAuMomentAchat;
     }
 
-    public void setPuAuMomentAchat(BigDecimal puAuMomentAchat) {
+    public void setPuAuMomentAchat(Double puAuMomentAchat) {
         this.puAuMomentAchat = puAuMomentAchat;
     }
 }
