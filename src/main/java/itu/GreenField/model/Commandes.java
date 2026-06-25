@@ -29,7 +29,7 @@ public class Commandes {
     @JoinColumn(name = "idclient")
     private Client client;
 
-    private LocalDateTime datecommande;
+    private java.sql.Timestamp datecommande;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "mode_reception", nullable = false)
@@ -53,13 +53,13 @@ public class Commandes {
     private StatutCommande statutCommande;
 
     @Column(name = "frais_livraison", precision = 10, scale = 2)
-    private BigDecimal fraisLivraison;
+    private Double fraisLivraison;
 
     @Column(name = "total_produits", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalProduits;
+    private Integer totalProduits;
 
     @Column(name = "total_general", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalGeneral;
+    private Double totalGeneral;
 
     @OneToMany(mappedBy = "commande")
     private List<DetailsCommande> details;
@@ -89,11 +89,11 @@ public class Commandes {
         this.client = client;
     }
 
-    public LocalDateTime getDatecommande() {
+    public java.sql.Timestamp getDatecommande() {
         return datecommande;
     }
 
-    public void setDatecommande(LocalDateTime datecommande) {
+    public void setDatecommande(java.sql.Timestamp datecommande) {
         this.datecommande = datecommande;
     }
 
@@ -145,27 +145,27 @@ public class Commandes {
         this.statutCommande = statutCommande;
     }
 
-    public BigDecimal getFraisLivraison() {
+    public Double getFraisLivraison() {
         return fraisLivraison;
     }
 
-    public void setFraisLivraison(BigDecimal fraisLivraison) {
+    public void setFraisLivraison(Double fraisLivraison) {
         this.fraisLivraison = fraisLivraison;
     }
 
-    public BigDecimal getTotalProduits() {
+    public Integer getTotalProduits() {
         return totalProduits;
     }
 
-    public void setTotalProduits(BigDecimal totalProduits) {
+    public void setTotalProduits(Integer totalProduits) {
         this.totalProduits = totalProduits;
     }
 
-    public BigDecimal getTotalGeneral() {
+    public Double getTotalGeneral() {
         return totalGeneral;
     }
 
-    public void setTotalGeneral(BigDecimal totalGeneral) {
+    public void setTotalGeneral(Double totalGeneral) {
         this.totalGeneral = totalGeneral;
     }
 
