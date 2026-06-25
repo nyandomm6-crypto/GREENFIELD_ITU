@@ -26,3 +26,10 @@ INSERT INTO Produit (nom, matricule, pu, idcategorie) VALUES
 ('Lys', 'PLTF-003', 25000.00, 5),
 ('Orchidée', 'PLTF-004', 12000.00, 5),
 ('Géranium', 'PLTF-005', 18000.00, 5);
+
+INSERT INTO pointdevente (nom, code, adresse, contact) VALUES
+('Centrale', 'CTR-001', 'IAH 23I Vontovorona', '034 12 345 67'),
+('Kiosque Nord', 'BTQ-001', 'Avenue du Nord, Antananarivo', '034 12 345 68'),
+('Kiosque Sud', 'BTQ-002', 'Avenue du Sud, Antananarivo', '034 12 345 69'),
+('Kiosque Est', 'BTQ-003', 'Avenue Est, Antananarivo', '034 12 345 70'),
+('Kiosque Ouest', 'BTQ-004', 'Avenue Ouest, Antananarivo', '034 12 345 71');
