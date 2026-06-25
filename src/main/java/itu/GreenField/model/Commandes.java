@@ -42,8 +42,11 @@ public class Commandes {
     @Column(name = "adresse_livraison")
     private String adresseLivraison;
 
-    @Column(name = "plage_horaire_souhaitee", length = 100)
-    private String plageHoraireSouhaitee;
+    @Column(name = "heure_reception_debut")
+    private java.sql.Time heureReceptionDebut;
+
+    @Column(name = "heure_reception_fin")
+    private java.sql.Time heureReceptionFin;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "statutcommande", nullable = false)
@@ -118,12 +121,20 @@ public class Commandes {
         this.adresseLivraison = adresseLivraison;
     }
 
-    public String getPlageHoraireSouhaitee() {
-        return plageHoraireSouhaitee;
+    public java.sql.Time getHeureReceptionDebut() {
+        return heureReceptionDebut;
     }
 
-    public void setPlageHoraireSouhaitee(String plageHoraireSouhaitee) {
-        this.plageHoraireSouhaitee = plageHoraireSouhaitee;
+    public void setHeureReceptionDebut(java.sql.Time heureReceptionDebut) {
+        this.heureReceptionDebut = heureReceptionDebut;
+    }
+
+    public java.sql.Time getHeureReceptionFin() {
+        return heureReceptionFin;
+    }
+
+    public void setHeureReceptionFin(java.sql.Time heureReceptionFin) {
+        this.heureReceptionFin = heureReceptionFin;
     }
 
     public StatutCommande getStatutCommande() {

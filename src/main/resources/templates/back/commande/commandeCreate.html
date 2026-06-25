@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création de commande</title>
+    <style>
+        .d-none {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/commandes/save" method="post">
+        <fieldset>
+            <legend>Informations du client</legend>
+            <input type="hidden" id="client-id" name="clientId">
+            <label for="client-input-nom">Nom :</label>
+            <input type="text" id="client-input-nom" name="clientNom" placeholder="Tapez le nom du client">
+            <label for="client-input-prenom">Prénom :</label>
+            <input type="text" id="client-input-prenom" name="clientPrenom" placeholder="Tapez le prénom du client">
+            <div id="liste-clients" class="d-none"></div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Informations générales de la commande</legend>
+            <label for="date">Date de la commande :</label>
+            <input type="datetime-local" id="date" name="date" required><br>
+
+            <p>Mode de réception :</p>
+            <input type="radio" id="reception-retrait" name="modeReception" value="Retrait_Boutique" checked required>
+            <label for="reception-retrait">Retrait</label>
+            <input type="radio" id="reception-livraison" name="modeReception" value="Livraison_Domicile" required>
+            <label for="reception-livraison">Livraison</label>
+
+            <p>Plage horaire de récupperation :</p>
+            <label for="heure-reception-debut">Heure début :</label>
+            <input type="time" id="heure-reception-debut" name="heureDebutRecup">
+            <label for="heure-reception-fin">Heure fin :</label>
+            <input type="time" id="heure-reception-fin" name="heureFinRecup">
+        </fieldset>
+
+        <fieldset>
+            <legend>Les produits commandés</legend>
+            <table id="table">
+                <tr>
+                    <th>Produit</th>
+                    <th>Matricule</th>
+                    <th>Prix unitaire</th>
+                    <th>Quantité</th>
+                    <th>Prix total</th>
+                    <th>Actions</th>
+                </tr>
+                <tr class="row-product">
+                    <td><input type="text" class="recherche-produit" list="liste-produits"
+                            placeholder="Tapez le nom du produit..." required>
+
+                        <input type="hidden" id="produit-matricule" name="produitMatricule[]" class="produit-matricule">
+
+                        <datalist id="liste-produits">
+                            <option th:each="produit : ${produits}" th:value="${produit.nom}"
+                                th:data-matricule="${produit.matricule}">
+                            </option>
+                        </datalist>
+                    </td>
+                    <td class="matricule-cell"></td>
+                    <td class="pu-cell"></td>
+                    <td><input type="number" name="qte[]" class="qteField" step="1" placeholder="Quantité"></td>
+                    <td class="total-cell">0</td>
+                    <td>
+                        <button type="button" class="remove-row">Supprimer</button>
+                        <button type="button" id="add-row" onclick="addProductLine()">Ajouter</button>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <div class="btn-list">
+            <a href="/commandes"><button type="button">Retour</button></a>
+            <button type="submit">Enregistrer</button>
+        </div>
+    </form>
+
+    <script>
+        const clientInputNom = document.getElementById('client-input-nom');
+        const clientInputPrenom = document.getElementById('client-input-prenom');
+        const listeClientsDiv = document.getElementById('liste-clients');
+        const clientIdInput = document.getElementById('client-id');
+        const receptionLivraison = document.getElementById('reception-livraison');
+        const receptionRetrait = document.getElementById('reception-retrait');
+        const heureReceptionDebut = document.getElementById('heure-reception-debut');
+        const heureReceptionFin = document.getElementById('heure-reception-fin');
+
+        function toggleReceptionMode() {
+            if (receptionLivraison.checked) {
+                receptionRetrait.checked = false;
+                if (!document.getElementById('address')) {
+                    const addressInput = `
+                        <div id="bloc-adresse" style="margin-top: 10px;">
+                            <label for="address">Adresse de livraison :</label>
+                            <input type="text" id="address" name="address" placeholder="Tapez l'adresse de livraison" required>
+                        </div>
+                    `;
+
+                    const labelRetrait = document.querySelector('label[for="reception-livraison"]');
+
+                    labelRetrait.insertAdjacentHTML('afterend', addressInput);
+                }
+            } else if (receptionRetrait.checked) {
+                receptionLivraison.checked = false;
+                const blocAdresse = document.getElementById('bloc-adresse');
+                if (blocAdresse) {
+                    blocAdresse.remove();
+                }
+            }
+        }
+
+        function selectClient(clientId, nom, prenom) {
+            clientIdInput.value = clientId;
+            clientInputNom.value = `${nom}`;
+            clientInputPrenom.value = `${prenom}`;
+            listeClientsDiv.innerHTML = '';
+            listeClientsDiv.classList.add('d-none');
+        }
+
+        function searchClients(nom, prenom) {
+            const url = '/clients/search';
+            const params = new URLSearchParams();
+            if (nom == null) nom = '';
+            params.append('nom', nom);
+            if (prenom == null) prenom = '';
+            params.append('prenom', prenom);
+
+
+            if (nom.length > 0 || prenom.length > 0) {
+                //console.log('Recherche de clients avec nom :', nom, 'et prénom :', prenom);
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log('Clients trouvés :', data);
+                        listeClientsDiv.innerHTML = '';
+                        listeClientsDiv.classList.remove('d-none');
+
+                        if (data.length > 0) {
+                            const ul = document.createElement('ul');
+                            data.forEach(client => {
+                                const children = `<div class="children-list" onclick="selectClient(${client.id}, '${client.nom}', '${client.prenom}')">${client.nom} ${client.prenom}</div>`;
+                                listeClientsDiv.insertAdjacentHTML('beforeend', children);
+                            });
+                        } else {
+                            const children = `<p> Aucun client trouvé. <a href="" id="create-client-link">Créer un nouveau client</a></p>`;
+                            listeClientsDiv.insertAdjacentHTML('beforeend', children);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la recherche des clients :', error);
+                    });
+            } else {
+                listeClientsDiv.innerHTML = '';
+            }
+        }
+
+        function getDateLocale() {
+            const maintenant = new Date();
+
+            const decalageMin = maintenant.getTimezoneOffset();
+            const dateLocale = new Date(maintenant.getTime() - (decalageMin * 60000));
+
+            return dateLocale;
+        }
+
+        function addProductLine() {
+            const table = document.getElementById("table");
+            const newDetail = document.querySelector('.row-product').cloneNode(true);
+            newDetail.querySelectorAll('input').forEach(input => input.value = '');
+            newDetail.querySelectorAll('.matricule-cell, .pu-cell, .total-cell').forEach(cell => cell.textContent = '');
+            table.appendChild(newDetail);
+
+            const removeButton = newDetail.querySelector('.remove-row');
+            removeButton.addEventListener('click', function () {
+                newDetail.remove();
+            });
+        }
+
+        clientInputNom.addEventListener('input', function () {
+            const query = clientInputNom.value.trim();
+            searchClients(query, clientInputPrenom.value.trim());
+            //.log('Nom recherché :', query);
+        });
+
+        clientInputPrenom.addEventListener('input', function () {
+            const query = clientInputPrenom.value.trim();
+            //console.log('Prénom recherché :', query);
+            searchClients(clientInputNom.value.trim(), query);
+        });
+
+        document.getElementById('create-client-link')?.addEventListener('click', function (event) {
+            event.preventDefault();
+            window.location.href = '/clients/create';
+
+        });
+
+        window.onload = function () {
+            const dateField = document.getElementById("date");
+            const dateLocale = getDateLocale();
+
+            if (dateField && dateField.value == "") {
+                const isoString = dateLocale.toISOString();
+
+                const formatDateTimeLocal = isoString.slice(0, 16);
+
+                dateField.value = formatDateTimeLocal;
+            }
+
+            if (heureReceptionDebut && heureReceptionDebut.value == "") {
+                const isoString = dateLocale.toISOString();
+
+                const formatTimeLocal = isoString.slice(11, 16);
+
+                heureReceptionDebut.value = formatTimeLocal;
+            }
+
+            if (heureReceptionFin && heureReceptionFin.value == "") {
+                const isoString = dateLocale.toISOString();
+
+                const formatTimeLocal = isoString.slice(11, 16);
+
+                heureReceptionFin.value = formatTimeLocal;
+            }
+        }
+
+        receptionLivraison.addEventListener('change', function () {
+            toggleReceptionMode();
+        });
+
+        receptionRetrait.addEventListener('change', function () {
+            toggleReceptionMode();
+        });
+
+        document.addEventListener('input', function (event) {
+            if (event.target.classList.contains('recherche-produit')) {
+                const input = event.target;
+                const row = input.closest('.row-product');
+                const matriculeCell = row.querySelector('.matricule-cell');
+                const puCell = row.querySelector('.pu-cell');
+                const totalCell = row.querySelector('.total-cell');
+                const qteField = row.querySelector('.qteField');
+                const produitMatriculeInput = row.querySelector('.produit-matricule');
+
+                const selectedOption = Array.from(input.list.options).find(option => option.value === input.value);
+                if (selectedOption) {
+                    const matricule = selectedOption.dataset.matricule;
+                    matriculeCell.textContent = matricule;
+
+                    produitMatriculeInput.value = matricule;
+
+                    fetch(`/produits/${matricule}/detail-json`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const prixUnitaire = parseInt(data.pu);
+                            const quantite = parseInt(qteField.value) || 0;
+
+                            if (!isNaN(prixUnitaire)) {
+                                // On met à jour les cellules textuelles
+                                if (puCell) puCell.textContent = prixUnitaire;
+                                if (totalCell) totalCell.textContent = (prixUnitaire * quantite);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Erreur lors de la récupération du prix unitaire :', error);
+                        });
+                } else {
+                    matriculeCell.textContent = '';
+                    puCell.textContent = '';
+                    totalCell.textContent = '';
+                }
+            }
+
+            if (event.target.classList.contains('qteField')) {
+                const qteField = event.target;
+                const row = qteField.closest('.row-product');
+                const puCell = row.querySelector('.pu-cell');
+                const totalCell = row.querySelector('.total-cell');
+
+                const prixUnitaire = parseFloat(puCell.textContent) || 0;
+                const quantite = parseFloat(qteField.value) || 0;
+
+                if (!isNaN(prixUnitaire)) {
+                    if (totalCell) totalCell.textContent = (prixUnitaire * quantite).toFixed(2);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
