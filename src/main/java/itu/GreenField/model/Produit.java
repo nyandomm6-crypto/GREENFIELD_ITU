@@ -28,7 +28,7 @@ public class Produit {
     private String matricule;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private Double pu;
+    private BigDecimal pu;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idcategorie")
@@ -67,11 +67,11 @@ public class Produit {
         this.matricule = matricule;
     }
 
-    public Double getPu() {
+    public BigDecimal getPu() {
         return pu;
     }
 
-    public void setPu(Double pu) {
+    public void setPu(BigDecimal pu) {
         this.pu = pu;
     }
 
