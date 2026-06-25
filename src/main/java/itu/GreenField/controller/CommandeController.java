@@ -43,7 +43,12 @@ public class CommandeController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute("commande-form") CommandeBackFormDto form) {
-        commandeService.saveBackCommande(form);
+        try {
+            commandeService.saveBackCommande(form);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error"; 
+        }
         return "redirect:/commandes/list";
     }
 
