@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import itu.GreenField.dto.CommandeBackFormDto;
+import itu.GreenField.dto.DetailCommandeBackDto;
 import itu.GreenField.model.Client;
 import itu.GreenField.model.Commandes;
 import itu.GreenField.model.ModeReception;
@@ -88,10 +89,11 @@ public class CommandesService {
         commande.setTotalGeneral(prixTotal);
         
         commande = commandesRepository.save(commande);
-        int nbLines = commandeFormDto.getProduitMatricule().size();
+        int nbLines = commandeFormDto.getDetailsCommande().size();
         for (int i = 0; i < nbLines; i++) {
-            String matricule = commandeFormDto.getProduitMatricule().get(i);
-            Integer quantite = commandeFormDto.getQte().get(i);
+            DetailCommandeBackDto detailDto = commandeFormDto.getDetailsCommande().get(i);
+            String matricule = detailDto.getProduitMatricule();
+            Integer quantite = detailDto.getQuantite();
             DetailsCommande detail = new DetailsCommande();
             Produit produit = produitService.findProduitByMatricule(matricule);
             detail.setCommande(commande);
