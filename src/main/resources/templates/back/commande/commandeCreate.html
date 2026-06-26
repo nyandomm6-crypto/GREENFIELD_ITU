@@ -56,6 +56,14 @@
 
             <p class="text-danger" th:if="${#fields.hasErrors('modeReception')}" th:errors="*{modeReception}"></p>
 
+            <div id="bloc-adresse" class="d-none" style="margin-top: 10px;">
+                <label for="address">Adresse de livraison :</label>
+                <input type="text" id="address" th:field="*{address}" placeholder="Tapez l'adresse de livraison"
+                    th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''" />
+
+                <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
+            </div>
+
             <p>Plage temporelle de récupération :</p>
 
             <label for="heure-reception-debut">Date et heure début :</label>
@@ -63,6 +71,7 @@
                 th:classappend="${#fields.hasErrors('heureReceptionDebut')} ? 'is-invalid' : ''" />
             <p class="text-danger" th:if="${#fields.hasErrors('heureReceptionDebut')}"
                 th:errors="*{heureReceptionDebut}"></p>
+
 
             <label for="heure-reception-fin">Date et heure fin :</label>
             <input type="datetime-local" id="heure-reception-fin" th:field="*{heureReceptionFin}"
@@ -122,7 +131,8 @@
 
                         <td class="total-cell" th:text="${detail.quantite != null ? 'A calculer' : '0'}">0</td>
                         <td>
-                            <button type="button" class="remove-row" onclick="removeProductLine(this)">Supprimer</button>
+                            <button type="button" class="remove-row"
+                                onclick="removeProductLine(this)">Supprimer</button>
                             <button type="button" id="add-row" onclick="addProductLine()">Ajouter</button>
                         </td>
                     </tr>
@@ -148,26 +158,14 @@
         const heureReceptionFin = document.getElementById('heure-reception-fin');
 
         function toggleReceptionMode() {
+            const blocAdresse = document.getElementById('bloc-adresse');
             if (receptionLivraison.checked) {
                 receptionRetrait.checked = false;
-                if (!document.getElementById('address')) {
-                    const addressInput = `
-                        <div id="bloc-adresse" style="margin-top: 10px;">
-                            <label for="address">Adresse de livraison :</label>
-                            <input type="text" id="address" name="address" placeholder="Tapez l'adresse de livraison" required>
-                        </div>
-                    `;
-
-                    const labelRetrait = document.querySelector('label[for="reception-livraison"]');
-
-                    labelRetrait.insertAdjacentHTML('afterend', addressInput);
-                }
+                blocAdresse.classList.remove('d-none');
             } else if (receptionRetrait.checked) {
                 receptionLivraison.checked = false;
                 const blocAdresse = document.getElementById('bloc-adresse');
-                if (blocAdresse) {
-                    blocAdresse.remove();
-                }
+                blocAdresse.classList.add('d-none');
             }
         }
 
@@ -296,6 +294,7 @@
         window.onload = function () {
             const dateField = document.getElementById("date");
             const dateLocale = getDateLocale();
+            toggleReceptionMode();
 
             if (dateField && dateField.value == "") {
                 const isoString = dateLocale.toISOString();
@@ -405,67 +404,7 @@
                 }
             });
         });
-        function validateForm() {
-            var isValid = true;
-            if (!clientIdInput.value) {
-                alert('Veuillez sélectionner un client existant ou créer un nouveau client.');
-                isValid = false;
-            }
-            if (receptionLivraison.checked) {
-                const addressInput = document.getElementById('address');
-                if (!addressInput || !addressInput.value.trim()) {
-                    event.preventDefault();
-                    alert('Veuillez fournir une adresse de livraison.');
-                    isValid = false;
-                }
-            }
-            if (receptionRetrait.checked) {
-                if (!heureReceptionDebut.value || !heureReceptionFin.value) {
-                    event.preventDefault();
-                    alert('Veuillez fournir les heures de début et de fin pour le retrait.');
-                    isValid = false;
-                }
-            }
-            if (heureReceptionDebut.value && heureReceptionFin.value) {
-                const debut = new Date(`1970-01-01T${heureReceptionDebut.value}:00`);
-                const fin = new Date(`1970-01-01T${heureReceptionFin.value}:00`);
-                if (debut > fin) {
-                    event.preventDefault();
-                    alert('L\'heure de début doit être inférieure à l\'heure de fin.');
-                    isValid = false;
-                }
-            }
-            if (document.querySelectorAll('.row-product').length === 0) {
-                event.preventDefault();
-                alert('Veuillez ajouter au moins un produit à la commande.');
-                isValid = false;
-            }
-            form.querySelectorAll('.row-product').forEach(row => {
-                const produitInput = row.querySelector('.recherche-produit');
-                const qteField = row.querySelector('.qteField');
-                if (!produitInput.value.trim() || !qteField.value.trim()) {
-                    event.preventDefault();
-                    alert('Veuillez remplir tous les champs des produits.');
-                    isValid = false;
-                }
-                if (parseInt(qteField.value) <= 0) {
-                    event.preventDefault();
-                    alert('La quantité doit être supérieure à zéro.');
-                    isValid = false;
-                }
-            });
-            return isValid;
-        }
-
-        /* form.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const isValid = validateForm();
-            if (isValid) {
-                form.submit();
-            } else {
-                console.log('Formulaire non valide, soumission annulée.');
-            }
-        }); */
+        
     </script>
 </body>
 
