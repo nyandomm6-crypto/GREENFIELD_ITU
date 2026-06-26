@@ -12,7 +12,7 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
     public Client findByMail(String email);
 
     @Query(value = "SELECT * FROM client c " +
-            "WHERE c.nom ILIKE CONCAT('%', :nom, '%') " +
-            "OR c.prenom ILIKE CONCAT('%', :prenom, '%')", nativeQuery = true)
+            "WHERE (:nom = '' OR c.nom ILIKE CONCAT('%', :nom, '%')) " +
+            "AND (:prenom = '' OR c.prenom ILIKE CONCAT('%', :prenom, '%'))", nativeQuery = true)
     List<Client> findClientsByNometPrenom(@Param("nom") String nom, @Param("prenom") String prenom);
 }
