@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liste de commandes</title>
+    <style>
+        .d-none {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="head">
+        <h1>Liste des commandes</h1>
+        <a th:href="@{/commandes/form/new}">Ajouter nouveau</a>
+    </div><br>
+    <div class="section-filtre">
+        <div class="filtre">
+            <label for="client-input-nom">Nom du client:</label>
+            <input type="text" id="client-input-nom" placeholder="Tapez le nom du client"/>
+
+            <label for="client-input-prenom">Prénom du client:</label>
+            <input type="text" id="client-input-prenom" placeholder="Tapez le prénom du client"/>
+
+            <div id="liste-clients" class="d-none"></div>
+        </div>
+        <div class="active-filtres"></div>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Client</th>
+                    <th>Type</th>
+                    <th>Mode de réception</th>
+                    <th>Lieu de récupération</th>
+                    <th>Début de récupération</th>
+                    <th>Fin de récupération</th>
+                    <th>Frais de livraison</th>
+                    <th>Statut</th>
+                    <th>Quantité totale</th>
+                    <th>Valeur totale</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="cmd : ${commandes}">
+                    <td th:text="${cmd.id}"></td>
+                    <td th:text="${cmd.datecommande != null ? #dates.format(cmd.datecommande, 'yyyy-MM-dd HH:mm') : ''}"></td>
+                    <td th:text="|${cmd.client.nom} ${cmd.client.prenom}|"></td>
+                    <td th:text="${cmd.typeCommande}"></td>
+                    <td th:text="${cmd.modeReception}"></td>
+                    <td th:text="${cmd.modeReception == 'Retrait_Boutique' ? cmd.pointDeVenteRetrait.code : cmd.adresseLivraison }"></td>
+                    <td th:text="${cmd.heureReceptionDebut != null ? #dates.format(cmd.heureReceptionDebut, 'yyyy-MM-dd HH:mm') : ''}"></td>
+                    <td th:text="${cmd.heureReceptionFin != null ? #dates.format(cmd.heureReceptionFin, 'yyyy-MM-dd HH:mm') : ''}"></td>
+                    <td th:text="${cmd.statutCommande}"></td>
+                    <td th:text="${cmd.fraisLivraison}"></td>
+                    <td th:text="${cmd.totalProduits}"></td>
+                    <td th:text="${cmd.totalGeneral}"></td>
+                    <td>
+                        <a th:href="@{|/commandes/${cmd.id}|}"><button>Detail</button></a>
+                        <a th:href="@{|/commandes/form/edit/${cmd.id}|}"><button>Modifier</button></a>
+                        <a th:href="@{|/commandes/delete/${cmd.id}|}"><button>Supprimer</button></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        <form th:action="@{/commandes/list}" th:object="${commandeFilterDto}" method="POST" id="form">
+            <label for="line-number">Nombre de lignes</label>
+            <input type="number" th:field="*{lineNumber}" id="line-number">
+            <button type="submit">Appliquer</button>
+        </form>
+    </div>
+    <script>
+        function searchClients(nom, prenom) {
+            const url = '/clients/search';
+            const params = new URLSearchParams();
+            if (nom == null) nom = '';
+            params.append('nom', nom);
+            if (prenom == null) prenom = '';
+            params.append('prenom', prenom);
+
+
+            if (nom.length > 0 || prenom.length > 0) {
+                //console.log('Recherche de clients avec nom :', nom, 'et prénom :', prenom);
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log('Clients trouvés :', data);
+                        listeClientsDiv.innerHTML = '';
+                        listeClientsDiv.classList.remove('d-none');
+
+                        if (data.length > 0) {
+                            const ul = document.createElement('ul');
+                            data.forEach(client => {
+                                const children = `<div class="children-list" onclick="selectClient(${client.id}, '${client.nom}', '${client.prenom}')">${client.nom} ${client.prenom}</div>`;
+                                listeClientsDiv.insertAdjacentHTML('beforeend', children);
+                            });
+                        } else {
+                            const children = `<p> Aucun client trouvé. Verifiez les orthographes</p>`;
+                            listeClientsDiv.insertAdjacentHTML('beforeend', children);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la recherche des clients :', error);
+                    });
+            } else {
+                listeClientsDiv.innerHTML = '';
+            }
+        }
+
+        function selectClient(clientId, nom, prenom) {
+            const clientIdinput = document.createElement("input");
+            clientIdinput.type = "hidden";
+            clientIdinput.name = "clientId[]";
+            clientIdinput.value = clientId;
+            form.appendChild(clientIdinput);
+
+            if (activeFiltresDiv) {
+                const filtreDiv = document.createElement("div");
+                filtreDiv.classList.add("filtre-actif");
+                
+                const filtreText = document.createElement("span");
+                filtreText.textContent = `Client: ${nom} ${prenom}`;
+                filtreDiv.appendChild(filtreText);
+                activeFiltresDiv.appendChild(filtreDiv);
+
+                const removeButton = document.createElement("button");
+                removeButton.textContent = "X";
+                removeButton.addEventListener("click", function () {
+                    form.removeChild(clientIdinput);
+                    activeFiltresDiv.removeChild(filtreDiv);
+                });
+                filtreDiv.appendChild(removeButton);
+            }
+
+            listeClientsDiv.classList.add('d-none');
+        }
+    </script>
+    <script>
+        const form = document.getElementById('form');
+        const clientInputNom = document.getElementById('client-input-nom');
+        const clientInputPrenom = document.getElementById('client-input-prenom');
+        const listeClientsDiv = document.getElementById('liste-clients');
+        const activeFiltresDiv = document.querySelector('.active-filtres');
+
+        clientInputNom.addEventListener('input', function () {
+            const query = clientInputNom.value.trim();
+            searchClients(query, clientInputPrenom.value.trim());
+            //.log('Nom recherché :', query);
+        });
+
+        clientInputPrenom.addEventListener('input', function () {
+            const query = clientInputPrenom.value.trim();
+            //console.log('Prénom recherché :', query);
+            searchClients(clientInputNom.value.trim(), query);
+        });
+    </script>
+</body>
