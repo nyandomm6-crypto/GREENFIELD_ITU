@@ -76,6 +76,9 @@ public class Commandes {
     @OneToMany(mappedBy = "commande")
     private List<Tresorerie> tresoreries;
 
+    @OneToMany(mappedBy = "commande")
+    private List<DetailsCommande> detailsCommande;
+
     public Integer getId() {
         return id;
     }
@@ -118,6 +121,14 @@ public class Commandes {
 
     public PointDeVente getPointDeVenteRetrait() {
         return pointDeVenteRetrait;
+    }
+
+    public List<DetailsCommande> getDetailsCommande() {
+        return detailsCommande;
+    }
+
+    public void setDetailsCommande(List<DetailsCommande> detailsCommande) {
+        this.detailsCommande = detailsCommande;
     }
 
     public void setPointDeVenteRetrait(PointDeVente pointDeVenteRetrait) {
