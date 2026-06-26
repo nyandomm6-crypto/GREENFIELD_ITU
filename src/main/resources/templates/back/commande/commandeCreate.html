@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Création de commande</title>
+    <style>
+        .d-none {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <form th:action="@{/commandes/save}" th:object="${commandeBackFormDto}" method="POST" id="form">
+        <div th:if="${globalError}" class="alert alert-danger" role="alert">
+            <p th:text="${globalError}"></p>
+        </div>
+
+        <fieldset>
+            <legend>Informations du client</legend>
+
+            <input type="hidden" id="client-id" th:field="*{clientId}" />
+
+            <label for="client-input-nom">Nom :</label>
+            <input type="text" id="client-input-nom" th:field="*{clientNom}" placeholder="Tapez le nom du client"
+                th:classappend="${#fields.hasErrors('clientNom')} ? 'is-invalid' : ''" />
+            <p class="text-danger" th:if="${#fields.hasErrors('clientNom')}" th:errors="*{clientNom}"></p>
+
+            <label for="client-input-prenom">Prénom :</label>
+            <input type="text" id="client-input-prenom" th:field="*{clientPrenom}"
+                placeholder="Tapez le prénom du client"
+                th:classappend="${#fields.hasErrors('clientPrenom')} ? 'is-invalid' : ''" />
+            <p class="text-danger" th:if="${#fields.hasErrors('clientPrenom')}" th:errors="*{clientPrenom}"></p>
+
+            <div id="liste-clients" class="d-none"></div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Informations générales de la commande</legend>
+
+            <label for="date">Date de la commande :</label>
+            <input type="datetime-local" id="date" th:field="*{date}"
+                th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''" />
+            <br />
+            <p class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></p>
+
+            <p>Mode de réception :</p>
+
+            <input type="radio" id="reception-retrait" th:field="*{modeReception}" value="Retrait_Boutique" />
+            <label for="reception-retrait">Retrait</label>
+
+            <input type="radio" id="reception-livraison" th:field="*{modeReception}" value="Livraison_Domicile" />
+            <label for="reception-livraison">Livraison</label>
+
+            <p class="text-danger" th:if="${#fields.hasErrors('modeReception')}" th:errors="*{modeReception}"></p>
+
+            <div id="bloc-adresse" class="d-none" style="margin-top: 10px;">
+                <label for="address">Adresse de livraison :</label>
+                <input type="text" id="address" th:field="*{address}" placeholder="Tapez l'adresse de livraison"
+                    th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''" />
+
+                <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
+            </div>
+
+            <p>Plage temporelle de récupération :</p>
+
+            <label for="heure-reception-debut">Date et heure début :</label>
+            <input type="datetime-local" id="heure-reception-debut" th:field="*{heureReceptionDebut}"
+                th:classappend="${#fields.hasErrors('heureReceptionDebut')} ? 'is-invalid' : ''" />
+            <p class="text-danger" th:if="${#fields.hasErrors('heureReceptionDebut')}"
+                th:errors="*{heureReceptionDebut}"></p>
+
+
+            <label for="heure-reception-fin">Date et heure fin :</label>
+            <input type="datetime-local" id="heure-reception-fin" th:field="*{heureReceptionFin}"
+                th:classappend="${#fields.hasErrors('heureReceptionFin')} ? 'is-invalid' : ''" />
+            <p class="text-danger" th:if="${#fields.hasErrors('heureReceptionFin')}" th:errors="*{heureReceptionFin}">
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <legend>Les produits commandés</legend>
+
+            <p class="text-danger" th:if="${#fields.hasErrors('detailsCommande')}" th:errors="*{detailsCommande}"></p>
+
+            <table id="table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Matricule</th>
+                        <th>Prix unitaire</th>
+                        <th>Quantité</th>
+                        <th>Prix total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row-product" th:each="detail, stat : *{detailsCommande}">
+                        <td>
+                            <input type="text" class="recherche-produit" list="liste-produits"
+                                placeholder="Tapez le nom du produit..." />
+
+                            <input type="hidden" class="produit-matricule"
+                                th:field="*{detailsCommande[__${stat.index}__].produitMatricule}" />
+                            <p class="text-danger"
+                                th:if="${#fields.hasErrors('detailsCommande[' + stat.index + '].produitMatricule')}"
+                                th:errors="*{detailsCommande[__${stat.index}__].produitMatricule}"></p>
+
+                            <datalist id="liste-produits">
+                                <option th:each="produit : ${produits}" th:value="${produit.nom}"
+                                    th:data-matricule="${produit.matricule}">
+                                </option>
+                            </datalist>
+                        </td>
+
+                        <td class="matricule-cell" th:text="${detail.produitMatricule}"></td>
+
+                        <td class="pu-cell"></td>
+
+                        <td>
+                            <input type="number" class="qteField" step="1" placeholder="Quantité"
+                                th:field="*{detailsCommande[__${stat.index}__].quantite}"
+                                th:classappend="${#fields.hasErrors('detailsCommande[' + stat.index + '].quantite')} ? 'is-invalid' : ''" />
+
+                            <p class="text-danger"
+                                th:if="${#fields.hasErrors('detailsCommande[' + stat.index + '].quantite')}"
+                                th:errors="*{detailsCommande[__${stat.index}__].quantite}"></p>
+                        </td>
+
+                        <td class="total-cell" th:text="${detail.quantite != null ? 'A calculer' : '0'}">0</td>
+                        <td>
+                            <button type="button" class="remove-row"
+                                onclick="removeProductLine(this)">Supprimer</button>
+                            <button type="button" id="add-row" onclick="addProductLine()">Ajouter</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </fieldset>
+
+        <div class="btn-list">
+            <a href="/commandes"><button type="button">Retour</button></a>
+            <button type="submit">Enregistrer</button>
+        </div>
+    </form>
+
+    <script>
+        const form = document.getElementById('form');
+        const clientInputNom = document.getElementById('client-input-nom');
+        const clientInputPrenom = document.getElementById('client-input-prenom');
+        const listeClientsDiv = document.getElementById('liste-clients');
+        const clientIdInput = document.getElementById('client-id');
+        const receptionLivraison = document.getElementById('reception-livraison');
+        const receptionRetrait = document.getElementById('reception-retrait');
+        const heureReceptionDebut = document.getElementById('heure-reception-debut');
+        const heureReceptionFin = document.getElementById('heure-reception-fin');
+
+        function toggleReceptionMode() {
+            const blocAdresse = document.getElementById('bloc-adresse');
+            if (receptionLivraison.checked) {
+                receptionRetrait.checked = false;
+                blocAdresse.classList.remove('d-none');
+            } else if (receptionRetrait.checked) {
+                receptionLivraison.checked = false;
+                const blocAdresse = document.getElementById('bloc-adresse');
+                blocAdresse.classList.add('d-none');
+            }
+        }
+
+        function selectClient(clientId, nom, prenom) {
+            clientIdInput.value = clientId;
+            clientInputNom.value = `${nom}`;
+            clientInputPrenom.value = `${prenom}`;
+            listeClientsDiv.innerHTML = '';
+            listeClientsDiv.classList.add('d-none');
+        }
+
+        function searchClients(nom, prenom) {
+            const url = '/clients/search';
+            const params = new URLSearchParams();
+            if (nom == null) nom = '';
+            params.append('nom', nom);
+            if (prenom == null) prenom = '';
+            params.append('prenom', prenom);
+
+
+            if (nom.length > 0 || prenom.length > 0) {
+                //console.log('Recherche de clients avec nom :', nom, 'et prénom :', prenom);
+                fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log('Clients trouvés :', data);
+                        listeClientsDiv.innerHTML = '';
+                        listeClientsDiv.classList.remove('d-none');
+
+                        if (data.length > 0) {
+                            const ul = document.createElement('ul');
+                            data.forEach(client => {
+                                const children = `<div class="children-list" onclick="selectClient(${client.id}, '${client.nom}', '${client.prenom}')">${client.nom} ${client.prenom}</div>`;
+                                listeClientsDiv.insertAdjacentHTML('beforeend', children);
+                            });
+                        } else {
+                            const children = `<p> Aucun client trouvé. <a href="" id="create-client-link">Créer un nouveau client</a></p>`;
+                            listeClientsDiv.insertAdjacentHTML('beforeend', children);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la recherche des clients :', error);
+                    });
+            } else {
+                listeClientsDiv.innerHTML = '';
+            }
+        }
+
+        function getDateLocale() {
+            const maintenant = new Date();
+
+            const decalageMin = maintenant.getTimezoneOffset();
+            const dateLocale = new Date(maintenant.getTime() - (decalageMin * 60000));
+
+            return dateLocale;
+        }
+
+        function addProductLine() {
+            const nextIndex = document.querySelectorAll('#table .row-product').length;
+
+            const rawHtml = `
+                <tr class="row-product">
+                    <td>
+                        <input type="text" class="recherche-produit" list="liste-produits" placeholder="Tapez le nom du produit..." />
+                        <input type="hidden" class="produit-matricule" name="detailsCommande[${nextIndex}].produitMatricule" />
+                    </td>
+
+                    <td class="matricule-cell"></td>
+                    <td class="pu-cell"></td>
+
+                    <td>
+                        <input type="number" class="qteField" step="1" placeholder="Quantité" name="detailsCommande[${nextIndex}].quantite" />
+                        <p class="text-danger"></p>
+                    </td>
+
+                    <td class="total-cell">0</td>
+                    <td>
+                        <button type="button" class="remove-row" onclick="removeProductLine(this)">Supprimer</button>
+                        <button type="button" class="add-row-btn" onclick="addProductLine()">Ajouter</button>
+                    </td>
+                </tr>
+            `;
+
+            const tbody = document.querySelector("#table tbody");
+            tbody.insertAdjacentHTML('beforeend', rawHtml);
+
+            const allRows = document.querySelectorAll('#table .row-product');
+            const newlyAddedRow = allRows[allRows.length - 1];
+
+            const removeButton = newlyAddedRow.querySelector('.remove-row');
+            removeButton.addEventListener('click', function () {
+                newlyAddedRow.remove();
+                // recalculer le total général
+            });
+        }
+
+        function removeProductLine(button) {
+            const table = document.getElementById('table');
+            const rows = table.querySelectorAll('.row-product');
+            if (rows.length <= 1) {
+                alert('Vous devez avoir au moins une ligne de produit.');
+                return;
+            }
+            const row = button.closest('.row-product');
+            if (row) {
+                row.remove();
+            }
+        }
+
+        clientInputNom.addEventListener('input', function () {
+            const query = clientInputNom.value.trim();
+            searchClients(query, clientInputPrenom.value.trim());
+            //.log('Nom recherché :', query);
+        });
+
+        clientInputPrenom.addEventListener('input', function () {
+            const query = clientInputPrenom.value.trim();
+            //console.log('Prénom recherché :', query);
+            searchClients(clientInputNom.value.trim(), query);
+        });
+
+        window.onload = function () {
+            const dateField = document.getElementById("date");
+            const dateLocale = getDateLocale();
+            toggleReceptionMode();
+
+            if (dateField && dateField.value == "") {
+                const isoString = dateLocale.toISOString();
+
+                const formatDateTimeLocal = isoString.slice(0, 16);
+
+                dateField.value = formatDateTimeLocal;
+            }
+
+            if (heureReceptionDebut && heureReceptionDebut.value == "") {
+                const isoString = dateLocale.toISOString();
+
+                const formatTimeLocal = isoString.slice(0, 16);
+
+                heureReceptionDebut.value = formatTimeLocal;
+            }
+
+            if (heureReceptionFin && heureReceptionFin.value == "") {
+                const isoString = dateLocale.toISOString();
+
+                const formatTimeLocal = isoString.slice(0, 16);
+
+                heureReceptionFin.value = formatTimeLocal;
+            }
+        }
+
+        receptionLivraison.addEventListener('change', function () {
+            toggleReceptionMode();
+        });
+
+        receptionRetrait.addEventListener('change', function () {
+            toggleReceptionMode();
+        });
+
+        function detailProduit(matricule, row) {
+            const matriculeCell = row.querySelector('.matricule-cell');
+            const puCell = row.querySelector('.pu-cell');
+            const totalCell = row.querySelector('.total-cell');
+            const qteField = row.querySelector('.qteField');
+            const produitMatriculeInput = row.querySelector('.produit-matricule');
+            const nomProduitInput = row.querySelector('.recherche-produit');
+
+            matriculeCell.textContent = matricule;
+
+            produitMatriculeInput.value = matricule;
+
+            fetch(`/produits/${matricule}/detail-json`)
+                .then(response => response.json())
+                .then(data => {
+                    nomProduitInput.value = data.nom;
+                    const prixUnitaire = parseInt(data.pu);
+                    const quantite = parseInt(qteField.value) || 0;
+
+                    if (!isNaN(prixUnitaire)) {
+                        // On met à jour les cellules textuelles
+                        if (puCell) puCell.textContent = prixUnitaire;
+                        if (totalCell) totalCell.textContent = (prixUnitaire * quantite);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération du prix unitaire :', error);
+                });
+        }
+
+        document.addEventListener('input', function (event) {
+            if (event.target.classList.contains('recherche-produit')) {
+                const input = event.target;
+                const row = input.closest('.row-product');
+                const matriculeCell = row.querySelector('.matricule-cell');
+                const puCell = row.querySelector('.pu-cell');
+                const totalCell = row.querySelector('.total-cell');
+                const qteField = row.querySelector('.qteField');
+                const produitMatriculeInput = row.querySelector('.produit-matricule');
+
+                const selectedOption = Array.from(input.list.options).find(option => option.value === input.value);
+                if (selectedOption) {
+                    const matricule = selectedOption.dataset.matricule;
+                    detailProduit(matricule, row);
+                } else {
+                    matriculeCell.textContent = '';
+                    puCell.textContent = '';
+                    totalCell.textContent = '';
+                    produitMatriculeInput.value = '';
+                }
+            }
+
+            if (event.target.classList.contains('qteField')) {
+                const qteField = event.target;
+                const row = qteField.closest('.row-product');
+                const puCell = row.querySelector('.pu-cell');
+                const totalCell = row.querySelector('.total-cell');
+
+                const prixUnitaire = parseFloat(puCell.textContent) || 0;
+                const quantite = parseFloat(qteField.value) || 0;
+
+                if (!isNaN(prixUnitaire)) {
+                    if (totalCell) totalCell.textContent = (prixUnitaire * quantite).toFixed(2);
+                }
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.row-product').forEach(function (row) {
+                let matricule = row.querySelector('.produit-matricule').value;
+                if (matricule) {
+                    detailProduit(matricule, row);
+                }
+            });
+        });
+        
+    </script>
+</body>
+
+</html>
