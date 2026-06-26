@@ -13,11 +13,11 @@ import itu.GreenField.dto.DetailCommandeBackDto;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 @RequestMapping("/commandes")
@@ -46,10 +46,13 @@ public class CommandeController {
         return mv;
     }
 
-    @GetMapping("/form/edit")
-    public ModelAndView showEditForm(@RequestParam("id") Integer id) {
-        ModelAndView mv = new ModelAndView("commandeEdit");
-        mv.addObject("commande", commandeService.getCommandeById(id));
+    @GetMapping("/form/edit/{id}")
+    public ModelAndView showEditForm(@PathVariable("id") Integer id) {
+        ModelAndView mv = new ModelAndView("back/commande/commandeCreate");
+        CommandeBackFormDto dto = new CommandeBackFormDto(commandeService.getCommandeById(id));
+        
+        mv.addObject("commandeBackFormDto", dto);
+        mv.addObject("produits", produitService.getAllProduits());
         return mv;
     }
 
