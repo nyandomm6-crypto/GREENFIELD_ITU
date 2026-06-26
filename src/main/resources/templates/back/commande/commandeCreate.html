@@ -13,6 +13,10 @@
 </head>
 
 <body>
+    <div class="head">
+        <h1>Formulaire d'une nouvelle commande</h1>
+        <a th:href="@{/commandes}">Voir la liste</a>
+    </div><br>
     <form th:action="@{/commandes/save}" th:object="${commandeBackFormDto}" method="POST" id="form">
         <div th:if="${globalError}" class="alert alert-danger" role="alert">
             <p th:text="${globalError}"></p>
@@ -210,7 +214,7 @@
                                 listeClientsDiv.insertAdjacentHTML('beforeend', children);
                             });
                         } else {
-                            const children = `<p> Aucun client trouvé. <a href="" id="create-client-link">Créer un nouveau client</a></p>`;
+                            const children = `<p> Aucun client trouvé. Vous etes sur le point de creer un nouveau client</p>`;
                             listeClientsDiv.insertAdjacentHTML('beforeend', children);
                         }
                     })
