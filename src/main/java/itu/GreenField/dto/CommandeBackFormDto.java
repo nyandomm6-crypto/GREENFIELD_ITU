@@ -3,11 +3,14 @@ package itu.GreenField.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
-
+import itu.GreenField.model.Commandes;
+import itu.GreenField.model.DetailsCommande;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 public class CommandeBackFormDto {
+    private Integer commandeId;
+
     // Client
     private Integer clientId;
     @NotNull(message = "Le nom du client est obligatoire")
@@ -37,6 +40,33 @@ public class CommandeBackFormDto {
     @NotEmpty(message = "La commande doit contenir au moins un produit.")
     @Valid
     private List<DetailCommandeBackDto> detailsCommande = new java.util.ArrayList<>();
+
+    public CommandeBackFormDto(Commandes cmd) {
+        commandeId = cmd.getId();
+        clientId = cmd.getClient().getId();
+        clientNom = cmd.getClient().getNom();
+        clientPrenom = cmd.getClient().getPrenom();
+        date = cmd.getDatecommande().toLocalDateTime();
+        modeReception = cmd.getModeReception().name();
+        if (cmd.getHeureReceptionDebut() != null) {
+            heureReceptionDebut = cmd.getHeureReceptionDebut().toLocalDateTime();
+        }
+        if (cmd.getHeureReceptionFin() != null) {
+            heureReceptionFin = cmd.getHeureReceptionFin().toLocalDateTime();
+        }
+        if (cmd.getAdresseLivraison() != null) {
+            address = cmd.getAdresseLivraison();
+        }
+        for (DetailsCommande detail : cmd.getDetailsCommande()) {
+            DetailCommandeBackDto dto = new DetailCommandeBackDto();
+            dto.setProduitMatricule(detail.getProduit().getMatricule());
+            dto.setQuantite(detail.getQuantite());
+            detailsCommande.add(dto);
+        }
+    }
+
+    public CommandeBackFormDto() {
+    }
 
     public java.sql.Timestamp getSqlTypeOfDate() {
         if (date != null) {
@@ -129,6 +159,14 @@ public class CommandeBackFormDto {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public Integer getCommandeId() {
+        return commandeId;
+    }
+
+    public void setCommandeId(Integer commandeId) {
+        this.commandeId = commandeId;
     }
 
 }
