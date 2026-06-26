@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import itu.GreenField.service.CommandesService;
 import itu.GreenField.service.ClientService;
 import itu.GreenField.dto.CommandeBackFormDto;
+import itu.GreenField.dto.CommandeBackFilterDto;
 import itu.GreenField.dto.DetailCommandeBackDto;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -93,7 +94,10 @@ public class CommandeController {
 
     @GetMapping({ "/", "", "/list" })
     public ModelAndView listCommandes() {
-        ModelAndView mv = new ModelAndView("list-commandes");
+        ModelAndView mv = new ModelAndView("back/commande/listeCommande");
+        CommandeBackFilterDto filter = new CommandeBackFilterDto();
+        filter.setLineNumber(2);
+        mv.addObject("commandeFilterDto", filter);
         mv.addObject("commandes", commandeService.getCommandesDispo());
         return mv;
     }
