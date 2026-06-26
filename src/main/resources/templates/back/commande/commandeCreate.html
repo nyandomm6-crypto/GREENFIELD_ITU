@@ -18,6 +18,8 @@
             <p th:text="${globalError}"></p>
         </div>
 
+        <input type="hidden" name="commandeId" th:field="*{commandeId}" />
+
         <fieldset>
             <legend>Informations du client</legend>
 
@@ -25,12 +27,13 @@
 
             <label for="client-input-nom">Nom :</label>
             <input type="text" id="client-input-nom" th:field="*{clientNom}" placeholder="Tapez le nom du client"
+                th:readonly="${commandeBackFormDto.commandeId != null}"
                 th:classappend="${#fields.hasErrors('clientNom')} ? 'is-invalid' : ''" />
             <p class="text-danger" th:if="${#fields.hasErrors('clientNom')}" th:errors="*{clientNom}"></p>
 
             <label for="client-input-prenom">Prénom :</label>
             <input type="text" id="client-input-prenom" th:field="*{clientPrenom}"
-                placeholder="Tapez le prénom du client"
+                th:readonly="${commandeBackFormDto.commandeId != null}" placeholder="Tapez le prénom du client"
                 th:classappend="${#fields.hasErrors('clientPrenom')} ? 'is-invalid' : ''" />
             <p class="text-danger" th:if="${#fields.hasErrors('clientPrenom')}" th:errors="*{clientPrenom}"></p>
 
@@ -42,6 +45,7 @@
 
             <label for="date">Date de la commande :</label>
             <input type="datetime-local" id="date" th:field="*{date}"
+                th:readonly="${commandeBackFormDto.commandeId != null}"
                 th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''" />
             <br />
             <p class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></p>
@@ -141,7 +145,7 @@
         </fieldset>
 
         <div class="btn-list">
-            <a href="/commandes"><button type="button">Retour</button></a>
+            <a th:href="@{/commandes}"><button type="button">Retour</button></a>
             <button type="submit">Enregistrer</button>
         </div>
     </form>
@@ -404,7 +408,7 @@
                 }
             });
         });
-        
+
     </script>
 </body>
 
