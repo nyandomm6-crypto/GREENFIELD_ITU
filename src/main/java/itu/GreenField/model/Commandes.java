@@ -46,10 +46,10 @@ public class Commandes {
     private String adresseLivraison;
 
     @Column(name = "heure_reception_debut")
-    private java.sql.Time heureReceptionDebut;
+    private java.sql.Timestamp heureReceptionDebut;
 
     @Column(name = "heure_reception_fin")
-    private java.sql.Time heureReceptionFin;
+    private java.sql.Timestamp heureReceptionFin;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "statutcommande", nullable = false)
@@ -132,19 +132,19 @@ public class Commandes {
         this.adresseLivraison = adresseLivraison;
     }
 
-    public java.sql.Time getHeureReceptionDebut() {
+    public java.sql.Timestamp getHeureReceptionDebut() {
         return heureReceptionDebut;
     }
 
-    public void setHeureReceptionDebut(java.sql.Time heureReceptionDebut) {
+    public void setHeureReceptionDebut(java.sql.Timestamp heureReceptionDebut) {
         this.heureReceptionDebut = heureReceptionDebut;
     }
 
-    public java.sql.Time getHeureReceptionFin() {
+    public java.sql.Timestamp getHeureReceptionFin() {
         return heureReceptionFin;
     }
 
-    public void setHeureReceptionFin(java.sql.Time heureReceptionFin) {
+    public void setHeureReceptionFin(java.sql.Timestamp heureReceptionFin) {
         this.heureReceptionFin = heureReceptionFin;
     }
 
