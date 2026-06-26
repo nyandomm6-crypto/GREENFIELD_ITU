@@ -61,15 +61,25 @@ public class CommandesService {
         StatutCommande statusCommande = StatutCommande.En_cours;
         TypeCommande typeCommande = TypeCommande.En_boutique;
 
-        Commandes commande = new Commandes();
-        commande.setClient(client);
-        commande.setDatecommande(commandeFormDto.getSqlTypeOfDate());
+        Commandes commande = null;
+        if (commandeFormDto.getCommandeId() != null) {
+            commande = commandesRepository.findById(commandeFormDto.getCommandeId()).orElse(null);
+            if (commande == null) {
+                throw new Exception("Commande introuvable avec l'ID: " + commandeFormDto.getCommandeId());
+            }
+            detailsCommandeRepository.deleteAll(commande.getDetailsCommande());
+        } else {
+            commande = new Commandes();
+            commande.setClient(client);
+            commande.setDatecommande(commandeFormDto.getSqlTypeOfDate());
+            commande.setStatutCommande(statusCommande);
+            commande.setTypeCommande(typeCommande);
+        }
+
         commande.setModeReception(modeReception);
         commande.setHeureReceptionDebut(commandeFormDto.getSqlTypeOfHeureReceptionDebut());
         commande.setHeureReceptionFin(commandeFormDto.getSqlTypeOfHeureReceptionFin());
         commande.setAdresseLivraison(commandeFormDto.getAddress());
-        commande.setStatutCommande(statusCommande);
-        commande.setTypeCommande(typeCommande);
 
         /* Static pour le moment */
         if(commandeFormDto.getAddress() == null || modeReception == ModeReception.Retrait_Boutique){
