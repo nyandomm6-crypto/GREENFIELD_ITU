@@ -1,33 +1,42 @@
 package itu.GreenField.dto;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 
 public class CommandeBackFormDto {
     // Client
     private Integer clientId;
+    @NotNull(message = "Le nom du client est obligatoire")
+    @Size(min = 2, max = 100, message = "Le nom du client doit contenir entre 2 et 100 caractères")
     private String clientNom;
+
+    @NotNull(message = "Le prénom du client est obligatoire")
+    @Size(min = 2, max = 100, message = "Le prénom du client doit contenir entre 2 et 100 caractères")
     private String clientPrenom;
 
     // Commande
+    @NotNull(message = "La date de la commande est obligatoire")
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date;
 
+    @NotNull(message = "Le mode de réception est obligatoire")
     private String modeReception;
 
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime heureReceptionDebut;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime heureReceptionDebut;
 
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime heureReceptionFin;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+    private LocalDateTime heureReceptionFin;
 
     private String address;
 
-    // Details
-    private List<String> produitMatricule;
-    private List<Integer> qte;
+    @NotEmpty(message = "La commande doit contenir au moins un produit.")
+    @Valid
+    private List<DetailCommandeBackDto> detailsCommande = new java.util.ArrayList<>();
 
     public java.sql.Timestamp getSqlTypeOfDate() {
         if (date != null) {
@@ -36,16 +45,16 @@ public class CommandeBackFormDto {
         return null;
     }
 
-    public java.sql.Time getSqlTypeOfHeureReceptionDebut() {
+    public java.sql.Timestamp getSqlTypeOfHeureReceptionDebut() {
         if (heureReceptionDebut != null) {
-            return java.sql.Time.valueOf(heureReceptionDebut);
+            return java.sql.Timestamp.valueOf(heureReceptionDebut);
         }
         return null;
     }
 
-    public java.sql.Time getSqlTypeOfHeureReceptionFin() {
+    public java.sql.Timestamp getSqlTypeOfHeureReceptionFin() {
         if (heureReceptionFin != null) {
-            return java.sql.Time.valueOf(heureReceptionFin);
+            return java.sql.Timestamp.valueOf(heureReceptionFin);
         }
         return null;
     }
@@ -90,36 +99,28 @@ public class CommandeBackFormDto {
         this.modeReception = modeReception;
     }
 
-    public LocalTime getHeureReceptionDebut() {
+    public LocalDateTime getHeureReceptionDebut() {
         return heureReceptionDebut;
     }
 
-    public void setHeureReceptionDebut(LocalTime heureReceptionDebut) {
+    public void setHeureReceptionDebut(LocalDateTime heureReceptionDebut) {
         this.heureReceptionDebut = heureReceptionDebut;
     }
 
-    public LocalTime getHeureReceptionFin() {
+    public LocalDateTime getHeureReceptionFin() {
         return heureReceptionFin;
     }
 
-    public void setHeureReceptionFin(LocalTime heureReceptionFin) {
+    public void setHeureReceptionFin(LocalDateTime heureReceptionFin) {
         this.heureReceptionFin = heureReceptionFin;
     }
 
-    public List<String> getProduitMatricule() {
-        return produitMatricule;
+    public List<DetailCommandeBackDto> getDetailsCommande() {
+        return detailsCommande;
     }
 
-    public void setProduitMatricule(List<String> produitMatricule) {
-        this.produitMatricule = produitMatricule;
-    }
-
-    public List<Integer> getQte() {
-        return qte;
-    }
-
-    public void setQte(List<Integer> qte) {
-        this.qte = qte;
+    public void setDetailsCommande(List<DetailCommandeBackDto> detailsCommande) {
+        this.detailsCommande = detailsCommande;
     }
 
     public String getAddress() {
