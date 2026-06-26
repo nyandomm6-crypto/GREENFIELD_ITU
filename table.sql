@@ -220,8 +220,8 @@ ALTER TABLE Commandes ALTER COLUMN statutCommande TYPE varchar(30);
 ALTER TABLE Commandes ALTER COLUMN mode_reception TYPE varchar(30);
 ALTER TABLE Commandes ADD COLUMN type_commande VARCHAR(30) DEFAULT 'En boutique';
 ALTER TABLE Commandes DROP COLUMN plage_horaire_souhaitee;
-ALTER TABLE Commandes ADD COLUMN heure_reception_debut TIME;
-ALTER TABLE Commandes ADD COLUMN heure_reception_fin TIME;
+ALTER TABLE Commandes ADD COLUMN heure_reception_debut TIMESTAMP;
+ALTER TABLE Commandes ADD COLUMN heure_reception_fin TIMESTAMP;
 
 ALTER TABLE Commandes ALTER COLUMN total_produits TYPE INT;
 
