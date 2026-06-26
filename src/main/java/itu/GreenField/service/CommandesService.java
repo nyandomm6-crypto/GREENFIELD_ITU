@@ -1,7 +1,5 @@
 package itu.GreenField.service;
 
-import itu.GreenField.service.ProduitService;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -77,6 +75,7 @@ public class CommandesService {
         if(commandeFormDto.getAddress() == null || modeReception == ModeReception.Retrait_Boutique){
             PointDeVente pdv = pointDeVenteService.findPointDeVenteById(1);
             commande.setPointDeVenteRetrait(pdv);
+            commande.setAdresseLivraison(null);
         }
 
         /* Static pour le moment */
