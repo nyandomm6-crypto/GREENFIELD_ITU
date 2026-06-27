@@ -27,4 +27,12 @@ public class ClientController {
         System.out.println("--> PRÉNOM REÇU : '" + prenom + "'");
         return clientService.getSearchedClientsJson(nom, prenom);
     }
+
+    @PostMapping(value = "/searchByWord", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String searchClientsByWord(
+            @RequestParam(value = "query", required = false) String query) {
+        System.out.println("--> QUERY REÇU : '" + query + "'");
+        return clientService.getSearchedClientsJson(query);
+    }
 }
