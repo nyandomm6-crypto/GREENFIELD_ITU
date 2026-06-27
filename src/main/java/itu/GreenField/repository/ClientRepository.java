@@ -15,4 +15,9 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
             "WHERE (:nom = '' OR c.nom ILIKE CONCAT('%', :nom, '%')) " +
             "AND (:prenom = '' OR c.prenom ILIKE CONCAT('%', :prenom, '%'))", nativeQuery = true)
     List<Client> findClientsByNometPrenom(@Param("nom") String nom, @Param("prenom") String prenom);
+
+    @Query(value = "SELECT * FROM client c " +
+            "WHERE (:query = '' OR c.nom ILIKE CONCAT('%', :query, '%')) " +
+            "OR (:query = '' OR c.prenom ILIKE CONCAT('%', :query, '%'))", nativeQuery = true)
+    List<Client> findClientsByWord(@Param("query") String query);
 }
