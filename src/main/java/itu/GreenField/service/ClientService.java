@@ -41,6 +41,21 @@ public class ClientService {
         return jsonBuilder.toString();
     }
 
+    public String getSearchedClientsJson(String query) {
+        List<Client> clients = clientsRepository.findClientsByWord(query);
+        StringBuilder jsonBuilder = new StringBuilder();
+        jsonBuilder.append("[");
+        for (int i = 0; i < clients.size(); i++) {
+            Client client = clients.get(i);
+            jsonBuilder.append(ClientToJson(client));
+            if (i < clients.size() - 1) {
+                jsonBuilder.append(",");
+            }
+        }
+        jsonBuilder.append("]");
+        return jsonBuilder.toString();
+    }
+
     public String ClientToJson(Client client) {
         if (client == null) {
             return "{}";
