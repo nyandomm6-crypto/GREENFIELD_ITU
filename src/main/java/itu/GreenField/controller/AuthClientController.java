@@ -7,6 +7,8 @@ import itu.GreenField.service.ValidationService;
 
 import java.util.Map;
 
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,8 @@ public class AuthClientController {
     }
 
     @GetMapping("/login")
-    public String afficherLogin() {
+    public String afficherLogin(@RequestParam(required = false) String redirect, Model model) {
+        model.addAttribute("redirect", redirect);
         return "front/auth/login";
     }
 
@@ -59,8 +62,32 @@ public class AuthClientController {
 
     @PostMapping("/login")
     public String traiterLogin(@RequestParam String email,
-            @RequestParam String motDePasse) {
-        return "front/auth/dashboard";
+            @RequestParam String motDePasse,
+            @RequestParam(required = false) String redirect,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        Client client = clientRepository.findByMail(email);
+
+        if (client == null || !client.getMotdepasse().equals(motDePasse)) {
+            redirectAttributes.addFlashAttribute("error", "Email ou mot de passe incorrect.");
+            redirectAttributes.addFlashAttribute("redirect", redirect);
+            return "redirect:/login";
+        }
+
+        if (Boolean.FALSE.equals(client.getEstVerifie())) {
+            redirectAttributes.addFlashAttribute("error", "Veuillez d'abord valider votre adresse email.");
+            redirectAttributes.addFlashAttribute("redirect", redirect);
+            return "redirect:/login";
+        }
+
+        session.setAttribute("client", client);
+
+        if (redirect != null && !redirect.isBlank()) {
+            return "redirect:" + redirect;
+        }
+
+        return "redirect:/produits";
     }
 
     @PostMapping("/signup")
@@ -105,5 +132,11 @@ public class AuthClientController {
             @RequestParam(required = false) String contact) {
 
         return validationService.validationSignup(email, motDePasse, nom, prenom, adresse, contact);
+    }
+
+    @PostMapping("/logout")
+    public String deconnexion(HttpSession session) {
+        session.invalidate();
+        return "redirect:/produits";
     }
 }
