@@ -6,8 +6,8 @@ import java.util.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class CommandeBackFilterDto {
-    Integer lineNumber;
-    Integer pageNumber;
+    Integer lineNumber = 10;
+    Integer pageNumber = 1;
     List<Integer> clientId = new ArrayList<>();
     String modeReception;
     List<String> typeFiltreDate = new ArrayList<>();
@@ -21,6 +21,7 @@ public class CommandeBackFilterDto {
     private List<Double> nombreValue = new ArrayList<>();
 
     String statutCommande;
+    String typeCommande;
 
     public Integer getLineNumber() {
         return lineNumber;
@@ -56,6 +57,14 @@ public class CommandeBackFilterDto {
 
     public List<String> getOperateurDate() {
         return operateurDate;
+    }
+
+    public String getTypeCommande() {
+        return typeCommande;
+    }
+
+    public void setTypeCommande(String typeCommande) {
+        this.typeCommande = typeCommande;
     }
 
     public void setOperateurDate(List<String> operateurDate) {
