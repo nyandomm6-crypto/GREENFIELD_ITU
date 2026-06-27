@@ -84,7 +84,14 @@
                     <input type="hidden" name="statutCommande" th:value="${commandeFilterDto.statutCommande}" />
                     <button type="button" onclick="removeStaticFilter(this, 'statutCommandeSelect')">x</button>
                 </div>
-                
+
+                <div th:if="${commandeFilterDto?.typeCommande != null and !#strings.isEmpty(commandeFilterDto.typeCommande)}"
+                    class="filtre-actif">
+                    <span th:text="'Type de commande: ' + ${commandeFilterDto.typeCommande}"></span>
+                    <input type="hidden" name="typeCommande" th:value="${commandeFilterDto.typeCommande}" />
+                    <button type="button" onclick="removeStaticFilter(this, 'typeCommandeSelect')">x</button>
+                </div>
+
                 <div th:if="${commandeFilterDto?.modeReception != null and !#strings.isEmpty(commandeFilterDto.modeReception)}"
                     class="filtre-actif">
                     <span th:text="'Mode de réception: ' + ${commandeFilterDto.modeReception}"></span>
@@ -126,6 +133,8 @@
                     </div>
                 </th:block>
             </div>
+            <button type="submit">Appliquer les filtres</button>
+            <a th:href="@{/commandes/list}">Réinitialiser</a>
         </div>
         <div class="table-container">
             <table>
