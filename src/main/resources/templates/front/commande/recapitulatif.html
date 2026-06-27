@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Récapitulatif de la commande - GreenField</title>
+    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+
+    <style>
+      .carte-recap {
+        background: white;
+        border: 1px solid var(--bordure);
+        border-radius: 12px;
+        padding: 26px;
+        margin-top: 20px;
+      }
+
+      .info-client {
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--bordure);
+        font-size: 14px;
+        color: var(--gris);
+      }
+
+      table.recap {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      table.recap th,
+      table.recap td {
+        text-align: left;
+        padding: 10px 8px;
+        font-size: 14px;
+        border-bottom: 1px solid var(--bordure);
+      }
+
+      .ligne-total {
+        font-weight: 700;
+        font-size: 17px;
+        color: var(--vert-fonce);
+      }
+
+      .actions-recap {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div th:replace="~{front/fragments/layout :: nav}"></div>
+
+    <main class="conteneur">
+      <h1>Récapitulatif de votre commande</h1>
+      <p>Vérifiez votre commande avant de la valider définitivement.</p>
+
+      <div class="carte-recap">
+        <div class="info-client">
+          Client : <strong th:text="${client.prenom} + ' ' + ${client.nom}"></strong>
+          — <span th:text="${client.mail}"></span>
+        </div>
+
+        <table class="recap">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Prix unitaire</th>
+              <th>Quantité</th>
+              <th>Sous-total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="entree : ${panier.lignes}">
+              <td th:text="${entree.value.nomProduit}"></td>
+              <td th:text="${entree.value.prixUnitaire} + ' Ar'"></td>
+              <td th:text="${entree.value.quantite}"></td>
+              <td th:text="${entree.value.sousTotal} + ' Ar'"></td>
+            </tr>
+            <tr>
+              <td colspan="3" class="ligne-total">Total général</td>
+              <td class="ligne-total" th:text="${panier.total} + ' Ar'"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="actions-recap">
+          <a class="btn secondaire" th:href="@{/panier}">Retour au panier</a>
+          <form th:action="@{/commande/valider}" method="post">
+            <button type="submit" class="btn">Confirmer l'achat</button>
+          </form>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${produit.nom} + ' - GreenField'">Produit</title>
+    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+
+    <style>
+      .fil-ariane {
+        font-size: 13px;
+        color: var(--gris);
+        margin-bottom: 18px;
+      }
+
+      .bloc-detail {
+        background: white;
+        border: 1px solid var(--bordure);
+        border-radius: 12px;
+        padding: 28px;
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+      }
+
+      .visuel-detail {
+        width: 260px;
+        height: 220px;
+        background: var(--vert-clair);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 70px;
+        flex-shrink: 0;
+      }
+
+      .infos-detail {
+        flex: 1;
+        min-width: 240px;
+      }
+
+      .categorie-detail {
+        font-size: 13px;
+        color: var(--gris);
+        margin-bottom: 6px;
+      }
+
+      .prix-detail {
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--vert-fonce);
+        margin: 10px 0;
+      }
+
+      .stock-detail {
+        margin-bottom: 18px;
+        font-size: 14px;
+      }
+
+      .stock-ok {
+        color: var(--vert-fonce);
+      }
+
+      .stock-rupture {
+        color: var(--rouge);
+      }
+
+      .form-ajout {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .form-ajout input[type="number"] {
+        width: 80px;
+        padding: 9px 10px;
+        border: 1px solid var(--bordure);
+        border-radius: 8px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div th:replace="~{front/fragments/layout :: nav}"></div>
+
+    <main class="conteneur">
+      <p class="fil-ariane">
+        <a th:href="@{/produits}">Produits</a> / <span th:text="${produit.nom}"></span>
+      </p>
+
+      <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+      <div class="bloc-detail">
+        <div class="visuel-detail">🌿</div>
+
+        <div class="infos-detail">
+          <p
+            class="categorie-detail"
+            th:if="${produit.categorie != null}"
+            th:text="${produit.categorie.libelle}"
+          ></p>
+
+          <h1 th:text="${produit.nom}"></h1>
+
+          <p class="prix-detail" th:text="${produit.pu} + ' Ar'"></p>
+
+          <p
+            class="stock-detail"
+            th:classappend="${stock > 0} ? 'stock-ok' : 'stock-rupture'"
+          >
+            <span th:if="${stock > 0}"
+              >✔ En stock — <span th:text="${stock}"></span> unité(s)
+              disponible(s)</span
+            >
+            <span th:unless="${stock > 0}">✖ Rupture de stock</span>
+          </p>
+
+          <form
+            class="form-ajout"
+            th:action="@{/panier/ajouter}"
+            method="post"
+            th:if="${stock > 0}"
+          >
+            <input type="hidden" name="idProduit" th:value="${produit.id}" />
+            <label>
+              Quantité
+              <input
+                type="number"
+                name="quantite"
+                value="1"
+                min="1"
+                required
+                th:max="${stock}"
+              />
+            </label>
+            <button type="submit" class="btn">Ajouter au panier</button>
+          </form>
+
+          <button type="button" class="btn" disabled th:unless="${stock > 0}">
+            Produit indisponible
+          </button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

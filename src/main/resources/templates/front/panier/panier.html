@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mon panier - GreenField</title>
+    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+
+    <style>
+      table.panier {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-top: 20px;
+      }
+
+      table.panier th,
+      table.panier td {
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--bordure);
+      }
+
+      table.panier th {
+        background: var(--vert-clair);
+        color: var(--vert-fonce);
+        font-size: 14px;
+      }
+
+      table.panier td {
+        font-size: 14px;
+      }
+
+      .input-quantite {
+        width: 70px;
+        padding: 6px 8px;
+        border: 1px solid var(--bordure);
+        border-radius: 6px;
+      }
+
+      .ligne-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .bloc-total {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .recap-total {
+        background: white;
+        border: 1px solid var(--bordure);
+        border-radius: 12px;
+        padding: 20px 26px;
+        min-width: 260px;
+        text-align: right;
+      }
+
+      .recap-total .montant {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--vert-fonce);
+        margin: 6px 0 16px;
+      }
+
+      .panier-vide {
+        text-align: center;
+        margin-top: 60px;
+        color: var(--gris);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div th:replace="~{front/fragments/layout :: nav}"></div>
+
+    <main class="conteneur">
+      <h1>Mon panier</h1>
+
+      <div class="message success" th:if="${success}" th:text="${success}"></div>
+      <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+      <div th:if="${!panier.estVide()}">
+        <table class="panier">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Prix unitaire</th>
+              <th>Quantité</th>
+              <th>Sous-total</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="entree : ${panier.lignes}">
+              <td th:text="${entree.value.nomProduit}"></td>
+              <td th:text="${entree.value.prixUnitaire} + ' Ar'"></td>
+              <td>
+                <form
+                  th:action="@{/panier/modifier}"
+                  method="post"
+                  class="ligne-actions"
+                >
+                  <input
+                    type="hidden"
+                    name="idProduit"
+                    th:value="${entree.key}"
+                  />
+                  <input
+                    class="input-quantite"
+                    type="number"
+                    name="quantite"
+                    min="1"
+                    required
+                    th:value="${entree.value.quantite}"
+                  />
+                  <button type="submit" class="btn secondaire">Modifier</button>
+                </form>
+              </td>
+              <td th:text="${entree.value.sousTotal} + ' Ar'"></td>
+              <td>
+                <form
+                  th:action="@{/panier/supprimer/{id}(id=${entree.key})}"
+                  method="post"
+                >
+                  <button type="submit" class="btn danger">Supprimer</button>
+                </form>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="bloc-total">
+          <div class="recap-total">
+            <div>Total à payer</div>
+            <div class="montant" th:text="${panier.total} + ' Ar'"></div>
+            <form th:action="@{/commande/recapitulatif}" method="get">
+              <button type="submit" class="btn">Valider l'achat</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="panier-vide" th:if="${panier.estVide()}">
+        <p>Votre panier est vide.</p>
+        <a class="btn" th:href="@{/produits}">Découvrir les produits</a>
+      </div>
+    </main>
+  </body>
+</html>
