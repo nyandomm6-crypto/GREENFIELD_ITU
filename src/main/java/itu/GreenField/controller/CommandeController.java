@@ -23,13 +23,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 @Controller
 @RequestMapping("/commandes")
@@ -109,10 +107,8 @@ public class CommandeController {
     public ModelAndView listCommandes() {
         ModelAndView mv = new ModelAndView("back/commande/listeCommande");
         CommandeBackFilterDto filter = new CommandeBackFilterDto();
-        int size = 2;
-        int page = 1;
-        filter.setLineNumber(2);
-        filter.setPageNumber(1);
+        int size = filter.getLineNumber() != null ? filter.getLineNumber() : 10;
+        int page = filter.getPageNumber() != null ? filter.getPageNumber() : 1;
 
         Page<Commandes> commandePage = commandeService.getCommandesPagine(page - 1, size);
 
