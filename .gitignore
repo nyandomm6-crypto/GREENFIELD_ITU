@@ -10,3 +10,6 @@ build/
 
 # Java
 *.class
+#md
+
+*.md
