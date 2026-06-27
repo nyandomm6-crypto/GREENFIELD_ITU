@@ -56,11 +56,15 @@
 
             <p>Mode de réception :</p>
 
-            <input type="radio" id="reception-retrait" th:field="*{modeReception}" value="Retrait_Boutique" />
-            <label for="reception-retrait">Retrait</label>
+            <div th:each="mode : ${modeReceptionOptions}" style="display: inline-block; margin-right: 15px;">
 
-            <input type="radio" id="reception-livraison" th:field="*{modeReception}" value="Livraison_Domicile" />
-            <label for="reception-livraison">Livraison</label>
+                <input type="radio" th:id="${'mode-' + mode}" th:value="${mode}" th:field="*{modeReception}" />
+
+                <label th:for="${'mode-' + mode}"
+                    th:text="${mode == 'Retrait_Boutique' ? 'Retrait' : (mode == 'Livraison_Domicile' ? 'Livraison' : mode)}">
+                </label>
+
+            </div>
 
             <p class="text-danger" th:if="${#fields.hasErrors('modeReception')}" th:errors="*{modeReception}"></p>
 
@@ -160,8 +164,8 @@
         const clientInputPrenom = document.getElementById('client-input-prenom');
         const listeClientsDiv = document.getElementById('liste-clients');
         const clientIdInput = document.getElementById('client-id');
-        const receptionLivraison = document.getElementById('reception-livraison');
-        const receptionRetrait = document.getElementById('reception-retrait');
+        const receptionLivraison = document.getElementById('mode-Livraison_Domicile');
+        const receptionRetrait = document.getElementById('mode-Retrait_Boutique');
         const heureReceptionDebut = document.getElementById('heure-reception-debut');
         const heureReceptionFin = document.getElementById('heure-reception-fin');
 
