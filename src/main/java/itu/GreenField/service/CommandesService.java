@@ -1,10 +1,22 @@
 package itu.GreenField.service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.persistence.Query;
+
+import itu.GreenField.dto.CommandeBackFilterDto;
 import itu.GreenField.dto.CommandeBackFormDto;
 import itu.GreenField.dto.DetailCommandeBackDto;
 import itu.GreenField.model.Client;
@@ -20,6 +32,8 @@ import itu.GreenField.model.DetailsCommande;
 
 @Service
 public class CommandesService {
+    @PersistenceContext
+    private EntityManager em;
     private final ProduitService produitService;
     private final CommandesRepository commandesRepository;
     private final ClientService clientService;
@@ -42,6 +56,11 @@ public class CommandesService {
 
     public Commandes getCommandeById(Integer id) {
         return commandesRepository.findById(id).orElse(null);
+    }
+
+    public Page<Commandes> getCommandesPagine(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return commandesRepository.findAllPaginated(pageable);
     }
 
     @Transactional
@@ -82,7 +101,7 @@ public class CommandesService {
         commande.setAdresseLivraison(commandeFormDto.getAddress());
 
         /* Static pour le moment */
-        if(commandeFormDto.getAddress() == null || modeReception == ModeReception.Retrait_Boutique){
+        if (commandeFormDto.getAddress() == null || modeReception == ModeReception.Retrait_Boutique) {
             PointDeVente pdv = pointDeVenteService.findPointDeVenteById(1);
             commande.setPointDeVenteRetrait(pdv);
             commande.setAdresseLivraison(null);
@@ -90,13 +109,13 @@ public class CommandesService {
 
         /* Static pour le moment */
         commande.setFraisLivraison(BigDecimal.valueOf(5000.0));
-        
+
         int qteTotal = 0;
         BigDecimal prixTotal = BigDecimal.ZERO;
-        
+
         commande.setTotalProduits(qteTotal);
         commande.setTotalGeneral(prixTotal);
-        
+
         commande = commandesRepository.save(commande);
         int nbLines = commandeFormDto.getDetailsCommande().size();
         for (int i = 0; i < nbLines; i++) {
@@ -119,6 +138,87 @@ public class CommandesService {
         commande.setTotalGeneral(prixTotal);
 
         commandesRepository.save(commande);
+    }
+
+    public Page<Commandes> findWithDynamicFilters(CommandeBackFilterDto filter) {
+        int page = filter.getPageNumber();
+        int size = filter.getLineNumber();
+        Pageable pageable = PageRequest.of(page - 1, size);
+        StringBuilder sb = new StringBuilder("SELECT * FROM commandes c WHERE 1 = 1 ");
+        StringBuilder sbCount = new StringBuilder("SELECT count(*) FROM commandes c WHERE 1 = 1 ");
+        Map<String, Object> params = new HashMap<>();
+
+        // 1. Filtre Statut (statutcommande)
+        if (filter.getStatutCommande() != null && !filter.getStatutCommande().isEmpty()) {
+            sb.append("AND c.statutcommande = :statut ");
+            sbCount.append("AND c.statutcommande = :statut ");
+            params.put("statut", filter.getStatutCommande());
+        }
+
+        // 2. Filtre Mode Réception (mode_reception)
+        if (filter.getModeReception() != null && !filter.getModeReception().isEmpty()) {
+            sb.append("AND c.mode_reception = :mode ");
+            sbCount.append("AND c.mode_reception = :mode ");
+            params.put("mode", filter.getModeReception());
+        }
+
+        // 3. Filtre Multi-Clients (idclient)
+        if (filter.getClientId() != null && !filter.getClientId().isEmpty()) {
+            sb.append("AND c.idclient IN (:clients) ");
+            sbCount.append("AND c.idclient IN (:clients) ");
+            params.put("clients", filter.getClientId());
+        }
+
+        // 4. Boucle pour les DATES dynamiques (datecommande, heure_reception_debut,
+        // heure_reception_fin)
+        if (filter.getTypeFiltreDate() != null) {
+            for (int i = 0; i < filter.getTypeFiltreDate().size(); i++) {
+                String colonne = filter.getTypeFiltreDate().get(i);
+                String opSign = filter.getOperateurDate().get(i); // Utilise directement "=", "<", ">=", etc.
+                String paramName = "dateVal_" + i;
+
+                sb.append("AND c.").append(colonne).append(" ").append(opSign).append(" :").append(paramName)
+                        .append(" ");
+                sbCount.append("AND c.").append(colonne).append(" ").append(opSign).append(" :").append(paramName)
+                        .append(" ");
+                params.put(paramName, filter.getDateValue().get(i));
+            }
+        }
+
+        // 5. Boucle pour les NOMBRES dynamiques (total_produits, total_general,
+        // frais_livraison)
+        if (filter.getTypeFiltreNombre() != null) {
+            for (int i = 0; i < filter.getTypeFiltreNombre().size(); i++) {
+                String colonne = filter.getTypeFiltreNombre().get(i);
+                String opSign = filter.getOperateurNombre().get(i); // Utilise directement "=", "<", etc.
+                String paramName = "numVal_" + i;
+
+                sb.append("AND c.").append(colonne).append(" ").append(opSign).append(" :").append(paramName)
+                        .append(" ");
+                sbCount.append("AND c.").append(colonne).append(" ").append(opSign).append(" :").append(paramName)
+                        .append(" ");
+                params.put(paramName, filter.getNombreValue().get(i));
+            }
+        }
+
+        Query query = em.createNativeQuery(sb.toString(), Commandes.class);
+        Query countQuery = em.createNativeQuery(sbCount.toString());
+
+        params.forEach((key, value) -> {
+            query.setParameter(key, value);
+            countQuery.setParameter(key, value);
+        });
+
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+
+        // Calcul du total d'éléments correspondants aux filtres
+        long total = ((Number) countQuery.getSingleResult()).longValue();
+
+        @SuppressWarnings("unchecked")
+        List<Commandes> resultList = query.getResultList();
+
+        return new PageImpl<Commandes>(resultList, pageable, total);
     }
 
 }
