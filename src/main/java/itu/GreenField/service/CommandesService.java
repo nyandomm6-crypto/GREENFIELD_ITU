@@ -169,6 +169,13 @@ public class CommandesService {
             params.put("clients", filter.getClientId());
         }
 
+        // 3.5. Filtre Type Commande (type_commande)
+        if (filter.getTypeCommande() != null && !filter.getTypeCommande().isEmpty()) {
+            sb.append("AND c.type_commande = :type ");
+            sbCount.append("AND c.type_commande = :type ");
+            params.put("type", filter.getTypeCommande());
+        }
+
         // 4. Boucle pour les DATES dynamiques (datecommande, heure_reception_debut,
         // heure_reception_fin)
         if (filter.getTypeFiltreDate() != null) {
