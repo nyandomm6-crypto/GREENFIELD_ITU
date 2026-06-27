@@ -85,7 +85,7 @@
       <div class="message success" th:if="${success}" th:text="${success}"></div>
       <div class="message error" th:if="${error}" th:text="${error}"></div>
 
-      <div th:if="${!panier.estVide()}">
+      <div th:if="${!lignes.isEmpty()}">
         <table class="panier">
           <thead>
             <tr>
@@ -97,9 +97,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr th:each="entree : ${panier.lignes}">
-              <td th:text="${entree.value.nomProduit}"></td>
-              <td th:text="${entree.value.prixUnitaire} + ' Ar'"></td>
+            <tr th:each="ligne : ${lignes}">
+              <td th:text="${ligne.produit.nom}"></td>
+              <td th:text="${ligne.produit.pu} + ' Ar'"></td>
               <td>
                 <form
                   th:action="@{/panier/modifier}"
@@ -109,7 +109,7 @@
                   <input
                     type="hidden"
                     name="idProduit"
-                    th:value="${entree.key}"
+                    th:value="${ligne.produit.id}"
                   />
                   <input
                     class="input-quantite"
@@ -117,15 +117,15 @@
                     name="quantite"
                     min="1"
                     required
-                    th:value="${entree.value.quantite}"
+                    th:value="${ligne.quantite}"
                   />
                   <button type="submit" class="btn secondaire">Modifier</button>
                 </form>
               </td>
-              <td th:text="${entree.value.sousTotal} + ' Ar'"></td>
+              <td th:text="${ligne.sousTotal} + ' Ar'"></td>
               <td>
                 <form
-                  th:action="@{/panier/supprimer/{id}(id=${entree.key})}"
+                  th:action="@{/panier/supprimer/{id}(id=${ligne.produit.id})}"
                   method="post"
                 >
                   <button type="submit" class="btn danger">Supprimer</button>
@@ -138,7 +138,7 @@
         <div class="bloc-total">
           <div class="recap-total">
             <div>Total à payer</div>
-            <div class="montant" th:text="${panier.total} + ' Ar'"></div>
+            <div class="montant" th:text="${total} + ' Ar'"></div>
             <form th:action="@{/commande/recapitulatif}" method="get">
               <button type="submit" class="btn">Valider l'achat</button>
             </form>
@@ -146,7 +146,7 @@
         </div>
       </div>
 
-      <div class="panier-vide" th:if="${panier.estVide()}">
+      <div class="panier-vide" th:if="${lignes.isEmpty()}">
         <p>Votre panier est vide.</p>
         <a class="btn" th:href="@{/produits}">Découvrir les produits</a>
       </div>

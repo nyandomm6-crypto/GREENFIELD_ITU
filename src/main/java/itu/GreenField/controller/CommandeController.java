@@ -1,5 +1,7 @@
 package itu.GreenField.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -9,19 +11,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import itu.GreenField.model.Client;
-import itu.GreenField.panier.Panier;
+import itu.GreenField.model.Panier;
 import itu.GreenField.service.CommandeService;
+import itu.GreenField.service.PanierService;
 
 @Controller
 public class CommandeController {
 
-    private static final String CLE_SESSION_PANIER = "panier";
-    private static final String CLE_SESSION_CLIENT = "client";
-
     private final CommandeService commandeService;
+    private final PanierService panierService;
 
-    public CommandeController(CommandeService commandeService) {
+    public CommandeController(CommandeService commandeService, PanierService panierService) {
         this.commandeService = commandeService;
+        this.panierService = panierService;
     }
 
     /**
@@ -30,18 +32,22 @@ public class CommandeController {
      * ici une fois connecté).
      */
     @GetMapping("/commande/recapitulatif")
-    public String afficherRecapitulatif(HttpSession session, Model model) {
-        Client client = (Client) session.getAttribute(CLE_SESSION_CLIENT);
+    public String afficherRecapitulatif(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session, Model model) {
+
+        Client client = (Client) session.getAttribute(PanierController.CLE_SESSION_CLIENT);
         if (client == null) {
             return "redirect:/login?redirect=/commande/recapitulatif";
         }
 
-        Panier panier = (Panier) session.getAttribute(CLE_SESSION_PANIER);
-        if (panier == null || panier.estVide()) {
+        Panier panier = PanierController.resoudrePanierCourant(request, response, session, panierService);
+        if (panierService.listerLignes(panier).isEmpty()) {
             return "redirect:/panier";
         }
 
         model.addAttribute("panier", panier);
+        model.addAttribute("lignes", panierService.listerLignes(panier));
+        model.addAttribute("total", panierService.calculerTotal(panier));
         model.addAttribute("client", client);
         return "front/commande/recapitulatif";
     }
@@ -51,14 +57,16 @@ public class CommandeController {
      * client en session, l'utilisateur est renvoyé vers la page de login.
      */
     @PostMapping("/commande/valider")
-    public String validerCommande(HttpSession session, RedirectAttributes redirectAttributes) {
-        Client client = (Client) session.getAttribute(CLE_SESSION_CLIENT);
+    public String validerCommande(HttpServletRequest request, HttpServletResponse response,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+
+        Client client = (Client) session.getAttribute(PanierController.CLE_SESSION_CLIENT);
         if (client == null) {
             return "redirect:/login?redirect=/commande/recapitulatif";
         }
 
-        Panier panier = (Panier) session.getAttribute(CLE_SESSION_PANIER);
-        if (panier == null || panier.estVide()) {
+        Panier panier = PanierController.resoudrePanierCourant(request, response, session, panierService);
+        if (panierService.listerLignes(panier).isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Le panier est vide.");
             return "redirect:/panier";
         }

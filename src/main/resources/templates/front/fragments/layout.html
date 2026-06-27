@@ -199,8 +199,8 @@
           🛒 Panier
           <span
             class="badge-panier"
-            th:if="${session.panier != null and session.panier.nombreArticles > 0}"
-            th:text="${session.panier.nombreArticles}"
+            th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
+            th:text="${nombreArticlesPanier}"
           ></span>
         </a>
 
