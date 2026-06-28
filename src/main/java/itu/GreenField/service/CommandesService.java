@@ -63,6 +63,15 @@ public class CommandesService {
         return commandesRepository.findAllPaginated(pageable);
     }
 
+    public void delete(Commandes cmd) throws Exception {
+        //throw new Exception();
+        commandesRepository.delete(cmd);
+    }
+
+    public Commandes findById(Integer id){
+        return commandesRepository.findById(id).orElse(null);
+    }
+
     @Transactional
     public void saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
         Integer clientId = commandeFormDto.getClientId();
