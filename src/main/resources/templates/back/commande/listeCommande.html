@@ -17,6 +17,10 @@
         <h1>Liste des commandes</h1>
         <a th:href="@{/commandes/form/new}">Ajouter nouveau</a>
     </div><br>
+    <div class="section-alert">
+        <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+        <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+    </div>
     <form th:action="@{/commandes/list}" th:object="${commandeFilterDto}" method="POST" id="form">
         <div class="section-filtre">
             <div class="filtre">
@@ -178,9 +182,9 @@
                         <td th:text="${cmd.totalProduits}"></td>
                         <td th:text="${cmd.totalGeneral}"></td>
                         <td>
-                            <a th:href="@{|/commandes/${cmd.id}|}"><button>Detail</button></a>
-                            <a th:href="@{|/commandes/form/edit/${cmd.id}|}"><button>Modifier</button></a>
-                            <a th:href="@{|/commandes/delete/${cmd.id}|}"><button>Supprimer</button></a>
+                            <a th:href="@{|/commandes/${cmd.id}|}">Detail</a>
+                            <a th:href="@{|/commandes/form/edit/${cmd.id}|}">Modifier</a>
+                            <a th:href="@{|/commandes/delete/${cmd.id}|}">Supprimer</a>
                         </td>
                     </tr>
                 </tbody>
