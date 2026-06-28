@@ -22,12 +22,14 @@ import itu.GreenField.filtre.FiltreNombreBackCommandeOption;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/commandes")
@@ -68,6 +70,36 @@ public class CommandeController {
         return mv;
     }
 
+    @GetMapping("/delete/{id}")
+    public ModelAndView deleteCommande(@PathVariable("id") Integer id,
+            @ModelAttribute("commandeFilterDto") CommandeBackFilterDto filter) {
+        // verification du mode passe
+        Commandes cmd = commandeService.findById(id);
+        ModelAndView mv = new ModelAndView("back/commande/listeCommande");
+
+        try {
+            commandeService.delete(cmd);
+            generateListCommandesModel(mv, null, filter);
+            mv.addObject("succes", "La commande #" + id + " a été supprimée avec succès.");
+            return mv;
+        } catch (Exception e) {
+            generateListCommandesModel(mv, null, filter);
+            mv.addObject("alert", "Une erreur est suvenue lors de la suppression de la commande #" + id);
+            return mv;
+        }
+    }
+
+    @GetMapping("/detail/{id}")
+    public ModelAndView detailCommande(@PathVariable("id") Integer id,
+            @ModelAttribute("commandeFilterDto") CommandeBackFilterDto filter) {
+        ModelAndView mv = new ModelAndView("back/commande/detailCommande");
+
+        mv.addObject("commande", commandeService.findById(id));
+
+        // verification du mode passe
+        return mv;
+    }
+
     @PostMapping("/save")
     public String save(
             @Valid @ModelAttribute("commandeBackFormDto") CommandeBackFormDto form,
@@ -98,7 +130,7 @@ public class CommandeController {
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("globalError", "Erreur lors de la sauvegarde : " + e.getMessage());
-            return "boutique/formulaire-commande";
+            return "back/commande/commandeCreate";
         }
         return "redirect:/commandes/list";
     }
@@ -107,25 +139,7 @@ public class CommandeController {
     public ModelAndView listCommandes() {
         ModelAndView mv = new ModelAndView("back/commande/listeCommande");
         CommandeBackFilterDto filter = new CommandeBackFilterDto();
-        int size = filter.getLineNumber() != null ? filter.getLineNumber() : 10;
-        int page = filter.getPageNumber() != null ? filter.getPageNumber() : 1;
-
-        Page<Commandes> commandePage = commandeService.getCommandesPagine(page - 1, size);
-
-        mv.addObject("commandes", commandePage.getContent());
-        /* mv.addObject("currentPage", page);
-        mv.addObject("pageSize", size); */
-        mv.addObject("totalPages", commandePage.getTotalPages());
-        mv.addObject("hasPrevious", commandePage.hasPrevious());
-        mv.addObject("hasNext", commandePage.hasNext());
-
-        mv.addObject("commandeFilterDto", filter);
-        mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
-        mv.addObject("typeCommandeOptions", TypeCommande.getAllTypeCommande());
-        mv.addObject("calculOptions", CalculOption.values());
-        mv.addObject("filtreDateOptions", FiltreDateBackCommandeOption.values());
-        mv.addObject("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
-        mv.addObject("statutCommandeOption", StatutCommande.getAllStatutCommande());
+        generateListCommandesModel(mv, null, filter);
         return mv;
     }
 
@@ -135,22 +149,42 @@ public class CommandeController {
 
         ModelAndView mv = new ModelAndView("back/commande/listeCommande");
 
-        Page<Commandes> commandePage = commandeService.findWithDynamicFilters(filter);
-
-        mv.addObject("commandes", commandePage.getContent());
-        mv.addObject("totalPages", commandePage.getTotalPages());
-        mv.addObject("hasPrevious", commandePage.hasPrevious());
-        mv.addObject("hasNext", commandePage.hasNext());
-
-        mv.addObject("commandeFilterDto", filter);
-
-        mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
-        mv.addObject("typeCommandeOptions", TypeCommande.getAllTypeCommande());
-        mv.addObject("calculOptions", CalculOption.values());
-        mv.addObject("filtreDateOptions", FiltreDateBackCommandeOption.values());
-        mv.addObject("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
-        mv.addObject("statutCommandeOption", StatutCommande.getAllStatutCommande());
+        generateListCommandesModel(mv, null, filter);
 
         return mv;
+    }
+
+    private void generateListCommandesModel(ModelAndView mv, Model model, CommandeBackFilterDto filter) {
+        Page<Commandes> commandePage = commandeService.findWithDynamicFilters(filter);
+
+        if (mv != null) {
+            mv.addObject("commandes", commandePage.getContent());
+            mv.addObject("totalPages", commandePage.getTotalPages());
+            mv.addObject("hasPrevious", commandePage.hasPrevious());
+            mv.addObject("hasNext", commandePage.hasNext());
+
+            mv.addObject("commandeFilterDto", filter);
+
+            mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
+            mv.addObject("typeCommandeOptions", TypeCommande.getAllTypeCommande());
+            mv.addObject("calculOptions", CalculOption.values());
+            mv.addObject("filtreDateOptions", FiltreDateBackCommandeOption.values());
+            mv.addObject("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
+            mv.addObject("statutCommandeOption", StatutCommande.getAllStatutCommande());
+        } else if (model != null) {
+            model.addAttribute("commandes", commandePage.getContent());
+            model.addAttribute("totalPages", commandePage.getTotalPages());
+            model.addAttribute("hasPrevious", commandePage.hasPrevious());
+            model.addAttribute("hasNext", commandePage.hasNext());
+
+            model.addAttribute("commandeFilterDto", filter);
+
+            model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
+            model.addAttribute("typeCommandeOptions", TypeCommande.getAllTypeCommande());
+            model.addAttribute("calculOptions", CalculOption.values());
+            model.addAttribute("filtreDateOptions", FiltreDateBackCommandeOption.values());
+            model.addAttribute("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
+            model.addAttribute("statutCommandeOption", StatutCommande.getAllStatutCommande());
+        }
     }
 }
