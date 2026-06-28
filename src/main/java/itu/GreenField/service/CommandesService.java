@@ -73,7 +73,7 @@ public class CommandesService {
     }
 
     @Transactional
-    public void saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
+    public Commandes saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
         Integer clientId = commandeFormDto.getClientId();
         Client client = null;
         if (clientId != null) {
@@ -146,7 +146,7 @@ public class CommandesService {
         commande.setTotalProduits(qteTotal);
         commande.setTotalGeneral(prixTotal);
 
-        commandesRepository.save(commande);
+        return commandesRepository.save(commande);
     }
 
     public Page<Commandes> findWithDynamicFilters(CommandeBackFilterDto filter) {

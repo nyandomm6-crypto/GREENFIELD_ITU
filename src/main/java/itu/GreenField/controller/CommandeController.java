@@ -104,7 +104,8 @@ public class CommandeController {
     public String save(
             @Valid @ModelAttribute("commandeBackFormDto") CommandeBackFormDto form,
             BindingResult bindingResult,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("clients", clientService.getAll());
@@ -126,13 +127,14 @@ public class CommandeController {
         }
 
         try {
-            commandeService.saveBackCommande(form);
+            Commandes cmd = commandeService.saveBackCommande(form);
+            redirectAttributes.addFlashAttribute("succes", "La commande a été sauvegardée avec succès. #" + cmd.getId());
+            return "redirect:/commandes/list";
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("globalError", "Erreur lors de la sauvegarde : " + e.getMessage());
             return "back/commande/commandeCreate";
         }
-        return "redirect:/commandes/list";
     }
 
     @GetMapping({ "/", "", "/list" })
