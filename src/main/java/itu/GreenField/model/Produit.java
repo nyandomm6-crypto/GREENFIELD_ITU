@@ -30,6 +30,9 @@ public class Produit {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal pu;
 
+    @Column(name="poids_moyenne_unitaire", nullable = false, precision = 10, scale = 2)
+    private BigDecimal poids;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idcategorie")
     private CategorieProduit categorie;
@@ -81,6 +84,14 @@ public class Produit {
 
     public void setCategorie(CategorieProduit categorie) {
         this.categorie = categorie;
+    }
+
+    public BigDecimal getPoids() {
+        return poids;
+    }
+
+    public void setPoids(BigDecimal poids) {
+        this.poids = poids;
     }
 
     public List<DemandeStockFille> getDemandesStockFille() {
