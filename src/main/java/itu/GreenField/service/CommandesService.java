@@ -136,9 +136,6 @@ public class CommandesService {
             commande.setClient(client);
             commande.setDatecommande(commandeFormDto.getSqlTypeOfDate());
             commande.setTypeCommande(typeCommande);
-
-            ProvinceLivraison provinceLivraison = provinceLivraisonService.getProvinceById(commandeFormDto.getProvinceId());
-            commande.setProvinceLivraison(provinceLivraison);
             
             StatutCommande statusCommande = statutCommandeService.findByNom("Créée");
             if (statusCommande == null)
@@ -158,6 +155,9 @@ public class CommandesService {
             PointDeVente pdv = pointDeVenteService.findPointDeVenteById(1);
             commande.setPointDeVenteRetrait(pdv);
             commande.setAdresseLivraison(null);
+        } else {
+            ProvinceLivraison provinceLivraison = provinceLivraisonService.getProvinceById(commandeFormDto.getProvinceId());
+            commande.setProvinceLivraison(provinceLivraison);
         }
 
         int qteTotal = 0;
@@ -191,8 +191,11 @@ public class CommandesService {
         commande.setTotalGeneral(prixTotal);
         commande.setPoidsTotal(poidsTotal);
 
-        FraisLivraison fraisLivraison = fraisLivraisonService.calculateFraisLivraison(commande.getProvinceLivraison().getId(), poidsTotal.doubleValue());
-        commande.setFraisLivraison(fraisLivraison.getMontant());
+        commande.setFraisLivraison(BigDecimal.ZERO);
+        if (modeReception == ModeReception.Livraison_Domicile) {
+            FraisLivraison fraisLivraison = fraisLivraisonService.calculateFraisLivraison(commande.getProvinceLivraison().getId(), poidsTotal.doubleValue());
+            commande.setFraisLivraison(fraisLivraison.getMontant());   
+        }
 
         commande = commandesRepository.save(commande);
 
