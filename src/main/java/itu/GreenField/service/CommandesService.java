@@ -143,6 +143,8 @@ public class CommandesService {
             hist = new HistoriqueStatutCommande();
             hist.setStatutCommande(statusCommande);
             hist.setCommande(commande);
+            hist.setDatechangement(commandeFormDto.getSqlTypeOfDate());
+            commande.setStatutActuel(statusCommande);
         }
 
         commande.setModeReception(modeReception);
