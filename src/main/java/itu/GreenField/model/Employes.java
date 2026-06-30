@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+
 @Entity
 @Table(name = "employes")
 public class Employes {
@@ -47,10 +48,10 @@ public class Employes {
     private PointDeVente pointDeVente;
 
     @Column(name = "est_actif")
-    private Boolean estActif;
+    private Boolean estActif = true;
 
     @Column(name = "date")
-    private LocalDate date;
+    private LocalDate date = LocalDate.now();
 
     public LocalDate getDate() {
         return date;
@@ -136,6 +137,10 @@ public class Employes {
     }
 
     public Boolean isEstActif() {
+        return estActif;
+    }
+
+    public Boolean getEstActif() {
         return estActif;
     }
 

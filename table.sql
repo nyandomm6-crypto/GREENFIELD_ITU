@@ -1,4 +1,4 @@
--- Active: 1781870061268@@127.0.0.1@5433@greenfield
+-- Active: 1782827195319@@127.0.0.1@5432@greenfield
 CREATE DATABASE greenfield;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
@@ -299,6 +299,8 @@ CREATE TABLE Notifications (
     dateNotification TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     envoyeur BOOLEAN DEFAULT TRUE
 );
+
+
 
 CREATE TABLE validation_mail (
     id SERIAL PRIMARY KEY,
