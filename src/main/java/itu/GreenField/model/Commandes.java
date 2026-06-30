@@ -45,6 +45,10 @@ public class Commandes {
     @Column(name = "adresse_livraison")
     private String adresseLivraison;
 
+    @OneToOne
+    @JoinColumn(name = "provincelivraisonid")
+    private ProvinceLivraison provinceLivraison;
+
     @Column(name = "heure_reception_debut")
     private java.sql.Timestamp heureReceptionDebut;
 
@@ -53,6 +57,9 @@ public class Commandes {
 
     @Column(name = "frais_livraison", precision = 10, scale = 2)
     private BigDecimal fraisLivraison;
+
+    @Column(name = "poids_total", precision = 10, scale = 2)
+    private BigDecimal poidsTotal;
 
     @Column(name = "total_produits")
     private Integer totalProduits;
@@ -112,6 +119,22 @@ public class Commandes {
 
     public void setTypeCommande(TypeCommande typeCommande) {
         this.typeCommande = typeCommande;
+    }
+
+    public ProvinceLivraison getProvinceLivraison() {
+        return provinceLivraison;
+    }
+
+    public BigDecimal getPoidsTotal() {
+        return poidsTotal;
+    }
+
+    public void setPoidsTotal(BigDecimal poidsTotal) {
+        this.poidsTotal = poidsTotal;
+    }
+
+    public void setProvinceLivraison(ProvinceLivraison provinceLivraison) {
+        this.provinceLivraison = provinceLivraison;
     }
 
     public ModeReception getModeReception() {
