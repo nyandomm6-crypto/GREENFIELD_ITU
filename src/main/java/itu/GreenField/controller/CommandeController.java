@@ -8,11 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 
 import itu.GreenField.model.ModeReception;
-import itu.GreenField.model.StatutCommande;
 import itu.GreenField.model.TypeCommande;
 import itu.GreenField.model.Commandes;
 import itu.GreenField.service.CommandesService;
 import itu.GreenField.service.ClientService;
+import itu.GreenField.service.ProvinceLivraisonService;
 import itu.GreenField.dto.CommandeBackFormDto;
 import itu.GreenField.dto.CommandeBackFilterDto;
 import itu.GreenField.dto.DetailCommandeBackDto;
@@ -38,13 +38,16 @@ public class CommandeController {
     private final CommandesService commandeService;
     private final ClientService clientService;
     private final StatutCommandeService statutCommandeService;
+    private final ProvinceLivraisonService provinceLivraisonService;
 
     public CommandeController(CommandesService commandeService, ClientService clientService,
-            ProduitService produitService, StatutCommandeService statutCommandeService) {
+            ProduitService produitService, StatutCommandeService statutCommandeService,
+            ProvinceLivraisonService provinceLivraisonService) {
         this.commandeService = commandeService;
         this.clientService = clientService;
         this.produitService = produitService;
         this.statutCommandeService = statutCommandeService;
+        this.provinceLivraisonService = provinceLivraisonService;
     }
 
     @GetMapping("/form/new")
@@ -58,6 +61,7 @@ public class CommandeController {
         mv.addObject("commandeBackFormDto", dto);
         mv.addObject("produits", produitService.getAllProduits());
         mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
+        mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
         return mv;
     }
 
@@ -68,12 +72,13 @@ public class CommandeController {
 
         try {
             commandeService.checkIfUpdatable(cmd);
-            
+
             CommandeBackFormDto dto = new CommandeBackFormDto(cmd);
-    
+
             mv.addObject("commandeBackFormDto", dto);
             mv.addObject("produits", produitService.getAllProduits());
             mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
+            mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
         } catch (Exception e) {
             mv.addObject("alert", "La commande #" + id + " ne peut pas être modifiée. " + e.getMessage());
             mv.setViewName("back/commande/detailCommande");
@@ -120,28 +125,29 @@ public class CommandeController {
             Model model,
             RedirectAttributes redirectAttributes) {
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("clients", clientService.getAll());
-            model.addAttribute("produits", produitService.getAllProduits());
-            return "back/commande/commandeCreate";
-        }
-
         if ("Livraison_Domicile".equalsIgnoreCase(form.getModeReception())) {
             if (form.getAddress() == null || form.getAddress().trim().isEmpty()) {
                 bindingResult.rejectValue("address", "error.address",
                         "L'adresse est obligatoire pour une livraison à domicile.");
+            }
+            if (form.getProvinceId() == null) {
+                bindingResult.rejectValue("provinceId", "error.provinceId",
+                        "La province de livraison est obligatoire pour une livraison à domicile.");
             }
         }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("clients", clientService.getAll());
             model.addAttribute("produits", produitService.getAllProduits());
+            model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
+            model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
             return "back/commande/commandeCreate";
         }
 
         try {
             Commandes cmd = commandeService.saveBackCommande(form);
-            redirectAttributes.addFlashAttribute("succes", "La commande a été sauvegardée avec succès. #" + cmd.getId());
+            redirectAttributes.addFlashAttribute("succes",
+                    "La commande a été sauvegardée avec succès. #" + cmd.getId());
             return "redirect:/commandes/list";
         } catch (Exception e) {
             e.printStackTrace();
@@ -186,7 +192,8 @@ public class CommandeController {
             mv.addObject("filtreDateOptions", FiltreDateBackCommandeOption.values());
             mv.addObject("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
             mv.addObject("statutCommandeOptions", statutCommandeService.getAll());
-        } 
+            mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
+        }
     }
 
     private void generateListCommandesModel(Model model, CommandeBackFilterDto filter) {
@@ -206,6 +213,7 @@ public class CommandeController {
             model.addAttribute("filtreDateOptions", FiltreDateBackCommandeOption.values());
             model.addAttribute("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
             model.addAttribute("statutCommandeOptions", statutCommandeService.getAll());
+            model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
         }
     }
 }
