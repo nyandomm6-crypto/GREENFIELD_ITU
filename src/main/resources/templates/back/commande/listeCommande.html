@@ -50,7 +50,7 @@
                 <select id="statut-commande">
                     <option value="">Tous</option>
                     <option th:each="statut : ${statutCommandeOptions}" th:value="${statut.id}"
-                        th:text="${statut}"></option>
+                        th:text="${statut.nom}"></option>
                 </select>
             </div>
             <div class="filtre">
