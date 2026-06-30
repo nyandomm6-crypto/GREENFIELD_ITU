@@ -1,7 +1,7 @@
-package itu.GreenField.service;
+package itu.greenfield.service;
 
-import itu.GreenField.repository.PointDeVenteRepository;
-import itu.GreenField.model.PointDeVente;
+import itu.greenfield.repository.PointDeVenteRepository;
+import itu.greenfield.model.PointDeVente;
 
 import org.springframework.stereotype.Service;
 

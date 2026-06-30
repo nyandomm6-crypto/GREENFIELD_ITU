@@ -1,4 +1,4 @@
-package itu.GreenField.controller;
+package itu.greenfield.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import itu.GreenField.service.ClientService;
+import itu.greenfield.service.ClientService;
 
 @Controller
 @RequestMapping("/clients")

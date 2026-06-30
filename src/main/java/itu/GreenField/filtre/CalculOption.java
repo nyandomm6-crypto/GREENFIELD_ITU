@@ -1,4 +1,4 @@
-package itu.GreenField.filtre;
+package itu.greenfield.filtre;
 
 public enum CalculOption {
     EGALE("=", "Egale"),

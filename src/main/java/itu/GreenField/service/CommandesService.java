@@ -1,4 +1,4 @@
-package itu.GreenField.service;
+package itu.greenfield.service;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -16,19 +16,19 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.persistence.Query;
 
-import itu.GreenField.dto.CommandeBackFilterDto;
-import itu.GreenField.dto.CommandeBackFormDto;
-import itu.GreenField.dto.DetailCommandeBackDto;
-import itu.GreenField.model.Client;
-import itu.GreenField.model.Commandes;
-import itu.GreenField.model.ModeReception;
-import itu.GreenField.model.PointDeVente;
-import itu.GreenField.model.Produit;
-import itu.GreenField.repository.CommandesRepository;
-import itu.GreenField.repository.DetailsCommandeRepository;
-import itu.GreenField.model.StatutCommande;
-import itu.GreenField.model.TypeCommande;
-import itu.GreenField.model.DetailsCommande;
+import itu.greenfield.dto.CommandeBackFilterDto;
+import itu.greenfield.dto.CommandeBackFormDto;
+import itu.greenfield.dto.DetailCommandeBackDto;
+import itu.greenfield.model.Client;
+import itu.greenfield.model.Commandes;
+import itu.greenfield.model.ModeReception;
+import itu.greenfield.model.PointDeVente;
+import itu.greenfield.model.Produit;
+import itu.greenfield.repository.CommandesRepository;
+import itu.greenfield.repository.DetailsCommandeRepository;
+import itu.greenfield.model.StatutCommande;
+import itu.greenfield.model.TypeCommande;
+import itu.greenfield.model.DetailsCommande;
 
 @Service
 public class CommandesService {

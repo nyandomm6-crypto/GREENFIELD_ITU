@@ -1,10 +1,10 @@
-package itu.GreenField.dto;
+package itu.greenfield.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
-import itu.GreenField.model.Commandes;
-import itu.GreenField.model.DetailsCommande;
+import itu.greenfield.model.Commandes;
+import itu.greenfield.model.DetailsCommande;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 

@@ -1,23 +1,23 @@
-package itu.GreenField.controller;
+package itu.greenfield.controller;
 
-import itu.GreenField.service.ProduitService;
+import itu.greenfield.service.ProduitService;
 import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 
-import itu.GreenField.model.ModeReception;
-import itu.GreenField.model.StatutCommande;
-import itu.GreenField.model.TypeCommande;
-import itu.GreenField.model.Commandes;
-import itu.GreenField.service.CommandesService;
-import itu.GreenField.service.ClientService;
-import itu.GreenField.dto.CommandeBackFormDto;
-import itu.GreenField.dto.CommandeBackFilterDto;
-import itu.GreenField.dto.DetailCommandeBackDto;
-import itu.GreenField.filtre.CalculOption;
-import itu.GreenField.filtre.FiltreDateBackCommandeOption;
-import itu.GreenField.filtre.FiltreNombreBackCommandeOption;
+import itu.greenfield.model.ModeReception;
+import itu.greenfield.model.StatutCommande;
+import itu.greenfield.model.TypeCommande;
+import itu.greenfield.model.Commandes;
+import itu.greenfield.service.CommandesService;
+import itu.greenfield.service.ClientService;
+import itu.greenfield.dto.CommandeBackFormDto;
+import itu.greenfield.dto.CommandeBackFilterDto;
+import itu.greenfield.dto.DetailCommandeBackDto;
+import itu.greenfield.filtre.CalculOption;
+import itu.greenfield.filtre.FiltreDateBackCommandeOption;
+import itu.greenfield.filtre.FiltreNombreBackCommandeOption;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;

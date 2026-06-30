@@ -1,4 +1,4 @@
-package itu.GreenField.dto;
+package itu.greenfield.dto;
 
 import jakarta.validation.constraints.*;
 

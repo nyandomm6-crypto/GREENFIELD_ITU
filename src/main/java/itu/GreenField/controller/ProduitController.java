@@ -1,8 +1,8 @@
-package itu.GreenField.controller;
+package itu.greenfield.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import itu.GreenField.service.ProduitService;
+import itu.greenfield.service.ProduitService;
 
 @Controller
 @RequestMapping("/produits")
