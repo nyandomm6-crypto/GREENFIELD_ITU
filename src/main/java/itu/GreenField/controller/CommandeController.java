@@ -103,6 +103,7 @@ public class CommandeController {
         } catch (Exception e) {
             generateListCommandesModel(mv, filter);
             mv.addObject("alert", "Une erreur est suvenue lors de la suppression de la commande #" + id);
+            e.printStackTrace();
             return mv;
         }
     }
@@ -177,6 +178,8 @@ public class CommandeController {
 
         return mv;
     }
+
+    @Get
 
     private void generateListCommandesModel(ModelAndView mv, CommandeBackFilterDto filter) {
         Page<Commandes> commandePage = commandeService.findWithDynamicFilters(filter);
