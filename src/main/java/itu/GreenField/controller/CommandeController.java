@@ -151,6 +151,9 @@ public class CommandeController {
             return "redirect:/commandes/list";
         } catch (Exception e) {
             e.printStackTrace();
+            model.addAttribute("produits", produitService.getAllProduits());
+            model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
+            model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
             model.addAttribute("globalError", "Erreur lors de la sauvegarde : " + e.getMessage());
             return "back/commande/commandeCreate";
         }
