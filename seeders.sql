@@ -33,3 +33,6 @@ INSERT INTO pointdevente (nom, code, adresse, contact) VALUES
 ('Kiosque Sud', 'BTQ-002', 'Avenue du Sud, Antananarivo', '034 12 345 69'),
 ('Kiosque Est', 'BTQ-003', 'Avenue Est, Antananarivo', '034 12 345 70'),
 ('Kiosque Ouest', 'BTQ-004', 'Avenue Ouest, Antananarivo', '034 12 345 71');
+
+INSERT INTO statutcommande (nom) VALUES
+('Crée'), ('Payée'), ('Livrée'), ('Anulée');
