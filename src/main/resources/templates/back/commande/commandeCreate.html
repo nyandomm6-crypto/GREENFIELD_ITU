@@ -69,6 +69,14 @@
             <p class="text-danger" th:if="${#fields.hasErrors('modeReception')}" th:errors="*{modeReception}"></p>
 
             <div id="bloc-adresse" class="d-none" style="margin-top: 10px;">
+                <label for="province">Province de livraison :</label>
+                <select id="province" th:field="*{provinceId}" th:classappend="${#fields.hasErrors('provinceId')} ? 'is-invalid' : ''">
+                    <option value="">Sélectionnez une province</option>
+                    <option th:each="province : ${provinceLivraisonOptions}" th:value="${province.id}" th:text="${province.nom}">
+                    </option>
+                </select>
+                <p class="text-danger" th:if="${#fields.hasErrors('provinceId')}" th:errors="*{provinceId}"></p>
+
                 <label for="address">Adresse de livraison :</label>
                 <input type="text" id="address" th:field="*{address}" placeholder="Tapez l'adresse de livraison"
                     th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''" />
