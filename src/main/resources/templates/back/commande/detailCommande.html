@@ -44,27 +44,35 @@
             <thead>
                 <tr>
                     <th>Libelle</th>
-                    <th>Pu</th>
+                    <th>Poids unitaire</th>
+                    <th>Prix unitaire</th>
                     <th>Quantité</th>
+                    <th>Poids total</th>
                     <th>Prix total</th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:each="detail : ${commande.details}">
                     <td th:text="${detail.produit.nom}"></td>
+                    <td th:text="${detail.produit.poids}"></td>
                     <td th:text="${detail.puAuMomentAchat}"></td>
                     <td th:text="${detail.quantite}"></td>
+                    <td th:text="${detail.quantite * detail.produit.poids}"></td>
                     <td th:text="${detail.quantite * detail.puAuMomentAchat}"></td>
                 </tr>
                 <tr>
                     <td>Frais de livraison</td>
+                    <td></td>
                     <td th:text="${commande.fraisLivraison} "></td>
                     <td>1</td>
+                    <td></td>
                     <td th:text="${commande.fraisLivraison} "></td>
                 </tr>
                 <tr>
                     <th></th>
+                    <th></th>
                     <th>Total</th>
+                    <th th:text="${commande.poidsTotal}"></th>
                     <th th:text="${commande.totalProduits + 1}"></th>
                     <th th:text="${commande.totalGeneral + commande.fraisLivraison}"></th>
                 </tr>
