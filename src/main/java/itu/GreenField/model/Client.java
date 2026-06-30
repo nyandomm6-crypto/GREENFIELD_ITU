@@ -23,10 +23,10 @@ public class Client {
 
     private String contact;
 
-    @Column(nullable = false, unique = true, length = 150)
+    @Column(unique = true, length = 150)
     private String mail;
 
-    @Column(nullable = false, length = 255)
+    @Column(length = 255)
     private String motdepasse;
 
     @Column(name = "estverifier")
@@ -34,6 +34,15 @@ public class Client {
 
     @Column(name = "date")
     private LocalDate date;
+
+    public Client(Integer id, String nom, String prenom) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+    }
+
+    public Client() {
+    }
 
     public LocalDate getDate() {
         return date;

@@ -59,8 +59,19 @@ public class AuthClientController {
 
     @PostMapping("/login")
     public String traiterLogin(@RequestParam String email,
-            @RequestParam String motDePasse) {
-        return "front/auth/dashboard";
+            @RequestParam String motDePasse,
+            RedirectAttributes redirectAttributes) {
+        Client cli = clientRepository.findByMail(email);
+        if (cli == null) {
+            redirectAttributes.addFlashAttribute("error", "compte tsy misy");
+            return "redirect:/login";
+        }
+        if (cli.getMotdepasse().equals(motDePasse)) {
+            return "redirect:/dashboard";
+        } else {
+            redirectAttributes.addFlashAttribute("error", "mot de passe diso");
+            return "redirect:/login";
+        }
     }
 
     @PostMapping("/signup")

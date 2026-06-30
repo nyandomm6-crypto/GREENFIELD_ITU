@@ -1,7 +1,6 @@
 package itu.greenfield.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -29,11 +28,15 @@ public class Commandes {
     @JoinColumn(name = "idclient")
     private Client client;
 
-    private LocalDateTime datecommande;
+    private java.sql.Timestamp datecommande;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "mode_reception", nullable = false)
     private ModeReception modeReception;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type_commande")
+    private TypeCommande typeCommande;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idptdevente_retrait", referencedColumnName = "code")
@@ -42,8 +45,11 @@ public class Commandes {
     @Column(name = "adresse_livraison")
     private String adresseLivraison;
 
-    @Column(name = "plage_horaire_souhaitee", length = 100)
-    private String plageHoraireSouhaitee;
+    @Column(name = "heure_reception_debut")
+    private java.sql.Timestamp heureReceptionDebut;
+
+    @Column(name = "heure_reception_fin")
+    private java.sql.Timestamp heureReceptionFin;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "statutcommande", nullable = false)
@@ -52,8 +58,8 @@ public class Commandes {
     @Column(name = "frais_livraison", precision = 10, scale = 2)
     private BigDecimal fraisLivraison;
 
-    @Column(name = "total_produits", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalProduits;
+    @Column(name = "total_produits")
+    private Integer totalProduits;
 
     @Column(name = "total_general", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalGeneral;
@@ -69,6 +75,9 @@ public class Commandes {
 
     @OneToMany(mappedBy = "commande")
     private List<Tresorerie> tresoreries;
+
+    @OneToMany(mappedBy = "commande")
+    private List<DetailsCommande> detailsCommande;
 
     public Integer getId() {
         return id;
@@ -86,12 +95,20 @@ public class Commandes {
         this.client = client;
     }
 
-    public LocalDateTime getDatecommande() {
+    public java.sql.Timestamp getDatecommande() {
         return datecommande;
     }
 
-    public void setDatecommande(LocalDateTime datecommande) {
+    public void setDatecommande(java.sql.Timestamp datecommande) {
         this.datecommande = datecommande;
+    }
+
+    public TypeCommande getTypeCommande() {
+        return typeCommande;
+    }
+
+    public void setTypeCommande(TypeCommande typeCommande) {
+        this.typeCommande = typeCommande;
     }
 
     public ModeReception getModeReception() {
@@ -106,6 +123,14 @@ public class Commandes {
         return pointDeVenteRetrait;
     }
 
+    public List<DetailsCommande> getDetailsCommande() {
+        return detailsCommande;
+    }
+
+    public void setDetailsCommande(List<DetailsCommande> detailsCommande) {
+        this.detailsCommande = detailsCommande;
+    }
+
     public void setPointDeVenteRetrait(PointDeVente pointDeVenteRetrait) {
         this.pointDeVenteRetrait = pointDeVenteRetrait;
     }
@@ -118,12 +143,20 @@ public class Commandes {
         this.adresseLivraison = adresseLivraison;
     }
 
-    public String getPlageHoraireSouhaitee() {
-        return plageHoraireSouhaitee;
+    public java.sql.Timestamp getHeureReceptionDebut() {
+        return heureReceptionDebut;
     }
 
-    public void setPlageHoraireSouhaitee(String plageHoraireSouhaitee) {
-        this.plageHoraireSouhaitee = plageHoraireSouhaitee;
+    public void setHeureReceptionDebut(java.sql.Timestamp heureReceptionDebut) {
+        this.heureReceptionDebut = heureReceptionDebut;
+    }
+
+    public java.sql.Timestamp getHeureReceptionFin() {
+        return heureReceptionFin;
+    }
+
+    public void setHeureReceptionFin(java.sql.Timestamp heureReceptionFin) {
+        this.heureReceptionFin = heureReceptionFin;
     }
 
     public StatutCommande getStatutCommande() {
@@ -142,11 +175,11 @@ public class Commandes {
         this.fraisLivraison = fraisLivraison;
     }
 
-    public BigDecimal getTotalProduits() {
+    public Integer getTotalProduits() {
         return totalProduits;
     }
 
-    public void setTotalProduits(BigDecimal totalProduits) {
+    public void setTotalProduits(Integer totalProduits) {
         this.totalProduits = totalProduits;
     }
 
