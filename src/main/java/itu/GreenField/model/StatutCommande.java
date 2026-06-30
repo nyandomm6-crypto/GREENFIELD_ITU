@@ -1,15 +1,30 @@
 package itu.GreenField.model;
 
-import java.util.List;
+import jakarta.persistence.*;
 
-public enum StatutCommande {
-    Cree,
-    En_cours,
-    Paye,
-    Annule;
+@Entity
+@Table(name = "statutcommande")
+public class StatutCommande {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
+    private String nom;
 
-    public static List<String> getAllStatutCommande() {
-        return List.of(Cree.name(), En_cours.name(), Paye.name(), Annule.name());
+    public Integer getId() {
+        return id;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
 }
