@@ -36,6 +36,7 @@ public class CommandeBackFormDto {
     private LocalDateTime heureReceptionFin;
 
     private String address;
+    private Integer provinceId;
 
     @NotEmpty(message = "La commande doit contenir au moins un produit.")
     @Valid
@@ -56,6 +57,9 @@ public class CommandeBackFormDto {
         }
         if (cmd.getAdresseLivraison() != null) {
             address = cmd.getAdresseLivraison();
+        }
+        if (cmd.getProvinceLivraison() != null) {
+            provinceId = cmd.getProvinceLivraison().getId();
         }
         for (DetailsCommande detail : cmd.getDetailsCommande()) {
             DetailCommandeBackDto dto = new DetailCommandeBackDto();
@@ -167,6 +171,14 @@ public class CommandeBackFormDto {
 
     public void setCommandeId(Integer commandeId) {
         this.commandeId = commandeId;
+    }
+
+    public Integer getProvinceId() {
+        return provinceId;
+    }
+
+    public void setProvinceId(Integer provinceId) {
+        this.provinceId = provinceId;
     }
 
 }
