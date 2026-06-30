@@ -1,6 +1,5 @@
 package itu.GreenField.service;
 
-import itu.GreenField.repository.StatutCommandeRepository;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -20,17 +19,21 @@ import jakarta.persistence.Query;
 import itu.GreenField.dto.CommandeBackFilterDto;
 import itu.GreenField.dto.CommandeBackFormDto;
 import itu.GreenField.dto.DetailCommandeBackDto;
+
 import itu.GreenField.model.Client;
 import itu.GreenField.model.Commandes;
 import itu.GreenField.model.ModeReception;
 import itu.GreenField.model.PointDeVente;
 import itu.GreenField.model.Produit;
-import itu.GreenField.repository.CommandesRepository;
-import itu.GreenField.repository.DetailsCommandeRepository;
 import itu.GreenField.model.StatutCommande;
 import itu.GreenField.model.TypeCommande;
 import itu.GreenField.model.DetailsCommande;
 import itu.GreenField.model.HistoriqueStatutCommande;
+import itu.GreenField.model.ProvinceLivraison;
+import itu.GreenField.model.FraisLivraison;
+
+import itu.GreenField.repository.CommandesRepository;
+import itu.GreenField.repository.DetailsCommandeRepository;
 
 @Service
 public class CommandesService {
@@ -43,12 +46,16 @@ public class CommandesService {
     private final DetailsCommandeRepository detailsCommandeRepository;
     private final StatutCommandeService statutCommandeService;
     private final HistoriqueStatutCommandeService historiqueStatutCommandeService;
+    private final ProvinceLivraisonService provinceLivraisonService;
+    private final FraisLivraisonService fraisLivraisonService;
 
     public CommandesService(ProduitService produitService, CommandesRepository commandesRepository,
             ClientService clientService, PointDeVenteService pointDeVenteService,
             DetailsCommandeRepository detailsCommandeRepository,
             StatutCommandeService statutCommandeService,
-            HistoriqueStatutCommandeService historiqueStatutCommandeService
+            HistoriqueStatutCommandeService historiqueStatutCommandeService,
+            ProvinceLivraisonService provinceLivraisonService,
+            FraisLivraisonService fraisLivraisonService
         ) {
         this.produitService = produitService;
         this.commandesRepository = commandesRepository;
@@ -57,6 +64,8 @@ public class CommandesService {
         this.detailsCommandeRepository = detailsCommandeRepository;
         this.statutCommandeService = statutCommandeService;
         this.historiqueStatutCommandeService = historiqueStatutCommandeService;
+        this.provinceLivraisonService = provinceLivraisonService;
+        this.fraisLivraisonService = fraisLivraisonService;
     }
 
     public List<Commandes> getCommandesDispo() {
@@ -127,6 +136,9 @@ public class CommandesService {
             commande.setClient(client);
             commande.setDatecommande(commandeFormDto.getSqlTypeOfDate());
             commande.setTypeCommande(typeCommande);
+
+            ProvinceLivraison provinceLivraison = provinceLivraisonService.getProvinceById(commandeFormDto.getProvinceId());
+            commande.setProvinceLivraison(provinceLivraison);
             
             StatutCommande statusCommande = statutCommandeService.findByNom("Créée");
             if (statusCommande == null)
@@ -148,14 +160,13 @@ public class CommandesService {
             commande.setAdresseLivraison(null);
         }
 
-        /* Static pour le moment */
-        commande.setFraisLivraison(BigDecimal.valueOf(5000.0));
-
         int qteTotal = 0;
         BigDecimal prixTotal = BigDecimal.ZERO;
+        BigDecimal poidsTotal = BigDecimal.ZERO;
 
         commande.setTotalProduits(qteTotal);
         commande.setTotalGeneral(prixTotal);
+        commande.setPoidsTotal(poidsTotal);
 
         commande = commandesRepository.save(commande);
         int nbLines = commandeFormDto.getDetailsCommande().size();
@@ -173,10 +184,15 @@ public class CommandesService {
 
             qteTotal += quantite;
             prixTotal = prixTotal.add((BigDecimal.valueOf(quantite)).multiply(produit.getPu()));
+            poidsTotal = poidsTotal.add((BigDecimal.valueOf(quantite)).multiply(produit.getPoids()));
         }
 
         commande.setTotalProduits(qteTotal);
         commande.setTotalGeneral(prixTotal);
+        commande.setPoidsTotal(poidsTotal);
+
+        FraisLivraison fraisLivraison = fraisLivraisonService.calculateFraisLivraison(commande.getProvinceLivraison().getId(), poidsTotal.doubleValue());
+        commande.setFraisLivraison(fraisLivraison.getMontant());
 
         commande = commandesRepository.save(commande);
 
