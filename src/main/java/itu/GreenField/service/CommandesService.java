@@ -1,5 +1,6 @@
 package itu.GreenField.service;
 
+import itu.GreenField.repository.StatutCommandeRepository;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ import itu.GreenField.repository.DetailsCommandeRepository;
 import itu.GreenField.model.StatutCommande;
 import itu.GreenField.model.TypeCommande;
 import itu.GreenField.model.DetailsCommande;
+import itu.GreenField.model.HistoriqueStatutCommande;
 
 @Service
 public class CommandesService {
@@ -39,15 +41,22 @@ public class CommandesService {
     private final ClientService clientService;
     private final PointDeVenteService pointDeVenteService;
     private final DetailsCommandeRepository detailsCommandeRepository;
+    private final StatutCommandeService statutCommandeService;
+    private final HistoriqueStatutCommandeService historiqueStatutCommandeService;
 
     public CommandesService(ProduitService produitService, CommandesRepository commandesRepository,
             ClientService clientService, PointDeVenteService pointDeVenteService,
-            DetailsCommandeRepository detailsCommandeRepository) {
+            DetailsCommandeRepository detailsCommandeRepository,
+            StatutCommandeService statutCommandeService,
+            HistoriqueStatutCommandeService historiqueStatutCommandeService
+        ) {
         this.produitService = produitService;
         this.commandesRepository = commandesRepository;
         this.clientService = clientService;
         this.pointDeVenteService = pointDeVenteService;
         this.detailsCommandeRepository = detailsCommandeRepository;
+        this.statutCommandeService = statutCommandeService;
+        this.historiqueStatutCommandeService = historiqueStatutCommandeService;
     }
 
     public List<Commandes> getCommandesDispo() {
@@ -72,6 +81,16 @@ public class CommandesService {
         return commandesRepository.findById(id).orElse(null);
     }
 
+    public void checkIfUpdatable(Commandes cmd) throws Exception{
+        StatutCommande currentStatut = cmd.getStatutActuel();
+            if(currentStatut.getNom().equals("Livrée")){
+                throw new Exception("Une commande livrée ne peut plus être modifiée!");
+            }
+            if(currentStatut.getNom().equals("Anulée")){
+                throw new Exception("Une commande anulée ne peut plus être modifiée!");
+            }
+    }
+
     @Transactional
     public Commandes saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
         Integer clientId = commandeFormDto.getClientId();
@@ -86,22 +105,35 @@ public class CommandesService {
         }
 
         ModeReception modeReception = ModeReception.fromString(commandeFormDto.getModeReception());
-        StatutCommande statusCommande = StatutCommande.En_cours;
         TypeCommande typeCommande = TypeCommande.En_boutique;
-
+        
         Commandes commande = null;
+        HistoriqueStatutCommande hist = null;
         if (commandeFormDto.getCommandeId() != null) {
             commande = commandesRepository.findById(commandeFormDto.getCommandeId()).orElse(null);
             if (commande == null) {
                 throw new Exception("Commande introuvable avec l'ID: " + commandeFormDto.getCommandeId());
+            }
+            StatutCommande currentStatut = commande.getStatutActuel();
+            if(currentStatut.getNom().equals("Livrée")){
+                throw new Exception("Une commande livrée ne peut plus être modifiée!");
+            }
+            if(currentStatut.getNom().equals("Anulée")){
+                throw new Exception("Une commande anulée ne peut plus être modifiée!");
             }
             detailsCommandeRepository.deleteAll(commande.getDetailsCommande());
         } else {
             commande = new Commandes();
             commande.setClient(client);
             commande.setDatecommande(commandeFormDto.getSqlTypeOfDate());
-            commande.setStatutCommande(statusCommande);
             commande.setTypeCommande(typeCommande);
+            
+            StatutCommande statusCommande = statutCommandeService.findByNom("Créée");
+            if (statusCommande == null)
+                throw new Exception("Statut commande \"Créée\" n'existe pas");
+            hist = new HistoriqueStatutCommande();
+            hist.setStatutCommande(statusCommande);
+            hist.setCommande(commande);
         }
 
         commande.setModeReception(modeReception);
@@ -146,7 +178,12 @@ public class CommandesService {
         commande.setTotalProduits(qteTotal);
         commande.setTotalGeneral(prixTotal);
 
-        return commandesRepository.save(commande);
+        commande = commandesRepository.save(commande);
+
+        if(hist != null)
+            historiqueStatutCommandeService.save(hist);
+
+        return commande;
     }
 
     public Page<Commandes> findWithDynamicFilters(CommandeBackFilterDto filter) {
