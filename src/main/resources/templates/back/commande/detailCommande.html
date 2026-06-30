@@ -40,6 +40,7 @@
         </p>
     </div>
     <div th:if="${commande.details != null}" class="detail">
+        <h2>Détails de la commande</h2>
         <table>
             <thead>
                 <tr>
@@ -75,6 +76,24 @@
                     <th th:text="${commande.totalProduits + 1}"></th>
                     <th th:text="${commande.poidsTotal}"></th>
                     <th th:text="${commande.totalGeneral + commande.fraisLivraison}"></th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="commande.historiqueStatut != null" class="historique">
+        <h2>Historique des statuts</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Statut</th>
+                    <th>Date de changement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="historique : ${commande.historiqueStatut}">
+                    <td th:text="${historique.statutCommande.nom}"></td>
+                    <td th:text="${historique.datechangement != null ? #dates.format(historique.datechangement, 'yyyy-MM-dd HH:mm') : ''}"></td>
                 </tr>
             </tbody>
         </table>
