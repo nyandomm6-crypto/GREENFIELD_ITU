@@ -1,6 +1,7 @@
 package itu.GreenField.controller;
 
 import itu.GreenField.service.ProduitService;
+import itu.GreenField.service.StatutCommandeService;
 import jakarta.validation.Valid;
 
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/commandes")
@@ -37,12 +37,14 @@ public class CommandeController {
     private final ProduitService produitService;
     private final CommandesService commandeService;
     private final ClientService clientService;
+    private final StatutCommandeService statutCommandeService;
 
     public CommandeController(CommandesService commandeService, ClientService clientService,
-            ProduitService produitService) {
+            ProduitService produitService, StatutCommandeService statutCommandeService) {
         this.commandeService = commandeService;
         this.clientService = clientService;
         this.produitService = produitService;
+        this.statutCommandeService = statutCommandeService;
     }
 
     @GetMapping("/form/new")
@@ -62,11 +64,22 @@ public class CommandeController {
     @GetMapping("/form/edit/{id}")
     public ModelAndView showEditForm(@PathVariable("id") Integer id) {
         ModelAndView mv = new ModelAndView("back/commande/commandeCreate");
-        CommandeBackFormDto dto = new CommandeBackFormDto(commandeService.getCommandeById(id));
+        Commandes cmd = commandeService.findById(id);
 
-        mv.addObject("commandeBackFormDto", dto);
-        mv.addObject("produits", produitService.getAllProduits());
-        mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
+        try {
+            commandeService.checkIfUpdatable(cmd);
+            
+            CommandeBackFormDto dto = new CommandeBackFormDto(cmd);
+    
+            mv.addObject("commandeBackFormDto", dto);
+            mv.addObject("produits", produitService.getAllProduits());
+            mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
+        } catch (Exception e) {
+            mv.addObject("alert", "La commande #" + id + " ne peut pas être modifiée. " + e.getMessage());
+            mv.setViewName("back/commande/detailCommande");
+            mv.addObject("commande", cmd);
+        }
+
         return mv;
     }
 
@@ -79,11 +92,11 @@ public class CommandeController {
 
         try {
             commandeService.delete(cmd);
-            generateListCommandesModel(mv, null, filter);
+            generateListCommandesModel(mv, filter);
             mv.addObject("succes", "La commande #" + id + " a été supprimée avec succès.");
             return mv;
         } catch (Exception e) {
-            generateListCommandesModel(mv, null, filter);
+            generateListCommandesModel(mv, filter);
             mv.addObject("alert", "Une erreur est suvenue lors de la suppression de la commande #" + id);
             return mv;
         }
@@ -93,8 +106,8 @@ public class CommandeController {
     public ModelAndView detailCommande(@PathVariable("id") Integer id,
             @ModelAttribute("commandeFilterDto") CommandeBackFilterDto filter) {
         ModelAndView mv = new ModelAndView("back/commande/detailCommande");
-
-        mv.addObject("commande", commandeService.findById(id));
+        Commandes cmd = commandeService.findById(id);
+        mv.addObject("commande", cmd);
 
         // verification du mode passe
         return mv;
@@ -141,7 +154,7 @@ public class CommandeController {
     public ModelAndView listCommandes() {
         ModelAndView mv = new ModelAndView("back/commande/listeCommande");
         CommandeBackFilterDto filter = new CommandeBackFilterDto();
-        generateListCommandesModel(mv, null, filter);
+        generateListCommandesModel(mv, filter);
         return mv;
     }
 
@@ -151,12 +164,12 @@ public class CommandeController {
 
         ModelAndView mv = new ModelAndView("back/commande/listeCommande");
 
-        generateListCommandesModel(mv, null, filter);
+        generateListCommandesModel(mv, filter);
 
         return mv;
     }
 
-    private void generateListCommandesModel(ModelAndView mv, Model model, CommandeBackFilterDto filter) {
+    private void generateListCommandesModel(ModelAndView mv, CommandeBackFilterDto filter) {
         Page<Commandes> commandePage = commandeService.findWithDynamicFilters(filter);
 
         if (mv != null) {
@@ -172,8 +185,14 @@ public class CommandeController {
             mv.addObject("calculOptions", CalculOption.values());
             mv.addObject("filtreDateOptions", FiltreDateBackCommandeOption.values());
             mv.addObject("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
-            mv.addObject("statutCommandeOption", StatutCommande.getAllStatutCommande());
-        } else if (model != null) {
+            mv.addObject("statutCommandeOptions", statutCommandeService.getAll());
+        } 
+    }
+
+    private void generateListCommandesModel(Model model, CommandeBackFilterDto filter) {
+        Page<Commandes> commandePage = commandeService.findWithDynamicFilters(filter);
+
+        if (model != null) {
             model.addAttribute("commandes", commandePage.getContent());
             model.addAttribute("totalPages", commandePage.getTotalPages());
             model.addAttribute("hasPrevious", commandePage.hasPrevious());
@@ -186,7 +205,7 @@ public class CommandeController {
             model.addAttribute("calculOptions", CalculOption.values());
             model.addAttribute("filtreDateOptions", FiltreDateBackCommandeOption.values());
             model.addAttribute("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
-            model.addAttribute("statutCommandeOption", StatutCommande.getAllStatutCommande());
+            model.addAttribute("statutCommandeOptions", statutCommandeService.getAll());
         }
     }
 }
