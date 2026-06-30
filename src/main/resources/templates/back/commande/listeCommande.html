@@ -49,7 +49,7 @@
                 <label for="statut-commande">Statut de commande:</label>
                 <select id="statut-commande">
                     <option value="">Tous</option>
-                    <option th:each="statut : ${T(itu.GreenField.model.StatutCommande).values()}" th:value="${statut}"
+                    <option th:each="statut : ${statutCommandeOptions}" th:value="${statut.id}"
                         th:text="${statut}"></option>
                 </select>
             </div>
@@ -169,7 +169,7 @@
                         <td th:text="${cmd.typeCommande}"></td>
                         <td th:text="${cmd.modeReception}"></td>
                         <td
-                            th:text="${cmd.modeReception == 'Retrait_Boutique' ? cmd.pointDeVenteRetrait.code : cmd.adresseLivraison }">
+                            th:text="${cmd.pointDeVenteRetrait?.code != null ? cmd.pointDeVenteRetrait?.code : cmd.adresseLivraison}">
                         </td>
                         <td
                             th:text="${cmd.heureReceptionDebut != null ? #dates.format(cmd.heureReceptionDebut, 'yyyy-MM-dd HH:mm') : ''}">
@@ -178,11 +178,11 @@
                             th:text="${cmd.heureReceptionFin != null ? #dates.format(cmd.heureReceptionFin, 'yyyy-MM-dd HH:mm') : ''}">
                         </td>
                         <td th:text="${cmd.fraisLivraison}"></td>
-                        <td th:text="${cmd.statutCommande}"></td>
+                        <td th:text="${cmd.statutActuel?.nom}"></td>
                         <td th:text="${cmd.totalProduits}"></td>
                         <td th:text="${cmd.totalGeneral}"></td>
                         <td>
-                            <a th:href="@{|/commandes/${cmd.id}|}">Detail</a>
+                            <a th:href="@{|/commandes/detail/${cmd.id}|}">Detail</a>
                             <a th:href="@{|/commandes/form/edit/${cmd.id}|}">Modifier</a>
                             <a th:href="@{|/commandes/delete/${cmd.id}|}">Supprimer</a>
                         </td>
