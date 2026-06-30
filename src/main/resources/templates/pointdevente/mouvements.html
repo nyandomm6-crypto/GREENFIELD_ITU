@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mouvements - Point de Vente</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Mouvements de Stock - <span th:text="${pointDeVente.nom}"></span></h1>
+
+      <div class="filter-section">
+        <h3>Filtres</h3>
+        <form th:action="@{/pointdevente/} + ${pointDeVente.id} + '/mouvements'" method="get" class="filter-form">
+          <label>
+            Type Mouvement
+            <select name="typeMvt">
+              <option value="">Tous</option>
+              <option
+                th:each="type : ${T(itu.GreenField.model.TypeMvt).values()}"
+                th:value="${type}"
+                th:text="${type}"
+                th:selected="${type == typeMvt}"
+              ></option>
+            </select>
+          </label>
+          <label>
+            Date Début
+            <input type="datetime-local" name="dateDebut" th:value="${dateDebut}" />
+          </label>
+          <label>
+            Date Fin
+            <input type="datetime-local" name="dateFin" th:value="${dateFin}" />
+          </label>
+          <label>
+            Produit
+            <select name="idProduit">
+              <option value="">Tous</option>
+              <option
+                th:each="produit : ${produits}"
+                th:value="${produit.id}"
+                th:text="${produit.nom}"
+                th:selected="${produit.id == idProduit}"
+              ></option>
+            </select>
+          </label>
+          <button type="submit" class="btn-filter">Filtrer</button>
+        </form>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Type Mouvement</th>
+            <th>Date</th>
+            <th>Produits</th>
+            <th>Quantités</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="mvt : ${mouvements}">
+            <td th:text="${mvt.typeMouvement}"></td>
+            <td th:text="${mvt.dateMvt}"></td>
+            <td>
+              <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.produit.nom} + ', '"></span>
+            </td>
+            <td>
+              <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.quantite} + ', '"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="back-links">
+        <a th:href="@{/pointdevente/} + ${pointDeVente.id}">← Retour au détail</a>
+        <a th:href="@{/pointdevente}">Retour à la liste</a>
+      </div>
+    </div>
+  </body>
+</html>

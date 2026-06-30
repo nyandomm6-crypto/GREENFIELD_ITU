@@ -21,9 +21,8 @@ public class Notifications {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "typemessage", nullable = false)
-    private TypeMessage typeMessage;
+    @Column(name = "typemessage", nullable = false, length = 50)
+    private String typeMessage;
 
     @Column(length = 100)
     private String objet;
@@ -32,7 +31,7 @@ public class Notifications {
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idptdevente", referencedColumnName = "code")
+    @JoinColumn(name = "idptdevente")
     private PointDeVente pointDeVente;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,11 +51,11 @@ public class Notifications {
         this.id = id;
     }
 
-    public TypeMessage getTypeMessage() {
+    public String getTypeMessage() {
         return typeMessage;
     }
 
-    public void setTypeMessage(TypeMessage typeMessage) {
+    public void setTypeMessage(String typeMessage) {
         this.typeMessage = typeMessage;
     }
 

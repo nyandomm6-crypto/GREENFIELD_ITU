@@ -37,11 +37,6 @@ public class Produit {
     @OneToMany(mappedBy = "produit")
     private List<DemandeStockFille> demandesStockFille;
 
-    @OneToMany(mappedBy = "produit")
-    private List<DetailsCommande> detailsCommande;
-
-    @OneToMany(mappedBy = "produit")
-    private List<TransfertsFille> transfertsFille;
 
     public Integer getId() {
         return id;
@@ -91,19 +86,4 @@ public class Produit {
         this.demandesStockFille = demandesStockFille;
     }
 
-    public List<DetailsCommande> getDetailsCommande() {
-        return detailsCommande;
-    }
-
-    public void setDetailsCommande(List<DetailsCommande> detailsCommande) {
-        this.detailsCommande = detailsCommande;
-    }
-
-    public List<TransfertsFille> getTransfertsFille() {
-        return transfertsFille;
-    }
-
-    public void setTransfertsFille(List<TransfertsFille> transfertsFille) {
-        this.transfertsFille = transfertsFille;
-    }
 }

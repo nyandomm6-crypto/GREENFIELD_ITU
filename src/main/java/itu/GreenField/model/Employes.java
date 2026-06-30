@@ -43,7 +43,7 @@ public class Employes {
     private FRole role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idptdevente", referencedColumnName = "code")
+    @JoinColumn(name = "idptdevente")
     private PointDeVente pointDeVente;
 
     @Column(name = "est_actif")
@@ -60,8 +60,6 @@ public class Employes {
         this.date = date;
     }
 
-    @OneToMany(mappedBy = "livreur")
-    private List<Livraison> livraisons;
 
     public Integer getId() {
         return id;
@@ -143,11 +141,4 @@ public class Employes {
         this.estActif = estActif;
     }
 
-    public List<Livraison> getLivraisons() {
-        return livraisons;
-    }
-
-    public void setLivraisons(List<Livraison> livraisons) {
-        this.livraisons = livraisons;
-    }
 }

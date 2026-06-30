@@ -79,11 +79,6 @@ CREATE TYPE statut_paiement AS ENUM (
     'Cloture'
 );
 
-CREATE TYPE type_commande AS ENUM (
-    'En ligne',
-    'En boutique'
-);
-
 -- =====================================================
 -- TABLES DE BASE
 -- =====================================================
@@ -161,10 +156,6 @@ CREATE TABLE Client (
     date DATE DEFAULT CURRENT_DATE
 );
 
-ALTER TABLE client ALTER COLUMN mail DROP NOT NULL;
-ALTER TABLE client ALTER COLUMN motdepasse DROP NOT NULL;
-ALTER TABLE client ALTER COLUMN estverifier DROP NOT NULL;
-
 -- =====================================================
 -- VEHICULES
 -- =====================================================
@@ -216,15 +207,6 @@ CREATE TABLE Commandes (
     total_general DECIMAL(10, 2) NOT NULL
 );
 
-ALTER TABLE Commandes ALTER COLUMN statutCommande TYPE varchar(30);
-ALTER TABLE Commandes ALTER COLUMN mode_reception TYPE varchar(30);
-ALTER TABLE Commandes ADD COLUMN type_commande VARCHAR(30) DEFAULT 'En boutique';
-ALTER TABLE Commandes DROP COLUMN plage_horaire_souhaitee;
-ALTER TABLE Commandes ADD COLUMN heure_reception_debut TIMESTAMP;
-ALTER TABLE Commandes ADD COLUMN heure_reception_fin TIMESTAMP;
-
-ALTER TABLE Commandes ALTER COLUMN total_produits TYPE INT;
-
 CREATE TABLE DetailsCommande (
     id SERIAL PRIMARY KEY,
     idcommande INT REFERENCES Commandes (id) ON DELETE CASCADE,
@@ -263,8 +245,6 @@ CREATE TABLE Livraison (
     statutLivraison statut_livraison DEFAULT 'En_attente',
     date DATE DEFAULT CURRENT_DATE
 );
-
-drop table livraison;
 
 CREATE TABLE LivraisonFille (
     id SERIAL PRIMARY KEY,
@@ -327,8 +307,3 @@ CREATE TABLE validation_mail (
     est_verifie BOOLEAN DEFAULT FALSE,
     date_expiration TIMESTAMP NOT NULL
 );
-
-ALTER TABLE livraison ALTER COLUMN statutlivraison TYPE varchar(30);
-
-ALTER TABLE LivraisonFille
-ALTER COLUMN statutLivraisonFille TYPE varchar(30);

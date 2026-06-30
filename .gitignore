@@ -3,6 +3,3 @@ build/
 .idea/
 .vscode/
 *.iml
-*.class
-*.lst
-.env
