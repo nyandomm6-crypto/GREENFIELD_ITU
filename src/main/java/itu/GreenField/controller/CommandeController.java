@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 
 @Controller
@@ -65,6 +67,21 @@ public class CommandeController {
         return mv;
     }
 
+    @GetMapping("/fo/form/new")
+    public ModelAndView showCreateFrontForm() {
+        ModelAndView mv = new ModelAndView("front/commande/commandeCreate");
+        // mv.addObject("clients", clientService.getAll());
+        // mv.addObject("globalError", "Test error");
+        CommandeBackFormDto dto = new CommandeBackFormDto();
+        dto.getDetailsCommande().add(new DetailCommandeBackDto());
+
+        mv.addObject("commandeBackFormDto", dto);
+        mv.addObject("produits", produitService.getAllProduits());
+        mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
+        mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
+        return mv;
+    }
+
     @GetMapping("/form/edit/{id}")
     public ModelAndView showEditForm(@PathVariable("id") Integer id) {
         ModelAndView mv = new ModelAndView("back/commande/commandeCreate");
@@ -82,6 +99,29 @@ public class CommandeController {
         } catch (Exception e) {
             mv.addObject("alert", "La commande #" + id + " ne peut pas être modifiée. " + e.getMessage());
             mv.setViewName("back/commande/detailCommande");
+            mv.addObject("commande", cmd);
+        }
+
+        return mv;
+    }
+
+    @GetMapping("/fo/form/edit/{id}")
+    public ModelAndView showEditFrontForm(@PathVariable("id") Integer id) {
+        ModelAndView mv = new ModelAndView("front/commande/commandeCreate");
+        Commandes cmd = commandeService.findById(id);
+
+        try {
+            commandeService.checkIfUpdatable(cmd);
+
+            CommandeBackFormDto dto = new CommandeBackFormDto(cmd);
+
+            mv.addObject("commandeBackFormDto", dto);
+            mv.addObject("produits", produitService.getAllProduits());
+            mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
+            mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
+        } catch (Exception e) {
+            mv.addObject("alert", "La commande #" + id + " ne peut pas être modifiée. " + e.getMessage());
+            mv.setViewName("front/commande/detailCommande");
             mv.addObject("commande", cmd);
         }
 
@@ -113,6 +153,21 @@ public class CommandeController {
             @ModelAttribute("commandeFilterDto") CommandeBackFilterDto filter) {
         ModelAndView mv = new ModelAndView("back/commande/detailCommande");
         Commandes cmd = commandeService.findById(id);
+        mv.addObject("commande", cmd);
+
+        // verification du mode passe
+        return mv;
+    }
+
+    @GetMapping("/fo/detail/{id}")
+    public ModelAndView detailFrontCommande(@PathVariable("id") Integer id,
+            @ModelAttribute("commandeFilterDto") CommandeBackFilterDto filter) {
+        ModelAndView mv = new ModelAndView("front/commande/detailCommande");
+        Commandes cmd = commandeService.findById(id);
+        if(cmd.getClient() != null && cmd.getClient().getId() != 3) {
+            mv.setViewName("error");
+            return mv;
+        }
         mv.addObject("commande", cmd);
 
         // verification du mode passe
@@ -179,7 +234,15 @@ public class CommandeController {
         return mv;
     }
 
-    @Get
+    @GetMapping({ "/fo/", "/fo", "/fo/list" })
+    public ModelAndView listCommandesFront() {
+        ModelAndView mv = new ModelAndView("front/commande/listeCommande");
+        CommandeBackFilterDto filter = new CommandeBackFilterDto();
+        // On prend le client connecté pour filtrer les commandes
+        filter.setClientId(List.of(3));
+        generateListCommandesModel(mv, filter);
+        return mv;
+    }
 
     private void generateListCommandesModel(ModelAndView mv, CommandeBackFilterDto filter) {
         Page<Commandes> commandePage = commandeService.findWithDynamicFilters(filter);
