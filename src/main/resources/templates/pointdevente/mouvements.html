@@ -35,15 +35,7 @@
           </label>
           <label>
             Produit
-            <select name="idProduit">
-              <option value="">Tous</option>
-              <option
-                th:each="produit : ${produits}"
-                th:value="${produit.id}"
-                th:text="${produit.nom}"
-                th:selected="${produit.id == idProduit}"
-              ></option>
-            </select>
+            <input type="text" name="produit" th:value="${produit}" placeholder="Filtrer par produit" />
           </label>
           <button type="submit" class="btn-filter">Filtrer</button>
         </form>
