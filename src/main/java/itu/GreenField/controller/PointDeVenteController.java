@@ -25,6 +25,7 @@ import itu.GreenField.repository.MvtStockFilleRepository;
 import itu.GreenField.repository.MvtStockRepository;
 import itu.GreenField.repository.PointDeVenteRepository;
 import itu.GreenField.repository.ProduitRepository;
+import itu.GreenField.repository.CategorieProduitRepository;
 import itu.GreenField.service.PointDeVenteService;
 
 @Controller
@@ -37,25 +38,35 @@ public class PointDeVenteController {
     private MvtStockRepository mvtStockRepository;
     private MvtStockFilleRepository mvtStockFilleRepository;
     private ProduitRepository produitRepository;
+    private CategorieProduitRepository categorieProduitRepository;
 
     public PointDeVenteController(PointDeVenteService pointDeVenteService,
             PointDeVenteRepository pointDeVenteRepository,
             EmployesRepository employesRepository,
             MvtStockRepository mvtStockRepository,
             MvtStockFilleRepository mvtStockFilleRepository,
-            ProduitRepository produitRepository) {
+            ProduitRepository produitRepository,
+            CategorieProduitRepository categorieProduitRepository) {
         this.pointDeVenteService = pointDeVenteService;
         this.pointDeVenteRepository = pointDeVenteRepository;
         this.employesRepository = employesRepository;
         this.mvtStockRepository = mvtStockRepository;
         this.mvtStockFilleRepository = mvtStockFilleRepository;
         this.produitRepository = produitRepository;
+        this.categorieProduitRepository = categorieProduitRepository;
     }
 
     // Liste des points de vente
     @GetMapping
-    public String listePointDeVente(Model model) {
-        model.addAttribute("pointDeVentes", pointDeVenteService.getAllPointDeVente());
+    public String listePointDeVente(Model model, @RequestParam(required = false) String code) {
+        List<PointDeVente> pointDeVentes;
+        if (code != null && !code.isEmpty()) {
+            pointDeVentes = pointDeVenteRepository.findByCodeContainingIgnoreCase(code);
+        } else {
+            pointDeVentes = pointDeVenteService.getAllPointDeVente();
+        }
+        model.addAttribute("pointDeVentes", pointDeVentes);
+        model.addAttribute("code", code);
         return "pointdevente/liste";
     }
 
@@ -123,6 +134,7 @@ public class PointDeVenteController {
             model.addAttribute("pointDeVente", pointDeVente.get());
             model.addAttribute("categorie", categorie);
             model.addAttribute("produit", produit);
+            model.addAttribute("categories", categorieProduitRepository.findAll());
             // Récupérer les mouvements de stock de type Entree_Boutique pour ce point de vente
             List<MvtStock> mouvements = mvtStockRepository.findByPointDeVenteAndTypeMouvement(
                     pointDeVente.get(), TypeMvt.Entree_Boutique);

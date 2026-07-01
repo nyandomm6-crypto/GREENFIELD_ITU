@@ -22,7 +22,10 @@
         <form th:action="@{/pointdevente/} + ${pointDeVente.id} + '/stock'" method="get" class="filter-form">
           <label>
             Catégorie
-            <input type="text" name="categorie" th:value="${categorie}" placeholder="Filtrer par catégorie" />
+            <select name="categorie">
+              <option value="">Toutes les catégories</option>
+              <option th:each="cat : ${categories}" th:value="${cat.libelle}" th:text="${cat.libelle}" th:selected="${categorie == cat.libelle}"></option>
+            </select>
           </label>
           <label>
             Produit
