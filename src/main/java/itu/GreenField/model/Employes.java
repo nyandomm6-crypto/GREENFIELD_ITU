@@ -43,7 +43,7 @@ public class Employes {
     private FRole role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idptdevente")
+    @JoinColumn(name = "idptdevente", referencedColumnName = "code")
     private PointDeVente pointDeVente;
 
     @Column(name = "est_actif")
@@ -59,7 +59,6 @@ public class Employes {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
 
     public Integer getId() {
         return id;

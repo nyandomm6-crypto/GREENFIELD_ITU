@@ -31,7 +31,7 @@ public class Notifications {
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idptdevente")
+    @JoinColumn(name = "idptdevente", referencedColumnName = "code")
     private PointDeVente pointDeVente;
 
     @ManyToOne(fetch = FetchType.LAZY)

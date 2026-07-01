@@ -17,7 +17,7 @@ public class MvtStock {
     private TypeMvt typeMouvement;
 
     @ManyToOne
-    @JoinColumn(name = "idptdevente", nullable = true)
+    @JoinColumn(name = "idptdevente", nullable = true, referencedColumnName = "code")
     private PointDeVente pointDeVente;
 
     @Column(name = "datemvt")
