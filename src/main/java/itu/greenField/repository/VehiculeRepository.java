@@ -23,4 +23,7 @@ public interface VehiculeRepository extends JpaRepository<Vehicule, Integer> {
             @Param("date") LocalDate date,
             @Param("statut") StatutVehicule statut);
 
+    public Vehicule getById(Integer id);
+                
+            
 }
