@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Récapitulatif de la commande - GreenField</title>
+    <title>Récapitulatif de la commande - greenField</title>
     <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
 
     <style>
@@ -60,8 +60,9 @@
 
       <div class="carte-recap">
         <div class="info-client">
-          Client : <strong th:text="${client.prenom} + ' ' + ${client.nom}"></strong>
-          — <span th:text="${client.mail}"></span>
+          Client :
+          <strong th:text="${client.prenom} + ' ' + ${client.nom}"></strong> —
+          <span th:text="${client.mail}"></span>
         </div>
 
         <table class="recap">

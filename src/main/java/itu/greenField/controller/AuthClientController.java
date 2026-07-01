@@ -1,10 +1,10 @@
-package itu.GreenField.controller;
+package itu.greenField.controller;
 
-import itu.GreenField.model.Client;
-import itu.GreenField.repository.ClientRepository;
-import itu.GreenField.service.PanierService;
-import itu.GreenField.service.ValidationMailService;
-import itu.GreenField.service.ValidationService;
+import itu.greenField.model.Client;
+import itu.greenField.repository.ClientRepository;
+import itu.greenField.service.PanierService;
+import itu.greenField.service.ValidationMailService;
+import itu.greenField.service.ValidationService;
 
 import java.util.Map;
 

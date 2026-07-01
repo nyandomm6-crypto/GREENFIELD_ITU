@@ -1,8 +1,8 @@
-package itu.GreenField.repository;
+package itu.greenField.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.GreenField.model.Panier;
+import itu.greenField.model.Panier;
 
 public interface PanierRepository extends JpaRepository<Panier, Integer> {
     Panier findByTokenSession(String tokenSession);

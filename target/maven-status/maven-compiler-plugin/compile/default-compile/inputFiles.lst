@@ -1,6 +1,10 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/AuthClientController.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/CommandeController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/EmailController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/LivraisonController.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/NavigationControllerAdvice.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/PanierController.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/ProduitController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/RootController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/VehiculeController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/greenFieldApplication.java
@@ -20,6 +24,8 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Notifications.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Paiement.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/PaiementFille.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Panier.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/PanierFille.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/PointDeVente.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Produit.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/StatutCommande.java
@@ -45,10 +51,13 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/EmployesRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/LivraisonFilleRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/LivraisonRepository.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/MvtStockFilleRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/MvtStockRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/NotificationsRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/PaiementFilleRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/PaiementRepository.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/PanierFilleRepository.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/PanierRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/PointDeVenteRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/ProduitRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/TransfertsFilleRepository.java
@@ -56,10 +65,13 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/TresorerieRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/ValidationMailRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/VehiculeRepository.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/CommandeService.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/CommandesService.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/EmployesService.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/EnvoiEmail.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/LivraisonService.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/PanierService.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/ProduitService.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/UtilsService.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/ValidationMailService.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/ValidationService.java

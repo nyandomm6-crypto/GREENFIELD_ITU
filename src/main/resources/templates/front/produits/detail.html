@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${produit.nom} + ' - GreenField'">Produit</title>
+    <title th:text="${produit.nom} + ' - greenField'">Produit</title>
     <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
 
     <style>
@@ -88,7 +88,8 @@
 
     <main class="conteneur">
       <p class="fil-ariane">
-        <a th:href="@{/produits}">Produits</a> / <span th:text="${produit.nom}"></span>
+        <a th:href="@{/produits}">Produits</a> /
+        <span th:text="${produit.nom}"></span>
       </p>
 
       <div class="message error" th:if="${error}" th:text="${error}"></div>

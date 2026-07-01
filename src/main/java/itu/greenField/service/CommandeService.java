@@ -1,4 +1,4 @@
-package itu.GreenField.service;
+package itu.greenField.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -7,15 +7,15 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import itu.GreenField.model.Client;
-import itu.GreenField.model.Commandes;
-import itu.GreenField.model.DetailsCommande;
-import itu.GreenField.model.ModeReception;
-import itu.GreenField.model.Panier;
-import itu.GreenField.model.PanierFille;
-import itu.GreenField.model.StatutCommande;
-import itu.GreenField.repository.CommandesRepository;
-import itu.GreenField.repository.DetailsCommandeRepository;
+import itu.greenField.model.Client;
+import itu.greenField.model.Commandes;
+import itu.greenField.model.DetailsCommande;
+import itu.greenField.model.ModeReception;
+import itu.greenField.model.Panier;
+import itu.greenField.model.PanierFille;
+import itu.greenField.model.StatutCommande;
+import itu.greenField.repository.CommandesRepository;
+import itu.greenField.repository.DetailsCommandeRepository;
 
 @Service
 public class CommandeService {

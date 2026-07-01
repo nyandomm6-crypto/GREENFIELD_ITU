@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mon panier - GreenField</title>
+    <title>Mon panier - greenField</title>
     <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
 
     <style>
@@ -82,7 +82,11 @@
     <main class="conteneur">
       <h1>Mon panier</h1>
 
-      <div class="message success" th:if="${success}" th:text="${success}"></div>
+      <div
+        class="message success"
+        th:if="${success}"
+        th:text="${success}"
+      ></div>
       <div class="message error" th:if="${error}" th:text="${error}"></div>
 
       <div th:if="${!lignes.isEmpty()}">

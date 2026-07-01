@@ -330,4 +330,5 @@ CREATE TABLE validation_mail (
 
 ALTER TABLE livraison ALTER COLUMN statutlivraison TYPE varchar(30);
 
-ALTER TABLE LivraisonFille ALTER COLUMN statutLivraisonFille TYPE varchar(30);
+ALTER TABLE LivraisonFille
+ALTER COLUMN statutLivraisonFille TYPE varchar(30);

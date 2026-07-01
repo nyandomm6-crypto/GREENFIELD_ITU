@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nos produits - GreenField</title>
+    <title>Nos produits - greenField</title>
     <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
 
     <style>
@@ -102,9 +102,13 @@
 
     <main class="conteneur">
       <h1>Nos produits</h1>
-      <p>Découvrez notre sélection de plantes et produits GreenField.</p>
+      <p>Découvrez notre sélection de plantes et produits greenField.</p>
 
-      <div class="message success" th:if="${success}" th:text="${success}"></div>
+      <div
+        class="message success"
+        th:if="${success}"
+        th:text="${success}"
+      ></div>
       <div class="message error" th:if="${error}" th:text="${error}"></div>
 
       <!-- FILTRES -->
@@ -149,9 +153,12 @@
             th:classappend="${stocks.get(produit.id) > 0} ? 'stock-ok' : 'stock-rupture'"
           >
             <span th:if="${stocks.get(produit.id) > 0}"
-              >En stock (<span th:text="${stocks.get(produit.id)}"></span>)</span
+              >En stock (<span th:text="${stocks.get(produit.id)}"></span
+              >)</span
             >
-            <span th:unless="${stocks.get(produit.id) > 0}">Rupture de stock</span>
+            <span th:unless="${stocks.get(produit.id) > 0}"
+              >Rupture de stock</span
+            >
           </p>
 
           <a class="btn" th:href="@{/produits/{id}(id=${produit.id})}"

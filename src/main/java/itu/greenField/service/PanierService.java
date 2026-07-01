@@ -1,4 +1,4 @@
-package itu.GreenField.service;
+package itu.greenField.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -8,12 +8,12 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import itu.GreenField.model.Client;
-import itu.GreenField.model.Panier;
-import itu.GreenField.model.PanierFille;
-import itu.GreenField.model.Produit;
-import itu.GreenField.repository.PanierFilleRepository;
-import itu.GreenField.repository.PanierRepository;
+import itu.greenField.model.Client;
+import itu.greenField.model.Panier;
+import itu.greenField.model.PanierFille;
+import itu.greenField.model.Produit;
+import itu.greenField.repository.PanierFilleRepository;
+import itu.greenField.repository.PanierRepository;
 
 @Service
 public class PanierService {

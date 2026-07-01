@@ -1,10 +1,10 @@
-package itu.GreenField.repository;
+package itu.greenField.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.GreenField.model.PanierFille;
+import itu.greenField.model.PanierFille;
 
 public interface PanierFilleRepository extends JpaRepository<PanierFille, Integer> {
     List<PanierFille> findByPanier_Id(Integer idPanier);

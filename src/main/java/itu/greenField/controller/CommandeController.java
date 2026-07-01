@@ -1,4 +1,4 @@
-package itu.GreenField.controller;
+package itu.greenField.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import itu.GreenField.model.Client;
-import itu.GreenField.model.Panier;
-import itu.GreenField.service.CommandeService;
-import itu.GreenField.service.PanierService;
+import itu.greenField.model.Client;
+import itu.greenField.model.Panier;
+import itu.greenField.service.CommandeService;
+import itu.greenField.service.PanierService;
 
 @Controller
 public class CommandeController {

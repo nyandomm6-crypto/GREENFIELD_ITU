@@ -1,4 +1,4 @@
-package itu.GreenField.controller;
+package itu.greenField.controller;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import itu.GreenField.model.CategorieProduit;
-import itu.GreenField.model.Produit;
-import itu.GreenField.repository.CategorieProduitRepository;
-import itu.GreenField.service.ProduitService;
+import itu.greenField.model.CategorieProduit;
+import itu.greenField.model.Produit;
+import itu.greenField.repository.CategorieProduitRepository;
+import itu.greenField.service.ProduitService;
 
 @Controller
 public class ProduitController {

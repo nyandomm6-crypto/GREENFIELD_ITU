@@ -1,10 +1,10 @@
-package itu.GreenField.repository;
+package itu.greenField.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import itu.GreenField.model.MvtStockFille;
+import itu.greenField.model.MvtStockFille;
 
 public interface MvtStockFilleRepository extends JpaRepository<MvtStockFille, Integer> {
 
@@ -16,8 +16,8 @@ public interface MvtStockFilleRepository extends JpaRepository<MvtStockFille, In
     @Query("""
             SELECT COALESCE(SUM(
                 CASE
-                    WHEN m.typeMouvement = itu.GreenField.model.TypeMvt.Entree_Production THEN msf.quantite
-                    WHEN m.typeMouvement = itu.GreenField.model.TypeMvt.Entree_Boutique THEN msf.quantite
+                    WHEN m.typeMouvement = itu.greenField.model.TypeMvt.Entree_Production THEN msf.quantite
+                    WHEN m.typeMouvement = itu.greenField.model.TypeMvt.Entree_Boutique THEN msf.quantite
                     ELSE -msf.quantite
                 END
             ), 0)

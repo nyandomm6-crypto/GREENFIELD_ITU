@@ -2,7 +2,7 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
   <head>
     <!-- ===================== -->
-    <!-- STYLE COMMUN GREENFIELD -->
+    <!-- STYLE COMMUN greenField -->
     <!-- ===================== -->
     <th:block th:fragment="styles">
       <style>
@@ -190,7 +190,7 @@
   </head>
   <body>
     <header class="barre-nav" th:fragment="nav">
-      <a class="logo" th:href="@{/produits}">🌿 GreenField</a>
+      <a class="logo" th:href="@{/produits}">🌿 greenField</a>
 
       <nav>
         <a th:href="@{/produits}">Produits</a>
@@ -206,14 +206,8 @@
 
         <span th:if="${session.client != null}">
           <span th:text="'Bonjour, ' + ${session.client.prenom}"></span>
-          <form
-            th:action="@{/logout}"
-            method="post"
-            style="display: inline"
-          >
-            <button type="submit" class="btn-deconnexion">
-              Déconnexion
-            </button>
+          <form th:action="@{/logout}" method="post" style="display: inline">
+            <button type="submit" class="btn-deconnexion">Déconnexion</button>
           </form>
         </span>
 

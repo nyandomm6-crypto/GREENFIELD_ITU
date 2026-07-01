@@ -1,4 +1,4 @@
-package itu.GreenField.controller;
+package itu.greenField.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,9 +7,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import itu.GreenField.model.Client;
-import itu.GreenField.model.Panier;
-import itu.GreenField.service.PanierService;
+import itu.greenField.model.Client;
+import itu.greenField.model.Panier;
+import itu.greenField.service.PanierService;
 
 /**
  * Rend disponible, dans toutes les vues, le nombre d'articles du panier

@@ -1,12 +1,12 @@
-package itu.GreenField.service;
+package itu.greenField.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import itu.GreenField.model.Produit;
-import itu.GreenField.repository.MvtStockFilleRepository;
-import itu.GreenField.repository.ProduitRepository;
+import itu.greenField.model.Produit;
+import itu.greenField.repository.MvtStockFilleRepository;
+import itu.greenField.repository.ProduitRepository;
 
 @Service
 public class ProduitService {
