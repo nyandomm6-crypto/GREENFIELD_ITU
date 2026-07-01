@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQ - GreenField</title>
+    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+
+    <style>
+      .liste-faq {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      /* Un bloc = une question. Copiez/collez tout le ".faq-item"
+         (bouton + réponse) pour ajouter une nouvelle question. */
+      .faq-item {
+        background: white;
+        border: 1px solid var(--bordure);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .faq-question {
+        width: 100%;
+        background: none;
+        border: none;
+        text-align: left;
+        padding: 16px 18px;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--texte);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .faq-question:hover {
+        background: var(--vert-clair);
+      }
+
+      .faq-icone {
+        color: var(--vert-fonce);
+        font-size: 18px;
+        font-weight: 700;
+        transition: transform 0.15s ease;
+      }
+
+      /* Réponse cachée par défaut ... */
+      .faq-reponse {
+        display: none;
+        padding: 0 18px 16px;
+        color: var(--gris);
+        line-height: 1.5;
+      }
+
+      /* ... et affichée uniquement quand le bloc a la classe "ouvert"
+         (ajoutée/enlevée par static/js/faq.js au clic). */
+      .faq-item.ouvert .faq-reponse {
+        display: block;
+      }
+
+      .faq-item.ouvert .faq-icone {
+        transform: rotate(45deg);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div th:replace="~{front/fragments/layout :: nav}"></div>
+
+    <main class="conteneur">
+      <h1>Foire aux questions</h1>
+      <p>Retrouvez les réponses aux questions les plus fréquentes sur GreenField.</p>
+
+      <div class="liste-faq">
+        <!-- ============================================ -->
+        <!-- EXEMPLE DE BLOC FAQ : à dupliquer pour chaque -->
+        <!-- nouvelle question. Changez uniquement le texte -->
+        <!-- de la question et de la réponse.               -->
+        <!-- ============================================ -->
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            Comment savoir si un produit est en stock ?
+            <span class="faq-icone">+</span>
+          </button>
+          <div class="faq-reponse">
+            <p>
+              Le stock disponible est affiché directement sur la fiche du
+              produit et sur la liste des produits. Il est recalculé en
+              temps réel à partir des mouvements de stock enregistrés.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            Quels sont les modes de réception disponibles ?
+            <span class="faq-icone">+</span>
+          </button>
+          <div class="faq-reponse">
+            <p>
+              Pour le moment, seul le retrait en boutique est proposé lors
+              de la validation de la commande.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            Puis-je commander sans créer de compte ?
+            <span class="faq-icone">+</span>
+          </button>
+          <div class="faq-reponse">
+            <p>
+              Oui, un panier anonyme est associé à votre navigateur via un
+              cookie. Vous pourrez toutefois créer un compte pour retrouver
+              l'historique de vos commandes.
+            </p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" type="button">
+            Comment modifier la quantité d'un article dans mon panier ?
+            <span class="faq-icone">+</span>
+          </button>
+          <div class="faq-reponse">
+            <p>
+              Rendez-vous sur la page "Panier" : vous pouvez y ajuster la
+              quantité de chaque ligne ou supprimer un article avant de
+              valider votre achat.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script th:src="@{/js/faq.js}"></script>
+  </body>
+</html>
