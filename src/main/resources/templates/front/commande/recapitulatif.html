@@ -6,95 +6,639 @@
     <title>Récapitulatif de la commande - greenField</title>
     <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
     <style>
-      .carte-recap {
-        background: white;
-        border: 1px solid var(--bordure);
-        border-radius: 12px;
-        padding: 26px;
-        margin-top: 20px;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      .info-client {
-        margin-bottom: 20px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--bordure);
+      :root {
+        --vert-fonce: #0f2b22;
+        --vert-clair: #1e6b4c;
+        --vert-moyen: #2d8f68;
+        --vert-pale: #e3f2ed;
+        --gris-fonce: #1e293b;
+        --gris-moyen: #475569;
+        --gris-clair: #cbd5e1;
+        --gris-tres-clair: #f1f5f9;
+        --blanc: #ffffff;
+        --ombre: 0 8px 30px rgba(0, 0, 0, 0.08);
+        --rayon: 14px;
+      }
+
+      html,
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: var(--gris-tres-clair);
+        color: var(--gris-fonce);
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ===== HEADER ===== */
+      .app-header {
+        background: var(--blanc);
+        padding: 14px 30px;
+        border-bottom: 1px solid var(--gris-clair);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      }
+
+      .app-header .logo {
+        font-weight: 700;
+        font-size: 20px;
+        color: var(--vert-fonce);
+        letter-spacing: -0.3px;
+      }
+      .app-header .logo i {
+        color: var(--vert-clair);
+        margin-right: 8px;
+      }
+      .app-header .badge-client {
+        background: var(--vert-pale);
+        color: var(--vert-clair);
+        padding: 6px 18px;
+        border-radius: 40px;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* ===== MAIN ===== */
+      .app-main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 24px;
+        min-height: 0;
+      }
+
+      .carte-recap {
+        background: var(--blanc);
+        border-radius: var(--rayon);
+        box-shadow: var(--ombre);
+        padding: 24px 28px 20px 28px;
+        width: 100%;
+        max-width: 1120px;
+        max-height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid rgba(0, 0, 0, 0.02);
+        transition: all 0.2s;
+      }
+
+      /* ===== EN-TÊTE CARTE ===== */
+      .recap-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        flex-shrink: 0;
+      }
+      .recap-head h1 {
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--vert-fonce);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .recap-head h1 i {
+        color: var(--vert-clair);
+        font-size: 22px;
+      }
+      .recap-head .client-info {
         font-size: 14px;
-        color: var(--gris);
+        color: var(--gris-moyen);
+        background: var(--gris-tres-clair);
+        padding: 8px 18px;
+        border-radius: 40px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .recap-head .client-info strong {
+        color: var(--vert-fonce);
+      }
+
+      /* ===== GRILLE 2 COLONNES ===== */
+      .recap-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 24px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      /* --- Colonne gauche : tableau --- */
+      .table-wrapper {
+        overflow-y: auto;
+        padding-right: 4px;
+        max-height: 100%;
+      }
+      .table-wrapper::-webkit-scrollbar {
+        width: 4px;
+      }
+      .table-wrapper::-webkit-scrollbar-track {
+        background: var(--gris-tres-clair);
+        border-radius: 4px;
+      }
+      .table-wrapper::-webkit-scrollbar-thumb {
+        background: var(--vert-clair);
+        border-radius: 4px;
       }
 
       table.recap {
         width: 100%;
         border-collapse: collapse;
+        font-size: 13.5px;
       }
-
-      table.recap th,
-      table.recap td {
+      table.recap thead th {
+        background: var(--vert-pale);
+        color: var(--vert-fonce);
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        padding: 10px 10px 10px 0;
         text-align: left;
-        padding: 10px 8px;
-        font-size: 14px;
-        border-bottom: 1px solid var(--bordure);
+        border-bottom: 2px solid var(--vert-clair);
+        position: sticky;
+        top: 0;
+        z-index: 2;
+      }
+      table.recap tbody td {
+        padding: 10px 10px 10px 0;
+        border-bottom: 1px solid var(--gris-clair);
+        color: var(--gris-fonce);
+      }
+      table.recap tbody tr:last-child td {
+        border-bottom: none;
+      }
+      table.recap tbody tr:hover {
+        background: var(--gris-tres-clair);
+        border-radius: 6px;
       }
 
       .ligne-total {
         font-weight: 700;
-        font-size: 17px;
+        font-size: 16px;
         color: var(--vert-fonce);
       }
+      .ligne-total td {
+        padding-top: 12px !important;
+        border-top: 2px solid var(--vert-clair) !important;
+        background: var(--vert-pale);
+      }
 
-      .actions-recap {
+      /* --- Colonne droite : formulaire --- */
+      .form-col {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+      .form-col::-webkit-scrollbar {
+        width: 4px;
+      }
+      .form-col::-webkit-scrollbar-track {
+        background: var(--gris-tres-clair);
+        border-radius: 4px;
+      }
+      .form-col::-webkit-scrollbar-thumb {
+        background: var(--vert-clair);
+        border-radius: 4px;
+      }
+
+      .form-group {
+        background: var(--gris-tres-clair);
+        border-radius: 10px;
+        padding: 12px 16px;
+        border-left: 3px solid var(--vert-clair);
+      }
+      .form-group label {
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: var(--gris-moyen);
+        display: block;
+        margin-bottom: 6px;
+      }
+      .form-group label i {
+        color: var(--vert-clair);
+        margin-right: 6px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1.5px solid var(--gris-clair);
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: "Inter", sans-serif;
+        background: var(--blanc);
+        color: var(--gris-fonce);
+        transition:
+          border 0.2s,
+          box-shadow 0.2s;
+      }
+      .form-control:focus {
+        border-color: var(--vert-clair);
+        box-shadow: 0 0 0 3px rgba(30, 107, 76, 0.12);
+        outline: none;
+      }
+      textarea.form-control {
+        resize: vertical;
+        min-height: 38px;
+      }
+      select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23475569' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        cursor: pointer;
+      }
+
+      .radio-group {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      .radio-group label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        font-size: 13px;
+        text-transform: none;
+        letter-spacing: 0;
+        color: var(--gris-fonce);
+        cursor: pointer;
+      }
+      .radio-group input[type="radio"] {
+        accent-color: var(--vert-clair);
+        width: 16px;
+        height: 16px;
+        margin: 0;
+      }
+
+      .frais-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--vert-pale);
+        padding: 6px 16px;
+        border-radius: 40px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--vert-fonce);
+      }
+      .frais-badge strong {
+        color: var(--vert-clair);
+        font-size: 16px;
+      }
+
+      /* ===== FOOTER CARTE ===== */
+      .recap-footer {
         display: flex;
         justify-content: flex-end;
+        align-items: center;
         gap: 12px;
-        margin-top: 24px;
+        margin-top: 16px;
+        padding-top: 14px;
+        border-top: 1px solid var(--gris-clair);
+        flex-shrink: 0;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        border: none;
+        border-radius: 40px;
+        font-size: 14px;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+      .btn i {
+        font-size: 14px;
+      }
+      .btn-primaire {
+        background: var(--vert-clair);
+        color: var(--blanc);
+      }
+      .btn-primaire:hover {
+        background: var(--vert-fonce);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(30, 107, 76, 0.25);
+      }
+      .btn-secondaire {
+        background: var(--gris-clair);
+        color: var(--gris-fonce);
+      }
+      .btn-secondaire:hover {
+        background: #b3c2d1;
+      }
+
+      /* ===== RESPONSIVE ===== */
+      @media (max-width: 860px) {
+        .recap-grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        .app-main {
+          padding: 12px 16px;
+        }
+        .carte-recap {
+          padding: 18px 16px;
+        }
+        .recap-head {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+        .recap-head .client-info {
+          width: 100%;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+        }
+        .radio-group {
+          gap: 12px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .app-header {
+          padding: 10px 16px;
+        }
+        .app-header .badge-client {
+          font-size: 11px;
+          padding: 4px 12px;
+        }
+        .recap-head h1 {
+          font-size: 17px;
+        }
+        .recap-head .client-info {
+          font-size: 12px;
+          padding: 6px 12px;
+          gap: 10px;
+        }
+        .form-group {
+          padding: 10px 12px;
+        }
+        .btn {
+          padding: 8px 16px;
+          font-size: 13px;
+        }
+      }
+
+      /* Ajustements pour la hauteur */
+      .form-group:last-child {
+        margin-bottom: 0;
+      }
+      .form-col .form-group:last-child {
+        margin-bottom: 0;
       }
     </style>
   </head>
-
   <body>
-    <div th:replace="~{front/fragments/layout :: nav}"></div>
+    <!-- ===== HEADER APP ===== -->
+    <header class="app-header">
+      <span class="logo"> <i class="fas fa-leaf"></i> greenField </span>
+      <span class="badge-client">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${client.prenom} + ' ' + ${client.nom}"></span>
+      </span>
+    </header>
 
-    <main class="conteneur">
-      <h1>Récapitulatif de votre commande</h1>
-      <p>Vérifiez votre commande avant de la valider définitivement.</p>
-
+    <!-- ===== MAIN ===== -->
+    <main class="app-main">
       <div class="carte-recap">
-        <div class="info-client">
-          Client :
-          <strong th:text="${client.prenom} + ' ' + ${client.nom}"></strong> —
-          <span th:text="${client.mail}"></span>
+        <!-- En-tête carte -->
+        <div class="recap-head">
+          <h1><i class="fas fa-clipboard-check"></i> Récapitulatif</h1>
+          <div class="client-info">
+            <span
+              ><i class="far fa-envelope" style="color: var(--vert-clair)"></i>
+              <span th:text="${client.mail}"></span
+            ></span>
+            <span style="opacity: 0.4">|</span>
+            <span
+              ><i class="far fa-user" style="color: var(--vert-clair)"></i>
+              <strong th:text="${client.prenom} + ' ' + ${client.nom}"></strong
+            ></span>
+          </div>
         </div>
 
-        <table class="recap">
-          <thead>
-            <tr>
-              <th>Produit</th>
-              <th>Prix unitaire</th>
-              <th>Quantité</th>
-              <th>Sous-total</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="ligne : ${lignes}">
-              <td th:text="${ligne.produit.nom}"></td>
-              <td th:text="${ligne.produit.pu} + ' Ar'"></td>
-              <td th:text="${ligne.quantite}"></td>
-              <td th:text="${ligne.sousTotal} + ' Ar'"></td>
-            </tr>
-            <tr>
-              <td colspan="3" class="ligne-total">Total général</td>
-              <td class="ligne-total" th:text="${total} + ' Ar'"></td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- Grille -->
+        <div class="recap-grid">
+          <!-- ===== COLONNE GAUCHE : TABLEAU ===== -->
+          <div class="table-wrapper">
+            <table class="recap">
+              <thead>
+                <tr>
+                  <th>Produit</th>
+                  <th>Prix</th>
+                  <th>Qté</th>
+                  <th>Sous-total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="ligne : ${lignes}">
+                  <td th:text="${ligne.produit.nom}"></td>
+                  <td th:text="${ligne.produit.pu} + ' Ar'"></td>
+                  <td th:text="${ligne.quantite}"></td>
+                  <td th:text="${ligne.sousTotal} + ' Ar'"></td>
+                </tr>
+                <tr class="ligne-total">
+                  <td colspan="3" style="text-align: right">Total</td>
+                  <td th:text="${total} + ' Ar'"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-        <div class="actions-recap">
-          <a class="btn secondaire" th:href="@{/panier}">Retour au panier</a>
-          <form th:action="@{/commande/valider}" method="post">
-            <button type="submit" class="btn">Confirmer l'achat</button>
+          <!-- ===== COLONNE DROITE : FORMULAIRE ===== -->
+          <div class="form-col">
+            <!-- Mode de réception -->
+            <div class="form-group">
+              <label><i class="fas fa-truck"></i> Mode de réception</label>
+              <div class="radio-group">
+                <label>
+                  <input
+                    type="radio"
+                    name="modeReception"
+                    value="LIVRAISON"
+                    onclick="changerMode()"
+                  />
+                  <i class="fas fa-home" style="color: var(--vert-clair)"></i>
+                  Livraison
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name="modeReception"
+                    value="RETRAIT"
+                    onclick="changerMode()"
+                    checked
+                  />
+                  <i class="fas fa-store" style="color: var(--vert-clair)"></i>
+                  Retrait
+                </label>
+              </div>
+            </div>
+
+            <!-- Livraison -->
+            <div
+              id="blocLivraison"
+              class="form-group"
+              style="display: none; border-left-color: #2d8f68"
+            >
+              <label><i class="fas fa-map-pin"></i> Adresse de livraison</label>
+              <textarea
+                class="form-control"
+                name="adresse"
+                rows="2"
+                placeholder="Votre adresse complète..."
+              ></textarea>
+            </div>
+
+            <!-- Retrait -->
+            <div
+              id="blocRetrait"
+              class="form-group"
+              style="border-left-color: #2d8f68"
+            >
+              <label><i class="fas fa-store-alt"></i> Point de retrait</label>
+              <select class="form-control" name="point">
+                <option>Magasin Analakely</option>
+                <option>Magasin Ivandry</option>
+                <option>Magasin Tamatave</option>
+              </select>
+            </div>
+
+            <!-- Date & Heure -->
+            <div class="form-group" style="border-left-color: #2d8f68">
+              <label><i class="fas fa-calendar-alt"></i> Date et heure</label>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap">
+                <input
+                  type="date"
+                  class="form-control"
+                  style="flex: 1; min-width: 120px"
+                />
+                <input
+                  type="time"
+                  class="form-control"
+                  style="flex: 0 0 130px"
+                />
+              </div>
+            </div>
+
+            <!-- Paiement + frais -->
+            <div class="form-group" style="border-left-color: #2d8f68">
+              <label><i class="fas fa-credit-card"></i> Paiement</label>
+              <select class="form-control" style="margin-bottom: 8px">
+                <option>MVola</option>
+                <option>Orange Money</option>
+                <option>Airtel Money</option>
+                <option>Carte bancaire</option>
+              </select>
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Montant"
+                style="margin-bottom: 8px"
+              />
+
+              <div class="frais-badge">
+                <i class="fas fa-info-circle"></i> Frais de livraison :
+                <strong id="frais">0 Ar</strong>
+              </div>
+            </div>
+          </div>
+          <!-- fin form-col -->
+        </div>
+        <!-- fin recap-grid -->
+
+        <!-- ===== FOOTER ===== -->
+        <div class="recap-footer">
+          <a class="btn btn-secondaire" th:href="@{/panier}">
+            <i class="fas fa-arrow-left"></i> Panier
+          </a>
+          <form
+            th:action="@{/commande/valider}"
+            method="post"
+            style="display: inline"
+          >
+            <button type="submit" class="btn btn-primaire">
+              <i class="fas fa-check"></i> Confirmer
+            </button>
           </form>
         </div>
       </div>
+      <!-- fin carte-recap -->
     </main>
+
+    <script>
+      function changerMode() {
+        const mode = document.querySelector(
+          'input[name="modeReception"]:checked',
+        ).value;
+        const blocLivraison = document.getElementById("blocLivraison");
+        const blocRetrait = document.getElementById("blocRetrait");
+        const frais = document.getElementById("frais");
+
+        if (mode === "LIVRAISON") {
+          blocLivraison.style.display = "block";
+          blocRetrait.style.display = "none";
+          frais.textContent = "5 000 Ar";
+        } else {
+          blocLivraison.style.display = "none";
+          blocRetrait.style.display = "block";
+          frais.textContent = "0 Ar";
+        }
+      }
+
+      // Initialisation
+      document.addEventListener("DOMContentLoaded", function () {
+        changerMode();
+      });
+    </script>
   </body>
 </html>

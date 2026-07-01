@@ -26,11 +26,6 @@ public class ProduitController {
         this.categorieProduitRepository = categorieProduitRepository;
     }
 
-    @GetMapping("/")
-    public String accueil() {
-        return "redirect:/produits";
-    }
-
     @GetMapping("/produits")
     public String listerProduits(
             @RequestParam(required = false) String idCategorie,
