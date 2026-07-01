@@ -20,7 +20,7 @@ public class ProduitController {
         this.produitService = produitService;
     }
 
-    @GetMapping("/produits")
+    @GetMapping("/list")
     public String listProduits(@RequestParam(required = false) Integer idCategorie,
                                @RequestParam(required = false) String motCle,
                                Model model) {
@@ -32,7 +32,7 @@ public class ProduitController {
         return "front/produits/list";
     }
 
-    @GetMapping("/produits/detail/{id}")
+    @GetMapping("/detail/{id}")
     public String detailProduit(@PathVariable Integer id, Model model) {
         Produit produit = produitService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé : " + id));
@@ -45,7 +45,7 @@ public class ProduitController {
         return "front/produits/detail";
     }
 
-    @GetMapping("/produits/nouveau")
+    @GetMapping("/nouveau")
     public String showCreateForm(Model model) {
         model.addAttribute("produit", new Produit());
         model.addAttribute("categories", produitService.findAllCategories());
