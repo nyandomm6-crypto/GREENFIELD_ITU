@@ -1,8 +1,8 @@
--- Active: 1781870061268@@127.0.0.1@5433@greenfield
-CREATE DATABASE greenfield;
+-- Active: 1781870061268@@127.0.0.1@5433@greenField
+CREATE DATABASE greenField;
 
--- Se connecter à la base greenfield avant d'exécuter la suite
-\c greenfield
+-- Se connecter à la base greenField avant d'exécuter la suite
+\c greenField
 -- =====================================================
 -- TYPES ENUM
 -- =====================================================
@@ -312,5 +312,4 @@ CREATE TABLE validation_mail (
 
 ALTER TABLE livraison ALTER COLUMN statutlivraison TYPE varchar(30);
 
-ALTER TABLE LivraisonFille
-ALTER COLUMN statutLivraisonFille TYPE varchar(30);
+ALTER TABLE LivraisonFille ALTER COLUMN statutLivraisonFille TYPE varchar(30);
