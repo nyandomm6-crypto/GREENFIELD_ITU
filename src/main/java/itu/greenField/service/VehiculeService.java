@@ -57,4 +57,8 @@ public class VehiculeService {
     public void supprimerVehicule(Integer id) {
         vehiculeRepository.deleteById(id);
     }
+
+    public List<Vehicule> getVehicule() {
+        return vehiculeRepository.findAll();
+    }
 }
