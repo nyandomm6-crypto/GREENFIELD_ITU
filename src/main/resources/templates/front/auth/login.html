@@ -3,27 +3,80 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Connexion - GreenField</title>
+    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+
+    <style>
+      .carte-auth {
+        max-width: 380px;
+        margin: 50px auto;
+        background: white;
+        border: 1px solid var(--bordure);
+        border-radius: 12px;
+        padding: 30px;
+      }
+
+      .carte-auth label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 14px;
+      }
+
+      .carte-auth input {
+        width: 100%;
+        padding: 10px 12px;
+        margin-top: 6px;
+        border: 1px solid var(--bordure);
+        border-radius: 8px;
+        font-size: 14px;
+      }
+
+      .carte-auth .btn {
+        width: 100%;
+        margin-top: 6px;
+      }
+
+      .lien-signup {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 14px;
+      }
+    </style>
   </head>
   <body>
-    <main>
-      <h1>Login</h1>
+    <div th:replace="~{front/fragments/layout :: nav}"></div>
 
-      <div class="message error" th:if="${error}" th:text="${error}"></div>
+    <main class="conteneur">
+      <div class="carte-auth">
+        <h1 style="text-align: center">Connexion</h1>
 
-      <form th:action="@{/login}" method="post">
-        <label>
-          Email
-          <input type="email" name="email" required />
-        </label>
+        <div
+          class="message success"
+          th:if="${success}"
+          th:text="${success}"
+        ></div>
+        <div class="message error" th:if="${error}" th:text="${error}"></div>
 
-        <label>
-          Mot de passe
-          <input type="password" name="motDePasse" required />
-        </label>
+        <form th:action="@{/login}" method="post">
+          <input type="hidden" name="redirect" th:value="${redirect}" />
 
-        <button type="submit">Se connecter</button>
-      </form>
+          <label>
+            Email
+            <input type="email" name="email" required />
+          </label>
+
+          <label>
+            Mot de passe
+            <input type="password" name="motDePasse" required />
+          </label>
+
+          <button type="submit" class="btn">Se connecter</button>
+        </form>
+
+        <p class="lien-signup">
+          Pas encore de compte ? <a th:href="@{/signup}">S'inscrire</a>
+        </p>
+      </div>
     </main>
   </body>
 </html>

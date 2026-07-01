@@ -190,6 +190,24 @@ CREATE TABLE MvtStockFille (
 );
 
 -- =====================================================
+-- PANIER (achats en cours, avant validation)
+-- =====================================================
+
+CREATE TABLE Panier (
+    id SERIAL PRIMARY KEY,
+    idClient INT REFERENCES Client (id) ON DELETE CASCADE,
+    tokenSession VARCHAR(100) UNIQUE,
+    dateCreation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE PanierFille (
+    id SERIAL PRIMARY KEY,
+    idPanier INT REFERENCES Panier (id) ON DELETE CASCADE,
+    idProduit INT REFERENCES Produit (id) ON DELETE CASCADE,
+    quantite INT NOT NULL
+);
+
+-- =====================================================
 -- COMMANDES
 -- =====================================================
 
