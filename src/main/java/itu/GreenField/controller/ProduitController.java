@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("/produits")
 public class ProduitController {
 
     private final ProduitService produitService;
