@@ -59,7 +59,6 @@ public class AuthClientController {
 
     @PostMapping("/login")
     public String traiterLogin(@RequestParam String email,
-<<<<<<< HEAD:src/main/java/itu/greenField/controller/AuthClientController.java
             @RequestParam String motDePasse,
             RedirectAttributes redirectAttributes) {
         Client cli = clientRepository.findByMail(email);
@@ -73,10 +72,6 @@ public class AuthClientController {
             redirectAttributes.addFlashAttribute("error", "mot de passe diso");
             return "redirect:/login";
         }
-=======
-            @RequestParam String motDePasse) {
-        return "front/auth/dashboard";
->>>>>>> module-vehicule:src/main/java/itu/greenField/controller/AuthClientController.java
     }
 
     @PostMapping("/signup")
