@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Détails du véhicule</title>
+  </head>
+  <body>
+    <main>
+      <h1>Détails du véhicule</h1>
+
+      <section>
+        <dl>
+          <dt>ID</dt>
+          <dd th:text="${vehicule.id}"></dd>
+
+          <dt>Matricule</dt>
+          <dd th:text="${vehicule.matricule}"></dd>
+
+          <dt>Marque</dt>
+          <dd th:text="${vehicule.marque}"></dd>
+
+          <dt>Modèle</dt>
+          <dd th:text="${vehicule.modele}"></dd>
+
+          <dt>Année</dt>
+          <dd th:text="${vehicule.annee}"></dd>
+
+          <dt>Capacité</dt>
+          <dd th:text="${vehicule.capacite}"></dd>
+
+          <dt>Statut</dt>
+          <dd th:text="${vehicule.statut}"></dd>
+
+          <dt>Date</dt>
+          <dd th:text="${vehicule.date}"></dd>
+        </dl>
+      </section>
+
+      <section>
+        <a th:href="@{/vehicules}">Retour à la liste</a>
+        <a th:href="@{/vehicules/{id}/modifier(id=${vehicule.id})}">Modifier</a>
+        <form th:action="@{/vehicules/{id}/supprimer(id=${vehicule.id})}" method="post" style="display:inline;">
+          <button type="submit">Supprimer</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
