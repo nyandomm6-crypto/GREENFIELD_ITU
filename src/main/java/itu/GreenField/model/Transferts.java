@@ -1,34 +1,24 @@
 package itu.GreenField.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-
 @Entity
-@Table(name = "transferts")
+@Table(name = "Transferts") // ✅ Nom exact de la table dans PostgreSQL
 public class Transferts {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idpointdevente", referencedColumnName = "code")
-    private PointDeVente pointDeVente;
+    @JoinColumn(name = "idPointDeVente", referencedColumnName = "code") // ✅ Nom exact de la colonne
+    private PointDeVente pointDeVenteSource;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idpointdeventecible", referencedColumnName = "code")
+    @JoinColumn(name = "idPointDeVenteCible", referencedColumnName = "code") // ✅ Nom exact de la colonne
     private PointDeVente pointDeVenteCible;
 
     @Enumerated(EnumType.STRING)
@@ -38,23 +28,36 @@ public class Transferts {
     @Column(name = "date_transfert")
     private LocalDateTime dateTransfert;
 
-    @OneToMany(mappedBy = "transfert")
-    private List<TransfertsFille> filles;
+    @OneToMany(mappedBy = "transfert", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TransfertsFille> lignes = new ArrayList<>();
 
-    public Integer getId() {
+    public Transferts() {
+    }
+
+    public Transferts(Long id, PointDeVente pointDeVenteSource, PointDeVente pointDeVenteCible,
+            StatutTransfert statutTransfert, LocalDateTime dateTransfert, List<TransfertsFille> lignes) {
+        this.id = id;
+        this.pointDeVenteSource = pointDeVenteSource;
+        this.pointDeVenteCible = pointDeVenteCible;
+        this.statutTransfert = statutTransfert;
+        this.dateTransfert = dateTransfert;
+        this.lignes = lignes;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public PointDeVente getPointDeVente() {
-        return pointDeVente;
+    public PointDeVente getPointDeVenteSource() {
+        return pointDeVenteSource;
     }
 
-    public void setPointDeVente(PointDeVente pointDeVente) {
-        this.pointDeVente = pointDeVente;
+    public void setPointDeVenteSource(PointDeVente pointDeVenteSource) {
+        this.pointDeVenteSource = pointDeVenteSource;
     }
 
     public PointDeVente getPointDeVenteCible() {
@@ -81,11 +84,11 @@ public class Transferts {
         this.dateTransfert = dateTransfert;
     }
 
-    public List<TransfertsFille> getFilles() {
-        return filles;
+    public List<TransfertsFille> getLignes() {
+        return lignes;
     }
 
-    public void setFilles(List<TransfertsFille> filles) {
-        this.filles = filles;
+    public void setLignes(List<TransfertsFille> lignes) {
+        this.lignes = lignes;
     }
 }

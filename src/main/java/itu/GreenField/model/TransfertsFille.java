@@ -1,38 +1,41 @@
 package itu.GreenField.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "transfertsfille")
+@Table(name = "TransfertsFille")
 public class TransfertsFille {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idtransfert")
+    @JoinColumn(name = "idTransfert")
     private Transferts transfert;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idproduit")
     private Produit produit;
 
-    @Column(nullable = false)
+    @Column(name = "quantite", nullable = false)
     private Integer quantite;
 
-    public Integer getId() {
+    public TransfertsFille() {
+    }
+
+    public TransfertsFille(Long id, Transferts transfert, Produit produit, Integer quantite) {
+        this.id = id;
+        this.transfert = transfert;
+        this.produit = produit;
+        this.quantite = quantite;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

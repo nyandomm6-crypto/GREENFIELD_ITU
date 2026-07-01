@@ -41,7 +41,7 @@ public class PointDeVente {
     @OneToMany(mappedBy = "pointDeVenteRetrait")
     private List<Commandes> commandesRetrait;
 
-    @OneToMany(mappedBy = "pointDeVente")
+    @OneToMany(mappedBy = "pointDeVenteSource")
     private List<Transferts> transfertsDepart;
 
     @OneToMany(mappedBy = "pointDeVenteCible")
