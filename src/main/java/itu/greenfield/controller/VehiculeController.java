@@ -1,4 +1,4 @@
-package itu.GreenField.controller;
+package itu.greenfield.controller;
 
 import java.time.LocalDate;
 
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
-import itu.GreenField.model.StatutVehicule;
-import itu.GreenField.model.Vehicule;
-import itu.GreenField.service.VehiculeService;
+import itu.greenfield.model.StatutVehicule;
+import itu.greenfield.model.Vehicule;
+import itu.greenfield.service.VehiculeService;
 
 @Controller
 @RequestMapping("/vehicules")
