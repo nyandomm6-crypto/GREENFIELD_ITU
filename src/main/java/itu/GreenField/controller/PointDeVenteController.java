@@ -213,17 +213,35 @@ public class PointDeVenteController {
             @RequestParam(required = false) TypeMvt typeMvt,
             @RequestParam(required = false) LocalDateTime dateDebut,
             @RequestParam(required = false) LocalDateTime dateFin,
-            @RequestParam(required = false) Integer idProduit) {
+            @RequestParam(required = false) String produit) {
         Optional<PointDeVente> pointDeVente = pointDeVenteService.getPointDeVenteById(id);
         if (pointDeVente.isPresent()) {
             model.addAttribute("pointDeVente", pointDeVente.get());
             model.addAttribute("typeMvt", typeMvt);
             model.addAttribute("dateDebut", dateDebut);
             model.addAttribute("dateFin", dateFin);
-            model.addAttribute("idProduit", idProduit);
-            model.addAttribute("produits", produitRepository.findAll());
+            model.addAttribute("produit", produit);
             
             List<MvtStock> mouvements = mvtStockRepository.findByPointDeVente(pointDeVente.get());
+            
+            // Filtrer par type de mouvement
+            if (typeMvt != null) {
+                mouvements = mouvements.stream()
+                    .filter(m -> m.getTypeMouvement() == typeMvt)
+                    .toList();
+            }
+            
+            // Filtrer par nom de produit
+            if (produit != null && !produit.isEmpty()) {
+                mouvements = mouvements.stream()
+                    .filter(m -> m.getMvtStockFilles() != null && 
+                        m.getMvtStockFilles().stream()
+                            .anyMatch(f -> f.getProduit() != null && 
+                                f.getProduit().getNom() != null && 
+                                f.getProduit().getNom().toLowerCase().contains(produit.toLowerCase())))
+                    .toList();
+            }
+            
             model.addAttribute("mouvements", mouvements);
             
             return "pointdevente/mouvements";
