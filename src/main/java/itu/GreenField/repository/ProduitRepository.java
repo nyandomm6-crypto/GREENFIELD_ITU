@@ -11,9 +11,11 @@ public interface ProduitRepository extends JpaRepository<Produit, Integer> {
     
     @Query("SELECT p FROM Produit p WHERE " +
            "(:idCategorie IS NULL OR p.categorie.id = :idCategorie) AND " +
-           "(:motCle IS NULL OR LOWER(p.nom) LIKE LOWER(CONCAT('%', :motCle, '%')) " +
-           "OR LOWER(p.matricule) LIKE LOWER(CONCAT('%', :motCle, '%')))")
-    List<Produit> searchProduits(@Param("idCategorie") Integer idCategorie, @Param("motCle") String motCle);
+           "(:motCle IS NULL OR LOWER(p.nom) LIKE :motClePattern " +
+           "OR LOWER(p.matricule) LIKE :motClePattern)")
+    List<Produit> searchProduits(@Param("idCategorie") Integer idCategorie, 
+                                 @Param("motCle") String motCle,
+                                 @Param("motClePattern") String motClePattern);
 
     boolean existsByMatricule(String matricule);
     

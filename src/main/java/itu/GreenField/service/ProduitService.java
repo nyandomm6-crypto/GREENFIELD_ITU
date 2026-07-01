@@ -30,9 +30,15 @@ public class ProduitService {
     }
 
     public List<Produit> search(Integer idCategorie, String motCle) {
+        String cleanMotCle = (motCle != null && !motCle.trim().isEmpty()) ? motCle.trim() : null;
+        String pattern = null;
+        if (cleanMotCle != null) {
+            pattern = "%" + cleanMotCle.toLowerCase() + "%";
+        }
         return produitRepository.searchProduits(
                 (idCategorie != null && idCategorie > 0) ? idCategorie : null,
-                (motCle != null && !motCle.trim().isEmpty()) ? motCle.trim() : null
+                cleanMotCle,
+                pattern
         );
     }
 
