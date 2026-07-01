@@ -4,14 +4,6 @@ build/
 .vscode/
 *.iml
 
-<<<<<<< HEAD
 .env
 .env.*
-=======
-# Environment
-.env
-.env.*
-
-# Java
->>>>>>> module-vehicule
 *.class
