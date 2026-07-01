@@ -171,6 +171,6 @@ public class AuthClientController {
     @PostMapping("/logout")
     public String deconnexion(HttpSession session) {
         session.invalidate();
-        return "redirect:/produits";
+        return "redirect:/";
     }
 }
