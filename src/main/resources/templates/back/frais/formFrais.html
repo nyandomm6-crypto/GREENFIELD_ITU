@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${fraisFormDto.id == null} ? 'Ajouter un frais' : 'Modifier un frais'">Frais de livraison</title>
+    <style>
+        .text-danger {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        .is-invalid {
+            border: 1px solid #dc2626;
+        }
+
+        fieldset {
+            border: 1px solid #cbd5e1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .btn-list {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="head">
+        <h1
+            th:text="${fraisFormDto.id == null} ? 'Ajouter un nouveau frais' : 'Modifier le frais #' + ${fraisFormDto.id}">
+            Formulaire Frais
+        </h1>
+        <a th:href="@{/frais/list}">Voir la liste</a>
+    </div><br>
+
+    <form th:action="@{/frais/save}" th:object="${fraisFormDto}" method="POST" id="form">
+
+        <div th:if="${alert}" class="alert alert-danger" role="alert"
+            style="background-color: #fee2e2; padding: 10px; border-radius: 4px; border: 1px solid #fca5a5;">
+            <p th:text="${alert}" class="text-danger" style="margin: 0;"></p>
+        </div>
+
+        <input type="hidden" th:field="*{id}" />
+
+        <fieldset>
+            <legend>Configuration de la tarification</legend>
+
+            <label for="province">Province de destination :</label>
+            <th:block th:if="${fraisFormDto.id != null}">
+                <select id="province" disabled style="background-color: #f1f5f9; cursor: not-allowed;">
+                    <option th:each="province : ${provinceLivraisonOptions}" th:value="${province.id}"
+                        th:text="${province.nom}" th:selected="${province.id == fraisFormDto.idProvince}">
+                    </option>
+                </select>
+                <input type="hidden" th:field="*{idProvince}" />
+            </th:block>
+
+            <th:block th:if="${fraisFormDto.id == null}">
+                <select id="province" th:field="*{idProvince}"
+                    th:classappend="${#fields.hasErrors('idProvince')} ? 'is-invalid' : ''">
+                    <option value="">Sélectionnez la province concernée</option>
+                    <option th:each="province : ${provinceLivraisonOptions}" th:value="${province.id}"
+                        th:text="${province.nom}">
+                    </option>
+                </select>
+            </th:block>
+            <p class="text-danger" th:if="${#fields.hasErrors('idProvince')}" th:errors="*{idProvince}"></p>
+
+            <label for="poidsreference">Poids limite de référence (kg >) :</label>
+            <input type="number" step="any" id="poidsreference" th:field="*{poidsreference}" placeholder="Ex: 10.00"
+                th:classappend="${#fields.hasErrors('poidsreference')} ? 'is-invalid' : ''" />
+            <p class="text-danger" th:if="${#fields.hasErrors('poidsreference')}" th:errors="*{poidsreference}"></p>
+
+            <label for="montant">Montant du frais appliqué (Ar) :</label>
+            <input type="number" step="any" id="montant" th:field="*{montant}" placeholder="Ex: 15000"
+                th:classappend="${#fields.hasErrors('montant')} ? 'is-invalid' : ''" />
+            <p class="text-danger" th:if="${#fields.hasErrors('montant')}" th:errors="*{montant}"></p>
+
+        </fieldset>
+
+        <div class="btn-list">
+            <a th:href="@{/frais/list}"><button type="button">Annuler</button></a>
+            <button type="submit">Enregistrer</button>
+        </div>
+    </form>
+</body>
+
+</html>
