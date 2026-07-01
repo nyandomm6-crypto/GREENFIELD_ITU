@@ -44,7 +44,7 @@ public interface StatistiqueRepository extends JpaRepository<Commandes, Integer>
     // Meilleure vente (courbe) : Evolution des ventes par jour
     @Query(value = "SELECT new itu.greenField.dto.EvolutionVenteDto(CAST(c.datecommande AS localdate), SUM(c.totalGeneral)) " +
                    "FROM Commandes c " +
-                   "WHERE c.statutActuel.nom = 'Paye' " +
+                   "WHERE c.statutActuel.nom = 'Payée' " +
                    "GROUP BY CAST(c.datecommande AS localdate) " +
                    "ORDER BY CAST(c.datecommande AS localdate) ASC")
     List<EvolutionVenteDto> findEvolutionDesVentes();
@@ -52,7 +52,7 @@ public interface StatistiqueRepository extends JpaRepository<Commandes, Integer>
     // Top 5 meilleurs clients en ligne
     @Query(value = "SELECT new itu.greenField.dto.ClientStatDto(cl.id, cl.nom, cl.prenom, SUM(c.totalGeneral)) " +
                    "FROM Commandes c JOIN c.client cl " +
-                   "WHERE c.statutActuel.nom = 'Paye' " +
+                   "WHERE c.statutActuel.nom = 'Payée' " +
                    "GROUP BY cl.id, cl.nom, cl.prenom " +
                    "ORDER BY SUM(c.totalGeneral) DESC LIMIT 5")
     List<ClientStatDto> findTop5MeilleursClients();
