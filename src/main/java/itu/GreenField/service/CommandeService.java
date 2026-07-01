@@ -11,11 +11,16 @@ import itu.GreenField.model.Client;
 import itu.GreenField.model.Commandes;
 import itu.GreenField.model.DetailsCommande;
 import itu.GreenField.model.ModeReception;
+import itu.GreenField.model.MvtStock;
+import itu.GreenField.model.MvtStockFille;
 import itu.GreenField.model.Panier;
 import itu.GreenField.model.PanierFille;
 import itu.GreenField.model.StatutCommande;
+import itu.GreenField.model.TypeMvt;
 import itu.GreenField.repository.CommandesRepository;
 import itu.GreenField.repository.DetailsCommandeRepository;
+import itu.GreenField.repository.MvtStockFilleRepository;
+import itu.GreenField.repository.MvtStockRepository;
 
 @Service
 public class CommandeService {
@@ -24,15 +29,21 @@ public class CommandeService {
     private final DetailsCommandeRepository detailsCommandeRepository;
     private final ProduitService produitService;
     private final PanierService panierService;
+    private final MvtStockRepository mvtStockRepository;
+    private final MvtStockFilleRepository mvtStockFilleRepository;
 
     public CommandeService(CommandesRepository commandesRepository,
             DetailsCommandeRepository detailsCommandeRepository,
             ProduitService produitService,
-            PanierService panierService) {
+            PanierService panierService,
+            MvtStockRepository mvtStockRepository,
+            MvtStockFilleRepository mvtStockFilleRepository) {
         this.commandesRepository = commandesRepository;
         this.detailsCommandeRepository = detailsCommandeRepository;
         this.produitService = produitService;
         this.panierService = panierService;
+        this.mvtStockRepository = mvtStockRepository;
+        this.mvtStockFilleRepository = mvtStockFilleRepository;
     }
 
     /**
@@ -73,6 +84,11 @@ public class CommandeService {
 
         commande = commandesRepository.save(commande);
 
+        // En-tête du mouvement de stock correspondant à cette vente.
+        MvtStock mvtStock = new MvtStock();
+        mvtStock.setTypeMouvement(TypeMvt.Vente_Client);
+        mvtStock = mvtStockRepository.save(mvtStock);
+
         for (PanierFille ligne : lignes) {
             DetailsCommande detail = new DetailsCommande();
             detail.setCommande(commande);
@@ -80,6 +96,13 @@ public class CommandeService {
             detail.setQuantite(ligne.getQuantite());
             detail.setPuAuMomentAchat(ligne.getProduit().getPu());
             detailsCommandeRepository.save(detail);
+
+    
+            MvtStockFille sortie = new MvtStockFille();
+            sortie.setMvtStock(mvtStock);
+            sortie.setProduit(ligne.getProduit());
+            sortie.setQuantite(ligne.getQuantite());
+            mvtStockFilleRepository.save(sortie);
         }
 
         panierService.vider(panier);
