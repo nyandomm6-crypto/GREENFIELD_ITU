@@ -16,6 +16,7 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/DetailsCommande.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Employes.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/FRole.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/HistoriqueStatutCommande.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Livraison.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/LivraisonFille.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/ModeReception.java
@@ -28,6 +29,7 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/PanierFille.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/PointDeVente.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Produit.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/ProvinceLivraison.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/StatutCommande.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/StatutLivraison.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/StatutPaiement.java
@@ -36,6 +38,7 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Transferts.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/TransfertsFille.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/Tresorerie.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/TypeCommande.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/TypeFlux.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/TypeMessage.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/model/TypeMvt.java

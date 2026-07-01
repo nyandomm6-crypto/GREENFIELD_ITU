@@ -64,11 +64,11 @@ public class CommandeService {
 
         Commandes commande = new Commandes();
         commande.setClient(client);
-        commande.setDatecommande(LocalDateTime.now());
+        // commande.setDatecommande(LocalDateTime.now());
         commande.setModeReception(ModeReception.Retrait_Boutique);
-        commande.setStatutCommande(StatutCommande.Cree);
+        // commande.setStatutCommande(StatutCommande.Cree);
         commande.setFraisLivraison(BigDecimal.ZERO);
-        commande.setTotalProduits(total);
+        // commande.setTotalProduits(total);
         commande.setTotalGeneral(total);
 
         commande = commandesRepository.save(commande);
