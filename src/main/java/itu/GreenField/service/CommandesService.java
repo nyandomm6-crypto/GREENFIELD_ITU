@@ -16,19 +16,19 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jakarta.persistence.Query;
 
-import itu.greenfield.dto.CommandeBackFilterDto;
-import itu.greenfield.dto.CommandeBackFormDto;
-import itu.greenfield.dto.DetailCommandeBackDto;
-import itu.greenfield.model.Client;
-import itu.greenfield.model.Commandes;
-import itu.greenfield.model.ModeReception;
-import itu.greenfield.model.PointDeVente;
-import itu.greenfield.model.Produit;
-import itu.greenfield.repository.CommandesRepository;
-import itu.greenfield.repository.DetailsCommandeRepository;
-import itu.greenfield.model.StatutCommande;
-import itu.greenfield.model.TypeCommande;
-import itu.greenfield.model.DetailsCommande;
+import itu.GreenField.dto.CommandeBackFilterDto;
+import itu.GreenField.dto.CommandeBackFormDto;
+import itu.GreenField.dto.DetailCommandeBackDto;
+import itu.GreenField.model.Client;
+import itu.GreenField.model.Commandes;
+import itu.GreenField.model.ModeReception;
+import itu.GreenField.model.PointDeVente;
+import itu.GreenField.model.Produit;
+import itu.GreenField.repository.CommandesRepository;
+import itu.GreenField.repository.DetailsCommandeRepository;
+import itu.GreenField.model.StatutCommande;
+import itu.GreenField.model.TypeCommande;
+import itu.GreenField.model.DetailsCommande;
 
 @Service
 public class CommandesService {
@@ -39,15 +39,28 @@ public class CommandesService {
     private final ClientService clientService;
     private final PointDeVenteService pointDeVenteService;
     private final DetailsCommandeRepository detailsCommandeRepository;
+    private final StatutCommandeService statutCommandeService;
+    private final HistoriqueStatutCommandeService historiqueStatutCommandeService;
+    private final ProvinceLivraisonService provinceLivraisonService;
+    private final FraisLivraisonService fraisLivraisonService;
 
     public CommandesService(ProduitService produitService, CommandesRepository commandesRepository,
             ClientService clientService, PointDeVenteService pointDeVenteService,
-            DetailsCommandeRepository detailsCommandeRepository) {
+            DetailsCommandeRepository detailsCommandeRepository,
+            StatutCommandeService statutCommandeService,
+            HistoriqueStatutCommandeService historiqueStatutCommandeService,
+            ProvinceLivraisonService provinceLivraisonService,
+            FraisLivraisonService fraisLivraisonService
+        ) {
         this.produitService = produitService;
         this.commandesRepository = commandesRepository;
         this.clientService = clientService;
         this.pointDeVenteService = pointDeVenteService;
         this.detailsCommandeRepository = detailsCommandeRepository;
+        this.statutCommandeService = statutCommandeService;
+        this.historiqueStatutCommandeService = historiqueStatutCommandeService;
+        this.provinceLivraisonService = provinceLivraisonService;
+        this.fraisLivraisonService = fraisLivraisonService;
     }
 
     public List<Commandes> getCommandesDispo() {
@@ -63,8 +76,27 @@ public class CommandesService {
         return commandesRepository.findAllPaginated(pageable);
     }
 
+    public void delete(Commandes cmd) throws Exception {
+        //throw new Exception();
+        commandesRepository.delete(cmd);
+    }
+
+    public Commandes findById(Integer id){
+        return commandesRepository.findById(id).orElse(null);
+    }
+
+    public void checkIfUpdatable(Commandes cmd) throws Exception{
+        StatutCommande currentStatut = cmd.getStatutActuel();
+            if(currentStatut.getNom().equals("Livrée")){
+                throw new Exception("Une commande livrée ne peut plus être modifiée!");
+            }
+            if(currentStatut.getNom().equals("Anulée")){
+                throw new Exception("Une commande anulée ne peut plus être modifiée!");
+            }
+    }
+
     @Transactional
-    public void saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
+    public Commandes saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
         Integer clientId = commandeFormDto.getClientId();
         Client client = null;
         if (clientId != null) {
@@ -77,22 +109,37 @@ public class CommandesService {
         }
 
         ModeReception modeReception = ModeReception.fromString(commandeFormDto.getModeReception());
-        StatutCommande statusCommande = StatutCommande.En_cours;
         TypeCommande typeCommande = TypeCommande.En_boutique;
-
+        
         Commandes commande = null;
+        HistoriqueStatutCommande hist = null;
         if (commandeFormDto.getCommandeId() != null) {
             commande = commandesRepository.findById(commandeFormDto.getCommandeId()).orElse(null);
             if (commande == null) {
                 throw new Exception("Commande introuvable avec l'ID: " + commandeFormDto.getCommandeId());
+            }
+            StatutCommande currentStatut = commande.getStatutActuel();
+            if(currentStatut.getNom().equals("Livrée")){
+                throw new Exception("Une commande livrée ne peut plus être modifiée!");
+            }
+            if(currentStatut.getNom().equals("Anulée")){
+                throw new Exception("Une commande anulée ne peut plus être modifiée!");
             }
             detailsCommandeRepository.deleteAll(commande.getDetailsCommande());
         } else {
             commande = new Commandes();
             commande.setClient(client);
             commande.setDatecommande(commandeFormDto.getSqlTypeOfDate());
-            commande.setStatutCommande(statusCommande);
             commande.setTypeCommande(typeCommande);
+            
+            StatutCommande statusCommande = statutCommandeService.findByNom("Créée");
+            if (statusCommande == null)
+                throw new Exception("Statut commande \"Créée\" n'existe pas");
+            hist = new HistoriqueStatutCommande();
+            hist.setStatutCommande(statusCommande);
+            hist.setCommande(commande);
+            hist.setDatechangement(commandeFormDto.getSqlTypeOfDate());
+            commande.setStatutActuel(statusCommande);
         }
 
         commande.setModeReception(modeReception);
@@ -105,16 +152,18 @@ public class CommandesService {
             PointDeVente pdv = pointDeVenteService.findPointDeVenteById(1);
             commande.setPointDeVenteRetrait(pdv);
             commande.setAdresseLivraison(null);
+        } else {
+            ProvinceLivraison provinceLivraison = provinceLivraisonService.getProvinceById(commandeFormDto.getProvinceId());
+            commande.setProvinceLivraison(provinceLivraison);
         }
-
-        /* Static pour le moment */
-        commande.setFraisLivraison(BigDecimal.valueOf(5000.0));
 
         int qteTotal = 0;
         BigDecimal prixTotal = BigDecimal.ZERO;
+        BigDecimal poidsTotal = BigDecimal.ZERO;
 
         commande.setTotalProduits(qteTotal);
         commande.setTotalGeneral(prixTotal);
+        commande.setPoidsTotal(poidsTotal);
 
         commande = commandesRepository.save(commande);
         int nbLines = commandeFormDto.getDetailsCommande().size();
@@ -132,12 +181,25 @@ public class CommandesService {
 
             qteTotal += quantite;
             prixTotal = prixTotal.add((BigDecimal.valueOf(quantite)).multiply(produit.getPu()));
+            poidsTotal = poidsTotal.add((BigDecimal.valueOf(quantite)).multiply(produit.getPoids()));
         }
 
         commande.setTotalProduits(qteTotal);
         commande.setTotalGeneral(prixTotal);
+        commande.setPoidsTotal(poidsTotal);
 
-        commandesRepository.save(commande);
+        commande.setFraisLivraison(BigDecimal.ZERO);
+        if (modeReception == ModeReception.Livraison_Domicile) {
+            FraisLivraison fraisLivraison = fraisLivraisonService.calculateFraisLivraison(commande.getProvinceLivraison().getId(), poidsTotal.doubleValue());
+            commande.setFraisLivraison(fraisLivraison.getMontant());   
+        }
+
+        commande = commandesRepository.save(commande);
+
+        if(hist != null)
+            historiqueStatutCommandeService.save(hist);
+
+        return commande;
     }
 
     public Page<Commandes> findWithDynamicFilters(CommandeBackFilterDto filter) {

@@ -1,14 +1,15 @@
-package itu.greenfield.model;
+package itu.GreenField.model;
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "statutcommande")
-public class StatutCommande {
+@Table(name = "provincelivraison")
+public class ProvinceLivraison {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false, length = 100)
     private String nom;
 
     public Integer getId() {

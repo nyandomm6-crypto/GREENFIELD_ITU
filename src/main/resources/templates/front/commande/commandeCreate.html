@@ -14,10 +14,10 @@
 
 <body>
     <div class="head">
-        <h1>Formulaire d'une nouvelle commande</h1>
-        <a th:href="@{/commandes}">Voir la liste</a>
+        <h1>Mode de récupération de la commande</h1>
+        <a th:href="@{/commandes/fo}">Voir la liste</a>
     </div><br>
-    <form th:action="@{/commandes/save}" th:object="${commandeBackFormDto}" method="POST" id="form">
+    <form th:action="@{/commandes/fo/save}" th:object="${commandeBackFormDto}" method="POST" id="form">
         <div th:if="${globalError}" class="alert alert-danger" role="alert">
             <p th:text="${globalError}"></p>
         </div>

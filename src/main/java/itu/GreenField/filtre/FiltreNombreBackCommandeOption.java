@@ -4,7 +4,8 @@ public enum FiltreNombreBackCommandeOption {
     ALL("", "Tous"),
     QUANTITE_TOTALE("total_produits", "Quantité totale"),
     VALEUR_TOTALE("total_general", "Montant total"),
-    FRAIS_LIVRAISON("frais_livraison", "Frais livraison");
+    FRAIS_LIVRAISON("frais_livraison", "Frais livraison"),
+    POIDS_TOTAL("poids_total", "Poids total");
 
     private final String value;
     private final String label;

@@ -24,7 +24,7 @@ public class Commandes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "idclient")
     private Client client;
 
@@ -45,18 +45,21 @@ public class Commandes {
     @Column(name = "adresse_livraison")
     private String adresseLivraison;
 
+    @OneToOne
+    @JoinColumn(name = "provincelivraisonid")
+    private ProvinceLivraison provinceLivraison;
+
     @Column(name = "heure_reception_debut")
     private java.sql.Timestamp heureReceptionDebut;
 
     @Column(name = "heure_reception_fin")
     private java.sql.Timestamp heureReceptionFin;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "statutcommande", nullable = false)
-    private StatutCommande statutCommande;
-
     @Column(name = "frais_livraison", precision = 10, scale = 2)
     private BigDecimal fraisLivraison;
+
+    @Column(name = "poids_total", precision = 10, scale = 2)
+    private BigDecimal poidsTotal;
 
     @Column(name = "total_produits")
     private Integer totalProduits;
@@ -66,6 +69,13 @@ public class Commandes {
 
     @OneToMany(mappedBy = "commande")
     private List<DetailsCommande> details;
+
+    @OneToOne
+    @JoinColumn(name = "statutactuel")
+    private StatutCommande statutActuel;
+
+    @OneToMany(mappedBy = "commande")
+    private List<HistoriqueStatutCommande> historiqueStatut;
 
     @OneToOne(mappedBy = "commande")
     private Paiement paiement;
@@ -111,6 +121,22 @@ public class Commandes {
         this.typeCommande = typeCommande;
     }
 
+    public ProvinceLivraison getProvinceLivraison() {
+        return provinceLivraison;
+    }
+
+    public BigDecimal getPoidsTotal() {
+        return poidsTotal;
+    }
+
+    public void setPoidsTotal(BigDecimal poidsTotal) {
+        this.poidsTotal = poidsTotal;
+    }
+
+    public void setProvinceLivraison(ProvinceLivraison provinceLivraison) {
+        this.provinceLivraison = provinceLivraison;
+    }
+
     public ModeReception getModeReception() {
         return modeReception;
     }
@@ -139,6 +165,22 @@ public class Commandes {
         return adresseLivraison;
     }
 
+    public StatutCommande getStatutActuel() {
+        return statutActuel;
+    }
+
+    public void setStatutActuel(StatutCommande statutActuel) {
+        this.statutActuel = statutActuel;
+    }
+
+    public List<HistoriqueStatutCommande> getHistoriqueStatut() {
+        return historiqueStatut;
+    }
+
+    public void setHistoriqueStatut(List<HistoriqueStatutCommande> historiqueStatut) {
+        this.historiqueStatut = historiqueStatut;
+    }
+
     public void setAdresseLivraison(String adresseLivraison) {
         this.adresseLivraison = adresseLivraison;
     }
@@ -157,14 +199,6 @@ public class Commandes {
 
     public void setHeureReceptionFin(java.sql.Timestamp heureReceptionFin) {
         this.heureReceptionFin = heureReceptionFin;
-    }
-
-    public StatutCommande getStatutCommande() {
-        return statutCommande;
-    }
-
-    public void setStatutCommande(StatutCommande statutCommande) {
-        this.statutCommande = statutCommande;
     }
 
     public BigDecimal getFraisLivraison() {

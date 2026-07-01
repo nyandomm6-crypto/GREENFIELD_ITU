@@ -15,19 +15,14 @@
 <body>
     <div class="head">
         <h1>Liste des commandes</h1>
-        <a th:href="@{/commandes/form/new}">Ajouter nouveau</a>
+        <a th:href="@{/commandes/fo/form/new}">Ajouter nouveau</a>
     </div><br>
     <div class="section-alert">
         <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
         <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
     </div>
-    <form th:action="@{/commandes/list}" th:object="${commandeFilterDto}" method="POST" id="form">
+    <form th:action="@{/commandes/fo/list}" th:object="${commandeFilterDto}" method="POST" id="form">
         <div class="section-filtre">
-            <div class="filtre">
-                <label for="client-input">Client:</label>
-                <input type="text" id="client-input" placeholder="Tapez le nom ou le prénom du client" />
-                <div id="liste-clients" class="d-none"></div>
-            </div>
             <div class="filtre">
                 <label for="mode-reception-input">Mode de réception:</label>
                 <select id="mode-reception-option">
@@ -103,13 +98,6 @@
                     <button type="button" onclick="removeStaticFilter(this, 'modeReceptionSelect')">x</button>
                 </div>
 
-                <div th:if="${commandeFilterDto?.clientId != null}" th:each="cId : ${commandeFilterDto.clientId}"
-                    class="filtre-actif">
-                    <span th:text="'Client ID: ' + ${cId}"></span>
-                    <input type="hidden" name="clientId" th:value="${cId}" />
-                    <button type="button" onclick="removeArrayFilter(this)">x</button>
-                </div>
-
                 <th:block
                     th:if="${commandeFilterDto?.typeFiltreDate != null and !#lists.isEmpty(commandeFilterDto.typeFiltreDate)}">
                     <div th:each="typeDate, iter : ${commandeFilterDto.typeFiltreDate}" class="filtre-actif">
@@ -138,7 +126,7 @@
                 </th:block>
             </div>
             <button type="submit">Appliquer les filtres</button>
-            <a th:href="@{/commandes/list}">Réinitialiser</a>
+            <a th:href="@{/commandes/fo/list}">Réinitialiser</a>
         </div>
         <div class="table-container">
             <table>
@@ -146,7 +134,6 @@
                     <tr>
                         <th>#</th>
                         <th>Date</th>
-                        <th>Client</th>
                         <th>Type</th>
                         <th>Mode de réception</th>
                         <th>Lieu de récupération</th>
@@ -166,7 +153,6 @@
                         <td
                             th:text="${cmd.datecommande != null ? #dates.format(cmd.datecommande, 'yyyy-MM-dd HH:mm') : ''}">
                         </td>
-                        <td th:text="|${cmd.client.nom} ${cmd.client.prenom}|"></td>
                         <td th:text="${cmd.typeCommande}"></td>
                         <td th:text="${cmd.modeReception}"></td>
                         <td
@@ -184,9 +170,9 @@
                         <td th:text="${cmd.poidsTotal}"></td>
                         <td th:text="${cmd.totalGeneral}"></td>
                         <td>
-                            <a th:href="@{|/commandes/detail/${cmd.id}|}">Detail</a>
-                            <a th:href="@{|/commandes/form/edit/${cmd.id}|}">Modifier</a>
-                            <a th:href="@{|/commandes/delete/${cmd.id}|}">Supprimer</a>
+                            <a th:href="@{|/commandes/fo/detail/${cmd.id}|}">Detail</a>
+                            <a th:href="@{|/commandes/fo/form/edit/${cmd.id}|}">Modifier</a>
+                            <a th:href="@{|/commandes/fo/delete/${cmd.id}|}">Supprimer</a>
                         </td>
                     </tr>
                 </tbody>
@@ -214,74 +200,6 @@
         </div>
     </form>
     <script>
-        function searchClients(word) {
-            const url = '/clients/searchByWord';
-            const params = new URLSearchParams();
-            params.append('query', word);
-
-
-            if (word.length > 0) {
-                //console.log('Recherche de clients avec nom :', nom, 'et prénom :', prenom);
-                fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: params
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        //console.log('Clients trouvés :', data);
-                        listeClientsDiv.innerHTML = '';
-                        listeClientsDiv.classList.remove('d-none');
-
-                        if (data.length > 0) {
-                            const ul = document.createElement('ul');
-                            data.forEach(client => {
-                                const children = `<div class="children-list" onclick="selectClient(${client.id}, '${client.nom}', '${client.prenom}')">${client.nom} ${client.prenom}</div>`;
-                                listeClientsDiv.insertAdjacentHTML('beforeend', children);
-                            });
-                        } else {
-                            const children = `<p> Aucun client trouvé. Verifiez les orthographes</p>`;
-                            listeClientsDiv.insertAdjacentHTML('beforeend', children);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors de la recherche des clients :', error);
-                    });
-            } else {
-                listeClientsDiv.innerHTML = '';
-            }
-        }
-
-        function selectClient(clientId, nom, prenom) {
-            const clientIdinput = document.createElement("input");
-            clientIdinput.type = "hidden";
-            clientIdinput.name = "clientId";
-            clientIdinput.value = clientId;
-
-            if (activeFiltresDiv) {
-                const filtreDiv = document.createElement("div");
-                filtreDiv.classList.add("filtre-actif");
-
-                const filtreText = document.createElement("span");
-                filtreText.textContent = `Client: ${nom} ${prenom}`;
-                filtreDiv.appendChild(filtreText);
-                filtreDiv.appendChild(clientIdinput);
-                activeFiltresDiv.appendChild(filtreDiv);
-
-                const removeButton = document.createElement("button");
-                removeButton.textContent = "x";
-                removeButton.addEventListener("click", function () {
-                    filtreDiv.remove();
-                });
-                filtreDiv.appendChild(removeButton);
-
-                clientInput.value = '';
-            }
-
-            listeClientsDiv.classList.add('d-none');
-            listeClientsDiv.innerHTML = '';
-        }
-
         function changePage(pageNumber) {
             pageNumberInput.value = pageNumber;
             form.submit();
@@ -304,7 +222,6 @@
     </script>
     <script>
         const form = document.getElementById('form');
-        const clientInput = document.getElementById('client-input');
         const listeClientsDiv = document.getElementById('liste-clients');
         const activeFiltresDiv = document.querySelector('.active-filtres');
         const modeReceptionSelect = document.getElementById('mode-reception-option');
@@ -316,12 +233,6 @@
         const typeCommandeSelect = document.getElementById('type-commande');
         const statutCommandeSelect = document.getElementById('statut-commande');
         const pageNumberInput = document.getElementById('pageParam');
-
-        clientInput.addEventListener('input', function () {
-            const query = clientInput.value.trim();
-            searchClients(query);
-            //.log('Nom recherché :', query);
-        });
 
         modeReceptionSelect.addEventListener('change', function () {
             const selectedMode = modeReceptionSelect.value;
