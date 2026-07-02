@@ -1,7 +1,6 @@
 package itu.greenField.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -25,15 +24,19 @@ public class Commandes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "idclient")
     private Client client;
 
-    private LocalDateTime datecommande;
+    private java.sql.Timestamp datecommande;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "mode_reception", nullable = false)
     private ModeReception modeReception;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type_commande")
+    private TypeCommande typeCommande;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idptdevente_retrait", referencedColumnName = "code")
@@ -42,24 +45,37 @@ public class Commandes {
     @Column(name = "adresse_livraison")
     private String adresseLivraison;
 
-    @Column(name = "plage_horaire_souhaitee", length = 100)
-    private String plageHoraireSouhaitee;
+    @OneToOne
+    @JoinColumn(name = "provincelivraisonid")
+    private ProvinceLivraison provinceLivraison;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "statutcommande", nullable = false)
-    private StatutCommande statutCommande;
+    @Column(name = "heure_reception_debut")
+    private java.sql.Timestamp heureReceptionDebut;
+
+    @Column(name = "heure_reception_fin")
+    private java.sql.Timestamp heureReceptionFin;
 
     @Column(name = "frais_livraison", precision = 10, scale = 2)
     private BigDecimal fraisLivraison;
 
-    @Column(name = "total_produits", nullable = false, precision = 10, scale = 2)
-    private BigDecimal totalProduits;
+    @Column(name = "poids_total", precision = 10, scale = 2)
+    private BigDecimal poidsTotal;
+
+    @Column(name = "total_produits")
+    private Integer totalProduits;
 
     @Column(name = "total_general", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalGeneral;
 
     @OneToMany(mappedBy = "commande")
     private List<DetailsCommande> details;
+
+    @OneToOne
+    @JoinColumn(name = "statutactuel")
+    private StatutCommande statutActuel;
+
+    @OneToMany(mappedBy = "commande")
+    private List<HistoriqueStatutCommande> historiqueStatut;
 
     @OneToOne(mappedBy = "commande")
     private Paiement paiement;
@@ -69,6 +85,9 @@ public class Commandes {
 
     @OneToMany(mappedBy = "commande")
     private List<Tresorerie> tresoreries;
+
+    @OneToMany(mappedBy = "commande")
+    private List<DetailsCommande> detailsCommande;
 
     public Integer getId() {
         return id;
@@ -86,12 +105,36 @@ public class Commandes {
         this.client = client;
     }
 
-    public LocalDateTime getDatecommande() {
+    public java.sql.Timestamp getDatecommande() {
         return datecommande;
     }
 
-    public void setDatecommande(LocalDateTime datecommande) {
+    public void setDatecommande(java.sql.Timestamp datecommande) {
         this.datecommande = datecommande;
+    }
+
+    public TypeCommande getTypeCommande() {
+        return typeCommande;
+    }
+
+    public void setTypeCommande(TypeCommande typeCommande) {
+        this.typeCommande = typeCommande;
+    }
+
+    public ProvinceLivraison getProvinceLivraison() {
+        return provinceLivraison;
+    }
+
+    public BigDecimal getPoidsTotal() {
+        return poidsTotal;
+    }
+
+    public void setPoidsTotal(BigDecimal poidsTotal) {
+        this.poidsTotal = poidsTotal;
+    }
+
+    public void setProvinceLivraison(ProvinceLivraison provinceLivraison) {
+        this.provinceLivraison = provinceLivraison;
     }
 
     public ModeReception getModeReception() {
@@ -106,6 +149,14 @@ public class Commandes {
         return pointDeVenteRetrait;
     }
 
+    public List<DetailsCommande> getDetailsCommande() {
+        return detailsCommande;
+    }
+
+    public void setDetailsCommande(List<DetailsCommande> detailsCommande) {
+        this.detailsCommande = detailsCommande;
+    }
+
     public void setPointDeVenteRetrait(PointDeVente pointDeVenteRetrait) {
         this.pointDeVenteRetrait = pointDeVenteRetrait;
     }
@@ -114,24 +165,40 @@ public class Commandes {
         return adresseLivraison;
     }
 
+    public StatutCommande getStatutActuel() {
+        return statutActuel;
+    }
+
+    public void setStatutActuel(StatutCommande statutActuel) {
+        this.statutActuel = statutActuel;
+    }
+
+    public List<HistoriqueStatutCommande> getHistoriqueStatut() {
+        return historiqueStatut;
+    }
+
+    public void setHistoriqueStatut(List<HistoriqueStatutCommande> historiqueStatut) {
+        this.historiqueStatut = historiqueStatut;
+    }
+
     public void setAdresseLivraison(String adresseLivraison) {
         this.adresseLivraison = adresseLivraison;
     }
 
-    public String getPlageHoraireSouhaitee() {
-        return plageHoraireSouhaitee;
+    public java.sql.Timestamp getHeureReceptionDebut() {
+        return heureReceptionDebut;
     }
 
-    public void setPlageHoraireSouhaitee(String plageHoraireSouhaitee) {
-        this.plageHoraireSouhaitee = plageHoraireSouhaitee;
+    public void setHeureReceptionDebut(java.sql.Timestamp heureReceptionDebut) {
+        this.heureReceptionDebut = heureReceptionDebut;
     }
 
-    public StatutCommande getStatutCommande() {
-        return statutCommande;
+    public java.sql.Timestamp getHeureReceptionFin() {
+        return heureReceptionFin;
     }
 
-    public void setStatutCommande(StatutCommande statutCommande) {
-        this.statutCommande = statutCommande;
+    public void setHeureReceptionFin(java.sql.Timestamp heureReceptionFin) {
+        this.heureReceptionFin = heureReceptionFin;
     }
 
     public BigDecimal getFraisLivraison() {
@@ -142,11 +209,11 @@ public class Commandes {
         this.fraisLivraison = fraisLivraison;
     }
 
-    public BigDecimal getTotalProduits() {
+    public Integer getTotalProduits() {
         return totalProduits;
     }
 
-    public void setTotalProduits(BigDecimal totalProduits) {
+    public void setTotalProduits(Integer totalProduits) {
         this.totalProduits = totalProduits;
     }
 

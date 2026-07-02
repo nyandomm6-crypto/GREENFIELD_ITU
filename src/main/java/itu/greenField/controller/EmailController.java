@@ -1,14 +1,13 @@
 package itu.greenField.controller;
 
+import itu.greenField.service.EnvoiEmail;
+import itu.greenField.service.UtilsService;
 import java.io.File;
 import java.io.IOException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import itu.greenField.service.EnvoiEmail;
-import itu.greenField.service.UtilsService;
 
 @Controller
 public class EmailController {

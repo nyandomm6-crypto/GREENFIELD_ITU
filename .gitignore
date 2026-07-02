@@ -3,10 +3,6 @@ build/
 .idea/
 .vscode/
 *.iml
-
-# Environment
-.env
-.env.*
-
-# Java
 *.class
+*.lst
+.env

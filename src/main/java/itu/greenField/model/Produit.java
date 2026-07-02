@@ -3,6 +3,8 @@ package itu.greenField.model;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,16 +32,23 @@ public class Produit {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal pu;
 
+    @Column(name="poids_moyenne_unitaire", nullable = false, precision = 10, scale = 2)
+    private BigDecimal poids;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idcategorie")
+    @JsonIgnoreProperties("produits")  // évite la boucle Produit -> CategorieProduit -> [produits] -> Produit
     private CategorieProduit categorie;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "produit")
     private List<DemandeStockFille> demandesStockFille;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "produit")
     private List<DetailsCommande> detailsCommande;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "produit")
     private List<TransfertsFille> transfertsFille;
 
@@ -81,6 +90,14 @@ public class Produit {
 
     public void setCategorie(CategorieProduit categorie) {
         this.categorie = categorie;
+    }
+
+    public BigDecimal getPoids() {
+        return poids;
+    }
+
+    public void setPoids(BigDecimal poids) {
+        this.poids = poids;
     }
 
     public List<DemandeStockFille> getDemandesStockFille() {
