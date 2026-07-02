@@ -53,7 +53,7 @@
         <tbody>
           <tr th:each="mvt : ${mouvements}">
             <td th:text="${mvt.typeMouvement}"></td>
-            <td th:text="${mvt.dateMvt}"></td>
+            <td th:text="${mvt.dateMvt != null ? #temporals.format(mvt.dateMvt, 'yyyy-MM-dd HH:mm') : ''}"></td>
             <td>
               <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.produit.nom} + ', '"></span>
             </td>
