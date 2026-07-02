@@ -224,6 +224,7 @@ CREATE TABLE Commandes (
     adresse_livraison VARCHAR(255),
     type_commande VARCHAR(30) DEFAULT 'En boutique',
     statutActuel INT REFERENCES statutcommande (id) ON DELETE SET NULL DEFAULT 1,
+    provinceLivraisonId INT REFERENCES provinceLivraison (id) ON DELETE SET NULL,
     heure_reception_debut TIMESTAMP,
     heure_reception_fin TIMESTAMP,
     frais_livraison DECIMAL(10, 2) DEFAULT 0,

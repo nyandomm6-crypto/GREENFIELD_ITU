@@ -63,7 +63,7 @@ INSERT INTO pointdevente (nom, code, adresse, contact) VALUES
 ('Kiosque Ouest', 'BTQ-004', 'Avenue Ouest, Antananarivo', '034 12 345 71');
 
 INSERT INTO statutcommande (nom) VALUES
-('Crée'), ('Payée'), ('Livrée'), ('Anulée');
+('Créée'), ('Payée'), ('Livrée'), ('Anulée');
 
 INSERT INTO provinceLivraison (nom) VALUES
 ('Antananarivo'),
