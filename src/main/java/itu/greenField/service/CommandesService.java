@@ -1,10 +1,18 @@
 package itu.greenField.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+
+import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -54,8 +62,7 @@ public class CommandesService {
             StatutCommandeService statutCommandeService,
             HistoriqueStatutCommandeService historiqueStatutCommandeService,
             ProvinceLivraisonService provinceLivraisonService,
-            FraisLivraisonService fraisLivraisonService
-        ) {
+            FraisLivraisonService fraisLivraisonService) {
         this.produitService = produitService;
         this.commandesRepository = commandesRepository;
         this.clientService = clientService;
@@ -81,22 +88,192 @@ public class CommandesService {
     }
 
     public void delete(Commandes cmd) throws Exception {
-        //throw new Exception();
+        // throw new Exception();
         commandesRepository.delete(cmd);
     }
 
-    public Commandes findById(Integer id){
+    public Commandes findById(Integer id) {
         return commandesRepository.findById(id).orElse(null);
     }
 
-    public void checkIfUpdatable(Commandes cmd) throws Exception{
+    public void checkIfUpdatable(Commandes cmd) throws Exception {
         StatutCommande currentStatut = cmd.getStatutActuel();
-            if(currentStatut.getNom().equals("Livrée")){
-                throw new Exception("Une commande livrée ne peut plus être modifiée!");
+        if (currentStatut.getNom().equals("Livrée")) {
+            throw new Exception("Une commande livrée ne peut plus être modifiée!");
+        }
+        if (currentStatut.getNom().equals("Anulée")) {
+            throw new Exception("Une commande anulée ne peut plus être modifiée!");
+        }
+    }
+
+    public byte[] generateTemplateExcelFile(List<Produit> produits) throws Exception {
+        try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            generateCommandeSheet(new ArrayList<>(), workbook);
+            generateProduitSheet(produits, workbook);
+
+            workbook.write(out);
+            return out.toByteArray();
+        } catch (Exception e) {
+            throw new Exception("Erreur lors de la génération du fichier Excel: " + e.getMessage());
+        }
+    }
+
+    public void generateCommandeSheet(List<Commandes> commandes, XSSFWorkbook workbook) throws Exception {
+        try {
+            XSSFSheet sheet = workbook.createSheet("commandes_sheet");
+            sheet.setDisplayGridlines(true);
+
+            int rowIndex = 0;
+
+            // 1. On crée la ligne 0 pour le grand titre
+            Row headerRow = sheet.createRow(rowIndex);
+
+            Cell header1Cell = headerRow.createCell(0);
+            header1Cell.setCellValue("Informations des commandes");
+
+            Cell header2Cell = headerRow.createCell(9);
+            header2Cell.setCellValue("Détails commandes");
+
+            CellStyle headerstyle = workbook.createCellStyle();
+            headerstyle.setAlignment(HorizontalAlignment.CENTER);
+            headerstyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            // Un petit style gras pour que le titre ressorte bien
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerstyle.setFont(headerFont);
+            header1Cell.setCellStyle(headerstyle);
+            header2Cell.setCellStyle(headerstyle);
+
+            // 2. CORRECTION : On fusionne la ligne 0 (de la colonne A à E -> index 0 à 4)
+            CellRangeAddress regionmere = new CellRangeAddress(
+                    rowIndex, // vaut 0
+                    rowIndex, // vaut 0
+                    0,
+                    7);
+            sheet.addMergedRegion(regionmere);
+
+            CellRangeAddress regionfille = new CellRangeAddress(
+                    rowIndex, // vaut 0
+                    rowIndex, // vaut 0
+                    9,
+                    11);
+            sheet.addMergedRegion(regionfille);
+
+            // 3. On passe maintenant à la ligne suivante pour les en-têtes de colonnes
+            rowIndex++; // rowIndex passe à 1
+
+            Row columnHeaderRow = sheet.createRow(rowIndex); // Crée la ligne 1, puis passe à 2
+            String[] columnHeaders = { "Num_commande", "Nom_Client", "Prenom_Client", "Date_commande", "Mode_reception",
+                    "Point_de_vente", "Province_Livraison", "Adresse_Livraison" };
+            for (int i = 0; i < columnHeaders.length; i++) {
+                Cell cell = columnHeaderRow.createCell(i);
+                cell.setCellValue(columnHeaders[i]);
             }
-            if(currentStatut.getNom().equals("Anulée")){
-                throw new Exception("Une commande anulée ne peut plus être modifiée!");
+
+            String[] columnHeadersDetails = { "Num_produit", "Quantite", "Prix_Unitaire" };
+            int startIndex = columnHeaders.length + 1; // Commence après les colonnes de commandes
+            for (int i = 0; i < columnHeadersDetails.length; i++) {
+                Cell cell = columnHeaderRow.createCell(startIndex + i);
+                cell.setCellValue(columnHeadersDetails[i]);
             }
+
+            for (int i = 0; i < columnHeaders.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+            for (int i = 0; i < columnHeadersDetails.length; i++) {
+                sheet.autoSizeColumn(startIndex + i);
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Erreur lors de la génération du fichier Excel: " + e.getMessage());
+        }
+    }
+
+    public void generateProduitSheet(List<Produit> produits, XSSFWorkbook workbook) throws Exception {
+        try {
+            XSSFSheet sheet = workbook.createSheet("produits_sheet");
+            sheet.setDisplayGridlines(true); // Pour s'assurer que la grille reste visible
+
+            int rowIndex = 0;
+
+            // 1. On crée la ligne 0 pour le grand titre
+            Row headerRow = sheet.createRow(rowIndex);
+
+            Cell headerCell = headerRow.createCell(0);
+            headerCell.setCellValue("Informations des produits");
+
+            CellStyle headerstyle = workbook.createCellStyle();
+            headerstyle.setAlignment(HorizontalAlignment.CENTER);
+            headerstyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+            // Un petit style gras pour que le titre ressorte bien
+            Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerstyle.setFont(headerFont);
+            headerCell.setCellStyle(headerstyle);
+
+            // 2. CORRECTION : On fusionne la ligne 0 (de la colonne A à E -> index 0 à 4)
+            CellRangeAddress region = new CellRangeAddress(
+                    rowIndex, // vaut 0
+                    rowIndex, // vaut 0
+                    0,
+                    4); // 4 car il y a 5 colonnes au total (0, 1, 2, 3, 4)
+            sheet.addMergedRegion(region);
+
+            // 3. On passe maintenant à la ligne suivante pour les en-têtes de colonnes
+            rowIndex++; // rowIndex passe à 1
+
+            Row columnHeaderRow = sheet.createRow(rowIndex++); // Crée la ligne 1, puis passe à 2
+            String[] columnHeaders = { "Num_produit", "Matricule", "Nom", "Prix_Unitaire", "Poids" };
+            for (int i = 0; i < columnHeaders.length; i++) {
+                Cell cell = columnHeaderRow.createCell(i);
+                cell.setCellValue(columnHeaders[i]);
+            }
+
+            // 4. Écriture des produits à partir de la ligne 2
+            for (Produit produit : produits) {
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(produit.getId());
+                row.createCell(1).setCellValue(produit.getMatricule());
+                row.createCell(2).setCellValue(produit.getNom());
+                row.createCell(3).setCellValue(produit.getPu().doubleValue());
+                row.createCell(4).setCellValue(produit.getPoids().doubleValue());
+            }
+
+            // Ajustement automatique
+            for (int i = 0; i < columnHeaders.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+        } catch (Exception e) {
+            throw new Exception("Erreur lors de la génération du fichier Excel: " + e.getMessage());
+        }
+    }
+
+    public List<Commandes> getDataFromExcelUpload(InputStream inputStream) throws Exception {
+        List<Commandes> list = new ArrayList<>();
+
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(inputStream);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+
+            int rowIndex = 0;
+            for (Row row : sheet) {
+                if (rowIndex == 0) {
+                    rowIndex++;
+                    continue;
+                }
+
+                Iterator<Cell> cellIterator = row.cellIterator();
+                int cellIndex = 0;
+                Commandes commande = new Commandes();
+            }
+        } catch (Exception e) {
+            throw new Exception("Erreur lors de la lecture du fichier Excel: " + e.getMessage());
+        }
+
+        return list;
     }
 
     @Transactional
@@ -114,7 +291,7 @@ public class CommandesService {
 
         ModeReception modeReception = ModeReception.fromString(commandeFormDto.getModeReception());
         TypeCommande typeCommande = TypeCommande.En_boutique;
-        
+
         Commandes commande = null;
         HistoriqueStatutCommande hist = null;
         if (commandeFormDto.getCommandeId() != null) {
@@ -123,10 +300,10 @@ public class CommandesService {
                 throw new Exception("Commande introuvable avec l'ID: " + commandeFormDto.getCommandeId());
             }
             StatutCommande currentStatut = commande.getStatutActuel();
-            if(currentStatut.getNom().equals("Livrée")){
+            if (currentStatut.getNom().equals("Livrée")) {
                 throw new Exception("Une commande livrée ne peut plus être modifiée!");
             }
-            if(currentStatut.getNom().equals("Anulée")){
+            if (currentStatut.getNom().equals("Anulée")) {
                 throw new Exception("Une commande anulée ne peut plus être modifiée!");
             }
             detailsCommandeRepository.deleteAll(commande.getDetailsCommande());
@@ -135,7 +312,7 @@ public class CommandesService {
             commande.setClient(client);
             commande.setDatecommande(commandeFormDto.getSqlTypeOfDate());
             commande.setTypeCommande(typeCommande);
-            
+
             StatutCommande statusCommande = statutCommandeService.findByNom("Créée");
             if (statusCommande == null)
                 throw new Exception("Statut commande \"Créée\" n'existe pas");
@@ -157,7 +334,8 @@ public class CommandesService {
             commande.setPointDeVenteRetrait(pdv);
             commande.setAdresseLivraison(null);
         } else {
-            ProvinceLivraison provinceLivraison = provinceLivraisonService.getProvinceById(commandeFormDto.getProvinceId());
+            ProvinceLivraison provinceLivraison = provinceLivraisonService
+                    .getProvinceById(commandeFormDto.getProvinceId());
             commande.setProvinceLivraison(provinceLivraison);
         }
 
@@ -194,13 +372,14 @@ public class CommandesService {
 
         commande.setFraisLivraison(BigDecimal.ZERO);
         if (modeReception == ModeReception.Livraison_Domicile) {
-            FraisLivraison fraisLivraison = fraisLivraisonService.calculateFraisLivraison(commande.getProvinceLivraison().getId(), poidsTotal.doubleValue());
-            commande.setFraisLivraison(fraisLivraison.getMontant());   
+            FraisLivraison fraisLivraison = fraisLivraisonService
+                    .calculateFraisLivraison(commande.getProvinceLivraison().getId(), poidsTotal.doubleValue());
+            commande.setFraisLivraison(fraisLivraison.getMontant());
         }
 
         commande = commandesRepository.save(commande);
 
-        if(hist != null)
+        if (hist != null)
             historiqueStatutCommandeService.save(hist);
 
         return commande;
