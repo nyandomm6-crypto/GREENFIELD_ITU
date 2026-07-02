@@ -128,16 +128,23 @@ public class PointDeVenteController {
     @GetMapping("/{id}/stock")
     public String stockProduit(@PathVariable Integer id, Model model,
             @RequestParam(required = false) String categorie,
-            @RequestParam(required = false) String produit) {
+            @RequestParam(required = false) String produit,
+            @RequestParam(required = false) LocalDateTime date
+        ) {
         Optional<PointDeVente> pointDeVente = pointDeVenteService.getPointDeVenteById(id);
         if (pointDeVente.isPresent()) {
             model.addAttribute("pointDeVente", pointDeVente.get());
             model.addAttribute("categorie", categorie);
             model.addAttribute("produit", produit);
-            model.addAttribute("categories", categorieProduitRepository.findAll());
+            //model.addAttribute("categories", categorieProduitRepository.findAll());
             // Récupérer les mouvements de stock de type Entree_Boutique pour ce point de vente
             List<MvtStock> mouvements = mvtStockRepository.findByPointDeVenteAndTypeMouvement(
                     pointDeVente.get(), TypeMvt.Entree_Boutique);
+            
+            List<MvtStockFille> stockDisponible = pointDeVenteService.calculerStockDisponible(pointDeVente.get().getCode(), date != null ? date : LocalDateTime.now());
+            model.addAttribute("stockDisponible", stockDisponible);
+
+
             model.addAttribute("mouvements", mouvements);
             return "pointdevente/stock";
         }
