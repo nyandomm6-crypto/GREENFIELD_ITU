@@ -239,7 +239,7 @@ public class PointDeVenteController {
             // Filtrer par type de mouvement
             if (typeMvt != null) {
                 mouvements = mouvements.stream()
-                    .filter(m -> m.getTypeMouvement() == typeMvt)
+                    .filter(m -> m.getTypeMouvement().equals(typeMvt))
                     .toList();
             }
             
@@ -253,7 +253,21 @@ public class PointDeVenteController {
                                 f.getProduit().getNom().toLowerCase().contains(produit.toLowerCase())))
                     .toList();
             }
-            
+
+            // Filtrer par date de début
+            if (dateDebut != null) {
+                mouvements = mouvements.stream()
+                    .filter(m -> m.getDateMvt() != null && m.getDateMvt().compareTo(dateDebut) >= 0)
+                    .toList();
+            }
+
+            // Filtrer par date de fin
+            if (dateFin != null) {
+                mouvements = mouvements.stream()
+                    .filter(m -> m.getDateMvt() != null && m.getDateMvt().compareTo(dateFin) <= 0)
+                    .toList();
+            }
+
             model.addAttribute("mouvements", mouvements);
             
             return "pointdevente/mouvements";

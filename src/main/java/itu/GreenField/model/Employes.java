@@ -43,7 +43,7 @@ public class Employes {
     private FRole role;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idptdevente")
+    @JoinColumn(name = "idptdevente", nullable = true, referencedColumnName = "code")
     private PointDeVente pointDeVente;
 
     @Column(name = "est_actif")
