@@ -23,9 +23,11 @@ public interface PointDeVenteRepository extends JpaRepository<PointDeVente, Inte
            "JOIN MvtStock ms ON msf.idMvtStock = ms.id " +
            "WHERE ms.idptdevente = :codePointDeVente " +
            "AND ms.dateMvt <= :date " +
+           "AND (:idProduit IS NULL OR msf.idproduit = :idProduit) " +
            "GROUP BY msf.idproduit", nativeQuery = true)
     public List<Object[]> calculerStockDisponibleRaw(
         @Param("codePointDeVente") String codePointDeVente, 
-        @Param("date") LocalDateTime date
+        @Param("date") LocalDateTime date,
+        @Param("idProduit") Integer idProduit
     );
 }
