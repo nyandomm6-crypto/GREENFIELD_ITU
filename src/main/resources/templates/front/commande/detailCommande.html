@@ -17,7 +17,7 @@
         <a th:href="@{/commandes/fo}">Retour</a>
         <a th:href="@{|/commandes/fo/annuler/${commande.id}|}">Anuler</a>
         <a th:href="@{|/commandes/fo/form/edit/${commande.id}|}">Modifier</a>
-        <a href="#">Payer</a>
+        <a href="@{/paiements/choix}">Choix de paiement</a>
     </div>
     <div class="info-general">
         <p><strong>Date : </strong><span
@@ -93,7 +93,9 @@
             <tbody>
                 <tr th:each="historique : ${commande.historiqueStatut}">
                     <td th:text="${historique.statutCommande.nom}"></td>
-                    <td th:text="${historique.datechangement != null ? #dates.format(historique.datechangement, 'yyyy-MM-dd HH:mm') : ''}"></td>
+                    <td
+                        th:text="${historique.datechangement != null ? #dates.format(historique.datechangement, 'yyyy-MM-dd HH:mm') : ''}">
+                    </td>
                 </tr>
             </tbody>
         </table>
