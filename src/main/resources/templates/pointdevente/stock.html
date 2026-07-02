@@ -20,12 +20,16 @@
       <div class="filter-section">
         <h3>Filtres</h3>
         <form th:action="@{/pointdevente/} + ${pointDeVente.id} + '/stock'" method="get" class="filter-form">
-          <label>
+          <!-- <label>
             Catégorie
             <select name="categorie">
               <option value="">Toutes les catégories</option>
               <option th:each="cat : ${categories}" th:value="${cat.libelle}" th:text="${cat.libelle}" th:selected="${categorie == cat.libelle}"></option>
             </select>
+          </label> -->
+          <label>
+            Date
+            <input type="datetime-local" name="date" th:value="${date}" />
           </label>
           <label>
             Produit
@@ -42,21 +46,17 @@
       <table>
         <thead>
           <tr>
-            <th>Type Mouvement</th>
-            <th>Date</th>
             <th>Produit</th>
             <th>Quantité</th>
           </tr>
         </thead>
         <tbody>
-          <tr th:each="mvt : ${mouvements}">
-            <td th:text="${mvt.typeMouvement}"></td>
-            <td th:text="${mvt.dateMvt}"></td>
+          <tr th:each="stock : ${stockDisponible}">
             <td>
-              <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.produit.nom} + ' '"></span>
+              <span th:text="${stock.produit.nom}"></span>
             </td>
             <td>
-              <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.quantite} + ' '"></span>
+              <span th:text="${stock.quantite}"></span>
             </td>
           </tr>
         </tbody>
