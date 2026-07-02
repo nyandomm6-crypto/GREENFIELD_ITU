@@ -56,7 +56,7 @@ public class PointDeVenteService {
             MvtStockFille stock = new MvtStockFille();
             if (row[0] != null) {
                 // Si ton entité accepte un proxy ou si tu as une méthode pour set juste l'ID :
-                Produit produit = produitRepository.findById(idProduit).orElse(null);
+                Produit produit = produitRepository.findById((Integer) row[0]).orElse(null);
                 stock.setProduit(produit);
             }
 
