@@ -48,14 +48,13 @@ public class PointDeVenteService {
         return null;
     }
 
-    public List<MvtStockFille> calculerStockDisponible(String codePointDeVente, LocalDateTime date) {
-        List<Object[]> rawResults = pointDeVenteRepository.calculerStockDisponibleRaw(codePointDeVente, date);
+    public List<MvtStockFille> calculerStockDisponible(String codePointDeVente, LocalDateTime date, Integer idProduit) {
+        List<Object[]> rawResults = pointDeVenteRepository.calculerStockDisponibleRaw(codePointDeVente, date, idProduit);
         List<MvtStockFille> stocks = new ArrayList<>();
 
         for (Object[] row : rawResults) {
             MvtStockFille stock = new MvtStockFille();
             if (row[0] != null) {
-                Integer idProduit = ((Number) row[0]).intValue();
                 // Si ton entité accepte un proxy ou si tu as une méthode pour set juste l'ID :
                 Produit produit = produitRepository.findById(idProduit).orElse(null);
                 stock.setProduit(produit);
