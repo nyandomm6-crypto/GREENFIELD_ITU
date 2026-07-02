@@ -33,7 +33,12 @@
           </label>
           <label>
             Produit
-            <input type="text" name="produit" th:value="${produit}" placeholder="Filtrer par produit" />
+            <input type="text" name="produit" th:value="${produit}" list="liste-produits" placeholder="Filtrer par produit" />
+            <datalist id="liste-produits">
+                <option th:each="produit : ${produits}" th:value="${produit.nom}"
+                    th:data-matricule="${produit.matricule}">
+                </option>
+            </datalist>
           </label>
           <button type="submit" class="btn-filter">Filtrer</button>
         </form>
