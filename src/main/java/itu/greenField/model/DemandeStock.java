@@ -22,7 +22,7 @@ public class DemandeStock {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "idptdevente", referencedColumnName = "code")
+    @JoinColumn(name = "idptdevente", nullable = true, referencedColumnName = "code")
     private PointDeVente pointDeVente;
 
     @Column(name = "datedemande")

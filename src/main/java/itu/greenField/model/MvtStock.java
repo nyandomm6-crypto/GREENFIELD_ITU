@@ -2,6 +2,7 @@ package itu.greenField.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "mvtstock")
@@ -16,11 +17,14 @@ public class MvtStock {
     private TypeMvt typeMouvement;
 
     @ManyToOne
-    @JoinColumn(name = "idptdevente", referencedColumnName = "code", nullable = true)
+    @JoinColumn(name = "idptdevente", nullable = true, referencedColumnName = "code")
     private PointDeVente pointDeVente;
 
     @Column(name = "datemvt")
     private LocalDateTime dateMvt;
+
+    @OneToMany(mappedBy = "mvtStock")
+    private List<MvtStockFille> mvtStockFilles;
 
     @PrePersist
     public void prePersist() {
@@ -59,5 +63,13 @@ public class MvtStock {
 
     public void setDateMvt(LocalDateTime dateMvt) {
         this.dateMvt = dateMvt;
+    }
+
+    public List<MvtStockFille> getMvtStockFilles() {
+        return mvtStockFilles;
+    }
+
+    public void setMvtStockFilles(List<MvtStockFille> mvtStockFilles) {
+        this.mvtStockFilles = mvtStockFilles;
     }
 }
