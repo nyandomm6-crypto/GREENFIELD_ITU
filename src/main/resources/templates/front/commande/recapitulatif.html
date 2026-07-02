@@ -38,7 +38,9 @@
         --gris-tres-clair: #f1f5f9;
         --blanc: #ffffff;
         --ombre: 0 8px 30px rgba(0, 0, 0, 0.08);
+        --ombre-forte: 0 12px 48px rgba(0, 0, 0, 0.12);
         --rayon: 14px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       html,
@@ -63,34 +65,44 @@
       .app-header {
         background: var(--blanc);
         padding: 14px 30px;
-        border-bottom: 1px solid var(--gris-clair);
+        border-bottom: 2px solid var(--gris-clair);
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-shrink: 0;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       }
 
       .app-header .logo {
         font-weight: 700;
-        font-size: 20px;
+        font-size: 22px;
         color: var(--vert-fonce);
         letter-spacing: -0.3px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
       }
+
       .app-header .logo i {
         color: var(--vert-clair);
-        margin-right: 8px;
+        font-size: 24px;
       }
+
       .app-header .badge-client {
         background: var(--vert-pale);
         color: var(--vert-clair);
-        padding: 6px 18px;
+        padding: 8px 20px;
         border-radius: 40px;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
+        border: 1px solid rgba(30, 107, 76, 0.15);
+      }
+
+      .app-header .badge-client i {
+        font-size: 16px;
       }
 
       /* ===== MAIN ===== */
@@ -99,7 +111,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 16px 24px;
+        padding: 20px 24px;
         min-height: 0;
       }
 
@@ -107,14 +119,18 @@
         background: var(--blanc);
         border-radius: var(--rayon);
         box-shadow: var(--ombre);
-        padding: 24px 28px 20px 28px;
+        padding: 28px 32px 24px 32px;
         width: 100%;
-        max-width: 1120px;
+        max-width: 1160px;
         max-height: 100%;
         display: flex;
         flex-direction: column;
-        border: 1px solid rgba(0, 0, 0, 0.02);
-        transition: all 0.2s;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        transition: var(--transition);
+      }
+
+      .carte-recap:hover {
+        box-shadow: var(--ombre-forte);
       }
 
       /* ===== EN-TÊTE CARTE ===== */
@@ -122,40 +138,57 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 14px;
+        margin-bottom: 18px;
         flex-shrink: 0;
+        flex-wrap: wrap;
+        gap: 12px;
       }
+
       .recap-head h1 {
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 700;
         color: var(--vert-fonce);
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
       }
+
       .recap-head h1 i {
         color: var(--vert-clair);
-        font-size: 22px;
+        font-size: 24px;
       }
+
       .recap-head .client-info {
         font-size: 14px;
         color: var(--gris-moyen);
         background: var(--gris-tres-clair);
-        padding: 8px 18px;
+        padding: 8px 20px;
         border-radius: 40px;
         display: flex;
         align-items: center;
         gap: 16px;
+        flex-wrap: wrap;
       }
+
+      .recap-head .client-info i {
+        color: var(--vert-clair);
+        width: 16px;
+      }
+
       .recap-head .client-info strong {
         color: var(--vert-fonce);
+      }
+
+      .recap-head .client-info .separator {
+        opacity: 0.3;
+        user-select: none;
       }
 
       /* ===== GRILLE 2 COLONNES ===== */
       .recap-grid {
         display: grid;
         grid-template-columns: 1.2fr 0.8fr;
-        gap: 24px;
+        gap: 28px;
         flex: 1;
         min-height: 0;
       }
@@ -163,48 +196,73 @@
       /* --- Colonne gauche : tableau --- */
       .table-wrapper {
         overflow-y: auto;
-        padding-right: 4px;
+        padding-right: 6px;
         max-height: 100%;
       }
+
       .table-wrapper::-webkit-scrollbar {
-        width: 4px;
+        width: 5px;
       }
+
       .table-wrapper::-webkit-scrollbar-track {
         background: var(--gris-tres-clair);
-        border-radius: 4px;
+        border-radius: 6px;
       }
+
       .table-wrapper::-webkit-scrollbar-thumb {
         background: var(--vert-clair);
-        border-radius: 4px;
+        border-radius: 6px;
+      }
+
+      .table-wrapper::-webkit-scrollbar-thumb:hover {
+        background: var(--vert-fonce);
       }
 
       table.recap {
         width: 100%;
         border-collapse: collapse;
-        font-size: 13.5px;
+        font-size: 14px;
       }
+
       table.recap thead th {
         background: var(--vert-pale);
         color: var(--vert-fonce);
         font-weight: 600;
         font-size: 11px;
         text-transform: uppercase;
-        letter-spacing: 0.4px;
-        padding: 10px 10px 10px 0;
+        letter-spacing: 0.5px;
+        padding: 12px 12px 12px 0;
         text-align: left;
         border-bottom: 2px solid var(--vert-clair);
         position: sticky;
         top: 0;
         z-index: 2;
       }
+
+      table.recap thead th:last-child {
+        text-align: right;
+      }
+
       table.recap tbody td {
-        padding: 10px 10px 10px 0;
+        padding: 12px 12px 12px 0;
         border-bottom: 1px solid var(--gris-clair);
         color: var(--gris-fonce);
+        transition: var(--transition);
       }
+
+      table.recap tbody td:last-child {
+        text-align: right;
+        font-weight: 500;
+      }
+
       table.recap tbody tr:last-child td {
         border-bottom: none;
       }
+
+      table.recap tbody tr {
+        transition: var(--transition);
+      }
+
       table.recap tbody tr:hover {
         background: var(--gris-tres-clair);
         border-radius: 6px;
@@ -212,13 +270,20 @@
 
       .ligne-total {
         font-weight: 700;
-        font-size: 16px;
+        font-size: 17px;
         color: var(--vert-fonce);
       }
+
       .ligne-total td {
-        padding-top: 12px !important;
+        padding-top: 14px !important;
         border-top: 2px solid var(--vert-clair) !important;
         background: var(--vert-pale);
+        border-radius: 0 0 8px 8px;
+      }
+
+      .ligne-total td:last-child {
+        font-size: 18px;
+        color: var(--vert-clair);
       }
 
       /* --- Colonne droite : formulaire --- */
@@ -229,66 +294,98 @@
         overflow-y: auto;
         padding-right: 4px;
       }
+
       .form-col::-webkit-scrollbar {
-        width: 4px;
+        width: 5px;
       }
+
       .form-col::-webkit-scrollbar-track {
         background: var(--gris-tres-clair);
-        border-radius: 4px;
+        border-radius: 6px;
       }
+
       .form-col::-webkit-scrollbar-thumb {
         background: var(--vert-clair);
-        border-radius: 4px;
+        border-radius: 6px;
       }
 
       .form-group {
         background: var(--gris-tres-clair);
         border-radius: 10px;
-        padding: 12px 16px;
-        border-left: 3px solid var(--vert-clair);
+        padding: 14px 18px;
+        border-left: 4px solid var(--vert-clair);
+        transition: var(--transition);
       }
+
+      .form-group:hover {
+        border-left-color: var(--vert-fonce);
+      }
+
       .form-group label {
         font-weight: 600;
         font-size: 12px;
         text-transform: uppercase;
-        letter-spacing: 0.3px;
+        letter-spacing: 0.4px;
         color: var(--gris-moyen);
         display: block;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
       }
+
       .form-group label i {
         color: var(--vert-clair);
-        margin-right: 6px;
+        margin-right: 8px;
+        width: 16px;
       }
 
       .form-control {
         width: 100%;
-        padding: 8px 12px;
+        padding: 10px 14px;
         border: 1.5px solid var(--gris-clair);
         border-radius: 8px;
         font-size: 13px;
         font-family: "Inter", sans-serif;
         background: var(--blanc);
         color: var(--gris-fonce);
-        transition:
-          border 0.2s,
-          box-shadow 0.2s;
+        transition: var(--transition);
       }
+
       .form-control:focus {
         border-color: var(--vert-clair);
-        box-shadow: 0 0 0 3px rgba(30, 107, 76, 0.12);
+        box-shadow: 0 0 0 4px rgba(30, 107, 76, 0.1);
         outline: none;
       }
+
+      .form-control:hover {
+        border-color: var(--vert-moyen);
+      }
+
       textarea.form-control {
         resize: vertical;
-        min-height: 38px;
+        min-height: 42px;
+        font-family: "Inter", sans-serif;
       }
+
       select.form-control {
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23475569' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
-        background-position: right 12px center;
+        background-position: right 14px center;
         cursor: pointer;
+      }
+
+      select.form-control option {
+        padding: 8px;
+      }
+
+      input[type="date"].form-control,
+      input[type="time"].form-control {
+        cursor: pointer;
+      }
+
+      input[type="date"].form-control::-webkit-calendar-picker-indicator,
+      input[type="time"].form-control::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.6;
       }
 
       .radio-group {
@@ -296,38 +393,73 @@
         gap: 24px;
         flex-wrap: wrap;
       }
+
       .radio-group label {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         font-weight: 500;
-        font-size: 13px;
+        font-size: 14px;
         text-transform: none;
         letter-spacing: 0;
         color: var(--gris-fonce);
         cursor: pointer;
+        padding: 6px 14px;
+        border-radius: 30px;
+        background: var(--blanc);
+        transition: var(--transition);
+        border: 1.5px solid transparent;
       }
+
+      .radio-group label:hover {
+        background: var(--vert-pale);
+        border-color: var(--vert-clair);
+      }
+
+      .radio-group label:has(input:checked) {
+        background: var(--vert-pale);
+        border-color: var(--vert-clair);
+        color: var(--vert-fonce);
+      }
+
       .radio-group input[type="radio"] {
         accent-color: var(--vert-clair);
-        width: 16px;
-        height: 16px;
+        width: 18px;
+        height: 18px;
         margin: 0;
+        cursor: pointer;
+        flex-shrink: 0;
       }
 
       .frais-badge {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         background: var(--vert-pale);
-        padding: 6px 16px;
+        padding: 8px 20px;
         border-radius: 40px;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         color: var(--vert-fonce);
+        margin-top: 4px;
+        border: 1px solid rgba(30, 107, 76, 0.15);
       }
+
+      .frais-badge i {
+        color: var(--vert-clair);
+      }
+
       .frais-badge strong {
         color: var(--vert-clair);
-        font-size: 16px;
+        font-size: 18px;
+      }
+
+      .form-group .mt-2 {
+        margin-top: 8px;
+      }
+
+      .form-group .mt-2:first-child {
+        margin-top: 0;
       }
 
       /* ===== FOOTER CARTE ===== */
@@ -335,18 +467,18 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        gap: 12px;
-        margin-top: 16px;
-        padding-top: 14px;
-        border-top: 1px solid var(--gris-clair);
+        gap: 14px;
+        margin-top: 18px;
+        padding-top: 16px;
+        border-top: 2px solid var(--gris-clair);
         flex-shrink: 0;
       }
 
       .btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 10px 24px;
+        gap: 10px;
+        padding: 12px 28px;
         border: none;
         border-radius: 40px;
         font-size: 14px;
@@ -354,86 +486,196 @@
         font-family: "Inter", sans-serif;
         cursor: pointer;
         text-decoration: none;
-        transition: all 0.2s ease;
+        transition: var(--transition);
       }
+
       .btn i {
-        font-size: 14px;
+        font-size: 15px;
       }
+
       .btn-primaire {
         background: var(--vert-clair);
         color: var(--blanc);
+        box-shadow: 0 4px 16px rgba(30, 107, 76, 0.25);
       }
+
       .btn-primaire:hover {
         background: var(--vert-fonce);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 20px rgba(30, 107, 76, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(30, 107, 76, 0.35);
       }
+
+      .btn-primaire:active {
+        transform: translateY(0);
+      }
+
       .btn-secondaire {
-        background: var(--gris-clair);
+        background: var(--gris-tres-clair);
         color: var(--gris-fonce);
+        border: 1.5px solid var(--gris-clair);
       }
+
       .btn-secondaire:hover {
-        background: #b3c2d1;
+        background: var(--gris-clair);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
       }
 
       /* ===== RESPONSIVE ===== */
-      @media (max-width: 860px) {
+      @media (max-width: 900px) {
         .recap-grid {
           grid-template-columns: 1fr;
           gap: 16px;
         }
+
         .app-main {
           padding: 12px 16px;
         }
+
         .carte-recap {
-          padding: 18px 16px;
+          padding: 20px 18px 18px 18px;
+          max-height: 98vh;
         }
+
         .recap-head {
           flex-direction: column;
           align-items: flex-start;
-          gap: 8px;
+          gap: 10px;
         }
+
         .recap-head .client-info {
           width: 100%;
           justify-content: flex-start;
           flex-wrap: wrap;
+          font-size: 13px;
+          padding: 6px 16px;
         }
+
         .radio-group {
           gap: 12px;
+        }
+
+        .table-wrapper {
+          max-height: 200px;
+        }
+
+        .form-col {
+          max-height: 280px;
         }
       }
 
       @media (max-width: 480px) {
         .app-header {
           padding: 10px 16px;
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
         }
+
         .app-header .badge-client {
-          font-size: 11px;
-          padding: 4px 12px;
+          font-size: 12px;
+          padding: 4px 14px;
         }
+
+        .app-header .logo {
+          font-size: 18px;
+        }
+
         .recap-head h1 {
-          font-size: 17px;
+          font-size: 18px;
         }
+
         .recap-head .client-info {
           font-size: 12px;
           padding: 6px 12px;
+          gap: 8px;
+        }
+
+        .recap-head .client-info .separator {
+          display: none;
+        }
+
+        .form-group {
+          padding: 10px 14px;
+        }
+
+        .form-group label {
+          font-size: 11px;
+        }
+
+        .form-control {
+          font-size: 12px;
+          padding: 8px 12px;
+        }
+
+        .btn {
+          padding: 10px 18px;
+          font-size: 13px;
+        }
+
+        .btn i {
+          font-size: 13px;
+        }
+
+        .radio-group label {
+          font-size: 13px;
+          padding: 4px 12px;
+        }
+
+        .recap-footer {
+          flex-direction: column-reverse;
           gap: 10px;
         }
-        .form-group {
-          padding: 10px 12px;
+
+        .recap-footer .btn {
+          width: 100%;
+          justify-content: center;
         }
-        .btn {
-          padding: 8px 16px;
+
+        .frais-badge {
           font-size: 13px;
+          padding: 6px 16px;
+        }
+
+        .frais-badge strong {
+          font-size: 16px;
+        }
+
+        table.recap {
+          font-size: 12px;
+        }
+
+        table.recap thead th {
+          font-size: 10px;
+          padding: 8px 8px 8px 0;
+        }
+
+        table.recap tbody td {
+          padding: 8px 8px 8px 0;
+        }
+
+        .ligne-total {
+          font-size: 14px;
+        }
+
+        .ligne-total td:last-child {
+          font-size: 15px;
         }
       }
 
-      /* Ajustements pour la hauteur */
-      .form-group:last-child {
-        margin-bottom: 0;
-      }
-      .form-col .form-group:last-child {
-        margin-bottom: 0;
+      @media (max-width: 380px) {
+        .carte-recap {
+          padding: 12px 10px;
+        }
+
+        .radio-group {
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .radio-group label {
+          width: 100%;
+        }
       }
     </style>
   </head>
@@ -454,167 +696,157 @@
         <div class="recap-head">
           <h1><i class="fas fa-clipboard-check"></i> Récapitulatif</h1>
           <div class="client-info">
-            <span
-              ><i class="far fa-envelope" style="color: var(--vert-clair)"></i>
-              <span th:text="${client.mail}"></span
-            ></span>
-            <span style="opacity: 0.4">|</span>
-            <span
-              ><i class="far fa-user" style="color: var(--vert-clair)"></i>
-              <strong th:text="${client.prenom} + ' ' + ${client.nom}"></strong
-            ></span>
+            <span>
+              <i class="far fa-envelope"></i>
+              <span th:text="${client.mail}"></span>
+            </span>
+            <span class="separator">|</span>
+            <span>
+              <i class="far fa-user"></i>
+              <strong th:text="${client.prenom} + ' ' + ${client.nom}"></strong>
+            </span>
           </div>
         </div>
 
-        <!-- Grille -->
-        <div class="recap-grid">
-          <!-- ===== COLONNE GAUCHE : TABLEAU ===== -->
-          <div class="table-wrapper">
-            <table class="recap">
-              <thead>
-                <tr>
-                  <th>Produit</th>
-                  <th>Prix</th>
-                  <th>Qté</th>
-                  <th>Sous-total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr th:each="ligne : ${lignes}">
-                  <td th:text="${ligne.produit.nom}"></td>
-                  <td th:text="${ligne.produit.pu} + ' Ar'"></td>
-                  <td th:text="${ligne.quantite}"></td>
-                  <td th:text="${ligne.sousTotal} + ' Ar'"></td>
-                </tr>
-                <tr class="ligne-total">
-                  <td colspan="3" style="text-align: right">Total</td>
-                  <td th:text="${total} + ' Ar'"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <!-- ===== FORMULAIRE ===== -->
+        <form
+          th:action="@{/commande/valider}"
+          method="post"
+          style="display: contents"
+        >
+          <div class="recap-grid">
+            <!-- Colonne gauche : Tableau -->
+            <div class="table-wrapper">
+              <table class="recap">
+                <thead>
+                  <tr>
+                    <th>Produit</th>
+                    <th>Prix</th>
+                    <th>Qté</th>
+                    <th>Sous-total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="ligne : ${lignes}">
+                    <td th:text="${ligne.produit.nom}"></td>
+                    <td th:text="${ligne.produit.pu} + ' Ar'"></td>
+                    <td th:text="${ligne.quantite}"></td>
+                    <td th:text="${ligne.sousTotal} + ' Ar'"></td>
+                  </tr>
+                  <tr class="ligne-total">
+                    <td colspan="3" style="text-align: right">Total</td>
+                    <td th:text="${total} + ' Ar'"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-          <!-- ===== COLONNE DROITE : FORMULAIRE ===== -->
-          <div class="form-col">
-            <!-- Mode de réception -->
-            <div class="form-group">
-              <label><i class="fas fa-truck"></i> Mode de réception</label>
-              <div class="radio-group">
-                <label>
-                  <input
-                    type="radio"
-                    name="modeReception"
-                    value="LIVRAISON"
-                    onclick="changerMode()"
-                  />
-                  <i class="fas fa-home" style="color: var(--vert-clair)"></i>
-                  Livraison
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name="modeReception"
-                    value="RETRAIT"
-                    onclick="changerMode()"
-                    checked
-                  />
-                  <i class="fas fa-store" style="color: var(--vert-clair)"></i>
-                  Retrait
-                </label>
+            <!-- Colonne droite : Formulaire -->
+            <div class="form-col">
+              <!-- 1. Mode de réception avec valeurs Retrait_Boutique et Livraison_Domicile -->
+              <div class="form-group">
+                <label><i class="fas fa-truck"></i> Mode de réception</label>
+                <div class="radio-group">
+                  <label>
+                    <input
+                      type="radio"
+                      name="modeReception"
+                      value="Livraison_Domicile"
+                      onclick="changerMode()"
+                    />
+                    <i class="fas fa-home"></i> Livraison à domicile
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="modeReception"
+                      value="Retrait_Boutique"
+                      onclick="changerMode()"
+                      checked
+                    />
+                    <i class="fas fa-store"></i> Retrait en boutique
+                  </label>
+                </div>
               </div>
-            </div>
 
-            <!-- Livraison -->
-            <div
-              id="blocLivraison"
-              class="form-group"
-              style="display: none; border-left-color: #2d8f68"
-            >
-              <label><i class="fas fa-map-pin"></i> Adresse de livraison</label>
-              <textarea
-                class="form-control"
-                name="adresse"
-                rows="2"
-                placeholder="Votre adresse complète..."
-              ></textarea>
-            </div>
+              <!-- 2. Livraison - Adresse -->
+              <div id="blocLivraison" class="form-group" style="display: none">
+                <label
+                  ><i class="fas fa-map-pin"></i> Adresse de livraison</label
+                >
+                <textarea
+                  class="form-control"
+                  name="adresse"
+                  rows="2"
+                  placeholder="Votre adresse complète..."
+                ></textarea>
+              </div>
 
-            <!-- Retrait -->
-            <div
-              id="blocRetrait"
-              class="form-group"
-              style="border-left-color: #2d8f68"
-            >
-              <label><i class="fas fa-store-alt"></i> Point de retrait</label>
-              <select class="form-control" name="point">
-                <option>Magasin Analakely</option>
-                <option>Magasin Ivandry</option>
-                <option>Magasin Tamatave</option>
-              </select>
-            </div>
+              <!-- 3. Retrait - Point de retrait -->
+              <div id="blocRetrait" class="form-group">
+                <label><i class="fas fa-store-alt"></i> Point de retrait</label>
+                <select class="form-control" name="pointRetrait">
+                  <option value="" disabled selected>
+                    Choisir un point de vente
+                  </option>
+                  <option
+                    th:each="pointDeVente : ${pointsDeVente}"
+                    th:value="${pointDeVente.code}"
+                    th:text="${pointDeVente.nom + ' - ' + pointDeVente.adresse}"
+                  ></option>
+                </select>
+              </div>
 
-            <!-- Date & Heure -->
-            <div class="form-group" style="border-left-color: #2d8f68">
-              <label><i class="fas fa-calendar-alt"></i> Date et heure</label>
-              <div style="display: flex; gap: 10px; flex-wrap: wrap">
+              <!-- 4. Date et heure -->
+              <div class="form-group">
+                <label
+                  ><i class="fas fa-calendar-alt"></i> Date et heure de
+                  réception</label
+                >
                 <input
                   type="date"
                   class="form-control"
-                  style="flex: 1; min-width: 120px"
+                  name="dateReception"
+                  style="margin-bottom: 8px"
                 />
                 <input
                   type="time"
                   class="form-control"
-                  style="flex: 0 0 130px"
+                  name="heureReception"
+                  style="max-width: 160px"
                 />
               </div>
-            </div>
 
-            <!-- Paiement + frais -->
-            <div class="form-group" style="border-left-color: #2d8f68">
-              <label><i class="fas fa-credit-card"></i> Paiement</label>
-              <select class="form-control" style="margin-bottom: 8px">
-                <option>MVola</option>
-                <option>Orange Money</option>
-                <option>Airtel Money</option>
-                <option>Carte bancaire</option>
-              </select>
-              <input
-                type="number"
-                class="form-control"
-                placeholder="Montant"
-                style="margin-bottom: 8px"
-              />
-
-              <div class="frais-badge">
-                <i class="fas fa-info-circle"></i> Frais de livraison :
-                <strong id="frais">0 Ar</strong>
+              <!-- 5. Frais de livraison -->
+              <div class="form-group">
+                <label
+                  ><i class="fas fa-receipt"></i> Récapitulatif des frais</label
+                >
+                <div class="frais-badge">
+                  <i class="fas fa-info-circle"></i> Frais de livraison :
+                  <strong id="frais">0 Ar</strong>
+                </div>
               </div>
             </div>
+            <!-- fin form-col -->
           </div>
-          <!-- fin form-col -->
-        </div>
-        <!-- fin recap-grid -->
+          <!-- fin recap-grid -->
 
-        <!-- ===== FOOTER ===== -->
-        <div class="recap-footer">
-          <a class="btn btn-secondaire" th:href="@{/panier}">
-            <i class="fas fa-arrow-left"></i> Panier
-          </a>
-          <form
-            th:action="@{/commande/valider}"
-            method="post"
-            style="display: inline"
-          >
+          <!-- ===== FOOTER ===== -->
+          <div class="recap-footer">
+            <a class="btn btn-secondaire" th:href="@{/panier}">
+              <i class="fas fa-arrow-left"></i> Retour au panier
+            </a>
             <button type="submit" class="btn btn-primaire">
-              <i class="fas fa-check"></i> Confirmer
+              <i class="fas fa-check"></i> Confirmer la commande
             </button>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
       <!-- fin carte-recap -->
     </main>
 
+    <!-- ===== SCRIPT ===== -->
     <script>
       function changerMode() {
         const mode = document.querySelector(
@@ -624,7 +856,7 @@
         const blocRetrait = document.getElementById("blocRetrait");
         const frais = document.getElementById("frais");
 
-        if (mode === "LIVRAISON") {
+        if (mode === "Livraison_Domicile") {
           blocLivraison.style.display = "block";
           blocRetrait.style.display = "none";
           frais.textContent = "5 000 Ar";
