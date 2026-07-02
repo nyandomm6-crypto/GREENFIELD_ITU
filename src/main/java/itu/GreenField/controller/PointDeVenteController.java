@@ -136,12 +136,20 @@ public class PointDeVenteController {
             model.addAttribute("pointDeVente", pointDeVente.get());
             model.addAttribute("categorie", categorie);
             model.addAttribute("produit", produit);
+            model.addAttribute("date", date);
+            model.addAttribute("produits", produitRepository.findAll());
+
+            Produit produitFiltre = null;
+            if (produit != null && !produit.isEmpty()) {
+                produitFiltre = produitRepository.findFirstByNom(produit).orElse(null);
+            }
+
             //model.addAttribute("categories", categorieProduitRepository.findAll());
             // Récupérer les mouvements de stock de type Entree_Boutique pour ce point de vente
             List<MvtStock> mouvements = mvtStockRepository.findByPointDeVenteAndTypeMouvement(
                     pointDeVente.get(), TypeMvt.Entree_Boutique);
             
-            List<MvtStockFille> stockDisponible = pointDeVenteService.calculerStockDisponible(pointDeVente.get().getCode(), date != null ? date : LocalDateTime.now());
+            List<MvtStockFille> stockDisponible = pointDeVenteService.calculerStockDisponible(pointDeVente.get().getCode(), date != null ? date : LocalDateTime.now(), produitFiltre != null ? produitFiltre.getId() : null);
             model.addAttribute("stockDisponible", stockDisponible);
 
 
