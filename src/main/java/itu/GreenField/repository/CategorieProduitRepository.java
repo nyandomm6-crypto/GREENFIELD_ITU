@@ -1,8 +1,8 @@
-package itu.GreenField.repository;
+package itu.greenField.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.GreenField.model.CategorieProduit;
+import itu.greenField.model.CategorieProduit;
 
 public interface CategorieProduitRepository extends JpaRepository<CategorieProduit, Integer> {
 }

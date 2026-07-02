@@ -1,4 +1,4 @@
-package itu.GreenField.repository;
+package itu.greenField.repository;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import itu.GreenField.model.PointDeVente;
+import itu.greenField.model.PointDeVente;
 
 import java.time.LocalDateTime;
 

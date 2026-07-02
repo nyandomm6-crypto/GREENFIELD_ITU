@@ -1,4 +1,4 @@
-package itu.GreenField.model;
+package itu.greenField.model;
 
 import jakarta.persistence.*;
 

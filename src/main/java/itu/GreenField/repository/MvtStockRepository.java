@@ -1,12 +1,12 @@
-package itu.GreenField.repository;
+package itu.greenField.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.GreenField.model.MvtStock;
-import itu.GreenField.model.PointDeVente;
-import itu.GreenField.model.TypeMvt;
+import itu.greenField.model.MvtStock;
+import itu.greenField.model.PointDeVente;
+import itu.greenField.model.TypeMvt;
 
 public interface MvtStockRepository extends JpaRepository<MvtStock, Integer> {
     List<MvtStock> findByPointDeVente(PointDeVente pointDeVente);

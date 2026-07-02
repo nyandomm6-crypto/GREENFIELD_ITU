@@ -1,4 +1,4 @@
-package itu.GreenField.model;
+package itu.greenField.model;
 
 import java.time.LocalDate;
 import java.util.List;

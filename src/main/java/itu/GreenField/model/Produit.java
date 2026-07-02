@@ -1,4 +1,4 @@
-package itu.GreenField.model;
+package itu.greenField.model;
 
 import java.math.BigDecimal;
 import java.util.List;

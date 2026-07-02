@@ -1,8 +1,8 @@
-package itu.GreenField.repository;
+package itu.greenField.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.GreenField.model.Client;
+import itu.greenField.model.Client;
 
 public interface ClientRepository extends JpaRepository<Client, Integer> {
 }

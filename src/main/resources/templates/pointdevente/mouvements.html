@@ -18,7 +18,7 @@
             <select name="typeMvt">
               <option value="">Tous</option>
               <option
-                th:each="type : ${T(itu.GreenField.model.TypeMvt).values()}"
+                th:each="type : ${T(itu.greenField.model.TypeMvt).values()}"
                 t@JoinColumn(name = "idptdevente", nullable = true, referencedColumnName = "code")h:value="${type}"
                 th:text="${type}"
                 th:selected="${type == typeMvt}"
