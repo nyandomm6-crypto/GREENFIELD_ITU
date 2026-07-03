@@ -234,6 +234,49 @@ public class PointDeVenteController {
         return "redirect:/pointdevente";
     }
 
+    // Formulaire enregistrer perte
+    @GetMapping("/{id}/enregistrer-perte")
+    public String formulaireEnregistrerPerte(@PathVariable Integer id, Model model) {
+        Optional<PointDeVente> pointDeVente = pointDeVenteService.getPointDeVenteById(id);
+        if (pointDeVente.isPresent()) {
+            model.addAttribute("pointDeVente", pointDeVente.get());
+            model.addAttribute("produits", produitRepository.findAll());
+            return "pointdevente/enregistrer-perte";
+        }
+        return "redirect:/pointdevente";
+    }
+
+    // Enregistrer perte (créer mouvement perte)
+    @PostMapping("/{id}/enregistrer-perte")
+    public String enregistrerPerte(@PathVariable Integer id,
+            @RequestParam Integer idProduit,
+            @RequestParam Integer quantite,
+            @RequestParam(required = false) String motif,
+            RedirectAttributes redirectAttributes) {
+        Optional<PointDeVente> pointDeVente = pointDeVenteService.getPointDeVenteById(id);
+        Optional<Produit> produit = produitRepository.findById(idProduit);
+        
+        if (pointDeVente.isPresent() && produit.isPresent()) {
+            MvtStock mvtStock = new MvtStock();
+            mvtStock.setPointDeVente(pointDeVente.get());
+            mvtStock.setTypeMouvement(TypeMvt.Perte);
+            mvtStock.setDateMvt(LocalDateTime.now());
+            mvtStockRepository.save(mvtStock);
+            
+            MvtStockFille mvtStockFille = new MvtStockFille();
+            mvtStockFille.setMvtStock(mvtStock);
+            mvtStockFille.setProduit(produit.get());
+            mvtStockFille.setQuantite(quantite);
+            mvtStockFilleRepository.save(mvtStockFille);
+            
+            redirectAttributes.addFlashAttribute("success", "Perte enregistrée avec succès");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de l'enregistrement de la perte");
+        }
+        
+        return "redirect:/pointdevente/" + id + "/stock";
+    }
+
     // Liste mouvement point de vente
     @GetMapping("/{id}/mouvements")
     public String listeMouvement(@PathVariable Integer id, Model model,
