@@ -988,8 +988,7 @@
       </a>
 
       <nav>
-        <a th:href="@{/produits}"><i class="fas fa-store"></i> Produits</a>
-        <a href="#promotions"><i class="fas fa-tags"></i> Promos</a>
+        <a th:href="@{/produits}"><i class="fas fa-store"></i> Shop</a>
         <a href="#bestsellers"><i class="fas fa-fire"></i> Best-sellers</a>
         <a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a>
 
@@ -1043,19 +1042,19 @@
 
         <div class="hero-stats">
           <div class="stat">
-            <span class="stat-number">12k+</span>
+            <span class="stat-number" th:text="${satisfaits} + 'k'"></span>
             <span class="stat-label">Clients satisfaits</span>
           </div>
           <div class="stat">
-            <span class="stat-number">150+</span>
+            <span class="stat-number" th:text="${producteur} + '+'"></span>
             <span class="stat-label">Producteurs locaux</span>
           </div>
           <div class="stat">
-            <span class="stat-number">98%</span>
+            <span class="stat-number" th:text="${livraison} + '%'"></span>
             <span class="stat-label">Livraison à temps</span>
           </div>
           <div class="stat">
-            <span class="stat-number">4.8 ★</span>
+            <span class="stat-number" th:text="${note} + '★'"></span>
             <span class="stat-label">Note moyenne</span>
           </div>
         </div>
@@ -1083,141 +1082,36 @@
           <p>Découvrez les produits les plus appréciés par notre communauté</p>
         </div>
 
-        <div class="grid-produits">
-          <div class="carte-produit">
+        <div
+          class="grid-produits"
+          th:if="${bestSellers != null and !bestSellers.isEmpty()}"
+        >
+          <div class="carte-produit" th:each="produit : ${bestSellers}">
             <span class="badge bestseller">⭐ Best-seller</span>
-            <div class="image">🥑</div>
-            <div class="nom">Avocat Bio</div>
-            <div class="categorie">Fruits frais</div>
-            <div class="rating">★★★★★ (124 avis)</div>
-            <div class="prix">4 500 Ar</div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge bestseller">⭐ Best-seller</span>
-            <div class="image">🍯</div>
-            <div class="nom">Miel de Montagne</div>
-            <div class="categorie">Produits de la ruche</div>
-            <div class="rating">★★★★★ (98 avis)</div>
-            <div class="prix">12 000 Ar</div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge bestseller">⭐ Best-seller</span>
-            <div class="image">🍅</div>
-            <div class="nom">Tomates Cœur de Bœuf</div>
-            <div class="categorie">Légumes frais</div>
-            <div class="rating">★★★★☆ (87 avis)</div>
-            <div class="prix">3 200 Ar</div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge bestseller">⭐ Best-seller</span>
-            <div class="image">🧀</div>
-            <div class="nom">Fromage Artisanal</div>
-            <div class="categorie">Produits laitiers</div>
-            <div class="rating">★★★★★ (76 avis)</div>
-            <div class="prix">8 500 Ar</div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
+            <div class="image">🌱</div>
+            <div class="nom" th:text="${produit.nom}"></div>
+            <div
+              class="categorie"
+              th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
+            ></div>
+            <div class="prix" th:text="${produit.pu} + ' Ar'"></div>
+            <a
+              class="btn-ajouter"
+              th:href="@{/produits/{id}(id=${produit.id})}"
+            >
+              <i class="fas fa-plus"></i> Voir
+            </a>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- ===== PROMOTIONS ===== -->
-    <section class="section alt" id="promotions">
-      <div class="conteneur">
-        <div class="section-header">
-          <span class="badge-tag"
-            ><i class="fas fa-gift"></i> Offres spéciales</span
-          >
-          <h2><i class="fas fa-tags"></i> Promotions du moment</h2>
-          <p>Des prix réduits sur une sélection de produits exceptionnels</p>
-        </div>
-
-        <div class="grid-produits">
-          <div class="carte-produit">
-            <span class="badge soldes">-30%</span>
-            <div class="image">🍎</div>
-            <div class="nom">Pommes Bio</div>
-            <div class="categorie">Fruits frais</div>
-            <div class="rating">★★★★☆ (62 avis)</div>
-            <div class="prix">
-              2 450 Ar <span class="prix-barre">3 500 Ar</span>
-            </div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge soldes">-20%</span>
-            <div class="image">🥬</div>
-            <div class="nom">Salade Verte</div>
-            <div class="categorie">Légumes frais</div>
-            <div class="rating">★★★★★ (45 avis)</div>
-            <div class="prix">
-              1 600 Ar <span class="prix-barre">2 000 Ar</span>
-            </div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge soldes">-15%</span>
-            <div class="image">🌾</div>
-            <div class="nom">Riz de Camargue</div>
-            <div class="categorie">Céréales</div>
-            <div class="rating">★★★★☆ (38 avis)</div>
-            <div class="prix">
-              4 250 Ar <span class="prix-barre">5 000 Ar</span>
-            </div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge soldes">-25%</span>
-            <div class="image">🍊</div>
-            <div class="nom">Jus d'Orange Frais</div>
-            <div class="categorie">Boissons</div>
-            <div class="rating">★★★★☆ (52 avis)</div>
-            <div class="prix">
-              3 000 Ar <span class="prix-barre">4 000 Ar</span>
-            </div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== PROMO BANNER ===== -->
-    <div class="promo-banner" style="margin-top: -20px; margin-bottom: 40px">
-      <div>
-        <h3>🥳 Offre Flash ! <span>-40%</span></h3>
-        <p>
-          Sur tous les fruits bio jusqu'à dimanche. Profitez-en maintenant !
+        <p
+          class="aucun-produit"
+          th:unless="${bestSellers != null and !bestSellers.isEmpty()}"
+        >
+          Aucun best-seller disponible pour le moment.
         </p>
       </div>
-      <button class="btn-promo">
-        <i class="fas fa-shopping-bag"></i> Voir les offres
-      </button>
-    </div>
+    </section>
 
     <!-- ===== NOUVEAUTÉS ===== -->
     <section class="section" id="nouveautes">
@@ -1228,55 +1122,34 @@
           <p>Découvrez les dernières arrivées sur greenField</p>
         </div>
 
-        <div class="grid-produits">
-          <div class="carte-produit">
+        <div
+          class="grid-produits"
+          th:if="${newProduits != null and !newProduits.isEmpty()}"
+        >
+          <div class="carte-produit" th:each="produit : ${newProduits}">
             <span class="badge nouveau">Nouveau</span>
-            <div class="image">🥝</div>
-            <div class="nom">Kiwi Bio</div>
-            <div class="categorie">Fruits frais</div>
-            <div class="rating">★★★★★ (12 avis)</div>
-            <div class="prix">6 800 Ar</div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge nouveau">Nouveau</span>
-            <div class="image">🌶️</div>
-            <div class="nom">Piment Habanero</div>
-            <div class="categorie">Épices</div>
-            <div class="rating">★★★★☆ (8 avis)</div>
-            <div class="prix">2 200 Ar</div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge nouveau">Nouveau</span>
-            <div class="image">🍵</div>
-            <div class="nom">Thé Vert Bio</div>
-            <div class="categorie">Boissons</div>
-            <div class="rating">★★★★★ (15 avis)</div>
-            <div class="prix">9 500 Ar</div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
-          </div>
-
-          <div class="carte-produit">
-            <span class="badge nouveau">Nouveau</span>
-            <div class="image">🧄</div>
-            <div class="nom">Ail Noir</div>
-            <div class="categorie">Épices</div>
-            <div class="rating">★★★★☆ (6 avis)</div>
-            <div class="prix">7 200 Ar</div>
-            <button class="btn-ajouter">
-              <i class="fas fa-plus"></i> Ajouter
-            </button>
+            <div class="image">🌿</div>
+            <div class="nom" th:text="${produit.nom}"></div>
+            <div
+              class="categorie"
+              th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
+            ></div>
+            <div class="prix" th:text="${produit.pu} + ' Ar'"></div>
+            <a
+              class="btn-ajouter"
+              th:href="@{/produits/{id}(id=${produit.id})}"
+            >
+              <i class="fas fa-plus"></i> Voir
+            </a>
           </div>
         </div>
+
+        <p
+          class="aucun-produit"
+          th:unless="${newProduits != null and !newProduits.isEmpty()}"
+        >
+          Aucun nouveau produit disponible pour le moment.
+        </p>
       </div>
     </section>
 
@@ -1407,82 +1280,6 @@
             </p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== ACTUALITÉS ===== -->
-    <section class="section alt" id="actus">
-      <div class="conteneur">
-        <div class="section-header">
-          <span class="badge-tag"
-            ><i class="fas fa-newspaper"></i> À la une</span
-          >
-          <h2><i class="fas fa-bullhorn"></i> Actualités</h2>
-          <p>Retrouvez les dernières nouvelles de greenField</p>
-        </div>
-
-        <div class="actus-grid">
-          <div class="actu-card">
-            <div class="image">🌱</div>
-            <div class="content">
-              <span class="tag">Événement</span>
-              <h4>Grande braderie de printemps</h4>
-              <p>
-                Jusqu'à -50% sur une sélection de produits. Ne manquez pas cette
-                occasion unique !
-              </p>
-              <span class="date"
-                ><i class="far fa-calendar-alt"></i> 15 juin 2026</span
-              >
-            </div>
-          </div>
-
-          <div class="actu-card">
-            <div class="image">🤝</div>
-            <div class="content">
-              <span class="tag">Partenariat</span>
-              <h4>Nouveau partenariat avec des producteurs locaux</h4>
-              <p>
-                Nous accueillons 25 nouveaux producteurs dans notre réseau. Plus
-                de choix pour vous !
-              </p>
-              <span class="date"
-                ><i class="far fa-calendar-alt"></i> 10 juin 2026</span
-              >
-            </div>
-          </div>
-
-          <div class="actu-card">
-            <div class="image">📱</div>
-            <div class="content">
-              <span class="tag">Innovation</span>
-              <h4>L'application mobile greenField arrive bientôt</h4>
-              <p>
-                Commandez plus facilement et suivez vos livraisons en temps réel
-                sur notre app.
-              </p>
-              <span class="date"
-                ><i class="far fa-calendar-alt"></i> 5 juin 2026</span
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== NEWSLETTER ===== -->
-    <section class="newsletter">
-      <div class="conteneur">
-        <h2><i class="fas fa-envelope"></i> Newsletter</h2>
-        <p>
-          Inscrivez-vous pour recevoir nos offres exclusives et nos nouveautés
-        </p>
-        <form>
-          <input type="email" placeholder="Votre adresse email" required />
-          <button type="submit">
-            <i class="fas fa-paper-plane"></i> S'inscrire
-          </button>
-        </form>
       </div>
     </section>
 

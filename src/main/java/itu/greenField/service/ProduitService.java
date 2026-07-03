@@ -48,4 +48,28 @@ public class ProduitService {
         Integer stock = mvtStockFilleRepository.calculerStockProduit(idProduit);
         return stock == null ? 0 : stock;
     }
+
+    public List<Produit> bestSeller() {
+        return produitRepository.findAll();
+    }
+
+    public List<Produit> newProduit() {
+        return produitRepository.findAll();
+    }
+
+    public int satisfaits() {
+        return 100;
+    }
+
+    public int producteur() {
+        return 2;
+    }
+
+    public int note() {
+        return 3;
+    }
+
+    public double livraison() {
+        return 8;
+    }
 }
