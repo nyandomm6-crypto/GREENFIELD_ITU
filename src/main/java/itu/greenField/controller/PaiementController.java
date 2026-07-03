@@ -18,6 +18,7 @@ import itu.greenField.filtre.FiltreNombreBackCommandeOption;
 import itu.greenField.model.Commandes;
 import itu.greenField.model.ModeReception;
 import itu.greenField.model.TypeCommande;
+import itu.greenField.model.TypePayement;
 import itu.greenField.service.ClientService;
 import itu.greenField.service.CommandesService;
 import itu.greenField.service.ProduitService;
@@ -42,14 +43,15 @@ public class PaiementController {
     // private final StatutCommandeService statutCommandeService;
     // private final ProvinceLivraisonService provinceLivraisonService;
 
-    // public CommandeController(CommandesService commandeService, ClientService clientService,
-    //         ProduitService produitService, StatutCommandeService statutCommandeService,
-    //         ProvinceLivraisonService provinceLivraisonService) {
-    //     this.commandeService = commandeService;
-    //     this.clientService = clientService;
-    //     this.produitService = produitService;
-    //     this.statutCommandeService = statutCommandeService;
-    //     this.provinceLivraisonService = provinceLivraisonService;
+    // public CommandeController(CommandesService commandeService, ClientService
+    // clientService,
+    // ProduitService produitService, StatutCommandeService statutCommandeService,
+    // ProvinceLivraisonService provinceLivraisonService) {
+    // this.commandeService = commandeService;
+    // this.clientService = clientService;
+    // this.produitService = produitService;
+    // this.statutCommandeService = statutCommandeService;
+    // this.provinceLivraisonService = provinceLivraisonService;
     // }
 
     @GetMapping("/choix")
@@ -58,6 +60,28 @@ public class PaiementController {
         return mv;
     }
 
+    @GetMapping("/avance")
+    public ModelAndView showFormAvance() {
+        ModelAndView mv = new ModelAndView("front/paiement/formAvance");
+        mv.addObject("typesPaiement", List.of(TypePayement.Mobile_Money));
+        return mv;
+    }
 
-    
+    @GetMapping("/total")
+    public ModelAndView showFormTotal() {
+        ModelAndView mv = new ModelAndView("front/paiement/formPaiementTotal");
+        return mv;
+    }
+
+    @GetMapping("/payer/total")
+    public String paiementTotal() {
+        return "h";
+
+    }
+
+    @GetMapping("/payer/avance")
+    public String paiementAvance() {
+        return "h";
+    }
+
 }
