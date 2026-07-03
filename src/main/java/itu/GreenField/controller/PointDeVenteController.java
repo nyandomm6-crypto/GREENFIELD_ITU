@@ -249,6 +249,17 @@ public class PointDeVenteController {
             model.addAttribute("dateFin", dateFin);
             model.addAttribute("produit", produit);
             
+            // Filtrer les types de mouvement selon le type de point de vente
+            List<TypeMvt> typesMvtFiltres;
+            if (pointDeVente.get().getCode().startsWith("CTR-")) {
+                // Centrale: Entrée_Production, Sortie_Transfert, Perte
+                typesMvtFiltres = List.of(TypeMvt.Entree_Production, TypeMvt.Sortie_Transfert, TypeMvt.Perte);
+            } else {
+                // Boutique: Entrée_Boutique, Vente_Client, Perte
+                typesMvtFiltres = List.of(TypeMvt.Entree_Boutique, TypeMvt.Vente_Client, TypeMvt.Perte);
+            }
+            model.addAttribute("typesMvtFiltres", typesMvtFiltres);
+            
             List<MvtStock> mouvements = mvtStockRepository.findByPointDeVente(pointDeVente.get());
             
             // Filtrer par type de mouvement
