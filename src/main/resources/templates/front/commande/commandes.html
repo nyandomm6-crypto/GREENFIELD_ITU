@@ -3,197 +3,226 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Récapitulatif de la commande - greenField</title>
+
+    <title>Mes commandes - greenField</title>
+
     <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <title>Mes commandes - greenField</title>
+
+    <link
       href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
-      
+      rel="stylesheet"
+    />
 
-          .contenu-commandes {
-            display: grid;
-            gap: 18px;
-          }
+    <style>
+      .contenu-commandes {
+        display: grid;
+        gap: 18px;
+      }
 
-          .commande-card {
-            background: white;
-            border: 1px solid var(--bordure);
-            border-radius: 14px;
-            padding: 20px 22px;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04);
-          }
+      .commande-card {
+        background: #fff;
+        border: 1px solid var(--bordure);
+        border-radius: 14px;
+        padding: 20px 22px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04);
+      }
 
-          .commande-card-head {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 14px;
-          }
+      .commande-card-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
 
-          .commande-titre {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 18px;
-            font-weight: 700;
-          }
+      .commande-titre {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 18px;
+        font-weight: 700;
+      }
 
-          .commande-meta {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            color: var(--gris);
-            font-size: 14px;
-          }
+      .commande-meta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        color: var(--gris);
+        font-size: 14px;
+        margin-top: 5px;
+      }
 
-          .badge-statut {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 7px 14px;
-            border-radius: 999px;
-            font-size: 13px;
-            font-weight: 700;
-          }
+      .badge-statut {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+      }
 
-          .badge-statut.en-attente {
-            background: #fff8e1;
-            color: #8a6d1d;
-          }
+      .badge-statut.en-attente {
+        background: #fff8e1;
+        color: #8a6d1d;
+      }
 
-          .badge-statut.validee {
-            background: #e8f5e9;
-            color: var(--vert-fonce);
-          }
+      .badge-statut.validee {
+        background: #e8f5e9;
+        color: var(--vert-fonce);
+      }
 
-          .badge-statut.annulee {
-            background: #fdecea;
-            color: var(--rouge);
-          }
+      .badge-statut.annulee {
+        background: #fdecea;
+        color: var(--rouge);
+      }
 
-          .commande-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 14px;
-          }
+      .commande-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+      }
 
-          .commande-info {
-            background: #fbfcfb;
-            border: 1px solid var(--bordure);
-            border-radius: 10px;
-            padding: 12px 14px;
-          }
+      .commande-info {
+        background: #fbfcfb;
+        border: 1px solid var(--bordure);
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
 
-          .commande-info label {
-            display: block;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            color: var(--gris);
-            margin-bottom: 6px;
-          }
+      .commande-info label {
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--gris);
+        margin-bottom: 6px;
+      }
 
-          .commande-info strong {
-            font-size: 15px;
-            color: var(--texte);
-          }
+      .commande-info strong {
+        font-size: 15px;
+        color: var(--texte);
+      }
 
-          .commande-actions {
-            margin-top: 16px;
-            display: flex;
-            justify-content: flex-end;
-          }
+      .commande-actions {
+        margin-top: 16px;
+        display: flex;
+        justify-content: flex-end;
+      }
 
-          .vide {
-            background: white;
-            border: 1px dashed var(--bordure);
-            border-radius: 14px;
-            padding: 28px;
-            text-align: center;
-            color: var(--gris);
-          }
+      .vide {
+        background: white;
+        border: 1px dashed var(--bordure);
+        border-radius: 14px;
+        padding: 28px;
+        text-align: center;
+        color: var(--gris);
+      }
 
-          @media (max-width: 900px) {
-            .commande-grid {
-              grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-          }
+      @media (max-width: 900px) {
+        .commande-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
 
-          @media (max-width: 560px) {
-            .commande-grid {
-              grid-template-columns: 1fr;
-            }
-          }
-      <div class="vignette-produit">🌱</div>
-    </div>
-  </body>
-        <div th:replace="~{front/fragments/layout :: nav}"></div>
+      @media (max-width: 560px) {
+        .commande-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
 
-        <main class="conteneur">
-          <h1>Mes commandes</h1>
-          <p>Consultez vos commandes, leur statut actuel et leur détail.</p>
+  <body>
+    <!-- Navigation -->
+    <div th:replace="~{front/fragments/layout :: nav}"></div>
 
-          <div class="contenu-commandes" th:if="${commandes != null and !commandes.isEmpty()}">
-            <article class="commande-card" th:each="commande : ${commandes}">
-              <div class="commande-card-head">
-                <div>
-                  <div class="commande-titre">
-                    <i class="fas fa-receipt"></i>
-                    <span th:text="'Commande #' + ${commande.id}"></span>
-                  </div>
-                  <div class="commande-meta">
-                    <span th:text="${commande.datecommande}"></span>
-                    <span th:if="${commande.modeReception != null}" th:text="${commande.modeReception}"></span>
-                  </div>
-                </div>
+    <main class="conteneur">
+      <h1>Mes commandes</h1>
+      <p>Consultez vos commandes, leur statut actuel et leur détail.</p>
 
-                <span class="badge-statut"
-                      th:classappend="${commande.statutActuel != null and commande.statutActuel.nom != null ? commande.statutActuel.nom.toLowerCase().replace(' ', '-') : 'en-attente'}"
-                      th:text="${commande.statutActuel != null and commande.statutActuel.nom != null ? commande.statutActuel.nom : 'En attente'}">
+      <div
+        class="contenu-commandes"
+        th:if="${commandes != null and !commandes.isEmpty()}"
+      >
+        <article class="commande-card" th:each="commande : ${commandes}">
+          <div class="commande-card-head">
+            <div>
+              <div class="commande-titre">
+                <i class="fas fa-receipt"></i>
+                <span th:text="'Commande #' + ${commande.id}"></span>
+              </div>
+
+              <div class="commande-meta">
+                <span th:text="${commande.datecommande}"></span>
+
+                <span
+                  th:if="${commande.modeReception != null}"
+                  th:text="${commande.modeReception}"
+                >
                 </span>
               </div>
+            </div>
 
-              <div class="commande-grid">
-                <div class="commande-info">
-                  <label>Client</label>
-                  <strong th:text="${commande.client.prenom} + ' ' + ${commande.client.nom}"></strong>
-                </div>
-
-                <div class="commande-info">
-                  <label>Total général</label>
-                  <strong th:text="${commande.totalGeneral} + ' Ar'"></strong>
-                </div>
-
-                <div class="commande-info">
-                  <label>Total produits</label>
-                  <strong th:text="${commande.totalProduits != null ? commande.totalProduits : 0}"></strong>
-                </div>
-
-                <div class="commande-info">
-                  <label>Réception</label>
-                  <strong th:text="${commande.modeReception != null ? commande.modeReception : 'Non défini'}"></strong>
-                </div>
-              </div>
-
-              <div class="commande-actions">
-                <a class="btn secondaire" th:href="@{/commandes/{id}(id=${commande.id})}">
-                  Voir le détail
-                </a>
-              </div>
-            </article>
+            <span
+              class="badge-statut"
+              th:classappend="${commande.statutActuel != null and commande.statutActuel.nom != null ? commande.statutActuel.nom.toLowerCase().replace(' ','-') : 'en-attente'}"
+              th:text="${commande.statutActuel != null and commande.statutActuel.nom != null ? commande.statutActuel.nom : 'En attente'}"
+            >
+            </span>
           </div>
 
-          <div class="vide" th:unless="${commandes != null and !commandes.isEmpty()}">
-            Aucune commande trouvée pour ce client.
+          <div class="commande-grid">
+            <div class="commande-info">
+              <label>Client</label>
+              <strong
+                th:text="${commande.client.prenom + ' ' + commande.client.nom}"
+              ></strong>
+            </div>
+
+            <div class="commande-info">
+              <label>Total général</label>
+              <strong th:text="${commande.totalGeneral + ' Ar'}"></strong>
+            </div>
+
+            <div class="commande-info">
+              <label>Total produits</label>
+              <strong
+                th:text="${commande.totalProduits != null ? commande.totalProduits : 0}"
+              ></strong>
+            </div>
+
+            <div class="commande-info">
+              <label>Réception</label>
+              <strong
+                th:text="${commande.modeReception != null ? commande.modeReception : 'Non défini'}"
+              ></strong>
+            </div>
           </div>
-        </main>
-    
+
+          <div class="commande-actions">
+            <a
+              class="btn secondaire"
+              th:href="@{/commandes/{id}(id=${commande.id})}"
+            >
+              Voir le détail
+            </a>
+          </div>
+        </article>
+      </div>
+
+      <div
+        class="vide"
+        th:unless="${commandes != null and !commandes.isEmpty()}"
+      >
+        Aucune commande trouvée pour ce client.
+      </div>
+    </main>
   </body>
 </html>
-
