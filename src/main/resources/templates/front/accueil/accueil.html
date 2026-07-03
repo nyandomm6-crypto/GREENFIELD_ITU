@@ -1005,7 +1005,9 @@
         <!-- Si l'utilisateur est connecté -->
         <span th:if="${session.client != null}" class="user-info">
           <i class="fas fa-user-circle"></i>
-          <span th:text="'Bonjour, ' + ${session.client.prenom}"></span>
+          <a th:href="@{/profil}" style="color: white">
+            <span th:text="'Bonjour, ' + ${session.client.prenom}"></span>
+          </a>
           <form th:action="@{/logout}" method="post" style="display: inline">
             <button type="submit" class="btn-deconnexion">
               <i class="fas fa-sign-out-alt"></i>
@@ -1018,7 +1020,7 @@
           <a class="btn-connexion" th:href="@{/login}">
             <i class="fas fa-sign-in-alt"></i> Connexion
           </a>
-          <a class="btn-inscription" th:href="@{/register}">
+          <a class="btn-inscription" th:href="@{/signup}">
             <i class="fas fa-user-plus"></i> Inscription
           </a>
         </span>

@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="'Commande #' + ${commande.id} + ' - greenField'"></title>
+    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+
+    <style>
+      .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 22px;
+        align-items: start;
+      }
+
+      .bloc,
+      .bloc-ligne {
+        background: white;
+        border: 1px solid var(--bordure);
+        border-radius: 14px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04);
+      }
+
+      .bloc {
+        padding: 22px;
+      }
+
+      .bloc-ligne {
+        padding: 16px 18px;
+        margin-bottom: 12px;
+      }
+
+      .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 14px;
+      }
+
+      .meta-item {
+        background: #fbfcfb;
+        border: 1px solid var(--bordure);
+        border-radius: 10px;
+        padding: 12px 14px;
+      }
+
+      .meta-item label {
+        display: block;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: var(--gris);
+        margin-bottom: 5px;
+      }
+
+      .meta-item strong {
+        font-size: 15px;
+      }
+
+      .details-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .ligne-produit {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .ligne-produit .titre {
+        font-weight: 700;
+      }
+
+      .sous-totaux {
+        color: var(--gris);
+        font-size: 14px;
+      }
+
+      @media (max-width: 920px) {
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div th:replace="~{front/fragments/layout :: nav}"></div>
+
+    <main class="conteneur">
+      <h1 th:text="'Commande #' + ${commande.id}"></h1>
+      <p>Détail de la commande, statut actuel et lignes achetées.</p>
+
+      <div class="detail-grid">
+        <section class="bloc">
+          <div class="commande-card-head" style="margin-bottom: 0">
+            <div>
+              <div class="commande-titre">
+                <i class="fas fa-truck-fast"></i>
+                <span
+                  th:text="${commande.statutActuel != null and commande.statutActuel.nom != null ? commande.statutActuel.nom : 'En attente'}"
+                ></span>
+              </div>
+              <div class="commande-meta">
+                <span th:text="${commande.datecommande}"></span>
+                <span
+                  th:if="${commande.modeReception != null}"
+                  th:text="${commande.modeReception}"
+                ></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="meta-grid">
+            <div class="meta-item">
+              <label>Client</label>
+              <strong
+                th:text="${commande.client.prenom} + ' ' + ${commande.client.nom}"
+              ></strong>
+            </div>
+            <div class="meta-item">
+              <label>Email</label>
+              <strong th:text="${commande.client.mail}"></strong>
+            </div>
+            <div class="meta-item">
+              <label>Total général</label>
+              <strong th:text="${commande.totalGeneral} + ' Ar'"></strong>
+            </div>
+            <div class="meta-item">
+              <label>Total produits</label>
+              <strong
+                th:text="${commande.totalProduits != null ? commande.totalProduits : 0}"
+              ></strong>
+            </div>
+          </div>
+        </section>
+
+        <aside class="bloc">
+          <h2>Récapitulatif</h2>
+          <div class="details-list">
+            <div class="meta-item">
+              <label>Adresse livraison</label>
+              <strong
+                th:text="${commande.adresseLivraison != null ? commande.adresseLivraison : 'Non renseignée'}"
+              ></strong>
+            </div>
+            <div class="meta-item">
+              <label>Frais livraison</label>
+              <strong
+                th:text="${commande.fraisLivraison != null ? commande.fraisLivraison + ' Ar' : '0 Ar'}"
+              ></strong>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px">
+            <a class="btn secondaire" th:href="@{/commandes}"
+              >Retour aux commandes</a
+            >
+          </div>
+        </aside>
+      </div>
+
+      <section style="margin-top: 22px">
+        <h2>Lignes de commande</h2>
+
+        <div th:if="${detailsCommande != null and !detailsCommande.isEmpty()}">
+          <article class="bloc-ligne" th:each="detail : ${detailsCommande}">
+            <div class="ligne-produit">
+              <div>
+                <div class="titre" th:text="${detail.produit.nom}"></div>
+                <div
+                  class="sous-totaux"
+                  th:text="'Qté : ' + ${detail.quantite} + ' | Prix unitaire : ' + ${detail.puAuMomentAchat} + ' Ar'"
+                ></div>
+              </div>
+              <strong th:text="${detail.puAuMomentAchat} + ' Ar'"></strong>
+            </div>
+          </article>
+        </div>
+
+        <div
+          class="vide"
+          th:unless="${detailsCommande != null and !detailsCommande.isEmpty()}"
+        >
+          Aucun détail de ligne trouvé pour cette commande.
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

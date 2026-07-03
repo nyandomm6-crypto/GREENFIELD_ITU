@@ -204,8 +204,19 @@
           ></span>
         </a>
 
+        <a class="lien-panier" th:href="@{/commandes}">
+          Mes Commandes
+          <span
+            class="badge-panier"
+            th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
+            th:text="${nombreArticlesPanier}"
+          ></span>
+        </a>
+
         <span th:if="${session.client != null}">
-          <span th:text="'Bonjour, ' + ${session.client.prenom}"></span>
+          <a class="lien-panier" th:href="@{/profil}">
+            <span th:text="'Bonjour, ' + ${session.client.prenom}"></span>
+          </a>
           <form th:action="@{/logout}" method="post" style="display: inline">
             <button type="submit" class="btn-deconnexion">Déconnexion</button>
           </form>

@@ -1,11 +1,17 @@
 package itu.greenField.controller;
 
 import itu.greenField.model.Client;
+import itu.greenField.model.Commandes;
+import itu.greenField.model.DetailsCommande;
 import itu.greenField.repository.ClientRepository;
+import itu.greenField.repository.CommandesRepository;
+import itu.greenField.service.CommandeService;
 import itu.greenField.service.PanierService;
 import itu.greenField.service.ValidationMailService;
 import itu.greenField.service.ValidationService;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.servlet.http.Cookie;
@@ -25,13 +31,18 @@ public class AuthClientController {
     private ValidationService validationService;
     private ValidationMailService validationMailService;
     private PanierService panierService;
+    private CommandeService commandeService;
+    private CommandesRepository commandesRepository;
 
     public AuthClientController(ClientRepository clientRepository, ValidationService validationService,
-            ValidationMailService validationMailService, PanierService panierService) {
+            ValidationMailService validationMailService, PanierService panierService,
+            CommandeService commandeService, CommandesRepository commandesRepository) {
         this.clientRepository = clientRepository;
         this.validationService = validationService;
         this.validationMailService = validationMailService;
         this.panierService = panierService;
+        this.commandeService = commandeService;
+        this.commandesRepository = commandesRepository;
     }
 
     @GetMapping("/login")
@@ -192,5 +203,57 @@ public class AuthClientController {
             return "front/profil/editProfil";
         }
         return "redirect:/login";
+    }
+
+    @PostMapping("/profil/edit")
+    public String updateProfil(@ModelAttribute Client client, HttpSession session) {
+        Client clientConnecte = (Client) session.getAttribute("client");
+        if (clientConnecte != null) {
+            client.setId(clientConnecte.getId());
+            client.setEstVerifie(true);
+            clientRepository.save(client);
+            session.setAttribute("client", client);
+            return "redirect:/profil";
+        }
+        return "redirect:/login";
+    }
+
+    @GetMapping("/commandes")
+    public String afficherCommandes(HttpSession session, Model model) {
+        Client client = (Client) session.getAttribute("client");
+        List<Commandes> commandes = new ArrayList<>();
+        if (client != null) {
+            commandes = commandeService.findByClient(client);
+            model.addAttribute("client", client);
+            model.addAttribute("commandes", commandes);
+            return "front/commande/commandes";
+        }
+        return "redirect:/login";
+    }
+
+    @GetMapping("/commandes/{id}")
+    public String voirCommande(@PathVariable Integer id, HttpSession session, Model model) {
+        Client client = (Client) session.getAttribute("client");
+        if (client == null) {
+            return "redirect:/login";
+        }
+
+        Commandes commande = commandesRepository.getById(id);
+        if (commande == null || commande.getClient() == null
+                || !commande.getClient().getId().equals(client.getId())) {
+            return "redirect:/commandes";
+        }
+
+        List<DetailsCommande> details = commande.getDetailsCommande();
+        if (details == null) {
+            details = new ArrayList<>();
+        } else {
+            details.size();
+        }
+
+        model.addAttribute("client", client);
+        model.addAttribute("commande", commande);
+        model.addAttribute("detailsCommande", details);
+        return "front/commande/detail";
     }
 }

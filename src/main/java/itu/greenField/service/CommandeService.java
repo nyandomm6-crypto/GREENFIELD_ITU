@@ -142,4 +142,8 @@ public class CommandeService {
         String normalisee = valeurBase.trim().toLowerCase();
         return normalisee.equals(valeurRecherchee) || normalisee.contains(valeurRecherchee);
     }
+
+    public List<Commandes> findByClient(Client client) {
+        return commandesRepository.findByClient(client);
+    }
 }
