@@ -1,231 +1,598 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <!-- ===================== -->
-    <!-- STYLE COMMUN greenField -->
-    <!-- ===================== -->
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!-- =====================================================
+         FRAGMENT : styles
+         A inclure dans le <head> de chaque page avec :
+         <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+    ====================================================== -->
     <th:block th:fragment="styles">
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      />
+
       <style>
         :root {
-          --vert: #2e7d32;
-          --vert-clair: #e8f5e9;
-          --vert-fonce: #1b5e20;
-          --texte: #2b2b2b;
+          /* ---- Palette greenField : forêt affinée + or récolte ---- */
+          --vert-950: #0a1f10;
+          --vert-ombre: #0a1f10;
+          --vert-fonce: #163d1f;
+          --vert: #2f7a3c;
+          --vert-lumiere: #4f9c5a;
+          --vert-clair: #eef6ec;
+          --vert-gradient: linear-gradient(
+            150deg,
+            #123319 0%,
+            #1f5228 55%,
+            #2f7a3c 100%
+          );
+
+          --or: #b8863f;
+          --or-clair: #f0d9a8;
+          --or-fonce: #8f662c;
+
+          --creme: #faf8f2;
+          --texte: #182619;
           --gris: #6b7280;
-          --bordure: #e0e0e0;
-          --rouge: #c62828;
-          --fond: #f7f9f7;
+          --gris-clair: #9ca3af;
+          --gris-tres-clair: #f6f5f1;
+          --bordure: #e6e2d6;
+
+          --rouge: #b8452f;
+          --rose: #c9587a;
+          --blanc: #ffffff;
+
+          --ombre: 0 8px 28px rgba(10, 31, 16, 0.08);
+          --ombre-forte: 0 20px 50px rgba(10, 31, 16, 0.16);
+          --rayon: 18px;
+          --rayon-pill: 999px;
+          --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+          --font-display: "Fraunces", Georgia, serif;
+          --font-body: "Inter", "Segoe UI", Arial, sans-serif;
+        }
+
+        :root {
+          /* ---- Palette greenField : forêt affinée + or récolte ---- */
+          --vert-950: #0a1f10;
+          --vert-ombre: #0a1f10;
+          --vert-fonce: #163d1f;
+          --vert: #2f7a3c;
+          --vert-lumiere: #4f9c5a;
+          --vert-clair: #eef6ec;
+          --vert-gradient: linear-gradient(
+            150deg,
+            #123319 0%,
+            #1f5228 55%,
+            #2f7a3c 100%
+          );
+
+          --or: #b8863f;
+          --or-clair: #f0d9a8;
+          --or-fonce: #8f662c;
+
+          --creme: #faf8f2;
+          --texte: #182619;
+          --gris: #6b7280;
+          --gris-clair: #9ca3af;
+          --gris-tres-clair: #f6f5f1;
+          --bordure: #e6e2d6;
+
+          --rouge: #b8452f;
+          --rose: #c9587a;
+          --blanc: #ffffff;
+
+          --ombre: 0 8px 28px rgba(10, 31, 16, 0.08);
+          --ombre-forte: 0 20px 50px rgba(10, 31, 16, 0.16);
+          --rayon: 18px;
+          --rayon-pill: 999px;
+          --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+          --font-display: "Fraunces", Georgia, serif;
+          --font-body: "Inter", "Segoe UI", Arial, sans-serif;
         }
 
         * {
           box-sizing: border-box;
+          margin: 0;
+          padding: 0;
         }
 
         body {
-          margin: 0;
-          font-family: "Segoe UI", Arial, sans-serif;
-          background: var(--fond);
+          font-family: var(--font-body);
           color: var(--texte);
+          background: var(--gris-tres-clair);
+          padding-top: 72px;
         }
 
         a {
-          color: var(--vert-fonce);
           text-decoration: none;
         }
 
         .conteneur {
-          max-width: 1100px;
+          max-width: 1200px;
           margin: 0 auto;
-          padding: 24px 20px 60px;
+          padding: 0 24px;
         }
-
-        /* Barre de navigation */
+        /* ===================== */
+        /* BARRE DE NAVIGATION   */
+        /* ===================== */
         .barre-nav {
-          background: var(--vert);
-          color: white;
-          padding: 14px 20px;
+          background: linear-gradient(
+            135deg,
+            rgba(12, 36, 18, 0.96) 0%,
+            rgba(22, 61, 31, 0.94) 48%,
+            rgba(40, 88, 52, 0.92) 100%
+          );
+          color: var(--creme);
+          padding: 0 18px;
+          height: 72px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          flex-wrap: wrap;
-          gap: 10px;
+          gap: 16px;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          z-index: 1000;
+          box-shadow: 0 12px 34px rgba(5, 15, 9, 0.26);
+          transition: var(--transition);
+          overflow: hidden;
+          backdrop-filter: blur(18px);
+          border-bottom: 1px solid rgba(240, 217, 168, 0.12);
+        }
+
+        .barre-nav::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(
+              circle at top left,
+              rgba(240, 217, 168, 0.14),
+              transparent 38%
+            ),
+            radial-gradient(
+              circle at 85% 18%,
+              rgba(255, 255, 255, 0.08),
+              transparent 30%
+            ),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent 40%);
+          pointer-events: none;
+        }
+
+        .barre-nav .conteneur-nav {
+          position: relative;
+          width: 100%;
+          max-width: 1280px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 16px;
+        }
+
+        .barre-nav.scrolled {
+          box-shadow: 0 18px 48px rgba(5, 15, 9, 0.34);
         }
 
         .barre-nav .logo {
-          font-size: 20px;
-          font-weight: 700;
-          color: white;
+          display: inline-flex;
+          align-items: center;
+          gap: 11px;
+          font-family: var(--font-body);
+          font-weight: 800;
+          font-size: 18px;
+          color: var(--creme);
+          letter-spacing: -0.2px;
+          flex-shrink: 0;
         }
 
-        .barre-nav nav {
+        .barre-nav .logo .icone-feuille {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background: conic-gradient(from 180deg, #f6e5be, #7cbc84, #f6e5be);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--vert-950);
+          font-size: 13px;
+          box-shadow:
+            0 0 0 4px rgba(240, 217, 168, 0.08),
+            0 10px 24px rgba(5, 15, 9, 0.2);
+        }
+
+        .barre-nav nav.liens-principaux {
           display: flex;
           align-items: center;
-          gap: 18px;
-          flex-wrap: wrap;
+          gap: 24px;
         }
 
-        .barre-nav nav a {
-          color: white;
-          font-weight: 500;
+        .barre-nav nav.liens-principaux a {
+          color: rgba(255, 255, 255, 0.92);
+          font-weight: 600;
+          font-size: 13.5px;
+          letter-spacing: 0.1px;
+          position: relative;
+          padding-bottom: 5px;
+          transition: var(--transition);
         }
 
-        .barre-nav nav a:hover {
-          text-decoration: underline;
+        .barre-nav nav.liens-principaux a i {
+          margin-right: 7px;
+          color: var(--or-clair);
+          font-size: 13px;
+        }
+
+        .barre-nav nav.liens-principaux a::after {
+          content: "";
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 0;
+          height: 2px;
+          border-radius: 2px;
+          background: var(--or-clair);
+          transition: var(--transition);
+        }
+
+        .barre-nav nav.liens-principaux a:hover {
+          color: var(--blanc);
+          transform: translateY(-1px);
+        }
+
+        .barre-nav nav.liens-principaux a:hover::after {
+          width: 100%;
+        }
+
+        .zone-droite {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          flex-shrink: 0;
         }
 
         .lien-panier {
-          position: relative;
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          background: var(--vert-fonce);
-          padding: 6px 12px;
-          border-radius: 20px;
+          gap: 8px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          padding: 7px 14px;
+          border-radius: var(--rayon-pill);
+          color: var(--creme) !important;
+          font-size: 13px;
+          font-weight: 600;
+          transition: var(--transition);
+        }
+
+        .lien-panier:hover {
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.35);
+          transform: translateY(-1px);
         }
 
         .badge-panier {
-          background: white;
-          color: var(--vert-fonce);
+          background: var(--or-clair);
+          color: var(--vert-950);
           border-radius: 50%;
-          font-size: 12px;
+          font-size: 11px;
           font-weight: 700;
-          min-width: 20px;
-          height: 20px;
+          min-width: 19px;
+          height: 19px;
           display: inline-flex;
           align-items: center;
           justify-content: center;
           padding: 0 4px;
         }
 
+        .user-info {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          color: var(--creme);
+          font-weight: 500;
+          font-size: 13.5px;
+        }
+
+        .user-info .avatar-mini {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.18);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-family: var(--font-display);
+          font-weight: 700;
+          font-size: 13px;
+          color: var(--creme);
+        }
+
         .btn-deconnexion {
           background: transparent;
-          border: 1px solid white;
-          color: white;
-          padding: 5px 12px;
-          border-radius: 16px;
+          border: 1px solid rgba(255, 255, 255, 0.28);
+          color: rgba(255, 255, 255, 0.85);
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
           cursor: pointer;
-          font-size: 14px;
+          font-size: 13px;
+          transition: var(--transition);
+          font-family: inherit;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .btn-deconnexion:hover {
+          border-color: var(--blanc);
           background: rgba(255, 255, 255, 0.15);
         }
 
-        /* Messages */
-        .message {
-          padding: 12px 16px;
-          margin: 16px 0;
-          border-radius: 8px;
-          font-size: 14px;
-        }
-
-        .message.success {
-          background: #d4edda;
-          color: #155724;
-        }
-
-        .message.error {
-          background: #f8d7da;
-          color: #721c24;
-        }
-
-        h1 {
-          font-size: 26px;
-          margin-bottom: 6px;
-          color: var(--vert-fonce);
-        }
-
-        h2 {
-          font-size: 20px;
-          color: var(--vert-fonce);
-        }
-
-        /* Boutons génériques */
-        .btn {
-          display: inline-block;
-          background: var(--vert);
-          color: white;
-          border: none;
-          padding: 10px 18px;
-          border-radius: 8px;
-          cursor: pointer;
-          font-size: 15px;
+        .btn-connexion {
+          color: rgba(255, 255, 255, 0.9);
           font-weight: 600;
+          font-size: 13.5px;
+          padding: 8px 6px;
+          transition: var(--transition);
         }
 
-        .btn:hover {
-          background: var(--vert-fonce);
+        .btn-connexion:hover {
+          color: var(--blanc);
         }
 
-        .btn.secondaire {
-          background: white;
+        .btn-inscription {
+          background: linear-gradient(135deg, #f4e6c4 0%, #ffffff 100%);
           color: var(--vert-fonce);
-          border: 1px solid var(--vert);
+          padding: 8px 16px;
+          border-radius: var(--rayon-pill);
+          font-weight: 700;
+          font-size: 13px;
+          transition: var(--transition);
+          box-shadow: 0 10px 24px rgba(5, 15, 9, 0.16);
         }
 
-        .btn.secondaire:hover {
-          background: var(--vert-clair);
+        .btn-inscription:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 14px 30px rgba(10, 31, 16, 0.22);
         }
 
-        .btn.danger {
-          background: white;
-          color: var(--rouge);
-          border: 1px solid var(--rouge);
+        /* ===================== */
+        /* BOUTON PANIER FLOTTANT */
+        /* ===================== */
+        .panier-flottant {
+          position: fixed;
+          right: 24px;
+          bottom: 24px;
+          z-index: 1200;
+          display: inline-flex;
+          align-items: center;
+          min-height: 56px;
+          border-radius: 18px;
+          background: linear-gradient(
+            135deg,
+            #214d2e 0%,
+            #2f7a3c 52%,
+            #b8863f 180%
+          );
+          color: var(--creme) !important;
+          box-shadow: 0 18px 40px rgba(10, 31, 16, 0.28);
+          overflow: hidden;
+          transition: var(--transition);
+          border: 1px solid rgba(240, 217, 168, 0.22);
+          padding-right: 4px;
         }
 
-        .btn.danger:hover {
-          background: #fdecea;
+        .panier-flottant:hover {
+          transform: translateY(-3px) scale(1.01);
+          box-shadow: 0 24px 55px rgba(10, 31, 16, 0.34);
         }
 
-        .btn:disabled {
-          background: #b0b0b0;
-          cursor: not-allowed;
+        .panier-flottant .icone {
+          width: 56px;
+          height: 56px;
+          flex-shrink: 0;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          position: relative;
+          background: rgba(255, 255, 255, 0.08);
+          border-right: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .panier-flottant .compteur {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background: var(--or-clair);
+          color: var(--vert-950);
+          font-size: 10.5px;
+          font-weight: 700;
+          min-width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 3px;
+          border: 2px solid var(--vert-fonce);
+        }
+
+        .panier-flottant .texte {
+          max-width: 0;
+          opacity: 0;
+          white-space: nowrap;
+          font-size: 13px;
+          font-weight: 700;
+          letter-spacing: 0.25px;
+          transition: var(--transition);
+          overflow: hidden;
+        }
+
+        .panier-flottant:hover .texte {
+          max-width: 170px;
+          opacity: 1;
+          padding-right: 18px;
+        }
+
+        .btn-mes-commandes {
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          color: rgba(255, 255, 255, 0.9);
+          font-weight: 600;
+          font-size: 13px;
+          padding: 7px 12px;
+          border-radius: var(--rayon-pill);
+          border: 1px solid rgba(255, 255, 255, 0.16);
+          background: rgba(255, 255, 255, 0.08);
+          transition: var(--transition);
+        }
+
+        .btn-mes-commandes:hover {
+          background: rgba(255, 255, 255, 0.14);
+          color: var(--blanc);
+          transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+          .barre-nav {
+            padding: 0 14px;
+            height: 60px;
+          }
+          body {
+            padding-top: 60px;
+          }
+          .barre-nav nav.liens-principaux {
+            display: none;
+          }
+          .panier-flottant {
+            right: 14px;
+            bottom: 14px;
+            min-height: 52px;
+          }
+          .panier-flottant .icone {
+            width: 52px;
+            height: 52px;
+          }
+          .btn-mes-commandes {
+            display: none;
+          }
         }
       </style>
     </th:block>
 
-    <!-- ===================== -->
-    <!-- BARRE DE NAVIGATION -->
-    <!-- ===================== -->
-  </head>
-  <body>
-    <header class="barre-nav" th:fragment="nav">
-      <a class="logo" th:href="@{/}">🌿 greenField</a>
-
-      <nav>
-        <a th:href="@{/produits}">Produits</a>
-
-        <a class="lien-panier" th:href="@{/panier}">
-          🛒 Panier
-          <span
-            class="badge-panier"
-            th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
-            th:text="${nombreArticlesPanier}"
-          ></span>
+    <!-- =====================================================
+         FRAGMENT : nav
+         A inclure en tout début de <body> de chaque page avec :
+         <div th:replace="~{front/fragments/layout :: nav}"></div>
+    ====================================================== -->
+    <div th:fragment="nav">
+      <header class="barre-nav" id="barreNav">
+        <a class="logo" th:href="@{/}">
+          <span class="icone-feuille"><i class="fas fa-leaf"></i></span>
+          greenField
         </a>
 
-        <a class="lien-panier" th:href="@{/commandes}">
-          Mes Commandes
-          <span
-            class="badge-panier"
-            th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
-            th:text="${nombreArticlesPanier}"
-          ></span>
-        </a>
+        <nav class="liens-principaux">
+          <a th:href="@{/produits}"><i class="fas fa-store"></i>Boutique</a>
+          <a href="/#bestsellers"><i class="fas fa-fire"></i>Best-sellers</a>
+          <a href="/#faq"><i class="fas fa-question-circle"></i>FAQ</a>
+          <a th:href="@{/commandes}"
+            ><i class="fas fa-receipt"></i>Mes commandes</a
+          >
+        </nav>
 
-        <span th:if="${session.client != null}">
-          <a class="lien-panier" th:href="@{/profil}">
-            <span th:text="'Bonjour, ' + ${session.client.prenom}"></span>
+        <div class="zone-droite">
+          <a class="lien-panier" th:href="@{/panier}">
+            <i class="fas fa-shopping-cart"></i> Panier
+            <span
+              class="badge-panier"
+              th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
+              th:text="${nombreArticlesPanier}"
+            ></span>
           </a>
-          <form th:action="@{/logout}" method="post" style="display: inline">
-            <button type="submit" class="btn-deconnexion">Déconnexion</button>
-          </form>
-        </span>
 
-        <a th:unless="${session.client != null}" th:href="@{/login}"
-          >Connexion</a
-        >
-      </nav>
-    </header>
+          <!-- Utilisateur connecté -->
+          <span th:if="${session.client != null}" class="user-info">
+            <a
+              th:href="@{/profil}"
+              style="
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                color: inherit;
+              "
+            >
+              <span
+                class="avatar-mini"
+                th:text="${#strings.substring(session.client.prenom,0,1)}"
+              ></span>
+              <span th:text="${session.client.prenom}"></span>
+            </a>
+            <form th:action="@{/logout}" method="post" style="display: inline">
+              <button type="submit" class="btn-deconnexion" title="Déconnexion">
+                <i class="fas fa-sign-out-alt"></i>
+              </button>
+            </form>
+          </span>
+
+          <!-- Utilisateur non connecté -->
+          <span
+            th:unless="${session.client != null}"
+            style="display: inline-flex; align-items: center; gap: 14px"
+          >
+            <a class="btn-mes-commandes" th:href="@{/commandes}">
+              <i class="fas fa-receipt"></i> Mes commandes
+            </a>
+            <a class="btn-connexion" th:href="@{/login}">Connexion</a>
+            <a class="btn-inscription" th:href="@{/signup}">Inscription</a>
+          </span>
+        </div>
+      </header>
+
+      <!-- Bouton panier flottant -->
+      <a class="panier-flottant" th:href="@{/panier}" title="Voir le panier">
+        <span class="icone">
+          <i class="fas fa-shopping-basket"></i>
+          <span
+            class="compteur"
+            th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
+            th:text="${nombreArticlesPanier}"
+          ></span>
+        </span>
+        <span class="texte">Voir le panier</span>
+      </a>
+
+      <script th:inline="none">
+        (function () {
+          var nav = document.getElementById("barreNav");
+          if (!nav) return;
+          window.addEventListener("scroll", function () {
+            if (window.scrollY > 12) {
+              nav.classList.add("scrolled");
+            } else {
+              nav.classList.remove("scrolled");
+            }
+          });
+        })();
+      </script>
+    </div>
   </body>
 </html>

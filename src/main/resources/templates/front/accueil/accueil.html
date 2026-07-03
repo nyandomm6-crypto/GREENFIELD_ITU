@@ -5,1029 +5,789 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>greenField - Accueil</title>
 
-    <!-- ===================== -->
-    <!-- STYLE COMMUN greenField -->
-    <!-- ===================== -->
-    <th:block th:fragment="styles">
-      <style>
-        :root {
-          --vert: #2e7d32;
-          --vert-clair: #e8f5e9;
-          --vert-fonce: #1b5e20;
-          --vert-ombre: #0d3b14;
-          --vert-gradient: linear-gradient(135deg, #1b5e20, #2e7d32);
-          --texte: #1a1a2e;
-          --gris: #6b7280;
-          --gris-clair: #9ca3af;
-          --gris-tres-clair: #f3f4f6;
-          --bordure: #e0e0e0;
-          --rouge: #dc2626;
-          --rose: #f43f5e;
-          --or: #f59e0b;
-          --blanc: #ffffff;
-          --ombre: 0 8px 32px rgba(0, 0, 0, 0.08);
-          --ombre-forte: 0 12px 48px rgba(0, 0, 0, 0.12);
-          --rayon: 16px;
-          --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-
-        body {
-          font-family: "Segoe UI", Arial, sans-serif;
-          background: var(--gris-tres-clair);
-          color: var(--texte);
-          line-height: 1.6;
-          overflow-x: hidden;
-        }
-
-        a {
-          text-decoration: none;
-        }
-
-        .conteneur {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 24px;
-        }
-
-        /* ===================== */
-        /* BARRE DE NAVIGATION   */
-        /* ===================== */
-        .barre-nav {
-          background: var(--vert-gradient);
-          color: white;
-          padding: 14px 24px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          gap: 10px;
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-          box-shadow: 0 4px 20px rgba(27, 94, 32, 0.3);
-        }
-
-        .barre-nav .logo {
-          font-size: 22px;
-          font-weight: 800;
-          color: white;
-          letter-spacing: -0.5px;
-        }
-
-        .barre-nav .logo i {
-          margin-right: 8px;
-        }
-
-        .barre-nav nav {
-          display: flex;
-          align-items: center;
-          gap: 20px;
-          flex-wrap: wrap;
-        }
-
-        .barre-nav nav a {
-          color: white;
-          font-weight: 500;
-          font-size: 14px;
-          transition: var(--transition);
-          position: relative;
-        }
-
-        .barre-nav nav a::after {
-          content: "";
-          position: absolute;
-          bottom: -4px;
-          left: 0;
-          width: 0;
-          height: 2px;
-          background: white;
-          transition: var(--transition);
-        }
-
-        .barre-nav nav a:hover::after {
-          width: 100%;
-        }
-
-        .barre-nav nav a:hover {
-          opacity: 0.9;
-        }
-
-        .lien-panier {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          background: rgba(255, 255, 255, 0.15);
-          padding: 6px 14px;
-          border-radius: 30px;
-          color: white !important;
-          transition: var(--transition);
-        }
-
-        .lien-panier:hover {
-          background: rgba(255, 255, 255, 0.25);
-        }
-
-        .lien-panier::after {
-          display: none !important;
-        }
-
-        .badge-panier {
-          background: white;
-          color: var(--vert-fonce);
-          border-radius: 50%;
-          font-size: 11px;
-          font-weight: 700;
-          min-width: 20px;
-          height: 20px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0 4px;
-        }
-
-        .user-info {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          color: white;
-          font-weight: 500;
-          font-size: 14px;
-        }
-
-        .user-info i {
-          font-size: 18px;
-          opacity: 0.8;
-        }
-
-        .btn-deconnexion {
-          background: rgba(255, 255, 255, 0.15);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          color: white;
-          padding: 5px 14px;
-          border-radius: 20px;
-          cursor: pointer;
-          font-size: 13px;
-          font-weight: 500;
-          transition: var(--transition);
-          font-family: inherit;
-        }
-
-        .btn-deconnexion:hover {
-          background: rgba(255, 255, 255, 0.25);
-        }
-
-        .btn-connexion {
-          color: white;
-          font-weight: 500;
-          padding: 6px 16px;
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          border-radius: 20px;
-          transition: var(--transition);
-        }
-
-        .btn-connexion:hover {
-          background: rgba(255, 255, 255, 0.15);
-        }
-
-        .btn-inscription {
-          background: white;
-          color: var(--vert-fonce);
-          padding: 6px 18px;
-          border-radius: 20px;
-          font-weight: 600;
-          transition: var(--transition);
-        }
-
-        .btn-inscription:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
-        }
-
-        /* ===== HERO ===== */
-        .hero {
-          background: var(--vert-gradient);
-          padding: 80px 0 100px;
-          text-align: center;
-          color: white;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .hero::before {
-          content: "";
-          position: absolute;
-          top: -50%;
-          right: -20%;
-          width: 600px;
-          height: 600px;
-          background: rgba(255, 255, 255, 0.03);
-          border-radius: 50%;
-        }
-
-        .hero::after {
-          content: "";
-          position: absolute;
-          bottom: -40%;
-          left: -10%;
-          width: 400px;
-          height: 400px;
-          background: rgba(255, 255, 255, 0.02);
-          border-radius: 50%;
-        }
-
-        .hero .conteneur {
-          position: relative;
-          z-index: 1;
-        }
-
-        .hero h1 {
-          font-size: 48px;
-          font-weight: 800;
-          margin-bottom: 12px;
-          letter-spacing: -1px;
-        }
-
-        .hero h1 span {
-          color: #a8e6cf;
-        }
-
-        .hero p {
-          font-size: 18px;
-          opacity: 0.9;
-          max-width: 600px;
-          margin: 0 auto 8px;
-        }
-
-        .hero .welcome-name {
-          font-size: 22px;
-          font-weight: 600;
-          margin-top: 16px;
-          color: #a8e6cf;
-        }
-
-        .hero .welcome-name i {
-          margin-right: 10px;
-        }
-
-        .hero-stats {
-          display: flex;
-          justify-content: center;
-          gap: 60px;
-          margin-top: 40px;
-        }
-
-        .hero-stats .stat {
-          text-align: center;
-        }
-
-        .hero-stats .stat-number {
-          font-size: 32px;
-          font-weight: 700;
-          display: block;
-        }
-
-        .hero-stats .stat-label {
-          font-size: 14px;
-          opacity: 0.7;
-        }
-
-        /* ===== MESSAGES ===== */
-        .message {
-          padding: 12px 20px;
-          border-radius: 10px;
-          margin: 20px 0;
-          font-weight: 500;
-        }
-
-        .message.success {
-          background: #dcfce7;
-          color: #166534;
-          border: 1px solid #86efac;
-        }
-
-        .message.error {
-          background: #fee2e2;
-          color: #991b1b;
-          border: 1px solid #fca5a5;
-        }
-
-        /* ===== SECTIONS ===== */
-        .section {
-          padding: 60px 0;
-        }
-
-        .section.alt {
-          background: var(--blanc);
-        }
-
-        .section-header {
-          text-align: center;
-          margin-bottom: 40px;
-        }
-
-        .section-header h2 {
-          font-size: 32px;
-          font-weight: 700;
-          color: var(--vert-fonce);
-          margin-bottom: 8px;
-        }
-
-        .section-header h2 i {
-          color: var(--vert);
-          margin-right: 10px;
-        }
-
-        .section-header p {
-          color: var(--gris);
-          font-size: 16px;
-        }
-
-        .section-header .badge-tag {
-          display: inline-block;
-          background: var(--vert-clair);
-          color: var(--vert-fonce);
-          padding: 4px 16px;
-          border-radius: 30px;
-          font-size: 13px;
-          font-weight: 600;
-          margin-bottom: 12px;
-        }
-
-        /* ===== GRILLE PRODUITS ===== */
-        .grid-produits {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 24px;
-        }
-
-        .carte-produit {
-          background: var(--blanc);
-          border-radius: var(--rayon);
-          padding: 20px;
-          box-shadow: var(--ombre);
-          transition: var(--transition);
-          border: 1px solid rgba(0, 0, 0, 0.04);
-          text-align: center;
-          position: relative;
-        }
-
-        .carte-produit:hover {
-          transform: translateY(-6px);
-          box-shadow: var(--ombre-forte);
-        }
-
-        .carte-produit .badge {
-          position: absolute;
-          top: 12px;
-          right: 12px;
-          background: var(--rose);
-          color: white;
-          padding: 2px 12px;
-          border-radius: 20px;
-          font-size: 11px;
-          font-weight: 700;
-          text-transform: uppercase;
-        }
-
-        .carte-produit .badge.soldes {
-          background: var(--rouge);
-        }
-
-        .carte-produit .badge.bestseller {
-          background: var(--or);
-        }
-
-        .carte-produit .badge.nouveau {
-          background: var(--vert);
-        }
-
-        .carte-produit .image {
-          font-size: 56px;
-          margin-bottom: 12px;
-        }
-
-        .carte-produit .nom {
-          font-weight: 600;
-          font-size: 16px;
-          margin-bottom: 4px;
-        }
-
-        .carte-produit .categorie {
-          font-size: 13px;
-          color: var(--gris);
-          margin-bottom: 8px;
-        }
-
-        .carte-produit .prix {
-          font-size: 20px;
-          font-weight: 700;
-          color: var(--vert-fonce);
-        }
-
-        .carte-produit .prix-barre {
-          font-size: 14px;
-          color: var(--gris);
-          text-decoration: line-through;
-          margin-left: 8px;
-          font-weight: 400;
-        }
-
-        .carte-produit .rating {
-          color: var(--or);
-          font-size: 13px;
-          margin: 6px 0 10px;
-        }
-
-        .carte-produit .btn-ajouter {
-          background: var(--vert);
-          color: white;
-          border: none;
-          padding: 8px 20px;
-          border-radius: 30px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: var(--transition);
-          font-size: 14px;
-          font-family: inherit;
-        }
-
-        .carte-produit .btn-ajouter:hover {
-          background: var(--vert-fonce);
-          transform: scale(1.02);
-        }
-
-        /* ===== PROMO BANNER ===== */
-        .promo-banner {
-          background: linear-gradient(135deg, #1b5e20, #2e7d32);
-          border-radius: var(--rayon);
-          padding: 40px 50px;
-          color: white;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 20px;
-          margin: 0 24px;
-        }
-
-        .promo-banner h3 {
-          font-size: 28px;
-          font-weight: 700;
-        }
-
-        .promo-banner h3 span {
-          color: #fcd34d;
-        }
-
-        .promo-banner p {
-          opacity: 0.85;
-          font-size: 16px;
-        }
-
-        .promo-banner .btn-promo {
-          background: white;
-          color: var(--vert-fonce);
-          padding: 12px 32px;
-          border-radius: 40px;
-          font-weight: 700;
-          font-size: 16px;
-          transition: var(--transition);
-          border: none;
-          cursor: pointer;
-          font-family: inherit;
-        }
-
-        .promo-banner .btn-promo:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ===== FAQ ===== */
-        .faq-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 20px;
-          max-width: 900px;
-          margin: 0 auto;
-        }
-
-        .faq-item {
-          background: var(--blanc);
-          padding: 20px 24px;
-          border-radius: var(--rayon);
-          box-shadow: var(--ombre);
-          border-left: 4px solid var(--vert);
-          transition: var(--transition);
-        }
-
-        .faq-item:hover {
-          transform: translateX(4px);
-        }
-
-        .faq-item h4 {
-          font-size: 16px;
-          font-weight: 600;
-          color: var(--vert-fonce);
-          margin-bottom: 4px;
-        }
-
-        .faq-item h4 i {
-          color: var(--vert);
-          margin-right: 8px;
-        }
-
-        .faq-item p {
-          font-size: 14px;
-          color: var(--gris);
-          margin-left: 26px;
-        }
-
-        /* ===== TEMOIGNAGES ===== */
-        .temoignages-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-        }
-
-        .temoignage-card {
-          background: var(--blanc);
-          padding: 28px;
-          border-radius: var(--rayon);
-          box-shadow: var(--ombre);
-          transition: var(--transition);
-          text-align: center;
-        }
-
-        .temoignage-card:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--ombre-forte);
-        }
-
-        .temoignage-card .stars {
-          color: var(--or);
-          font-size: 16px;
-          margin-bottom: 12px;
-        }
-
-        .temoignage-card blockquote {
-          font-size: 15px;
-          color: var(--texte);
-          line-height: 1.7;
-          font-style: italic;
-          margin-bottom: 16px;
-        }
-
-        .temoignage-card .author {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-        }
-
-        .temoignage-card .author .avatar {
-          width: 44px;
-          height: 44px;
-          border-radius: 50%;
-          background: var(--vert-clair);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 700;
-          color: var(--vert-fonce);
-          font-size: 18px;
-        }
-
-        .temoignage-card .author .name {
-          font-weight: 600;
-          font-size: 14px;
-        }
-
-        .temoignage-card .author .role {
-          font-size: 12px;
-          color: var(--gris);
-        }
-
-        /* ===== ACTUALITES ===== */
-        .actus-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 24px;
-        }
-
-        .actu-card {
-          background: var(--blanc);
-          border-radius: var(--rayon);
-          overflow: hidden;
-          box-shadow: var(--ombre);
-          transition: var(--transition);
-        }
-
-        .actu-card:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--ombre-forte);
-        }
-
-        .actu-card .image {
-          height: 160px;
-          background: var(--vert-clair);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 48px;
-          color: var(--vert);
-        }
-
-        .actu-card .content {
-          padding: 20px;
-        }
-
-        .actu-card .content .tag {
-          display: inline-block;
-          background: var(--vert-clair);
-          color: var(--vert-fonce);
-          padding: 2px 12px;
-          border-radius: 20px;
-          font-size: 11px;
-          font-weight: 600;
-          margin-bottom: 8px;
-        }
-
-        .actu-card .content h4 {
-          font-size: 17px;
-          font-weight: 600;
-          margin-bottom: 6px;
-        }
-
-        .actu-card .content p {
-          font-size: 14px;
-          color: var(--gris);
-          margin-bottom: 12px;
-        }
-
-        .actu-card .content .date {
-          font-size: 12px;
-          color: var(--gris-clair);
-        }
-
-        /* ===== NEWSLETTER ===== */
-        .newsletter {
-          background: var(--vert-fonce);
-          padding: 60px 0;
-          text-align: center;
-          color: white;
-        }
-
-        .newsletter h2 {
-          color: white;
-          font-size: 30px;
-          margin-bottom: 8px;
-        }
-
-        .newsletter p {
-          opacity: 0.8;
-          margin-bottom: 24px;
-        }
-
-        .newsletter form {
-          display: flex;
-          justify-content: center;
-          gap: 12px;
-          flex-wrap: wrap;
-        }
-
-        .newsletter input {
-          padding: 12px 20px;
-          border: none;
-          border-radius: 40px;
-          width: 320px;
-          max-width: 100%;
-          font-size: 15px;
-          font-family: inherit;
-        }
-
-        .newsletter button {
-          background: white;
-          color: var(--vert-fonce);
-          border: none;
-          padding: 12px 36px;
-          border-radius: 40px;
-          font-weight: 700;
-          font-size: 15px;
-          cursor: pointer;
-          transition: var(--transition);
-          font-family: inherit;
-        }
-
-        .newsletter button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ===== FOOTER ===== */
-        .footer {
-          background: #0d1f12;
-          color: rgba(255, 255, 255, 0.7);
-          padding: 50px 0 20px;
-        }
-
-        .footer-grid {
-          display: grid;
-          grid-template-columns: 2fr 1fr 1fr 1fr;
-          gap: 40px;
-          margin-bottom: 32px;
-        }
-
-        .footer .logo {
-          font-size: 22px;
-          font-weight: 800;
-          color: white;
-          display: inline-block;
-          margin-bottom: 12px;
-        }
-
-        .footer .logo i {
-          color: #a8e6cf;
-        }
-
-        .footer p {
-          font-size: 14px;
-          line-height: 1.8;
-          max-width: 300px;
-        }
-
-        .footer h4 {
-          color: white;
-          font-size: 16px;
-          font-weight: 600;
-          margin-bottom: 12px;
-        }
-
-        .footer ul {
-          list-style: none;
-        }
-
-        .footer ul li {
-          margin-bottom: 8px;
-        }
-
-        .footer ul li a {
-          color: rgba(255, 255, 255, 0.6);
-          font-size: 14px;
-          transition: var(--transition);
-        }
-
-        .footer ul li a:hover {
-          color: white;
-        }
-
-        .footer-bottom {
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
-          padding-top: 20px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 12px;
-          font-size: 13px;
-        }
-
-        .footer-socials {
-          display: flex;
-          gap: 12px;
-        }
-
-        .footer-socials a {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.06);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: rgba(255, 255, 255, 0.6);
-          transition: var(--transition);
-        }
-
-        .footer-socials a:hover {
-          background: var(--vert);
-          color: white;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 1024px) {
-          .grid-produits {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .temoignages-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .actus-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .faq-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .footer-grid {
-            grid-template-columns: 1fr 1fr;
-          }
-        }
-
-        @media (max-width: 768px) {
-          .barre-nav {
-            flex-direction: column;
-            align-items: stretch;
-            gap: 12px;
-            padding: 12px 16px;
-          }
-
-          .barre-nav nav {
-            justify-content: center;
-            gap: 12px;
-          }
-
-          .hero h1 {
-            font-size: 32px;
-          }
-
-          .hero-stats {
-            gap: 30px;
-            flex-wrap: wrap;
-          }
-
-          .hero-stats .stat-number {
-            font-size: 24px;
-          }
-
-          .grid-produits {
-            grid-template-columns: repeat(2, 1fr);
-          }
-
-          .temoignages-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .actus-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .promo-banner {
-            flex-direction: column;
-            text-align: center;
-            padding: 30px 20px;
-            margin: 0 16px;
-          }
-
-          .promo-banner h3 {
-            font-size: 22px;
-          }
-
-          .section-header h2 {
-            font-size: 26px;
-          }
-
-          .footer-grid {
-            grid-template-columns: 1fr;
-            gap: 24px;
-            text-align: center;
-          }
-
-          .footer p {
-            max-width: 100%;
-          }
-
-          .footer-bottom {
-            flex-direction: column;
-            text-align: center;
-          }
-
-          .newsletter input {
-            width: 100%;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .grid-produits {
-            grid-template-columns: 1fr;
-            max-width: 320px;
-            margin: 0 auto;
-          }
-
-          .barre-nav nav {
-            gap: 8px;
-          }
-
-          .barre-nav nav a {
-            font-size: 13px;
-          }
-
-          .lien-panier {
-            font-size: 13px;
-            padding: 4px 10px;
-          }
-
-          .btn-deconnexion {
-            font-size: 12px;
-            padding: 4px 10px;
-          }
-
-          .hero {
-            padding: 50px 0 60px;
-          }
-
-          .hero h1 {
-            font-size: 26px;
-          }
-
-          .hero p {
-            font-size: 15px;
-          }
-
-          .section {
-            padding: 40px 0;
-          }
-
-          .section-header h2 {
-            font-size: 22px;
-          }
-
-          .promo-banner h3 {
-            font-size: 20px;
-          }
-
-          .promo-banner .btn-promo {
-            padding: 10px 24px;
-            font-size: 14px;
-          }
-        }
-      </style>
-    </th:block>
-
-    <!-- Font Awesome -->
+    <!-- Font Awesome pour les icônes -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+
+    <style>
+      /* =====================================================
+         VARIABLES ET RESET
+      ====================================================== */
+      :root {
+        --vert-fonce: #1a3a2a;
+        --vert: #2d6a4f;
+        --vert-clair: #40916c;
+        --vert-pale: #d8edd9;
+        --or: #d4a373;
+        --creme: #f8f4f0;
+        --gris: #5c6b5e;
+        --texte: #1e2b22;
+        --ombre: 0 8px 28px rgba(26, 58, 42, 0.1);
+        --ombre-forte: 0 20px 50px rgba(26, 58, 42, 0.2);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --rayon: 28px;
+        --rayon-pill: 60px;
+        --font-display: "Segoe UI", system-ui, -apple-system, sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: var(--font-display);
+        background: #f4f7f2;
+        color: var(--texte);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .conteneur {
+        width: min(1320px, calc(100% - 36px));
+        margin: 0 auto;
+      }
+
+      /* =====================================================
+         NAVIGATION (inspirée Alibaba)
+      ====================================================== */
+      .nav-principale {
+        background: rgba(255, 255, 255, 0.86);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(45, 106, 79, 0.12);
+        padding: 12px 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.03);
+      }
+
+      .nav-conteneur {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      .logo {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--vert-fonce);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.5px;
+      }
+      .logo i {
+        color: var(--vert);
+        font-size: 28px;
+      }
+      .logo span {
+        color: var(--or);
+      }
+
+      .nav-liens {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        list-style: none;
+        flex-wrap: wrap;
+      }
+
+      .nav-liens a {
+        font-weight: 500;
+        font-size: 15px;
+        color: var(--gris);
+        transition: var(--transition);
+        padding: 6px 0;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-liens a:hover {
+        color: var(--vert-fonce);
+        border-bottom-color: var(--vert);
+      }
+      .nav-liens a.actif {
+        color: var(--vert-fonce);
+        border-bottom-color: var(--vert);
+        font-weight: 600;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .btn-nav {
+        background: transparent;
+        border: 1.5px solid var(--vert);
+        color: var(--vert);
+        padding: 8px 18px;
+        border-radius: var(--rayon-pill);
+        font-weight: 600;
+        font-size: 14px;
+        transition: var(--transition);
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .btn-nav:hover {
+        background: var(--vert);
+        color: white;
+        box-shadow: 0 8px 18px rgba(45, 106, 79, 0.25);
+      }
+      .btn-nav.plein {
+        background: var(--vert);
+        color: white;
+      }
+      .btn-nav.plein:hover {
+        background: var(--vert-fonce);
+        border-color: var(--vert-fonce);
+      }
+
+      .icone-panier {
+        position: relative;
+        font-size: 22px;
+        color: var(--vert-fonce);
+        transition: var(--transition);
+      }
+      .icone-panier:hover {
+        color: var(--vert);
+      }
+      .badge-panier {
+        position: absolute;
+        top: -8px;
+        right: -10px;
+        background: #c0392b;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+
+      /* =====================================================
+         HERO - MODERN & VERT
+      ====================================================== */
+      .hero {
+        background: linear-gradient(
+          145deg,
+          #1d3e2b 0%,
+          #2b5a3f 60%,
+          #3d7a57 100%
+        );
+        border-radius: var(--rayon);
+        margin: 20px auto 28px;
+        padding: 72px 0 80px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 24px 60px rgba(26, 58, 42, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.3;
+      }
+
+      .hero .conteneur {
+        position: relative;
+        z-index: 2;
+      }
+
+      .hero h1 {
+        font-size: clamp(38px, 5.2vw, 68px);
+        font-weight: 800;
+        letter-spacing: -2px;
+        margin-bottom: 12px;
+        font-family: var(--font-display);
+      }
+      .hero h1 span {
+        color: #f3e0c0;
+      }
+
+      .hero p {
+        font-size: 18px;
+        opacity: 0.92;
+        max-width: 640px;
+        margin: 0 auto 8px;
+        line-height: 1.8;
+      }
+
+      .hero .welcome-name {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 12px 24px;
+        border-radius: var(--rayon-pill);
+        font-weight: 600;
+        margin-top: 18px;
+        font-size: 16px;
+        color: #f3e0c0;
+      }
+
+      /* stats */
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-top: 36px;
+      }
+      .hero-stats .stat {
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 18px 12px;
+        transition: var(--transition);
+      }
+      .hero-stats .stat:hover {
+        background: rgba(255, 255, 255, 0.14);
+        transform: translateY(-3px);
+      }
+      .hero-stats .stat-number {
+        font-size: 34px;
+        font-weight: 700;
+        display: block;
+        line-height: 1.2;
+        font-family: var(--font-display);
+      }
+      .hero-stats .stat-label {
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        opacity: 0.7;
+        font-weight: 500;
+      }
+
+      /* =====================================================
+         MESSAGES FLASH
+      ====================================================== */
+      .message {
+        padding: 16px 22px;
+        border-radius: 18px;
+        margin: 18px 0;
+        font-weight: 600;
+        border-left: 5px solid transparent;
+        box-shadow: var(--ombre);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .message.success {
+        background: #e7f3e4;
+        border-color: #2d6a4f;
+        color: #1a3a2a;
+      }
+      .message.error {
+        background: #fde8e4;
+        border-color: #b85a4a;
+        color: #7a3326;
+      }
+
+      /* =====================================================
+         SECTIONS
+      ====================================================== */
+      .section {
+        padding: 24px 0 56px;
+      }
+      .section .conteneur {
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(12px);
+        border-radius: var(--rayon);
+        padding: 36px 30px;
+        box-shadow: var(--ombre);
+        border: 1px solid rgba(45, 106, 79, 0.06);
+        transition: var(--transition);
+      }
+      .section.alt .conteneur {
+        background: linear-gradient(135deg, #f2f8f0 0%, #ffffff 80%);
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+      .section-header .badge-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--vert-pale);
+        color: var(--vert-fonce);
+        padding: 6px 18px;
+        border-radius: var(--rayon-pill);
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        border: 1px solid rgba(45, 106, 79, 0.12);
+      }
+      .section-header h2 {
+        font-size: clamp(26px, 3vw, 38px);
+        font-weight: 700;
+        color: var(--vert-fonce);
+        font-family: var(--font-display);
+        letter-spacing: -0.5px;
+      }
+      .section-header h2 i {
+        color: var(--vert);
+        margin-right: 10px;
+      }
+      .section-header p {
+        color: var(--gris);
+        font-size: 16px;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* =====================================================
+         GRILLE PRODUITS (CARTES)
+      ====================================================== */
+      .grid-produits {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+      }
+
+      .carte-produit {
+        background: white;
+        border-radius: 24px;
+        padding: 22px 18px 24px;
+        box-shadow: var(--ombre);
+        transition: var(--transition);
+        border: 1px solid rgba(45, 106, 79, 0.06);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .carte-produit::after {
+        content: "";
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--vert), var(--or));
+        opacity: 0.6;
+      }
+      .carte-produit:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: var(--ombre-forte);
+        border-color: rgba(45, 106, 79, 0.15);
+      }
+
+      .carte-produit .badge {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        padding: 4px 14px;
+        border-radius: var(--rayon-pill);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: white;
+      }
+      .badge.bestseller {
+        background: linear-gradient(135deg, #d4a373, #b8863f);
+      }
+      .badge.nouveau {
+        background: linear-gradient(135deg, #40916c, #2d6a4f);
+      }
+      .badge.soldes {
+        background: linear-gradient(135deg, #c97789, #b64d4a);
+      }
+
+      .carte-produit .image {
+        width: 80px;
+        height: 80px;
+        margin: 8px auto 14px;
+        border-radius: 30px;
+        background: linear-gradient(135deg, #eaf3e8, #f6f0e6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 42px;
+        transition: var(--transition);
+      }
+      .carte-produit:hover .image {
+        transform: scale(1.05) rotate(2deg);
+      }
+
+      .carte-produit .nom {
+        font-weight: 700;
+        font-size: 17px;
+        color: var(--vert-fonce);
+        margin-bottom: 2px;
+      }
+      .carte-produit .categorie {
+        font-size: 13px;
+        color: var(--gris);
+        margin-bottom: 8px;
+      }
+      .carte-produit .prix {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--vert-fonce);
+        margin-bottom: 6px;
+      }
+
+      .btn-ajouter {
+        background: var(--vert);
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: var(--rayon-pill);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: var(--transition);
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 12px 28px rgba(45, 106, 79, 0.25);
+        margin-top: 10px;
+      }
+      .btn-ajouter:hover {
+        background: var(--vert-fonce);
+        transform: translateY(-2px);
+        box-shadow: 0 16px 32px rgba(26, 58, 42, 0.3);
+      }
+
+      .aucun-produit {
+        text-align: center;
+        color: var(--gris);
+        padding: 40px 0;
+        font-size: 16px;
+      }
+
+      /* =====================================================
+         TEMOIGNAGES
+      ====================================================== */
+      .temoignages-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .temoignage-card {
+        background: white;
+        padding: 28px 24px;
+        border-radius: 24px;
+        box-shadow: var(--ombre);
+        transition: var(--transition);
+        text-align: center;
+        border: 1px solid rgba(45, 106, 79, 0.05);
+      }
+      .temoignage-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--ombre-forte);
+      }
+      .temoignage-card .stars {
+        color: var(--or);
+        font-size: 18px;
+        margin-bottom: 12px;
+        letter-spacing: 2px;
+      }
+      .temoignage-card blockquote {
+        font-size: 15px;
+        color: var(--texte);
+        line-height: 1.7;
+        font-style: italic;
+        margin-bottom: 16px;
+      }
+      .temoignage-card .author {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+      }
+      .temoignage-card .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--vert-pale);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--vert-fonce);
+        font-size: 18px;
+      }
+      .temoignage-card .name {
+        font-weight: 600;
+        font-size: 15px;
+      }
+      .temoignage-card .role {
+        font-size: 12px;
+        color: var(--gris);
+      }
+
+      /* =====================================================
+         FAQ
+      ====================================================== */
+      .faq-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .faq-item {
+        background: white;
+        padding: 20px 24px;
+        border-radius: 20px;
+        box-shadow: var(--ombre);
+        border-left: 4px solid var(--vert);
+        transition: var(--transition);
+      }
+      .faq-item:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--ombre-forte);
+      }
+      .faq-item h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--vert-fonce);
+        margin-bottom: 4px;
+      }
+      .faq-item h4 i {
+        color: var(--vert);
+        margin-right: 8px;
+      }
+      .faq-item p {
+        font-size: 14px;
+        color: var(--gris);
+        margin-left: 28px;
+      }
+
+      /* =====================================================
+         FOOTER
+      ====================================================== */
+      .footer {
+        background: #0f1f16;
+        color: rgba(255, 255, 255, 0.7);
+        padding: 48px 0 20px;
+        margin-top: 30px;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 30px;
+      }
+      .footer .logo {
+        color: white;
+        font-size: 22px;
+        font-weight: 800;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+      .footer .logo i {
+        color: #a8e6cf;
+      }
+      .footer p {
+        font-size: 14px;
+        line-height: 1.8;
+        max-width: 280px;
+      }
+      .footer h4 {
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      .footer ul {
+        list-style: none;
+      }
+      .footer ul li {
+        margin-bottom: 8px;
+      }
+      .footer ul li a {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 14px;
+        transition: var(--transition);
+      }
+      .footer ul li a:hover {
+        color: white;
+      }
+      .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-top: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 13px;
+      }
+      .footer-socials {
+        display: flex;
+        gap: 12px;
+      }
+      .footer-socials a {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        transition: var(--transition);
+      }
+      .footer-socials a:hover {
+        background: var(--vert);
+        color: white;
+        transform: translateY(-3px);
+      }
+
+      /* =====================================================
+         RESPONSIVE
+      ====================================================== */
+      @media (max-width: 1024px) {
+        .hero-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-produits {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .temoignages-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-conteneur {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+        }
+        .nav-liens {
+          justify-content: center;
+          gap: 16px;
+        }
+        .nav-actions {
+          justify-content: center;
+        }
+        .hero {
+          padding: 56px 0 64px;
+          border-radius: 24px;
+          margin: 12px auto 20px;
+        }
+        .hero h1 {
+          font-size: 30px;
+        }
+        .hero-stats {
+          gap: 10px;
+        }
+        .hero-stats .stat-number {
+          font-size: 26px;
+        }
+        .grid-produits {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 16px;
+        }
+        .temoignages-grid {
+          grid-template-columns: 1fr;
+        }
+        .faq-grid {
+          grid-template-columns: 1fr;
+        }
+        .section .conteneur {
+          padding: 24px 16px;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+          text-align: center;
+        }
+        .footer p {
+          max-width: 100%;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .hero-stats {
+          grid-template-columns: 1fr;
+        }
+        .grid-produits {
+          grid-template-columns: 1fr;
+          max-width: 320px;
+          margin: 0 auto;
+        }
+        .nav-liens {
+          gap: 12px;
+          flex-wrap: wrap;
+        }
+        .btn-nav {
+          padding: 6px 14px;
+          font-size: 13px;
+        }
+      }
+    </style>
   </head>
+
   <body>
-    <!-- ===================== -->
-    <!-- BARRE DE NAVIGATION   -->
-    <!-- ===================== -->
-    <header class="barre-nav">
-      <a class="logo" th:href="@{/}">
-        <i class="fas fa-leaf"></i> greenField
-      </a>
+    <!-- =====================================================
+         NAVIGATION
+    ====================================================== -->
+    <nav class="nav-principale">
+      <div class="conteneur nav-conteneur">
+        <a href="/" class="logo"
+          ><i class="fas fa-leaf"></i> green<span>Field</span></a
+        >
 
-      <nav>
-        <a th:href="@{/produits}"><i class="fas fa-store"></i> Shop</a>
-        <a href="#bestsellers"><i class="fas fa-fire"></i> Best-sellers</a>
-        <a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a>
+        <ul class="nav-liens">
+          <li><a href="/" class="actif">Accueil</a></li>
+          <li><a href="/produits">Boutique</a></li>
+          <li><a href="#bestsellers">Best-sellers</a></li>
+          <li><a href="#temoignages">Avis</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
 
-        <a class="lien-panier" th:href="@{/panier}">
-          <i class="fas fa-shopping-cart"></i> Panier
-          <span
-            class="badge-panier"
-            th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
-            th:text="${nombreArticlesPanier}"
-          >
-          </span>
-        </a>
-
-        <!-- Si l'utilisateur est connecté -->
-        <span th:if="${session.client != null}" class="user-info">
-          <i class="fas fa-user-circle"></i>
-          <a th:href="@{/profil}" style="color: white">
-            <span th:text="'Bonjour, ' + ${session.client.prenom}"></span>
+        <div class="nav-actions">
+          <a href="/panier" class="icone-panier">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge-panier">3</span>
           </a>
-          <form th:action="@{/logout}" method="post" style="display: inline">
-            <button type="submit" class="btn-deconnexion">
-              <i class="fas fa-sign-out-alt"></i>
-            </button>
-          </form>
-        </span>
+          <a href="/login" class="btn-nav">Connexion</a>
+          <a href="/signup" class="btn-nav plein">Inscription</a>
+        </div>
+      </div>
+    </nav>
 
-        <!-- Si l'utilisateur n'est pas connecté -->
-        <span th:unless="${session.client != null}">
-          <a class="btn-connexion" th:href="@{/login}">
-            <i class="fas fa-sign-in-alt"></i> Connexion
-          </a>
-          <a class="btn-inscription" th:href="@{/signup}">
-            <i class="fas fa-user-plus"></i> Inscription
-          </a>
-        </span>
-      </nav>
-    </header>
-
-    <!-- ===== HERO ===== -->
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
     <section class="hero">
       <div class="conteneur">
         <h1>Bienvenue sur <span>greenField</span></h1>
@@ -1036,7 +796,7 @@
           locaux, frais et de qualité
         </p>
 
-        <div th:if="${session.client != null}" class="welcome-name">
+        <div class="welcome-name" th:if="${session.client != null}">
           <i class="fas fa-hand-peace"></i>
           Heureux de vous revoir,
           <span th:text="${session.client.prenom}"></span> !
@@ -1044,36 +804,40 @@
 
         <div class="hero-stats">
           <div class="stat">
-            <span class="stat-number" th:text="${satisfaits} + 'k'"></span>
+            <span class="stat-number" th:text="${satisfaits} + 'k'">12k</span>
             <span class="stat-label">Clients satisfaits</span>
           </div>
           <div class="stat">
-            <span class="stat-number" th:text="${producteur} + '+'"></span>
+            <span class="stat-number" th:text="${producteur} + '+'">140+</span>
             <span class="stat-label">Producteurs locaux</span>
           </div>
           <div class="stat">
-            <span class="stat-number" th:text="${livraison} + '%'"></span>
+            <span class="stat-number" th:text="${livraison} + '%'">98%</span>
             <span class="stat-label">Livraison à temps</span>
           </div>
           <div class="stat">
-            <span class="stat-number" th:text="${note} + '★'"></span>
+            <span class="stat-number" th:text="${note} + '★'">4.8★</span>
             <span class="stat-label">Note moyenne</span>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== MESSAGES FLASH ===== -->
+    <!-- =====================================================
+         MESSAGES FLASH
+    ====================================================== -->
     <div class="conteneur">
-      <div
-        class="message success"
-        th:if="${success}"
-        th:text="${success}"
-      ></div>
-      <div class="message error" th:if="${error}" th:text="${error}"></div>
+      <div class="message success" th:if="${success}" th:text="${success}">
+        <i class="fas fa-check-circle"></i> Bienvenue sur greenField !
+      </div>
+      <div class="message error" th:if="${error}" th:text="${error}">
+        <i class="fas fa-exclamation-circle"></i> Une erreur est survenue.
+      </div>
     </div>
 
-    <!-- ===== BEST-SELLERS ===== -->
+    <!-- =====================================================
+         BEST-SELLERS
+    ====================================================== -->
     <section class="section" id="bestsellers">
       <div class="conteneur">
         <div class="section-header">
@@ -1091,21 +855,22 @@
           <div class="carte-produit" th:each="produit : ${bestSellers}">
             <span class="badge bestseller">⭐ Best-seller</span>
             <div class="image">🌱</div>
-            <div class="nom" th:text="${produit.nom}"></div>
+            <div class="nom" th:text="${produit.nom}">Tomate Bio</div>
             <div
               class="categorie"
               th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
-            ></div>
-            <div class="prix" th:text="${produit.pu} + ' Ar'"></div>
+            >
+              Légume
+            </div>
+            <div class="prix" th:text="${produit.pu} + ' Ar'">5 000 Ar</div>
             <a
               class="btn-ajouter"
               th:href="@{/produits/{id}(id=${produit.id})}"
             >
-              <i class="fas fa-plus"></i> Voir
+              <i class="fas fa-eye"></i> Voir
             </a>
           </div>
         </div>
-
         <p
           class="aucun-produit"
           th:unless="${bestSellers != null and !bestSellers.isEmpty()}"
@@ -1115,8 +880,10 @@
       </div>
     </section>
 
-    <!-- ===== NOUVEAUTÉS ===== -->
-    <section class="section" id="nouveautes">
+    <!-- =====================================================
+         NOUVEAUTÉS
+    ====================================================== -->
+    <section class="section alt" id="nouveautes">
       <div class="conteneur">
         <div class="section-header">
           <span class="badge-tag"><i class="fas fa-star"></i> Nouveautés</span>
@@ -1131,21 +898,22 @@
           <div class="carte-produit" th:each="produit : ${newProduits}">
             <span class="badge nouveau">Nouveau</span>
             <div class="image">🌿</div>
-            <div class="nom" th:text="${produit.nom}"></div>
+            <div class="nom" th:text="${produit.nom}">Piment Doux</div>
             <div
               class="categorie"
               th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
-            ></div>
-            <div class="prix" th:text="${produit.pu} + ' Ar'"></div>
+            >
+              Épice
+            </div>
+            <div class="prix" th:text="${produit.pu} + ' Ar'">3 200 Ar</div>
             <a
               class="btn-ajouter"
               th:href="@{/produits/{id}(id=${produit.id})}"
             >
-              <i class="fas fa-plus"></i> Voir
+              <i class="fas fa-eye"></i> Voir
             </a>
           </div>
         </div>
-
         <p
           class="aucun-produit"
           th:unless="${newProduits != null and !newProduits.isEmpty()}"
@@ -1155,8 +923,10 @@
       </div>
     </section>
 
-    <!-- ===== TEMOIGNAGES ===== -->
-    <section class="section alt" id="temoignages">
+    <!-- =====================================================
+         TEMOIGNAGES
+    ====================================================== -->
+    <section class="section" id="temoignages">
       <div class="conteneur">
         <div class="section-header">
           <span class="badge-tag"
@@ -1215,8 +985,10 @@
       </div>
     </section>
 
-    <!-- ===== FAQ ===== -->
-    <section class="section" id="faq">
+    <!-- =====================================================
+         FAQ
+    ====================================================== -->
+    <section class="section alt" id="faq">
       <div class="conteneur">
         <div class="section-header">
           <span class="badge-tag"
@@ -1232,60 +1004,56 @@
               <i class="fas fa-truck"></i> Comment se passe la livraison ?
             </h4>
             <p>
-              Nous livrons dans toute l'île en 24-48h. Vous pouvez choisir la
-              livraison à domicile ou le retrait en point de vente.
+              Nous livrons dans toute l'île en 24-48h. Choisissez livraison à
+              domicile ou retrait en point de vente.
             </p>
           </div>
-
           <div class="faq-item">
             <h4>
-              <i class="fas fa-credit-card"></i> Quels moyens de paiement
-              acceptez-vous ?
+              <i class="fas fa-credit-card"></i> Quels moyens de paiement ?
             </h4>
             <p>
-              Nous acceptons MVola, Orange Money, Airtel Money et les cartes
-              bancaires (Visa, Mastercard).
+              MVola, Orange Money, Airtel Money et cartes bancaires (Visa,
+              Mastercard).
             </p>
           </div>
-
           <div class="faq-item">
             <h4><i class="fas fa-undo"></i> Puis-je retourner un produit ?</h4>
             <p>
-              Oui, vous disposez de 7 jours pour retourner un produit non ouvert
-              et non entamé. Contactez notre service client.
+              Oui, vous disposez de 7 jours pour retourner un produit non
+              ouvert. Contactez notre service client.
             </p>
           </div>
-
           <div class="faq-item">
             <h4><i class="fas fa-leaf"></i> D'où viennent vos produits ?</h4>
             <p>
-              Nos produits proviennent directement de producteurs locaux engagés
-              dans une agriculture durable et respectueuse de l'environnement.
+              Directement de producteurs locaux engagés dans une agriculture
+              durable et respectueuse.
             </p>
           </div>
-
           <div class="faq-item">
             <h4>
               <i class="fas fa-percent"></i> Y a-t-il des frais de livraison ?
             </h4>
             <p>
-              Les frais de livraison sont de 5 000 Ar pour une livraison à
-              domicile. Le retrait en point de vente est gratuit.
+              5 000 Ar pour une livraison à domicile. Le retrait en point de
+              vente est gratuit.
             </p>
           </div>
-
           <div class="faq-item">
             <h4><i class="fas fa-user-plus"></i> Comment créer un compte ?</h4>
             <p>
-              Cliquez sur "Inscription" en haut de page, remplissez le
-              formulaire et confirmez votre adresse email. C'est gratuit !
+              Cliquez sur "Inscription", remplissez le formulaire et confirmez
+              votre email. C'est gratuit !
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== FOOTER ===== -->
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
     <footer class="footer">
       <div class="conteneur">
         <div class="footer-grid">
@@ -1300,7 +1068,6 @@
             <h4>Liens rapides</h4>
             <ul>
               <li><a href="/produits">Boutique</a></li>
-              <li><a href="#promotions">Promotions</a></li>
               <li><a href="#bestsellers">Best-sellers</a></li>
               <li><a href="#faq">FAQ</a></li>
             </ul>
@@ -1309,7 +1076,7 @@
             <h4>Mon compte</h4>
             <ul>
               <li><a href="/login">Connexion</a></li>
-              <li><a href="/register">Inscription</a></li>
+              <li><a href="/signup">Inscription</a></li>
               <li><a href="/panier">Panier</a></li>
               <li><a href="/commandes">Mes commandes</a></li>
             </ul>
@@ -1329,11 +1096,17 @@
         <div class="footer-bottom">
           <span>&copy; 2026 greenField. Tous droits réservés.</span>
           <div class="footer-socials">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
           </div>
         </div>
       </div>
