@@ -173,4 +173,24 @@ public class AuthClientController {
         session.invalidate();
         return "redirect:/";
     }
+
+    @GetMapping("/profil")
+    public String afficherProfil(HttpSession session, Model model) {
+        Client client = (Client) session.getAttribute("client");
+        if (client != null) {
+            model.addAttribute("client", client);
+            return "front/profil/profil";
+        }
+        return "redirect:/login";
+    }
+
+    @GetMapping("/editProfil")
+    public String editProfil(HttpSession session, Model model) {
+        Client client = (Client) session.getAttribute("client");
+        if (client != null) {
+            model.addAttribute("client", client);
+            return "front/profil/editProfil";
+        }
+        return "redirect:/login";
+    }
 }
