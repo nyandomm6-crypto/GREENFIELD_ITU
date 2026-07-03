@@ -184,7 +184,7 @@ public class AuthClientController {
         return "redirect:/login";
     }
 
-    @GetMapping("/editProfil")
+    @GetMapping("/profil/edit")
     public String editProfil(HttpSession session, Model model) {
         Client client = (Client) session.getAttribute("client");
         if (client != null) {
