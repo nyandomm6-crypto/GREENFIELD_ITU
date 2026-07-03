@@ -13,13 +13,15 @@
     <style>
       /* =====================================================
            TOKENS LOCAUX - DESIGN SYSTEM UNIFIÉ
+           ÉQUILIBRE ORANGE / VERT
         ====================================================== */
       :root {
-        /* Couleurs principales */
+        /* Couleurs principales - ÉQUILIBRE ORANGE & VERT */
         --gf-forest: #0f2a1c;
         --gf-forest-2: #173b26;
         --gf-green: #2d6a4f;
-        --gf-green-light: #4c9a6f;
+        --gf-green-light: #52b788;
+        --gf-green-soft: #d8eddf;
         --gf-leaf: #8fd4a8;
         --gf-gold: #d4a373;
         --gf-cream: #f6f4ee;
@@ -27,16 +29,18 @@
         --gf-text: #1c2b21;
         --gf-muted: #5f6f64;
 
-        /* Couleurs d'accent */
-        --ali-orange: #ff6a00;
-        --ali-orange-light: #ff9000;
-        --ali-orange-dark: #e65c00;
+        /* Orange - équilibré */
+        --ali-orange: #e86a17;
+        --ali-orange-light: #f28b3b;
+        --ali-orange-dark: #c95a0f;
+        --ali-orange-soft: #fef0e6;
+        --ali-orange-pale: #fff5ed;
 
         /* Ombres */
         --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
         --ombre-forte: 0 12px 30px rgba(0, 0, 0, 0.12);
 
-        /* Tailles de police - DESIGN SYSTEM */
+        /* Tailles de police */
         --fs-xs: 11px;
         --fs-sm: 13px;
         --fs-base: 14px;
@@ -45,6 +49,7 @@
         --fs-xl: 20px;
         --fs-2xl: 24px;
         --fs-3xl: 28px;
+        --fs-4xl: 34px;
 
         /* Espacements */
         --sp-2: 2px;
@@ -61,6 +66,7 @@
         --sp-28: 28px;
         --sp-30: 30px;
         --sp-40: 40px;
+        --sp-48: 48px;
 
         /* Rayons */
         --radius-sm: 8px;
@@ -115,7 +121,7 @@
         font-size: var(--fs-sm);
         color: #666;
         position: sticky;
-        top: 0;
+        top: -10;
         z-index: 1002;
         height: 38px;
         display: flex;
@@ -152,7 +158,7 @@
         background: #ffffff;
         padding: var(--sp-14) 0;
         position: sticky;
-        top: 38px;
+        top: 0px;
         z-index: 1001;
         border-bottom: 1px solid #e6e6e6;
       }
@@ -175,7 +181,7 @@
         letter-spacing: -1px;
       }
       .mh-logo-text span {
-        color: #333;
+        color: var(--gf-green);
       }
       .mh-logo-text i {
         color: var(--gf-green);
@@ -217,7 +223,7 @@
       .mh-search button {
         background: linear-gradient(
           135deg,
-          var(--ali-orange-light),
+          var(--ali-orange),
           var(--ali-orange-dark)
         );
         border: none;
@@ -312,16 +318,26 @@
       .btn-orange:hover {
         background: var(--ali-orange-dark);
         transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+        box-shadow: 0 4px 15px rgba(232, 106, 23, 0.3);
       }
 
-      .btn-outline {
+      .btn-outline-green {
         background: transparent;
         color: var(--gf-green);
         border: 2px solid var(--gf-green);
       }
-      .btn-outline:hover {
+      .btn-outline-green:hover {
         background: var(--gf-green);
+        color: #fff;
+      }
+
+      .btn-outline-orange {
+        background: transparent;
+        color: var(--ali-orange);
+        border: 2px solid var(--ali-orange);
+      }
+      .btn-outline-orange:hover {
+        background: var(--ali-orange);
         color: #fff;
       }
 
@@ -338,19 +354,161 @@
         justify-content: center;
       }
 
-      .btn-cta-orange {
-        background: var(--ali-orange);
-        color: #fff !important;
-        padding: var(--sp-10) var(--sp-20);
-        border-radius: var(--radius-full);
-        font-weight: 600;
-        font-size: var(--fs-base);
-        transition: background 0.2s;
-        display: inline-block;
+      /* =====================================================
+           SECTION HELLO - NOUVEAU
+        ====================================================== */
+      .hello-section {
+        background: linear-gradient(
+          135deg,
+          var(--gf-green-soft) 0%,
+          var(--ali-orange-pale) 100%
+        );
+        padding: var(--sp-48) 0;
+        border-bottom: 3px solid var(--gf-green-light);
+        position: relative;
+        overflow: hidden;
       }
-      .btn-cta-orange:hover {
-        background: var(--ali-orange-dark);
-        color: #fff;
+
+      .hello-section::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(82, 183, 136, 0.15) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .hello-section::after {
+        content: "";
+        position: absolute;
+        bottom: -30%;
+        left: -5%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(
+          circle,
+          rgba(232, 106, 23, 0.12) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .hello-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-40);
+        position: relative;
+        z-index: 1;
+        flex-wrap: wrap;
+      }
+
+      .hello-text {
+        flex: 1;
+        min-width: 280px;
+      }
+
+      .hello-text .greeting {
+        font-size: var(--fs-sm);
+        font-weight: 600;
+        color: var(--ali-orange);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: var(--sp-4);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-8);
+      }
+
+      .hello-text .greeting i {
+        font-size: var(--fs-md);
+      }
+
+      .hello-text h1 {
+        font-size: var(--fs-4xl);
+        font-weight: 800;
+        color: var(--gf-forest);
+        line-height: 1.2;
+        margin-bottom: var(--sp-8);
+      }
+
+      .hello-text h1 .highlight-orange {
+        color: var(--ali-orange);
+        position: relative;
+      }
+
+      .hello-text h1 .highlight-green {
+        color: var(--gf-green);
+      }
+
+      .hello-text p {
+        font-size: var(--fs-lg);
+        color: var(--gf-muted);
+        max-width: 480px;
+        margin-bottom: var(--sp-20);
+        line-height: 1.7;
+      }
+
+      .hello-actions {
+        display: flex;
+        gap: var(--sp-14);
+        flex-wrap: wrap;
+      }
+
+      .hello-actions .btn {
+        min-width: 140px;
+      }
+
+      .hello-stats {
+        display: flex;
+        gap: var(--sp-30);
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        padding: var(--sp-24) var(--sp-30);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: var(--ombre);
+      }
+
+      .hello-stats .stat-item {
+        text-align: center;
+      }
+
+      .hello-stats .stat-item .number {
+        font-size: var(--fs-3xl);
+        font-weight: 800;
+        color: var(--gf-forest);
+        display: block;
+        line-height: 1.2;
+      }
+
+      .hello-stats .stat-item .number.orange {
+        color: var(--ali-orange);
+      }
+
+      .hello-stats .stat-item .number.green {
+        color: var(--gf-green);
+      }
+
+      .hello-stats .stat-item .label {
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
+        font-weight: 500;
+      }
+
+      .hello-stats .stat-divider {
+        width: 2px;
+        background: var(--gf-line);
+        align-self: stretch;
       }
 
       /* =====================================================
@@ -360,7 +518,7 @@
         background: #ffffff;
         border-bottom: 1px solid #e5e5e5;
         position: sticky;
-        top: 106px;
+        top: 68px;
         z-index: 1000;
         padding: var(--sp-4) 0;
       }
@@ -389,10 +547,10 @@
       }
       .cat-strip a.all-cat {
         font-weight: 600;
-        color: #333;
+        color: var(--gf-forest);
       }
       .cat-strip a.all-cat i {
-        font-size: var(--fs-md);
+        color: var(--ali-orange);
         margin-right: var(--sp-4);
       }
       .cat-strip a.about-link {
@@ -535,8 +693,8 @@
         border-radius: var(--radius-md);
         background: linear-gradient(
           135deg,
-          var(--gf-green-light),
-          var(--gf-green)
+          var(--gf-green),
+          var(--gf-forest-2)
         );
         color: #fff;
         display: flex;
@@ -545,6 +703,14 @@
         font-size: var(--fs-xl);
         box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3);
         flex-shrink: 0;
+      }
+      .section-header .htitle .ic.orange {
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange),
+          var(--ali-orange-dark)
+        );
+        box-shadow: 0 4px 12px rgba(232, 106, 23, 0.3);
       }
       .section-header h2 {
         font-size: var(--fs-2xl);
@@ -558,7 +724,7 @@
       .section-header .see-all {
         font-size: var(--fs-base);
         font-weight: 700;
-        color: var(--gf-green);
+        color: var(--ali-orange);
         display: flex;
         align-items: center;
         gap: var(--sp-6);
@@ -567,7 +733,7 @@
         transition: var(--transition);
       }
       .section-header .see-all:hover {
-        background: var(--gf-cream);
+        background: var(--ali-orange-soft);
       }
 
       /* =====================================================
@@ -650,10 +816,18 @@
         z-index: 2;
       }
       .badge.bestseller {
-        background: linear-gradient(135deg, #d4a373, #b8863f);
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange),
+          var(--ali-orange-dark)
+        );
       }
       .badge.nouveau {
-        background: linear-gradient(135deg, #40916c, #2d6a4f);
+        background: linear-gradient(
+          135deg,
+          var(--gf-green),
+          var(--gf-forest-2)
+        );
       }
       .badge.promo {
         background: linear-gradient(135deg, #e74c3c, #c0392b);
@@ -689,7 +863,7 @@
       .carte-produit .prix {
         font-size: var(--fs-xl);
         font-weight: 800;
-        color: var(--gf-forest);
+        color: var(--ali-orange);
         margin-top: auto;
         padding-top: var(--sp-8);
       }
@@ -701,7 +875,6 @@
         margin-left: var(--sp-8);
       }
 
-      /* Bouton uniformisé sur les cartes */
       .carte-produit .btn-ajouter {
         margin-top: var(--sp-12);
         padding: var(--sp-10) 0;
@@ -718,7 +891,6 @@
         width: 100%;
       }
 
-      /* Contrôles de scroll */
       .scroll-controls {
         display: flex;
         justify-content: flex-end;
@@ -749,7 +921,6 @@
         box-shadow: 0 4px 15px rgba(45, 106, 79, 0.25);
       }
 
-      /* Indicateur de progression */
       .scroll-indicators {
         display: flex;
         justify-content: center;
@@ -765,7 +936,7 @@
         cursor: pointer;
       }
       .scroll-indicators .dot.active {
-        background: var(--gf-green);
+        background: var(--ali-orange);
         width: 24px;
         border-radius: var(--sp-4);
       }
@@ -808,8 +979,8 @@
       .assurance-card:hover .ic {
         background: linear-gradient(
           135deg,
-          var(--gf-green),
-          var(--gf-forest-2)
+          var(--ali-orange),
+          var(--ali-orange-dark)
         );
         color: #fff;
         transform: scale(1.05);
@@ -827,16 +998,24 @@
       }
 
       /* =====================================================
-           TEMOIGNAGES
+           TEMOIGNAGES - LAYOUT AMÉLIORÉ AVEC FORMULAIRE
         ====================================================== */
+      .temoignages-layout {
+        display: grid;
+        grid-template-columns: 2fr 1.2fr;
+        gap: var(--sp-30);
+        align-items: start;
+      }
+
       .temoignages-grid {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: var(--sp-20);
+        grid-template-columns: 1fr 1fr;
+        gap: var(--sp-16);
       }
+
       .temoignage-card {
         background: #fff;
-        padding: var(--sp-24);
+        padding: var(--sp-20);
         border-radius: var(--radius-lg);
         border: 1px solid var(--gf-line);
         transition: var(--transition);
@@ -849,7 +1028,7 @@
       .temoignage-card .stars {
         color: var(--gf-gold);
         font-size: var(--fs-md);
-        margin-bottom: var(--sp-12);
+        margin-bottom: var(--sp-8);
         letter-spacing: 2px;
       }
       .temoignage-card blockquote {
@@ -857,7 +1036,7 @@
         color: var(--gf-text);
         line-height: 1.7;
         font-style: italic;
-        margin-bottom: var(--sp-16);
+        margin-bottom: var(--sp-12);
       }
       .temoignage-card .author {
         display: flex;
@@ -865,13 +1044,13 @@
         gap: var(--sp-12);
       }
       .temoignage-card .avatar {
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         background: linear-gradient(
           135deg,
-          var(--gf-green),
-          var(--gf-forest-2)
+          var(--ali-orange),
+          var(--ali-orange-dark)
         );
         color: #fff;
         display: flex;
@@ -890,6 +1069,166 @@
         color: var(--gf-muted);
       }
 
+      /* --- FORMULAIRE D'AVIS CÔTÉ TEMOIGNAGES --- */
+      .avis-form-wrapper {
+        background: #fff;
+        padding: var(--sp-24);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gf-line);
+        box-shadow: var(--ombre);
+        position: sticky;
+        top: 160px;
+      }
+
+      .avis-form-wrapper h3 {
+        font-size: var(--fs-xl);
+        font-weight: 700;
+        color: var(--gf-forest);
+        margin-bottom: var(--sp-4);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-10);
+      }
+
+      .avis-form-wrapper h3 i {
+        color: var(--ali-orange);
+      }
+
+      .avis-form-wrapper .subtitle {
+        color: var(--gf-muted);
+        font-size: var(--fs-sm);
+        margin-bottom: var(--sp-18);
+      }
+
+      .avis-form .form-group {
+        margin-bottom: var(--sp-14);
+      }
+
+      .avis-form label {
+        display: block;
+        font-weight: 600;
+        font-size: var(--fs-sm);
+        color: var(--gf-text);
+        margin-bottom: var(--sp-4);
+      }
+
+      .avis-form input,
+      .avis-form textarea {
+        width: 100%;
+        padding: var(--sp-10) var(--sp-14);
+        border: 2px solid var(--gf-line);
+        border-radius: var(--radius-md);
+        font-size: var(--fs-base);
+        font-family: inherit;
+        transition: var(--transition);
+        background: #fafbfa;
+      }
+
+      .avis-form input:focus,
+      .avis-form textarea:focus {
+        border-color: var(--ali-orange);
+        outline: none;
+        box-shadow: 0 0 0 3px var(--ali-orange-soft);
+        background: #fff;
+      }
+
+      .avis-form textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      /* Étoiles de notation - améliorées */
+      .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        gap: var(--sp-2);
+        justify-content: flex-end;
+        padding: var(--sp-4) 0;
+      }
+
+      .star-rating input {
+        display: none;
+      }
+
+      .star-rating label {
+        font-size: 30px;
+        color: #ddd;
+        cursor: pointer;
+        transition: var(--transition);
+        line-height: 1;
+        padding: var(--sp-2);
+      }
+
+      .star-rating label:hover,
+      .star-rating label:hover ~ label,
+      .star-rating input:checked ~ label {
+        color: var(--gf-gold);
+        transform: scale(1.1);
+      }
+
+      .star-rating label:hover {
+        transform: scale(1.2);
+      }
+
+      .star-rating input:checked ~ label {
+        color: var(--gf-gold);
+      }
+
+      .star-rating-label {
+        font-size: var(--fs-xs);
+        color: var(--gf-muted);
+        margin-top: var(--sp-2);
+      }
+
+      .avis-form .btn-submit {
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange),
+          var(--ali-orange-dark)
+        );
+        color: #fff;
+        border: none;
+        padding: var(--sp-12) var(--sp-24);
+        border-radius: var(--radius-full);
+        font-size: var(--fs-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--sp-8);
+        min-height: 48px;
+      }
+
+      .avis-form .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(232, 106, 23, 0.3);
+      }
+
+      .avis-form .btn-submit:active {
+        transform: translateY(0);
+      }
+
+      .avis-confirmation {
+        display: none;
+        padding: var(--sp-12) var(--sp-16);
+        background: var(--gf-green-soft);
+        border: 1px solid var(--gf-green);
+        border-radius: var(--radius-md);
+        color: var(--gf-forest);
+        margin-top: var(--sp-12);
+        font-weight: 500;
+        font-size: var(--fs-sm);
+        text-align: center;
+      }
+
+      .avis-confirmation.show {
+        display: block;
+        animation: fadeSlideDown 0.3s ease-out;
+      }
+
       /* =====================================================
            FAQ
         ====================================================== */
@@ -902,7 +1241,7 @@
         background: #fff;
         padding: var(--sp-18) var(--sp-20);
         border-radius: var(--radius-md);
-        border-left: 4px solid var(--gf-green);
+        border-left: 4px solid var(--ali-orange);
         transition: var(--transition);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
       }
@@ -917,7 +1256,7 @@
         margin-bottom: var(--sp-4);
       }
       .faq-item h4 i {
-        color: var(--gf-green);
+        color: var(--ali-orange);
         margin-right: var(--sp-10);
         width: 20px;
       }
@@ -934,7 +1273,7 @@
         background: var(--gf-forest);
         color: rgba(255, 255, 255, 0.7);
         margin-top: var(--sp-30);
-        border-top: 4px solid var(--gf-green-light);
+        border-top: 4px solid var(--ali-orange);
       }
       .footer-newsletter {
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -951,6 +1290,9 @@
         color: #fff;
         font-size: var(--fs-xl);
         font-weight: 700;
+      }
+      .footer-newsletter h3 i {
+        color: var(--ali-orange);
       }
       .footer-newsletter p {
         font-size: var(--fs-sm);
@@ -975,8 +1317,12 @@
         color: rgba(255, 255, 255, 0.5);
       }
       .nl-form button {
-        background: linear-gradient(135deg, var(--gf-gold), #c9956b);
-        color: #2a1c0e;
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange),
+          var(--ali-orange-dark)
+        );
+        color: #fff;
         border: none;
         padding: 0 var(--sp-24);
         border-radius: 0 var(--radius-md) var(--radius-md) 0;
@@ -988,7 +1334,7 @@
       }
       .nl-form button:hover {
         transform: scale(1.02);
-        box-shadow: 0 4px 20px rgba(212, 163, 115, 0.3);
+        box-shadow: 0 4px 20px rgba(232, 106, 23, 0.3);
       }
 
       .footer-grid {
@@ -1005,7 +1351,7 @@
         margin-bottom: var(--sp-12);
       }
       .footer .logo i {
-        color: var(--gf-leaf);
+        color: var(--ali-orange);
       }
       .footer p {
         font-size: var(--fs-sm);
@@ -1029,7 +1375,7 @@
         transition: var(--transition);
       }
       .footer ul li a:hover {
-        color: #fff;
+        color: var(--ali-orange-light);
         padding-left: var(--sp-4);
       }
 
@@ -1059,10 +1405,10 @@
         transition: var(--transition);
       }
       .footer-socials a:hover {
-        background: var(--gf-green);
+        background: var(--ali-orange);
         color: #fff;
         transform: translateY(-3px);
-        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+        box-shadow: 0 4px 15px rgba(232, 106, 23, 0.3);
       }
 
       /* =====================================================
@@ -1087,6 +1433,21 @@
           position: relative;
           top: auto;
         }
+        .temoignages-layout {
+          grid-template-columns: 1fr;
+        }
+        .temoignages-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .avis-form-wrapper {
+          position: static;
+        }
+        .hello-stats {
+          padding: var(--sp-16) var(--sp-20);
+        }
+        .hello-stats .stat-item .number {
+          font-size: var(--fs-2xl);
+        }
       }
 
       @media (max-width: 900px) {
@@ -1098,6 +1459,16 @@
         }
         .cat-strip {
           top: 98px;
+        }
+        .hello-text h1 {
+          font-size: var(--fs-3xl);
+        }
+        .hello-stats {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .hello-stats .stat-divider {
+          display: none;
         }
       }
 
@@ -1174,6 +1545,24 @@
           flex-direction: column;
           align-items: flex-start;
         }
+
+        .hello-content {
+          flex-direction: column;
+        }
+        .hello-text {
+          text-align: center;
+        }
+        .hello-text p {
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .hello-actions {
+          justify-content: center;
+        }
+        .hello-stats {
+          width: 100%;
+          justify-content: space-around;
+        }
       }
 
       @media (max-width: 480px) {
@@ -1198,6 +1587,22 @@
         .popup-card .popup-img,
         .popup-card img {
           height: 100px;
+        }
+
+        .star-rating label {
+          font-size: 24px;
+        }
+
+        .hello-stats {
+          flex-direction: column;
+          align-items: center;
+          gap: var(--sp-8);
+        }
+        .hello-text h1 {
+          font-size: var(--fs-2xl);
+        }
+        .hello-section {
+          padding: var(--sp-30) 0;
         }
       }
     </style>
@@ -1275,6 +1680,55 @@
     </header>
 
     <!-- =====================================================
+         SECTION HELLO - NOUVELLE SECTION
+    ====================================================== -->
+    <section class="hello-section">
+      <div class="conteneur">
+        <div class="hello-content">
+          <div class="hello-text">
+            <div class="greeting">
+              <i class="fas fa-hand-peace"></i>
+              <span>Bienvenue sur greenField</span>
+            </div>
+            <h1>
+              Des produits frais, <br />
+              <span class="highlight-orange">directement</span>
+              <span class="highlight-green">des producteurs</span>
+            </h1>
+            <p>
+              Découvrez une sélection de produits agricoles locaux, cultivés
+              avec passion et livrés avec soin.
+            </p>
+            <div class="hello-actions">
+              <a href="#bestsellers" class="btn btn-orange">
+                <i class="fas fa-shopping-bag"></i> Commander
+              </a>
+              <a href="#temoignages" class="btn btn-outline-green">
+                <i class="fas fa-comment-dots"></i> Voir les avis
+              </a>
+            </div>
+          </div>
+          <div class="hello-stats">
+            <div class="stat-item">
+              <span class="number orange">50+</span>
+              <span class="label">Producteurs</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="number green">200+</span>
+              <span class="label">Produits</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <span class="number orange">4.8★</span>
+              <span class="label">Satisfaction</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================
          CATÉGORIES STRIP AVEC POPUP "À PROPOS"
     ====================================================== -->
     <nav class="cat-strip" id="catStripNav">
@@ -1282,12 +1736,6 @@
         <a href="/produits" class="all-cat"
           ><i class="fas fa-bars"></i> Toutes les catégories</a
         >
-        <a href="#">Fleurs coupées</a>
-        <a href="#">Plantes d'intérieur</a>
-        <a href="#">Plantes vertes</a>
-        <a href="#">Cactus & Succulentes</a>
-        <a href="#">Arbres & Arbustes</a>
-        <a href="#">Accessoires</a>
         <a href="#" id="aboutAliLink" class="about-link"
           >À propos de Greenfield</a
         >
@@ -1319,24 +1767,6 @@
               d'élite, avec un prix total de 1 million de dollars.
             </p>
           </div>
-          <div class="popup-app">
-            <h4>Téléchargez l'application Greenfield</h4>
-            <p>
-              Trouvez des produits, communiquez avec des fournisseurs, gérez et
-              payez vos commandes avec l'application Greenfield partout et à
-              tout moment.
-            </p>
-            <div class="app-stores">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-                alt="Google Play"
-              />
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
-                alt="App Store"
-              />
-            </div>
-          </div>
         </div>
       </div>
     </nav>
@@ -1348,7 +1778,7 @@
       <div class="conteneur">
         <div class="section-header">
           <div class="htitle">
-            <div class="ic"><i class="fas fa-trophy"></i></div>
+            <div class="ic orange"><i class="fas fa-trophy"></i></div>
             <div>
               <h2>Best-sellers</h2>
               <p>Les produits les plus commandés cette semaine</p>
@@ -1551,7 +1981,7 @@
     </section>
 
     <!-- =====================================================
-         TEMOIGNAGES
+         TEMOIGNAGES + FORMULAIRE AVIS CÔTÉ
     ====================================================== -->
     <section
       class="section"
@@ -1561,7 +1991,7 @@
       <div class="conteneur">
         <div class="section-header">
           <div class="htitle">
-            <div class="ic"><i class="fas fa-heart"></i></div>
+            <div class="ic orange"><i class="fas fa-heart"></i></div>
             <div>
               <h2>Témoignages</h2>
               <p>Ce que nos clients pensent de greenField</p>
@@ -1569,74 +1999,168 @@
           </div>
         </div>
 
-        <div class="temoignages-grid">
-          <div class="temoignage-card" th:each="avis : ${temoignages}">
-            <div class="stars" th:text="${avis.note} + '★'">★★★★★</div>
-            <blockquote th:text="${avis.message}">
-              Les produits sont toujours frais et la livraison est impeccable.
-            </blockquote>
-            <div class="author">
-              <div
-                class="avatar"
-                th:text="${#strings.substring(avis.nom, 0, 1)}"
-              >
-                MR
+        <div class="temoignages-layout">
+          <!-- Colonne des témoignages -->
+          <div>
+            <div class="temoignages-grid">
+              <div class="temoignage-card" th:each="avis : ${temoignages}">
+                <div class="stars" th:text="${avis.note} + '★'">★★★★★</div>
+                <blockquote th:text="${avis.message}">
+                  Les produits sont toujours frais et la livraison est
+                  impeccable.
+                </blockquote>
+                <div class="author">
+                  <div
+                    class="avatar"
+                    th:text="${#strings.substring(avis.nom, 0, 1)}"
+                  >
+                    MR
+                  </div>
+                  <div>
+                    <div class="name" th:text="${avis.nom}">Marie Rakoto</div>
+                    <div class="role" th:text="${avis.role}">
+                      Cliente fidèle
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div>
-                <div class="name" th:text="${avis.nom}">Marie Rakoto</div>
-                <div class="role" th:text="${avis.role}">Cliente fidèle</div>
+
+              <div
+                class="temoignage-card"
+                th:if="${temoignages == null or temoignages.isEmpty()}"
+              >
+                <div class="stars">★★★★★</div>
+                <blockquote>
+                  Les produits sont toujours frais et la livraison est
+                  impeccable.
+                </blockquote>
+                <div class="author">
+                  <div class="avatar">MR</div>
+                  <div>
+                    <div class="name">Marie Rakoto</div>
+                    <div class="role">Cliente fidèle</div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="temoignage-card"
+                th:if="${temoignages == null or temoignages.isEmpty()}"
+              >
+                <div class="stars">★★★★★</div>
+                <blockquote>
+                  Un service exceptionnel ! La commande en ligne est simple et
+                  pratique.
+                </blockquote>
+                <div class="author">
+                  <div class="avatar">PR</div>
+                  <div>
+                    <div class="name">Paul Ranaivo</div>
+                    <div class="role">Client régulier</div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="temoignage-card"
+                th:if="${temoignages == null or temoignages.isEmpty()}"
+              >
+                <div class="stars">★★★★★</div>
+                <blockquote>
+                  Je suis ravi de soutenir l'agriculture locale avec greenField.
+                </blockquote>
+                <div class="author">
+                  <div class="avatar">JR</div>
+                  <div>
+                    <div class="name">Jean Rabary</div>
+                    <div class="role">Nouveau client</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div
-            class="temoignage-card"
-            th:if="${temoignages == null or temoignages.isEmpty()}"
-          >
-            <div class="stars">★★★★★</div>
-            <blockquote>
-              Les produits sont toujours frais et la livraison est impeccable.
-              Je recommande greenField à tous mes amis !
-            </blockquote>
-            <div class="author">
-              <div class="avatar">MR</div>
-              <div>
-                <div class="name">Marie Rakoto</div>
-                <div class="role">Cliente fidèle</div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="temoignage-card"
-            th:if="${temoignages == null or temoignages.isEmpty()}"
-          >
-            <div class="stars">★★★★★</div>
-            <blockquote>
-              Un service exceptionnel ! La commande en ligne est simple et le
-              retrait en magasin est très pratique.
-            </blockquote>
-            <div class="author">
-              <div class="avatar">PR</div>
-              <div>
-                <div class="name">Paul Ranaivo</div>
-                <div class="role">Client régulier</div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="temoignage-card"
-            th:if="${temoignages == null or temoignages.isEmpty()}"
-          >
-            <div class="stars">★★★★★</div>
-            <blockquote>
-              Je suis ravi de soutenir l'agriculture locale avec greenField. Les
-              produits sont excellents et le prix est juste.
-            </blockquote>
-            <div class="author">
-              <div class="avatar">JR</div>
-              <div>
-                <div class="name">Jean Rabary</div>
-                <div class="role">Nouveau client</div>
+          <!-- Colonne du formulaire d'avis -->
+          <div>
+            <div class="avis-form-wrapper">
+              <h3><i class="fas fa-pen-fancy"></i> Donnez votre avis</h3>
+              <p class="subtitle">Votre retour nous aide à nous améliorer.</p>
+
+              <form
+                class="avis-form"
+                id="avisForm"
+                th:action="@{/avis/ajouter}"
+                method="post"
+              >
+                <div class="form-group">
+                  <label for="nomAvis">Nom</label>
+                  <input
+                    type="text"
+                    id="nomAvis"
+                    name="nom"
+                    placeholder="Votre nom"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="messageAvis">Message</label>
+                  <textarea
+                    id="messageAvis"
+                    name="message"
+                    placeholder="Partagez votre expérience..."
+                    required
+                  ></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label>Votre note</label>
+                  <div class="star-rating">
+                    <input type="radio" id="star5" name="note" value="5" />
+                    <label for="star5" title="5 étoiles"
+                      ><i class="fas fa-star"></i
+                    ></label>
+
+                    <input type="radio" id="star4" name="note" value="4" />
+                    <label for="star4" title="4 étoiles"
+                      ><i class="fas fa-star"></i
+                    ></label>
+
+                    <input type="radio" id="star3" name="note" value="3" />
+                    <label for="star3" title="3 étoiles"
+                      ><i class="fas fa-star"></i
+                    ></label>
+
+                    <input type="radio" id="star2" name="note" value="2" />
+                    <label for="star2" title="2 étoiles"
+                      ><i class="fas fa-star"></i
+                    ></label>
+
+                    <input
+                      type="radio"
+                      id="star1"
+                      name="note"
+                      value="1"
+                      required
+                    />
+                    <label for="star1" title="1 étoile"
+                      ><i class="fas fa-star"></i
+                    ></label>
+                  </div>
+                  <div class="star-rating-label">
+                    Cliquez sur une étoile pour noter
+                  </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                  <i class="fas fa-paper-plane"></i> Envoyer mon avis
+                </button>
+              </form>
+
+              <div id="avisConfirmation" class="avis-confirmation">
+                <i
+                  class="fas fa-check-circle"
+                  style="color: var(--gf-green); margin-right: var(--sp-8)"
+                ></i>
+                Merci pour votre avis !
               </div>
             </div>
           </div>
@@ -1651,7 +2175,7 @@
       <div class="conteneur">
         <div class="section-header">
           <div class="htitle">
-            <div class="ic"><i class="fas fa-circle-question"></i></div>
+            <div class="ic orange"><i class="fas fa-circle-question"></i></div>
             <div>
               <h2>FAQ</h2>
               <p>Toutes les réponses à vos questions</p>
@@ -1694,14 +2218,14 @@
             <h4><i class="fas fa-undo"></i> Puis-je retourner un produit ?</h4>
             <p>
               Oui, vous disposez de 7 jours pour retourner un produit non
-              ouvert. Contactez notre service client.
+              ouvert.
             </p>
           </div>
           <div class="faq-item" th:if="${faqList == null or faqList.isEmpty()}">
             <h4><i class="fas fa-leaf"></i> D'où viennent vos produits ?</h4>
             <p>
               Directement de producteurs locaux engagés dans une agriculture
-              durable et respectueuse.
+              durable.
             </p>
           </div>
           <div class="faq-item" th:if="${faqList == null or faqList.isEmpty()}">
@@ -1717,7 +2241,7 @@
             <h4><i class="fas fa-user-plus"></i> Comment créer un compte ?</h4>
             <p>
               Cliquez sur "Inscription", remplissez le formulaire et confirmez
-              votre email. C'est gratuit !
+              votre email.
             </p>
           </div>
         </div>
@@ -1731,7 +2255,7 @@
       <div class="footer-newsletter">
         <div class="conteneur">
           <div>
-            <h3>Restez informé de nos récoltes</h3>
+            <h3><i class="fas fa-leaf"></i> Restez informé de nos récoltes</h3>
             <p>Recevez nos offres et arrivages en avant-première.</p>
           </div>
           <form
@@ -2085,6 +2609,25 @@
           "scrollLeftNouveautes",
           "scrollRightNouveautes",
         );
+
+        // =====================================================
+        // FORMULAIRE AVIS - CONFIRMATION
+        // =====================================================
+        const avisForm = document.getElementById("avisForm");
+        const confirmation = document.getElementById("avisConfirmation");
+
+        if (avisForm) {
+          avisForm.addEventListener("submit", function (e) {
+            setTimeout(function () {
+              if (confirmation) {
+                confirmation.classList.add("show");
+                setTimeout(function () {
+                  confirmation.classList.remove("show");
+                }, 5000);
+              }
+            }, 100);
+          });
+        }
       });
     </script>
   </body>
