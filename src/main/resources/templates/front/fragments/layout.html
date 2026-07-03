@@ -1,598 +1,974 @@
 <!doctype html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="head(title)">
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${title} + ' - greenField'">
+      greenField - Marché des producteurs
+    </title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
   </head>
-  <body>
-    <!-- =====================================================
-         FRAGMENT : styles
-         A inclure dans le <head> de chaque page avec :
-         <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
-    ====================================================== -->
-    <th:block th:fragment="styles">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      />
 
-      <style>
-        :root {
-          /* ---- Palette greenField : forêt affinée + or récolte ---- */
-          --vert-950: #0a1f10;
-          --vert-ombre: #0a1f10;
-          --vert-fonce: #163d1f;
-          --vert: #2f7a3c;
-          --vert-lumiere: #4f9c5a;
-          --vert-clair: #eef6ec;
-          --vert-gradient: linear-gradient(
-            150deg,
-            #123319 0%,
-            #1f5228 55%,
-            #2f7a3c 100%
-          );
+  <!-- =====================================================
+     STYLES COMMUNS
+====================================================== -->
+  <th:block th:fragment="styles">
+    <style>
+      /* =====================================================
+           TOKENS LOCAUX
+        ====================================================== */
+      :root {
+        --gf-forest: #0f2a1c;
+        --gf-forest-2: #173b26;
+        --gf-green: #2d6a4f;
+        --gf-green-light: #4c9a6f;
+        --gf-leaf: #8fd4a8;
+        --gf-gold: #d4a373;
+        --gf-cream: #f6f4ee;
+        --gf-line: #e2e8e0;
+        --gf-text: #1c2b21;
+        --gf-muted: #5f6f64;
+        --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
+        --ombre-forte: 0 8px 20px rgba(0, 0, 0, 0.1);
+        --rayon-pill: 50px;
+        --ali-orange: #ff6a00;
+        --ali-orange-light: #ff9000;
+        --ali-orange-dark: #e65c00;
+      }
 
-          --or: #b8863f;
-          --or-clair: #f0d9a8;
-          --or-fonce: #8f662c;
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-          --creme: #faf8f2;
-          --texte: #182619;
-          --gris: #6b7280;
-          --gris-clair: #9ca3af;
-          --gris-tres-clair: #f6f5f1;
-          --bordure: #e6e2d6;
+      body {
+        background: #ffffff;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+      }
 
-          --rouge: #b8452f;
-          --rose: #c9587a;
-          --blanc: #ffffff;
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      ul {
+        list-style: none;
+      }
+      .conteneur {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
 
-          --ombre: 0 8px 28px rgba(10, 31, 16, 0.08);
-          --ombre-forte: 0 20px 50px rgba(10, 31, 16, 0.16);
-          --rayon: 18px;
-          --rayon-pill: 999px;
-          --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      /* =====================================================
+           BARRE UTILITAIRE (FIXÉE EN HAUT) - Style Alibaba
+        ====================================================== */
+      .util-bar {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 13px;
+        color: #666;
+        position: sticky;
+        top: 0;
+        z-index: 1002;
+        height: 38px;
+        display: flex;
+        align-items: center;
+      }
+      .util-bar .conteneur {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 20px;
+        padding: 0 20px;
+        width: 100%;
+      }
+      .util-bar a {
+        color: #666;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .util-bar a:hover {
+        color: var(--ali-orange);
+      }
+      .util-right {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
 
-          --font-display: "Fraunces", Georgia, serif;
-          --font-body: "Inter", "Segoe UI", Arial, sans-serif;
-        }
+      /* =====================================================
+           HEADER PRINCIPAL (FIXÉ) - Style Alibaba
+        ====================================================== */
+      .market-header {
+        background: #ffffff;
+        padding: 14px 0;
+        position: sticky;
+        top: 38px;
+        z-index: 1001;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        background: #fff;
+        padding: 10px 0;
+        border-bottom: 1px solid #e6e6e6;
+        box-shadow: none;
+      }
+      .market-header .conteneur {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+      }
 
-        :root {
-          /* ---- Palette greenField : forêt affinée + or récolte ---- */
-          --vert-950: #0a1f10;
-          --vert-ombre: #0a1f10;
-          --vert-fonce: #163d1f;
-          --vert: #2f7a3c;
-          --vert-lumiere: #4f9c5a;
-          --vert-clair: #eef6ec;
-          --vert-gradient: linear-gradient(
-            150deg,
-            #123319 0%,
-            #1f5228 55%,
-            #2f7a3c 100%
-          );
+      .mh-logo {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .mh-logo-text {
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ali-orange);
+        letter-spacing: -1px;
+      }
+      .mh-logo-text span {
+        color: #333;
+      }
+      .mh-logo-text i {
+        color: var(--gf-green);
+        font-size: 24px;
+        margin-right: 4px;
+      }
 
-          --or: #b8863f;
-          --or-clair: #f0d9a8;
-          --or-fonce: #8f662c;
+      .mh-search {
+        flex: 1;
+        max-width: 700px;
+      }
+      .mh-search form {
+        display: flex;
+        height: 44px;
+        border: 2px solid var(--ali-orange);
+        border-radius: 25px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .mh-search input {
+        flex: 1;
+        border: none;
+        padding: 0 16px;
+        font-size: 14px;
+        outline: none;
+        color: #333;
+      }
+      .mh-search input::placeholder {
+        color: #999;
+      }
+      .mh-search .search-icons {
+        display: flex;
+        align-items: center;
+        padding-right: 10px;
+        color: #999;
+        gap: 8px;
+        cursor: pointer;
+      }
+      .mh-search button {
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange-light),
+          var(--ali-orange-dark)
+        );
+        border: none;
+        color: #fff;
+        padding: 0 28px;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .mh-search button:hover {
+        opacity: 0.9;
+      }
 
-          --creme: #faf8f2;
-          --texte: #182619;
-          --gris: #6b7280;
-          --gris-clair: #9ca3af;
-          --gris-tres-clair: #f6f5f1;
-          --bordure: #e6e2d6;
+      .mh-actions {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-shrink: 0;
+      }
+      .mh-action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #333;
+        font-size: 12px;
+        font-weight: 500;
+        transition: color 0.2s;
+        position: relative;
+      }
+      .mh-action:hover {
+        color: var(--ali-orange);
+      }
+      .mh-action i {
+        font-size: 20px;
+        margin-bottom: 0px;
+      }
+      .mh-action .cart-count {
+        position: absolute;
+        top: -4px;
+        right: -8px;
+        background: var(--ali-orange);
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-cta-orange {
+        background: var(--ali-orange);
+        color: #fff !important;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: background 0.2s;
+        display: inline-block;
+      }
+      .btn-cta-orange:hover {
+        background: var(--ali-orange-dark);
+        color: #fff;
+      }
 
-          --rouge: #b8452f;
-          --rose: #c9587a;
-          --blanc: #ffffff;
+      /* =====================================================
+           BANDEAU CATÉGORIES (FIXÉ)
+        ====================================================== */
+      .cat-strip {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e5e5;
+        position: sticky;
+        top: 102px;
+        z-index: 1000;
+        padding: 4px 0;
+      }
+      .cat-strip .conteneur {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        padding: 10px 0;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .cat-strip a {
+        color: #555;
+        font-size: 14px;
+        font-weight: 400;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 0;
+        position: relative;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .cat-strip a:hover {
+        color: var(--ali-orange);
+      }
+      .cat-strip a.all-cat {
+        font-weight: 600;
+        color: #333;
+      }
+      .cat-strip a.all-cat i {
+        font-size: 16px;
+        margin-right: 4px;
+      }
+      .cat-strip a.active-link {
+        color: #333;
+      }
+      .cat-strip a.active-link::after {
+        content: "";
+        position: absolute;
+        bottom: -11px;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: #333;
+      }
+      .cat-strip a.about-link {
+        background: rgba(255, 106, 0, 0.08);
+        padding: 8px 16px;
+        border-radius: 20px;
+        color: var(--ali-orange);
+        font-weight: 600;
+        white-space: nowrap;
+      }
 
-          --ombre: 0 8px 28px rgba(10, 31, 16, 0.08);
-          --ombre-forte: 0 20px 50px rgba(10, 31, 16, 0.16);
-          --rayon: 18px;
-          --rayon-pill: 999px;
-          --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-
-          --font-display: "Fraunces", Georgia, serif;
-          --font-body: "Inter", "Segoe UI", Arial, sans-serif;
-        }
-
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-
-        body {
-          font-family: var(--font-body);
-          color: var(--texte);
-          background: var(--gris-tres-clair);
-          padding-top: 72px;
-        }
-
-        a {
-          text-decoration: none;
-        }
-
-        .conteneur {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 24px;
-        }
-        /* ===================== */
-        /* BARRE DE NAVIGATION   */
-        /* ===================== */
-        .barre-nav {
-          background: linear-gradient(
-            135deg,
-            rgba(12, 36, 18, 0.96) 0%,
-            rgba(22, 61, 31, 0.94) 48%,
-            rgba(40, 88, 52, 0.92) 100%
-          );
-          color: var(--creme);
-          padding: 0 18px;
-          height: 72px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          width: 100%;
-          z-index: 1000;
-          box-shadow: 0 12px 34px rgba(5, 15, 9, 0.26);
-          transition: var(--transition);
-          overflow: hidden;
-          backdrop-filter: blur(18px);
-          border-bottom: 1px solid rgba(240, 217, 168, 0.12);
-        }
-
-        .barre-nav::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background:
-            radial-gradient(
-              circle at top left,
-              rgba(240, 217, 168, 0.14),
-              transparent 38%
-            ),
-            radial-gradient(
-              circle at 85% 18%,
-              rgba(255, 255, 255, 0.08),
-              transparent 30%
-            ),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.05), transparent 40%);
-          pointer-events: none;
-        }
-
-        .barre-nav .conteneur-nav {
-          position: relative;
-          width: 100%;
-          max-width: 1280px;
-          margin: 0 auto;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 16px;
-        }
-
-        .barre-nav.scrolled {
-          box-shadow: 0 18px 48px rgba(5, 15, 9, 0.34);
-        }
-
-        .barre-nav .logo {
-          display: inline-flex;
-          align-items: center;
-          gap: 11px;
-          font-family: var(--font-body);
-          font-weight: 800;
-          font-size: 18px;
-          color: var(--creme);
-          letter-spacing: -0.2px;
-          flex-shrink: 0;
-        }
-
-        .barre-nav .logo .icone-feuille {
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-          background: conic-gradient(from 180deg, #f6e5be, #7cbc84, #f6e5be);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--vert-950);
-          font-size: 13px;
-          box-shadow:
-            0 0 0 4px rgba(240, 217, 168, 0.08),
-            0 10px 24px rgba(5, 15, 9, 0.2);
-        }
-
-        .barre-nav nav.liens-principaux {
-          display: flex;
-          align-items: center;
-          gap: 24px;
-        }
-
-        .barre-nav nav.liens-principaux a {
-          color: rgba(255, 255, 255, 0.92);
-          font-weight: 600;
-          font-size: 13.5px;
-          letter-spacing: 0.1px;
-          position: relative;
-          padding-bottom: 5px;
-          transition: var(--transition);
-        }
-
-        .barre-nav nav.liens-principaux a i {
-          margin-right: 7px;
-          color: var(--or-clair);
-          font-size: 13px;
-        }
-
-        .barre-nav nav.liens-principaux a::after {
-          content: "";
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          width: 0;
-          height: 2px;
-          border-radius: 2px;
-          background: var(--or-clair);
-          transition: var(--transition);
-        }
-
-        .barre-nav nav.liens-principaux a:hover {
-          color: var(--blanc);
-          transform: translateY(-1px);
-        }
-
-        .barre-nav nav.liens-principaux a:hover::after {
-          width: 100%;
-        }
-
-        .zone-droite {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          flex-shrink: 0;
-        }
-
-        .lien-panier {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: rgba(255, 255, 255, 0.1);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          padding: 7px 14px;
-          border-radius: var(--rayon-pill);
-          color: var(--creme) !important;
-          font-size: 13px;
-          font-weight: 600;
-          transition: var(--transition);
-        }
-
-        .lien-panier:hover {
-          background: rgba(255, 255, 255, 0.2);
-          border-color: rgba(255, 255, 255, 0.35);
-          transform: translateY(-1px);
-        }
-
-        .badge-panier {
-          background: var(--or-clair);
-          color: var(--vert-950);
-          border-radius: 50%;
-          font-size: 11px;
-          font-weight: 700;
-          min-width: 19px;
-          height: 19px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0 4px;
-        }
-
-        .user-info {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          color: var(--creme);
-          font-weight: 500;
-          font-size: 13.5px;
-        }
-
-        .user-info .avatar-mini {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          background: rgba(255, 255, 255, 0.18);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-family: var(--font-display);
-          font-weight: 700;
-          font-size: 13px;
-          color: var(--creme);
-        }
-
-        .btn-deconnexion {
-          background: transparent;
-          border: 1px solid rgba(255, 255, 255, 0.28);
-          color: rgba(255, 255, 255, 0.85);
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          cursor: pointer;
-          font-size: 13px;
-          transition: var(--transition);
-          font-family: inherit;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .btn-deconnexion:hover {
-          border-color: var(--blanc);
-          background: rgba(255, 255, 255, 0.15);
-        }
-
-        .btn-connexion {
-          color: rgba(255, 255, 255, 0.9);
-          font-weight: 600;
-          font-size: 13.5px;
-          padding: 8px 6px;
-          transition: var(--transition);
-        }
-
-        .btn-connexion:hover {
-          color: var(--blanc);
-        }
-
-        .btn-inscription {
-          background: linear-gradient(135deg, #f4e6c4 0%, #ffffff 100%);
-          color: var(--vert-fonce);
-          padding: 8px 16px;
-          border-radius: var(--rayon-pill);
-          font-weight: 700;
-          font-size: 13px;
-          transition: var(--transition);
-          box-shadow: 0 10px 24px rgba(5, 15, 9, 0.16);
-        }
-
-        .btn-inscription:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 14px 30px rgba(10, 31, 16, 0.22);
-        }
-
-        /* ===================== */
-        /* BOUTON PANIER FLOTTANT */
-        /* ===================== */
-        .panier-flottant {
-          position: fixed;
-          right: 24px;
-          bottom: 24px;
-          z-index: 1200;
-          display: inline-flex;
-          align-items: center;
-          min-height: 56px;
-          border-radius: 18px;
-          background: linear-gradient(
-            135deg,
-            #214d2e 0%,
-            #2f7a3c 52%,
-            #b8863f 180%
-          );
-          color: var(--creme) !important;
-          box-shadow: 0 18px 40px rgba(10, 31, 16, 0.28);
-          overflow: hidden;
-          transition: var(--transition);
-          border: 1px solid rgba(240, 217, 168, 0.22);
-          padding-right: 4px;
-        }
-
-        .panier-flottant:hover {
-          transform: translateY(-3px) scale(1.01);
-          box-shadow: 0 24px 55px rgba(10, 31, 16, 0.34);
-        }
-
-        .panier-flottant .icone {
-          width: 56px;
-          height: 56px;
-          flex-shrink: 0;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 18px;
-          position: relative;
-          background: rgba(255, 255, 255, 0.08);
-          border-right: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        .panier-flottant .compteur {
-          position: absolute;
-          top: 8px;
-          right: 8px;
-          background: var(--or-clair);
-          color: var(--vert-950);
-          font-size: 10.5px;
-          font-weight: 700;
-          min-width: 18px;
-          height: 18px;
-          border-radius: 50%;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: 0 3px;
-          border: 2px solid var(--vert-fonce);
-        }
-
-        .panier-flottant .texte {
-          max-width: 0;
+      /* =====================================================
+           POPUP FRAGMENT
+        ====================================================== */
+      .fragment-popup {
+        display: none;
+        background: #fff;
+        border-bottom: 1px solid #e5e5e5;
+        padding: 30px 0;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+        z-index: 999;
+        animation: fadeSlideDown 0.3s ease-out;
+        transition: opacity 0.3s ease;
+      }
+      .fragment-popup.visible {
+        display: block;
+      }
+      @keyframes fadeSlideDown {
+        from {
           opacity: 0;
-          white-space: nowrap;
-          font-size: 13px;
-          font-weight: 700;
-          letter-spacing: 0.25px;
-          transition: var(--transition);
-          overflow: hidden;
+          transform: translateY(-10px);
         }
-
-        .panier-flottant:hover .texte {
-          max-width: 170px;
+        to {
           opacity: 1;
-          padding-right: 18px;
+          transform: translateY(0);
         }
+      }
+      .fragment-popup .conteneur {
+        display: grid;
+        grid-template-columns: 1.5fr 1.5fr 1fr;
+        gap: 30px;
+      }
+      .popup-card {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .popup-card h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #333;
+        margin-top: 8px;
+      }
+      .popup-card p {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+      }
+      .popup-card img {
+        width: 100%;
+        height: 140px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
+      .popup-app {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .popup-app h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #333;
+      }
+      .popup-app p {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+      }
+      .popup-app .app-stores {
+        display: flex;
+        gap: 10px;
+        margin-top: 4px;
+        flex-wrap: wrap;
+      }
+      .popup-app .app-stores img {
+        height: 40px;
+        border-radius: 4px;
+      }
 
-        .btn-mes-commandes {
-          display: inline-flex;
-          align-items: center;
-          gap: 7px;
-          color: rgba(255, 255, 255, 0.9);
-          font-weight: 600;
+      /* =====================================================
+           FOOTER
+        ====================================================== */
+      .footer {
+        background: var(--gf-forest);
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: 24px;
+        border-top: 3px solid var(--gf-green);
+      }
+      .footer-newsletter {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 22px 0;
+      }
+      .footer-newsletter .conteneur {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      .footer-newsletter h3 {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .footer-newsletter p {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .nl-form {
+        display: flex;
+        gap: 0;
+      }
+      .nl-form input {
+        border: none;
+        padding: 0 16px;
+        height: 42px;
+        width: 250px;
+        border-radius: 8px 0 0 8px;
+        font-size: 13px;
+        outline: none;
+      }
+      .nl-form button {
+        background: var(--gf-gold);
+        color: #2a1c0e;
+        border: none;
+        padding: 0 20px;
+        border-radius: 0 8px 8px 0;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+      }
+      .nl-form button:hover {
+        background: #e3b587;
+      }
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        gap: 30px;
+        padding: 36px 0 24px;
+      }
+      .footer .logo {
+        color: #fff;
+        font-size: 20px;
+        font-weight: 800;
+        display: inline-block;
+        margin-bottom: 10px;
+      }
+      .footer .logo i {
+        color: var(--gf-leaf);
+      }
+      .footer p {
+        font-size: 13px;
+        line-height: 1.75;
+        max-width: 260px;
+      }
+      .footer h4 {
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .footer ul li {
+        margin-bottom: 8px;
+      }
+      .footer ul li a {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 13px;
+        transition: all 0.2s ease-in-out;
+      }
+      .footer ul li a:hover {
+        color: #fff;
+      }
+      .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 16px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 12.5px;
+      }
+      .footer-socials {
+        display: flex;
+        gap: 10px;
+      }
+      .footer-socials a {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.2s ease-in-out;
+      }
+      .footer-socials a:hover {
+        background: var(--gf-green);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+      @media (max-width: 1100px) {
+        .fragment-popup .conteneur {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+        .fragment-popup {
+          position: relative;
+          width: 100%;
+          padding: 20px 0;
+        }
+        .cat-strip {
+          position: relative;
+          overflow: visible;
+        }
+        .cat-strip a.about-link.active-link::after {
+          display: none;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .mh-actions .mh-action.delivery {
+          display: none;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .util-bar .util-right span:not(:first-child) {
+          display: none;
+        }
+        .market-header .conteneur {
+          flex-wrap: wrap;
+          gap: 15px;
+        }
+        .mh-logo-text {
+          font-size: 22px;
+        }
+        .mh-search {
+          order: 3;
+          max-width: 100%;
+          width: 100%;
+        }
+        .mh-search form {
+          height: 38px;
+        }
+        .mh-search button {
+          padding: 0 15px;
           font-size: 13px;
-          padding: 7px 12px;
-          border-radius: var(--rayon-pill);
-          border: 1px solid rgba(255, 255, 255, 0.16);
-          background: rgba(255, 255, 255, 0.08);
-          transition: var(--transition);
         }
-
-        .btn-mes-commandes:hover {
-          background: rgba(255, 255, 255, 0.14);
-          color: var(--blanc);
-          transform: translateY(-1px);
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+          text-align: left;
         }
-
-        @media (max-width: 768px) {
-          .barre-nav {
-            padding: 0 14px;
-            height: 60px;
-          }
-          body {
-            padding-top: 60px;
-          }
-          .barre-nav nav.liens-principaux {
-            display: none;
-          }
-          .panier-flottant {
-            right: 14px;
-            bottom: 14px;
-            min-height: 52px;
-          }
-          .panier-flottant .icone {
-            width: 52px;
-            height: 52px;
-          }
-          .btn-mes-commandes {
-            display: none;
-          }
+        .footer-newsletter .conteneur {
+          flex-direction: column;
+          align-items: flex-start;
         }
-      </style>
-    </th:block>
+        .fragment-popup .conteneur {
+          padding: 0 15px;
+        }
+        .popup-card h4 {
+          font-size: 15px;
+        }
+        .popup-card p {
+          font-size: 13px;
+        }
+        .popup-app .app-stores img {
+          height: 35px;
+        }
+      }
 
-    <!-- =====================================================
-         FRAGMENT : nav
-         A inclure en tout début de <body> de chaque page avec :
-         <div th:replace="~{front/fragments/layout :: nav}"></div>
-    ====================================================== -->
-    <div th:fragment="nav">
-      <header class="barre-nav" id="barreNav">
-        <a class="logo" th:href="@{/}">
-          <span class="icone-feuille"><i class="fas fa-leaf"></i></span>
-          greenField
+      @media (max-width: 480px) {
+        .util-bar .conteneur {
+          justify-content: center;
+        }
+        .fragment-popup {
+          padding: 15px 0;
+        }
+        .fragment-popup .conteneur {
+          gap: 15px;
+        }
+        .popup-card img {
+          height: auto;
+          max-height: 120px;
+        }
+        .cat-strip a.about-link {
+          font-size: 13px;
+          padding: 6px 12px;
+        }
+        .footer-grid {
+          grid-template-columns: 1fr;
+        }
+        .nl-form {
+          flex-direction: column;
+          width: 100%;
+        }
+        .nl-form input {
+          width: 100%;
+          border-radius: 8px;
+          height: 38px;
+        }
+        .nl-form button {
+          border-radius: 8px;
+          padding: 10px;
+          width: 100%;
+        }
+      }
+    </style>
+  </th:block>
+
+  <!-- =====================================================
+     FRAGMENT: UTILITY BAR
+====================================================== -->
+  <div th:fragment="utilBar">
+    <div class="util-bar">
+      <div class="conteneur">
+        <div class="util-right">
+          <a href="#"><i class="fas fa-globe"></i> Français - MGA</a>
+          <a href="#"><i class="fas fa-question-circle"></i> Centre d'aide</a>
+          <a th:if="${session.client == null}" href="/login"
+            ><i class="fas fa-user"></i> Se connecter</a
+          >
+          <a th:if="${session.client != null}" href="/profil"
+            ><i class="fas fa-user"></i> Mon compte</a
+          >
+          <a
+            th:if="${session.client == null}"
+            href="/signup"
+            class="btn-cta-orange"
+            style="font-size: 12px; padding: 6px 14px"
+            >Créer un compte</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+     FRAGMENT: HEADER PRINCIPAL
+====================================================== -->
+  <header th:fragment="mainHeader">
+    <div class="market-header">
+      <div class="conteneur">
+        <a href="/" class="mh-logo">
+          <span class="mh-logo-text"
+            ><i class="fas fa-seedling"></i> green<span>Field</span></span
+          >
         </a>
 
-        <nav class="liens-principaux">
-          <a th:href="@{/produits}"><i class="fas fa-store"></i>Boutique</a>
-          <a href="/#bestsellers"><i class="fas fa-fire"></i>Best-sellers</a>
-          <a href="/#faq"><i class="fas fa-question-circle"></i>FAQ</a>
-          <a th:href="@{/commandes}"
-            ><i class="fas fa-receipt"></i>Mes commandes</a
-          >
-        </nav>
+        <div class="mh-search">
+          <form action="/produits" method="get">
+            <input
+              type="text"
+              name="motCle"
+              placeholder="Rechercher un produit, un producteur..."
+            />
+            <div class="search-icons">
+              <i class="fas fa-camera"></i>
+            </div>
+            <button type="submit">
+              <i class="fas fa-search"></i> Rechercher
+            </button>
+          </form>
+        </div>
 
-        <div class="zone-droite">
-          <a class="lien-panier" th:href="@{/panier}">
-            <i class="fas fa-shopping-cart"></i> Panier
-            <span
-              class="badge-panier"
-              th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
-              th:text="${nombreArticlesPanier}"
-            ></span>
+        <div class="mh-actions">
+          <a href="/commandes" class="mh-action" style="font-size: 14px">
+            <i class="fas fa-receipt" style="font-size: 20px"></i>
+            <span>Commandes</span>
           </a>
 
-          <!-- Utilisateur connecté -->
-          <span th:if="${session.client != null}" class="user-info">
-            <a
-              th:href="@{/profil}"
-              style="
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-                color: inherit;
-              "
+          <a href="/panier" class="mh-action" style="font-size: 14px">
+            <i class="fas fa-shopping-cart" style="font-size: 20px"></i>
+            <span class="cart-count" th:text="${session.cartCount} ?: 0"
+              >0</span
             >
-              <span
-                class="avatar-mini"
-                th:text="${#strings.substring(session.client.prenom,0,1)}"
-              ></span>
-              <span th:text="${session.client.prenom}"></span>
-            </a>
-            <form th:action="@{/logout}" method="post" style="display: inline">
-              <button type="submit" class="btn-deconnexion" title="Déconnexion">
-                <i class="fas fa-sign-out-alt"></i>
-              </button>
-            </form>
-          </span>
+            <span>Panier</span>
+          </a>
 
-          <!-- Utilisateur non connecté -->
-          <span
-            th:unless="${session.client != null}"
-            style="display: inline-flex; align-items: center; gap: 14px"
+          <a
+            th:if="${session.client == null}"
+            href="/login"
+            class="mh-action"
+            style="font-size: 14px"
           >
-            <a class="btn-mes-commandes" th:href="@{/commandes}">
-              <i class="fas fa-receipt"></i> Mes commandes
-            </a>
-            <a class="btn-connexion" th:href="@{/login}">Connexion</a>
-            <a class="btn-inscription" th:href="@{/signup}">Inscription</a>
-          </span>
+            <i class="fas fa-user" style="font-size: 24px"></i>
+            <span>Connexion</span>
+          </a>
+          <a
+            th:if="${session.client != null}"
+            href="/profil"
+            class="mh-action"
+            style="font-size: 14px"
+          >
+            <i class="fas fa-user-circle" style="font-size: 24px"></i>
+            <span>Mon compte</span>
+          </a>
+
+          <a
+            th:if="${session.client == null}"
+            href="/signup"
+            class="btn-cta-orange"
+            style="font-size: 14px"
+            >Créer un compte</a
+          >
         </div>
-      </header>
-
-      <!-- Bouton panier flottant -->
-      <a class="panier-flottant" th:href="@{/panier}" title="Voir le panier">
-        <span class="icone">
-          <i class="fas fa-shopping-basket"></i>
-          <span
-            class="compteur"
-            th:if="${nombreArticlesPanier != null and nombreArticlesPanier > 0}"
-            th:text="${nombreArticlesPanier}"
-          ></span>
-        </span>
-        <span class="texte">Voir le panier</span>
-      </a>
-
-      <script th:inline="none">
-        (function () {
-          var nav = document.getElementById("barreNav");
-          if (!nav) return;
-          window.addEventListener("scroll", function () {
-            if (window.scrollY > 12) {
-              nav.classList.add("scrolled");
-            } else {
-              nav.classList.remove("scrolled");
-            }
-          });
-        })();
-      </script>
+      </div>
     </div>
-  </body>
+  </header>
+
+  <!-- =====================================================
+     FRAGMENT: CATEGORY STRIP
+====================================================== -->
+  <nav th:fragment="categoryStrip">
+    <div class="cat-strip" id="catStripNav">
+      <div class="conteneur">
+        <a href="/produits" class="all-cat"
+          ><i class="fas fa-bars"></i> Toutes les catégories</a
+        >
+        <a href="#" id="aboutAliLink" class="about-link"
+          >À propos de Greenfield</a
+        >
+      </div>
+
+      <div id="fragmentPopup" class="fragment-popup">
+        <div class="conteneur">
+          <div class="popup-card">
+            <img
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80"
+              alt="Équipe"
+            />
+            <h4>Pourquoi Greenfield ?</h4>
+            <p>
+              Plus de 50 millions d'acheteurs ont trouvé leurs fournisseurs
+              certifiés sur notre plateforme B2B optimisée par l'IA.
+            </p>
+          </div>
+          <div class="popup-card">
+            <img
+              src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=600&q=80"
+              alt="Pitch"
+            />
+            <h4>CoCreate Pitch</h4>
+            <p>
+              Présentez votre start-up à l'international face à des jurys
+              d'élite, avec un prix total de 1 million de dollars.
+            </p>
+          </div>
+          <div class="popup-app">
+            <h4>Téléchargez l'application Greenfield</h4>
+            <p>
+              Trouvez des produits, communiquez avec des fournisseurs, gérez et
+              payez vos commandes avec l'application Greenfield partout et à
+              tout moment.
+            </p>
+            <div class="app-stores">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                alt="Google Play"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                alt="App Store"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const aboutLink = document.getElementById("aboutAliLink");
+        const fragmentPopup = document.getElementById("fragmentPopup");
+        let timeoutId = null;
+        const isTouchDevice =
+          "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+        if (aboutLink && fragmentPopup) {
+          if (!isTouchDevice) {
+            aboutLink.addEventListener("mouseenter", function () {
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
+              fragmentPopup.classList.add("visible");
+              aboutLink.classList.add("active-link");
+            });
+            aboutLink.addEventListener("mouseleave", function () {
+              timeoutId = setTimeout(function () {
+                fragmentPopup.classList.remove("visible");
+                aboutLink.classList.remove("active-link");
+                timeoutId = null;
+              }, 5000);
+            });
+            fragmentPopup.addEventListener("mouseenter", function () {
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
+            });
+            fragmentPopup.addEventListener("mouseleave", function () {
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
+              fragmentPopup.classList.remove("visible");
+              aboutLink.classList.remove("active-link");
+            });
+          } else {
+            let isPopupVisible = false;
+
+            function closePopup() {
+              fragmentPopup.classList.remove("visible");
+              aboutLink.classList.remove("active-link");
+              isPopupVisible = false;
+            }
+
+            function openPopup() {
+              fragmentPopup.classList.add("visible");
+              aboutLink.classList.add("active-link");
+              isPopupVisible = true;
+            }
+
+            aboutLink.addEventListener("click", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (isPopupVisible) {
+                closePopup();
+              } else {
+                openPopup();
+              }
+            });
+            document.addEventListener("click", function (e) {
+              if (
+                isPopupVisible &&
+                !fragmentPopup.contains(e.target) &&
+                e.target !== aboutLink
+              ) {
+                closePopup();
+              }
+            });
+            fragmentPopup.addEventListener("click", function (e) {
+              e.stopPropagation();
+            });
+          }
+        }
+      });
+    </script>
+  </nav>
+
+  <!-- =====================================================
+     FRAGMENT: FOOTER
+====================================================== -->
+  <footer th:fragment="footer">
+    <div class="footer">
+      <div class="footer-newsletter">
+        <div class="conteneur">
+          <div>
+            <h3>Restez informé de nos récoltes</h3>
+            <p>Recevez nos offres et arrivages en avant-première.</p>
+          </div>
+          <form
+            class="nl-form"
+            th:action="@{/newsletter/subscribe}"
+            method="post"
+          >
+            <input
+              type="email"
+              name="email"
+              placeholder="Votre adresse email"
+              required
+            />
+            <button type="submit">
+              <i class="fas fa-paper-plane"></i> S'abonner
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="conteneur">
+        <div class="footer-grid">
+          <div>
+            <a href="/" class="logo"><i class="fas fa-leaf"></i> greenField</a>
+            <p>
+              Votre marché en ligne pour l'achat de produits agricoles locaux,
+              frais et de qualité, directement auprès des producteurs.
+            </p>
+          </div>
+          <div>
+            <h4>Boutique</h4>
+            <ul>
+              <li><a href="/produits">Tous les produits</a></li>
+              <li><a href="#bestsellers">Best-sellers</a></li>
+              <li><a href="#nouveautes">Nouveautés</a></li>
+              <li><a href="#">Promotions</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Mon compte</h4>
+            <ul>
+              <li><a href="/login">Connexion</a></li>
+              <li><a href="/signup">Inscription</a></li>
+              <li><a href="/panier">Panier</a></li>
+              <li><a href="/commandes">Mes commandes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Producteurs</h4>
+            <ul>
+              <li><a href="#">Devenir partenaire</a></li>
+              <li><a href="#">Nos engagements</a></li>
+              <li><a href="#faq">FAQ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <ul>
+              <li><i class="fas fa-envelope"></i> contact@greenfield.com</li>
+              <li><i class="fas fa-phone"></i> +261 34 12 345 67</li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i> Antananarivo, Madagascar
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span>&copy; 2026 greenField. Tous droits réservés.</span>
+          <div class="footer-socials">
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 </html>

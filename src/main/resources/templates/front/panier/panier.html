@@ -4,156 +4,1427 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mon panier - greenField</title>
-    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
     <style>
-      table.panier {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-        margin-top: 20px;
+      /* =====================================================
+           TOKENS - DESIGN SYSTEM UNIFIÉ
+        ====================================================== */
+      :root {
+        /* Couleurs principales */
+        --gf-forest: #0f2a1c;
+        --gf-forest-2: #173b26;
+        --gf-green: #2d6a4f;
+        --gf-green-light: #4c9a6f;
+        --gf-leaf: #8fd4a8;
+        --gf-gold: #d4a373;
+        --gf-cream: #f6f4ee;
+        --gf-line: #e2e8e0;
+        --gf-text: #1c2b21;
+        --gf-muted: #5f6f64;
+
+        /* Couleurs d'accent */
+        --ali-orange: #ff6a00;
+        --ali-orange-light: #ff9000;
+        --ali-orange-dark: #e65c00;
+        --danger: #d32f2f;
+        --success: #2e7d32;
+
+        /* Ombres */
+        --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
+        --ombre-forte: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+        /* Tailles de police - DESIGN SYSTEM */
+        --fs-xs: 11px;
+        --fs-sm: 13px;
+        --fs-base: 14px;
+        --fs-md: 15px;
+        --fs-lg: 18px;
+        --fs-xl: 20px;
+        --fs-2xl: 24px;
+        --fs-3xl: 28px;
+        --fs-4xl: 32px;
+
+        /* Espacements */
+        --sp-2: 2px;
+        --sp-4: 4px;
+        --sp-6: 6px;
+        --sp-8: 8px;
+        --sp-10: 10px;
+        --sp-12: 12px;
+        --sp-14: 14px;
+        --sp-16: 16px;
+        --sp-18: 18px;
+        --sp-20: 20px;
+        --sp-24: 24px;
+        --sp-28: 28px;
+        --sp-30: 30px;
+        --sp-40: 40px;
+
+        /* Rayons */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-full: 50px;
+
+        /* Transitions */
+        --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+        --bg-panier: #f5f3ef;
+        --blanc: #ffffff;
       }
 
-      table.panier th,
-      table.panier td {
-        padding: 14px 16px;
-        text-align: left;
-        border-bottom: 1px solid var(--bordure);
+      /* =====================================================
+           RESET & BASE
+        ====================================================== */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
-      table.panier th {
-        background: var(--vert-clair);
-        color: var(--vert-fonce);
-        font-size: 14px;
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
       }
 
-      table.panier td {
-        font-size: 14px;
-      }
-
-      .input-quantite {
-        width: 70px;
-        padding: 6px 8px;
-        border: 1px solid var(--bordure);
-        border-radius: 6px;
-      }
-
-      .ligne-actions {
+      body {
+        background: #ffffff;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        font-size: var(--fs-base);
+        color: var(--gf-text);
         display: flex;
-        gap: 8px;
+        flex-direction: column;
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      ul {
+        list-style: none;
+      }
+      .conteneur {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--sp-20);
+      }
+      .panier-title {
+        font-size: 100px;
+      }
+
+      /* =====================================================
+           BOUTONS UNIFORMISÉS
+        ====================================================== */
+      .btn {
+        display: inline-flex;
         align-items: center;
+        justify-content: center;
+        gap: var(--sp-8);
+        padding: var(--sp-10) var(--sp-20);
+        border: none;
+        border-radius: var(--radius-full);
+        font-size: var(--fs-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        min-height: 44px;
+        min-width: 120px;
+        font-family: inherit;
+        line-height: 1.2;
       }
 
-      .bloc-total {
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--gf-green),
+          var(--gf-forest-2)
+        );
+        color: #fff;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+      }
+
+      .btn-orange {
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange-light),
+          var(--ali-orange-dark)
+        );
+        color: #fff;
+      }
+      .btn-orange:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(255, 106, 0, 0.35);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--gf-green);
+        border: 2px solid var(--gf-green);
+      }
+      .btn-outline:hover {
+        background: var(--gf-green);
+        color: #fff;
+      }
+
+      .btn-sm {
+        padding: var(--sp-6) var(--sp-14);
+        font-size: var(--fs-sm);
+        min-height: 36px;
+        min-width: 80px;
+      }
+
+      .btn-block {
+        width: 100%;
         display: flex;
-        justify-content: flex-end;
-        margin-top: 20px;
+        justify-content: center;
       }
 
-      .recap-total {
-        background: white;
-        border: 1px solid var(--bordure);
-        border-radius: 12px;
-        padding: 20px 26px;
-        min-width: 260px;
+      .btn-icon {
+        background: transparent;
+        border: 1px solid var(--gf-line);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gf-muted);
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: var(--fs-base);
+        min-width: 36px;
+        min-height: 36px;
+      }
+      .btn-icon:hover {
+        background: #f0eeea;
+        color: var(--gf-forest);
+        border-color: var(--gf-forest);
+      }
+      .btn-icon.danger:hover {
+        background: #fde8e4;
+        color: var(--danger);
+        border-color: var(--danger);
+      }
+      .btn-icon:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+      .btn-icon:disabled:hover {
+        background: transparent;
+        color: var(--gf-muted);
+        border-color: var(--gf-line);
+      }
+
+      .btn-cta-orange {
+        background: var(--ali-orange);
+        color: #fff !important;
+        padding: var(--sp-10) var(--sp-20);
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        font-size: var(--fs-base);
+        transition: background 0.2s;
+        display: inline-block;
+        min-height: 44px;
+        min-width: 120px;
+        text-align: center;
+        line-height: 1.2;
+      }
+      .btn-cta-orange:hover {
+        background: var(--ali-orange-dark);
+        color: #fff;
+      }
+
+      /* =====================================================
+           HEADER PRINCIPAL
+        ====================================================== */
+      .market-header {
+        background: #ffffff;
+        padding: var(--sp-12) 0;
+        position: sticky;
+        top: 0;
+        z-index: 1002;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border-bottom: 1px solid #e6e6e6;
+      }
+      .market-header .conteneur {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-28);
+      }
+
+      .mh-logo {
+        display: flex;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .mh-logo-text {
+        font-size: var(--fs-3xl);
+        font-weight: 700;
+        color: var(--ali-orange);
+        letter-spacing: -1px;
+      }
+      .mh-logo-text span {
+        color: #333;
+      }
+      .mh-logo-text i {
+        color: var(--gf-green);
+        font-size: var(--fs-xl);
+        margin-right: var(--sp-4);
+      }
+
+      .mh-search {
+        flex: 1;
+        max-width: 700px;
+      }
+      .mh-search form {
+        display: flex;
+        height: 44px;
+        border: 2px solid var(--ali-orange);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+        background: #fff;
+      }
+      .mh-search input {
+        flex: 1;
+        border: none;
+        padding: 0 var(--sp-16);
+        font-size: var(--fs-base);
+        outline: none;
+        color: #333;
+      }
+      .mh-search input::placeholder {
+        color: #999;
+      }
+      .mh-search .search-icons {
+        display: flex;
+        align-items: center;
+        padding-right: var(--sp-10);
+        color: #999;
+        gap: var(--sp-8);
+        cursor: pointer;
+      }
+      .mh-search button {
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange-light),
+          var(--ali-orange-dark)
+        );
+        border: none;
+        color: #fff;
+        padding: 0 var(--sp-28);
+        font-weight: 600;
+        font-size: var(--fs-md);
+        cursor: pointer;
+        transition: opacity 0.2s;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-8);
+        min-height: 44px;
+      }
+      .mh-search button:hover {
+        opacity: 0.9;
+      }
+
+      .mh-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-18);
+        flex-shrink: 0;
+      }
+      .mh-action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #333;
+        font-size: var(--fs-sm);
+        font-weight: 500;
+        transition: color 0.2s;
+        position: relative;
+      }
+      .mh-action:hover {
+        color: var(--ali-orange);
+      }
+      .mh-action i {
+        font-size: var(--fs-xl);
+        margin-bottom: 0px;
+      }
+      .mh-action .cart-count {
+        position: absolute;
+        top: -4px;
+        right: -8px;
+        background: var(--ali-orange);
+        color: #fff;
+        font-size: var(--fs-xs);
+        font-weight: 700;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* =====================================================
+         PAGE PANIER
+        ====================================================== */
+      .page-panier {
+        padding: var(--sp-24) 0 var(--sp-40);
+        flex: 1 0 auto;
+        background: var(--bg-panier);
+      }
+
+      .breadcrumb {
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
+        margin-bottom: var(--sp-16);
+      }
+      .breadcrumb a {
+        color: var(--gf-green);
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb span {
+        color: var(--gf-text);
+        font-weight: 600;
+      }
+
+      .page-panier h1 {
+        font-size: var(--fs-2xl);
+        font-weight: 800;
+        color: var(--gf-forest);
+        margin-bottom: var(--sp-20);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-12);
+      }
+      .page-panier h1 i {
+        color: var(--ali-orange);
+      }
+
+      /* Messages flash */
+      .message {
+        padding: var(--sp-14) var(--sp-20);
+        border-radius: var(--radius-md);
+        margin: var(--sp-16) 0;
+        font-weight: 600;
+        border-left: 5px solid transparent;
+        box-shadow: var(--ombre);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-12);
+        font-size: var(--fs-base);
+      }
+      .message.success {
+        background: #e7f3e4;
+        border-color: var(--gf-green);
+        color: #1a3a2a;
+      }
+      .message.error {
+        background: #fde8e4;
+        border-color: #b85a4a;
+        color: #7a3326;
+      }
+      .message i {
+        font-size: var(--fs-xl);
+      }
+
+      /* Layout principal */
+      .panier-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: var(--sp-30);
+        align-items: start;
+      }
+
+      /* Liste produits - SCROLLABLE */
+      .panier-liste {
+        background: #ffffff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gf-line);
+        box-shadow: var(--ombre);
+        padding: 0;
+        max-height: 480px;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+      }
+      .panier-liste::-webkit-scrollbar {
+        width: 5px;
+      }
+      .panier-liste::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: var(--radius-sm);
+      }
+      .panier-liste::-webkit-scrollbar-thumb {
+        background: var(--gf-green-light);
+        border-radius: var(--radius-sm);
+      }
+      .panier-liste::-webkit-scrollbar-thumb:hover {
+        background: var(--gf-green);
+      }
+
+      /* En-tête */
+      .liste-header {
+        display: grid;
+        grid-template-columns: 2fr 0.8fr 1fr 0.8fr;
+        padding: var(--sp-14) var(--sp-20);
+        font-weight: 700;
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 2px solid var(--gf-line);
+        background: #fafaf8;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        gap: var(--sp-8);
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
+
+      /* Ligne produit */
+      .ligne-produit {
+        display: grid;
+        grid-template-columns: 2fr 0.8fr 1fr 0.8fr;
+        align-items: center;
+        padding: var(--sp-16) var(--sp-20);
+        border-bottom: 1px solid var(--gf-line);
+        transition: background 0.15s;
+        gap: var(--sp-8);
+      }
+      .ligne-produit:last-child {
+        border-bottom: none;
+      }
+      .ligne-produit:hover {
+        background: #fafaf8;
+      }
+
+      .ligne-produit .info-produit .nom {
+        font-weight: 600;
+        color: var(--gf-forest);
+        font-size: var(--fs-md);
+        display: block;
+      }
+      .ligne-produit .info-produit .ref {
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
+        margin-top: var(--sp-2);
+        display: block;
+      }
+
+      .ligne-produit .col-quantite {
+        font-weight: 600;
+        font-size: var(--fs-md);
+        text-align: center;
+      }
+      .ligne-produit .col-total {
+        font-weight: 700;
+        color: var(--gf-forest);
+        font-size: var(--fs-md);
         text-align: right;
       }
-
-      .recap-total .montant {
-        font-size: 24px;
-        font-weight: 700;
-        color: var(--vert-fonce);
-        margin: 6px 0 16px;
+      .ligne-produit .col-actions {
+        display: flex;
+        gap: var(--sp-4);
+        justify-content: flex-end;
       }
 
+      /* Récapitulatif */
+      .recap-payer {
+        background: #ffffff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gf-line);
+        box-shadow: var(--ombre);
+        padding: var(--sp-28) var(--sp-24);
+        position: sticky;
+        top: 90px;
+      }
+
+      .recap-payer .total-label {
+        font-size: var(--fs-base);
+        font-weight: 600;
+        color: var(--gf-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: var(--sp-4);
+      }
+      .recap-payer .total-montant {
+        font-size: var(--fs-4xl);
+        font-weight: 800;
+        color: var(--gf-forest);
+        margin-bottom: var(--sp-20);
+      }
+      .recap-payer .total-montant small {
+        font-size: var(--fs-lg);
+        font-weight: 600;
+        color: var(--gf-muted);
+      }
+
+      .btn-payer {
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange-light),
+          var(--ali-orange-dark)
+        );
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-full);
+        padding: var(--sp-16) 0;
+        width: 100%;
+        font-size: var(--fs-lg);
+        font-weight: 700;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: 0 4px 12px rgba(255, 106, 0, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--sp-10);
+        min-height: 56px;
+        font-family: inherit;
+      }
+      .btn-payer:hover {
+        opacity: 0.92;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 106, 0, 0.35);
+      }
+
+      .recap-payer .payment-methods {
+        display: flex;
+        justify-content: center;
+        gap: var(--sp-12);
+        margin-top: var(--sp-18);
+        flex-wrap: wrap;
+      }
+      .recap-payer .payment-methods span {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-6);
+        background: #f5f5f3;
+        padding: var(--sp-4) var(--sp-14);
+        border-radius: var(--radius-full);
+        font-size: var(--fs-sm);
+        font-weight: 500;
+        color: var(--gf-muted);
+      }
+      .recap-payer .payment-methods i {
+        font-size: var(--fs-xl);
+        color: #555;
+      }
+
+      /* Panier vide */
       .panier-vide {
         text-align: center;
-        margin-top: 60px;
-        color: var(--gris);
+        padding: var(--sp-40) var(--sp-20);
+        background: #fff;
+        border-radius: var(--radius-xl);
+        border: 2px dashed var(--gf-line);
+        grid-column: 1 / -1;
+      }
+      .panier-vide .empty-icon {
+        font-size: 72px;
+        color: var(--gf-line);
+        margin-bottom: var(--sp-20);
+      }
+      .panier-vide p {
+        font-size: var(--fs-xl);
+        font-weight: 500;
+        color: var(--gf-text);
+        margin-bottom: var(--sp-8);
+      }
+      .panier-vide .sub-message {
+        font-size: var(--fs-md);
+        color: var(--gf-muted);
+        margin-bottom: var(--sp-28);
+      }
+
+      /* =====================================================
+         FOOTER
+        ====================================================== */
+      .footer {
+        background: var(--gf-forest);
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: auto;
+        border-top: 3px solid var(--gf-green);
+        flex-shrink: 0;
+        width: 100%;
+      }
+      .footer-newsletter {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: var(--sp-24) 0;
+      }
+      .footer-newsletter .conteneur {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-20);
+        flex-wrap: wrap;
+      }
+      .footer-newsletter .nl-text h3 {
+        color: #fff;
+        font-size: var(--fs-lg);
+        font-weight: 700;
+        margin-bottom: var(--sp-4);
+      }
+      .footer-newsletter .nl-text p {
+        font-size: var(--fs-base);
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+      }
+      .nl-form {
+        display: flex;
+        gap: 0;
+        flex-shrink: 0;
+      }
+      .nl-form input {
+        border: none;
+        padding: 0 var(--sp-16);
+        height: 46px;
+        width: 280px;
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+        font-size: var(--fs-base);
+        outline: none;
+        background: rgba(255, 255, 255, 0.95);
+        min-height: 46px;
+      }
+      .nl-form input:focus {
+        background: #fff;
+      }
+      .nl-form button {
+        background: var(--gf-gold);
+        color: #2a1c0e;
+        border: none;
+        padding: 0 var(--sp-28);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        font-weight: 700;
+        font-size: var(--fs-base);
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        white-space: nowrap;
+        min-height: 46px;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sp-8);
+      }
+      .nl-form button:hover {
+        background: #e3b587;
+      }
+
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        gap: var(--sp-30);
+        padding: var(--sp-40) 0 var(--sp-28);
+      }
+      .footer .logo {
+        color: #fff;
+        font-size: var(--fs-xl);
+        font-weight: 800;
+        display: inline-block;
+        margin-bottom: var(--sp-12);
+      }
+      .footer .logo i {
+        color: var(--gf-leaf);
+      }
+      .footer .footer-description {
+        font-size: var(--fs-base);
+        line-height: 1.8;
+        max-width: 280px;
+        color: rgba(255, 255, 255, 0.65);
+        margin: 0;
+      }
+      .footer h4 {
+        color: #fff;
+        font-size: var(--fs-md);
+        font-weight: 700;
+        margin-bottom: var(--sp-14);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .footer ul li {
+        margin-bottom: var(--sp-8);
+      }
+      .footer ul li a {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: var(--fs-base);
+        transition: all 0.2s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sp-4);
+      }
+      .footer ul li a:hover {
+        color: #fff;
+      }
+      .footer ul li i {
+        width: 22px;
+        color: var(--gf-gold);
+      }
+      .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: var(--sp-18) 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--sp-12);
+        font-size: var(--fs-sm);
+      }
+      .footer-socials {
+        display: flex;
+        gap: var(--sp-10);
+      }
+      .footer-socials a {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.2s ease-in-out;
+        font-size: var(--fs-md);
+      }
+      .footer-socials a:hover {
+        background: var(--gf-green);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      /* =====================================================
+         RESPONSIVE
+        ====================================================== */
+      @media (max-width: 1024px) {
+        .panier-layout {
+          grid-template-columns: 1fr 300px;
+          gap: var(--sp-20);
+        }
+        .ligne-produit,
+        .liste-header {
+          grid-template-columns: 1.8fr 0.8fr 0.9fr 0.8fr;
+          padding: var(--sp-14) var(--sp-16);
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .mh-actions .mh-action.delivery {
+          display: none;
+        }
+        .mh-action.btn-cta-orange {
+          display: none;
+        }
+        .panier-layout {
+          grid-template-columns: 1fr;
+        }
+        .recap-payer {
+          position: static;
+          margin-top: var(--sp-10);
+        }
+        .ligne-produit,
+        .liste-header {
+          grid-template-columns: 1.5fr 0.7fr 0.8fr 0.7fr;
+          font-size: var(--fs-sm);
+        }
+        .ligne-produit .info-produit .nom {
+          font-size: var(--fs-base);
+        }
+        .recap-payer .total-montant {
+          font-size: var(--fs-3xl);
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .nl-form input {
+          width: 220px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .market-header .conteneur {
+          flex-wrap: wrap;
+          gap: var(--sp-15);
+        }
+        .mh-logo-text {
+          font-size: var(--fs-xl);
+        }
+        .mh-search {
+          order: 3;
+          max-width: 100%;
+          width: 100%;
+        }
+        .mh-search form {
+          height: 38px;
+        }
+        .mh-search button {
+          padding: 0 var(--sp-15);
+          font-size: var(--fs-sm);
+        }
+
+        .page-panier {
+          padding: var(--sp-16) 0 var(--sp-30);
+        }
+        .page-panier h1 {
+          font-size: var(--fs-xl);
+        }
+
+        .ligne-produit,
+        .liste-header {
+          grid-template-columns: 1fr 0.6fr 0.7fr 0.6fr;
+          padding: var(--sp-12) var(--sp-14);
+          font-size: var(--fs-sm);
+        }
+        .ligne-produit .info-produit .nom {
+          font-size: var(--fs-sm);
+        }
+        .ligne-produit .col-total {
+          font-size: var(--fs-sm);
+        }
+        .panier-liste {
+          max-height: 360px;
+        }
+        .btn-icon {
+          width: 32px;
+          height: 32px;
+          font-size: var(--fs-sm);
+          min-width: 32px;
+          min-height: 32px;
+        }
+
+        .recap-payer {
+          padding: var(--sp-20) var(--sp-18);
+        }
+        .recap-payer .total-montant {
+          font-size: var(--fs-3xl);
+        }
+        .btn-payer {
+          font-size: var(--fs-md);
+          padding: var(--sp-14) 0;
+          min-height: 48px;
+        }
+
+        .footer-newsletter .conteneur {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .footer-newsletter .nl-text {
+          text-align: center;
+        }
+        .nl-form {
+          width: 100%;
+        }
+        .nl-form input {
+          width: 100%;
+          flex: 1;
+        }
+        .nl-form button {
+          padding: 0 var(--sp-20);
+          font-size: var(--fs-sm);
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: var(--sp-20);
+          padding: var(--sp-30) 0 var(--sp-20);
+        }
+        .footer .footer-description {
+          max-width: 100%;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .mh-logo-text {
+          font-size: var(--fs-lg);
+        }
+        .mh-logo-text i {
+          font-size: var(--fs-md);
+        }
+        .mh-search form {
+          height: 34px;
+          border-radius: var(--radius-xl);
+        }
+        .mh-search input {
+          font-size: var(--fs-sm);
+          padding: 0 var(--sp-12);
+        }
+        .mh-search button {
+          padding: 0 var(--sp-12);
+          font-size: var(--fs-sm);
+        }
+        .mh-search button span {
+          display: none;
+        }
+        .mh-actions {
+          gap: var(--sp-8);
+        }
+        .mh-action i {
+          font-size: var(--fs-md);
+        }
+        .mh-action .cart-count {
+          font-size: var(--fs-xs);
+          min-width: 14px;
+          height: 14px;
+          top: -3px;
+          right: -6px;
+        }
+        .btn-cta-orange {
+          padding: var(--sp-4) var(--sp-10);
+          font-size: var(--fs-xs);
+          border-radius: var(--radius-xl);
+          min-height: 28px;
+          min-width: 60px;
+        }
+        .market-header {
+          padding: var(--sp-8) 0;
+        }
+        .conteneur {
+          padding: 0 var(--sp-12);
+        }
+
+        .page-panier h1 {
+          font-size: var(--fs-4xl);
+          font-weight: 700;
+          color: var(--gf-forest);
+          letter-spacing: -0.5px;
+        }
+
+        .ligne-produit,
+        .liste-header {
+          grid-template-columns: 1fr 0.5fr 0.6fr 0.5fr;
+          padding: var(--sp-10) var(--sp-10);
+          font-size: var(--fs-xs);
+          gap: var(--sp-4);
+        }
+        .ligne-produit .info-produit .nom {
+          font-size: var(--fs-sm);
+        }
+        .ligne-produit .info-produit .ref {
+          font-size: var(--fs-xs);
+        }
+        .ligne-produit .col-quantite {
+          font-size: var(--fs-sm);
+        }
+        .ligne-produit .col-total {
+          font-size: var(--fs-sm);
+        }
+        .btn-icon {
+          width: 28px;
+          height: 28px;
+          font-size: var(--fs-xs);
+          min-width: 28px;
+          min-height: 28px;
+        }
+        .panier-liste {
+          max-height: 280px;
+        }
+
+        .recap-payer {
+          padding: var(--sp-16) var(--sp-14);
+        }
+        .recap-payer .total-montant {
+          font-size: var(--fs-2xl);
+        }
+        .recap-payer .total-montant small {
+          font-size: var(--fs-base);
+        }
+        .btn-payer {
+          font-size: var(--fs-base);
+          padding: var(--sp-12) 0;
+          min-height: 44px;
+        }
+        .recap-payer .payment-methods span {
+          font-size: var(--fs-xs);
+          padding: var(--sp-4) var(--sp-10);
+        }
+        .recap-payer .payment-methods i {
+          font-size: var(--fs-md);
+        }
+
+        .panier-vide .empty-icon {
+          font-size: 56px;
+        }
+        .panier-vide p {
+          font-size: var(--fs-lg);
+        }
+        .panier-vide .sub-message {
+          font-size: var(--fs-base);
+        }
+
+        .footer-newsletter {
+          padding: var(--sp-18) 0;
+        }
+        .footer-newsletter .nl-text h3 {
+          font-size: var(--fs-md);
+        }
+        .footer-newsletter .nl-text p {
+          font-size: var(--fs-sm);
+        }
+        .nl-form {
+          flex-direction: column;
+          gap: var(--sp-8);
+        }
+        .nl-form input {
+          width: 100%;
+          border-radius: var(--radius-sm);
+          height: 42px;
+          font-size: var(--fs-sm);
+          min-height: 42px;
+        }
+        .nl-form button {
+          border-radius: var(--radius-sm);
+          padding: var(--sp-12) 0;
+          width: 100%;
+          font-size: var(--fs-base);
+          min-height: 42px;
+          justify-content: center;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: var(--sp-16);
+          padding: var(--sp-20) 0 var(--sp-16);
+        }
+        .footer h4 {
+          font-size: var(--fs-sm);
+          margin-bottom: var(--sp-10);
+        }
+        .footer ul li a,
+        .footer .footer-description {
+          font-size: var(--fs-sm);
+        }
+        .footer .footer-description {
+          max-width: 100%;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
+          padding: var(--sp-14) 0;
+          font-size: var(--fs-sm);
+        }
+        .footer-socials a {
+          width: 30px;
+          height: 30px;
+          font-size: var(--fs-sm);
+        }
       }
     </style>
   </head>
 
   <body>
-    <div th:replace="~{front/fragments/layout :: nav}"></div>
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+    <header class="market-header">
+      <div class="conteneur">
+        <a href="/" class="mh-logo">
+          <span class="mh-logo-text"
+            ><i class="fas fa-seedling"></i> green<span>Field</span></span
+          >
+        </a>
 
-    <main class="conteneur">
-      <h1>Mon panier</h1>
+        <div class="mh-search">
+          <form action="/produits" method="get">
+            <input
+              type="text"
+              name="motCle"
+              placeholder="Rechercher un produit, un producteur..."
+            />
+            <div class="search-icons">
+              <i class="fas fa-camera"></i>
+            </div>
+            <button type="submit">
+              <i class="fas fa-search"></i> Rechercher
+            </button>
+          </form>
+        </div>
 
-      <div
-        class="message success"
-        th:if="${success}"
-        th:text="${success}"
-      ></div>
-      <div class="message error" th:if="${error}" th:text="${error}"></div>
+        <div class="mh-actions">
+          <a href="/commandes" class="mh-action">
+            <i class="fas fa-receipt"></i>
+            <span>Commandes</span>
+          </a>
+          <a href="/panier" class="mh-action">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" th:text="${session.cartCount} ?: 0"
+              >0</span
+            >
+            <span>Panier</span>
+          </a>
+          <a th:if="${session.client == null}" href="/login" class="mh-action">
+            <i class="fas fa-user"></i>
+            <span>Connexion</span>
+          </a>
+          <a th:if="${session.client != null}" href="/profil" class="mh-action">
+            <i class="fas fa-user-circle"></i>
+            <span>Mon compte</span>
+          </a>
+          <a
+            th:if="${session.client == null}"
+            href="/signup"
+            class="btn btn-orange btn-sm"
+            >Créer un compte</a
+          >
+        </div>
+      </div>
+    </header>
 
-      <div th:if="${!lignes.isEmpty()}">
-        <table class="panier">
-          <thead>
-            <tr>
-              <th>Produit</th>
-              <th>Prix unitaire</th>
-              <th>Quantité</th>
-              <th>Sous-total</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="ligne : ${lignes}">
-              <td th:text="${ligne.produit.nom}"></td>
-              <td th:text="${ligne.produit.pu} + ' Ar'"></td>
-              <td>
-                <form
-                  th:action="@{/panier/modifier}"
-                  method="post"
-                  class="ligne-actions"
-                >
-                  <input
-                    type="hidden"
-                    name="idProduit"
-                    th:value="${ligne.produit.id}"
-                  />
-                  <input
-                    class="input-quantite"
-                    type="number"
-                    name="quantite"
-                    min="1"
-                    required
-                    th:value="${ligne.quantite}"
-                  />
-                  <button type="submit" class="btn secondaire">Modifier</button>
-                </form>
-              </td>
-              <td th:text="${ligne.sousTotal} + ' Ar'"></td>
-              <td>
-                <form
-                  th:action="@{/panier/supprimer/{id}(id=${ligne.produit.id})}"
-                  method="post"
-                >
-                  <button type="submit" class="btn danger">Supprimer</button>
-                </form>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- =====================================================
+         CONTENU PRINCIPAL
+    ====================================================== -->
+    <main class="page-panier">
+      <div class="conteneur">
+        <!-- Fil d'Ariane -->
+        <div class="breadcrumb">
+          <a href="/">Accueil</a> / <span>Panier</span>
+        </div>
 
-        <div class="bloc-total">
-          <div class="recap-total">
-            <div>Total à payer</div>
-            <div class="montant" th:text="${total} + ' Ar'"></div>
-            <form th:action="@{/commande/recapitulatif}" method="get">
-              <button type="submit" class="btn">Valider l'achat</button>
-            </form>
+        <h1 style="font-size: 32px">
+          <i class="fas fa-shopping-cart"></i> Mon Panier
+        </h1>
+
+        <!-- Messages flash -->
+        <div class="message success" th:if="${success}" th:text="${success}">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="message error" th:if="${error}" th:text="${error}">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+
+        <!-- Panier avec produits -->
+        <div th:if="${!lignes.isEmpty()}">
+          <div class="panier-layout">
+            <!-- Liste produits -->
+            <div class="panier-liste">
+              <div class="liste-header">
+                <span>Produit</span>
+                <span style="text-align: center">Qté</span>
+                <span style="text-align: right">Total</span>
+                <span style="text-align: right">Actions</span>
+              </div>
+
+              <div th:each="ligne : ${lignes}" class="ligne-produit">
+                <div class="info-produit">
+                  <span class="nom" th:text="${ligne.produit.nom}"></span>
+                  <span
+                    class="ref"
+                    th:text="'Réf: ' + ${ligne.produit.id}"
+                  ></span>
+                </div>
+                <div class="col-quantite" th:text="${ligne.quantite}">0</div>
+                <div class="col-total" th:text="${ligne.sousTotal} + ' Ar'">
+                  0 Ar
+                </div>
+                <div class="col-actions">
+                  <form
+                    th:action="@{/panier/modifier}"
+                    method="post"
+                    style="display: inline"
+                  >
+                    <input
+                      type="hidden"
+                      name="idProduit"
+                      th:value="${ligne.produit.id}"
+                    />
+                    <input
+                      type="hidden"
+                      name="quantite"
+                      th:value="${ligne.quantite + 1}"
+                    />
+                    <button type="submit" class="btn-icon" title="Ajouter">
+                      <i class="fas fa-plus"></i>
+                    </button>
+                  </form>
+                  <form
+                    th:action="@{/panier/modifier}"
+                    method="post"
+                    style="display: inline"
+                  >
+                    <input
+                      type="hidden"
+                      name="idProduit"
+                      th:value="${ligne.produit.id}"
+                    />
+                    <input
+                      type="hidden"
+                      name="quantite"
+                      th:value="${ligne.quantite - 1}"
+                    />
+                    <button
+                      type="submit"
+                      class="btn-icon"
+                      title="Retirer"
+                      th:disabled="${ligne.quantite <= 1}"
+                    >
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </form>
+                  <form
+                    th:action="@{/panier/supprimer/{id}(id=${ligne.produit.id})}"
+                    method="post"
+                    style="display: inline"
+                  >
+                    <button
+                      type="submit"
+                      class="btn-icon danger"
+                      title="Supprimer"
+                    >
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Récapitulatif -->
+            <div class="recap-payer">
+              <div class="total-label">Total</div>
+              <div class="total-montant">
+                <span th:text="${total}"></span> <small>Ar</small>
+              </div>
+
+              <form th:action="@{/commande/recapitulatif}" method="get">
+                <button type="submit" class="btn-payer">
+                  <i class="fas fa-lock"></i> Commander
+                </button>
+              </form>
+
+              <div class="payment-methods">
+                <span><i class="fas fa-mobile-alt"></i> MVola</span>
+                <span><i class="fas fa-mobile-alt"></i> Orange Money</span>
+                <span><i class="fas fa-credit-card"></i> Carte</span>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <!-- Panier vide -->
+        <div class="panier-vide" th:if="${lignes.isEmpty()}">
+          <div class="empty-icon"><i class="fas fa-shopping-basket"></i></div>
+          <p>Votre panier est vide.</p>
+          <p class="sub-message">
+            Découvrez nos produits frais et locaux, directement des producteurs.
+          </p>
+          <a class="btn btn-orange" th:href="@{/produits}">
+            <i class="fas fa-store"></i> Découvrir les produits
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+    <footer class="footer">
+      <div class="footer-newsletter">
+        <div class="conteneur">
+          <div class="nl-text">
+            <h3>Restez informé de nos récoltes</h3>
+            <p>Recevez nos offres et arrivages en avant-première.</p>
+          </div>
+          <form
+            class="nl-form"
+            th:action="@{/newsletter/subscribe}"
+            method="post"
+          >
+            <input
+              type="email"
+              name="email"
+              placeholder="Votre adresse email"
+              required
+            />
+            <button type="submit">
+              <i class="fas fa-paper-plane"></i> S'abonner
+            </button>
+          </form>
         </div>
       </div>
 
-      <div class="panier-vide" th:if="${lignes.isEmpty()}">
-        <p>Votre panier est vide.</p>
-        <a class="btn" th:href="@{/produits}">Découvrir les produits</a>
+      <div class="conteneur">
+        <div class="footer-grid">
+          <div>
+            <a href="/" class="logo"><i class="fas fa-leaf"></i> greenField</a>
+            <p class="footer-description">
+              Votre marché en ligne pour l'achat de produits agricoles locaux,
+              frais et de qualité, directement auprès des producteurs.
+            </p>
+          </div>
+          <div>
+            <h4>Boutique</h4>
+            <ul>
+              <li><a href="/produits">Tous les produits</a></li>
+              <li><a href="#">Best-sellers</a></li>
+              <li><a href="#">Nouveautés</a></li>
+              <li><a href="#">Promotions</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Mon compte</h4>
+            <ul>
+              <li><a href="/login">Connexion</a></li>
+              <li><a href="/signup">Inscription</a></li>
+              <li><a href="/panier">Panier</a></li>
+              <li><a href="#">Mes commandes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Producteurs</h4>
+            <ul>
+              <li><a href="#">Devenir partenaire</a></li>
+              <li><a href="#">Nos engagements</a></li>
+              <li><a href="#">FAQ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <ul>
+              <li><i class="fas fa-envelope"></i> contact@greenfield.com</li>
+              <li><i class="fas fa-phone"></i> +261 34 12 345 67</li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i> Antananarivo, Madagascar
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span>&copy; 2026 greenField. Tous droits réservés.</span>
+          <div class="footer-socials">
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
       </div>
-    </main>
+    </footer>
   </body>
 </html>

@@ -185,6 +185,12 @@ public class AuthClientController {
         return "redirect:/";
     }
 
+    @GetMapping("/logout")
+    public String deconnexionc(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
+    }
+
     @GetMapping("/profil")
     public String afficherProfil(HttpSession session, Model model) {
         Client client = (Client) session.getAttribute("client");

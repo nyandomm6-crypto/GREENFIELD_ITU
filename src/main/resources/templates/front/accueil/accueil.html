@@ -3,411 +3,651 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>greenField - Accueil</title>
+    <title>greenField - Marché des producteurs</title>
 
-    <!-- Font Awesome pour les icônes -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
     <style>
       /* =====================================================
-         VARIABLES ET RESET
-      ====================================================== */
+           TOKENS LOCAUX - DESIGN SYSTEM UNIFIÉ
+        ====================================================== */
       :root {
-        --vert-fonce: #1a3a2a;
-        --vert: #2d6a4f;
-        --vert-clair: #40916c;
-        --vert-pale: #d8edd9;
-        --or: #d4a373;
-        --creme: #f8f4f0;
-        --gris: #5c6b5e;
-        --texte: #1e2b22;
-        --ombre: 0 8px 28px rgba(26, 58, 42, 0.1);
-        --ombre-forte: 0 20px 50px rgba(26, 58, 42, 0.2);
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        --rayon: 28px;
-        --rayon-pill: 60px;
-        --font-display: "Segoe UI", system-ui, -apple-system, sans-serif;
+        /* Couleurs principales */
+        --gf-forest: #0f2a1c;
+        --gf-forest-2: #173b26;
+        --gf-green: #2d6a4f;
+        --gf-green-light: #4c9a6f;
+        --gf-leaf: #8fd4a8;
+        --gf-gold: #d4a373;
+        --gf-cream: #f6f4ee;
+        --gf-line: #e2e8e0;
+        --gf-text: #1c2b21;
+        --gf-muted: #5f6f64;
+
+        /* Couleurs d'accent */
+        --ali-orange: #ff6a00;
+        --ali-orange-light: #ff9000;
+        --ali-orange-dark: #e65c00;
+
+        /* Ombres */
+        --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
+        --ombre-forte: 0 12px 30px rgba(0, 0, 0, 0.12);
+
+        /* Tailles de police - DESIGN SYSTEM */
+        --fs-xs: 11px;
+        --fs-sm: 13px;
+        --fs-base: 14px;
+        --fs-md: 15px;
+        --fs-lg: 18px;
+        --fs-xl: 20px;
+        --fs-2xl: 24px;
+        --fs-3xl: 28px;
+
+        /* Espacements */
+        --sp-2: 2px;
+        --sp-4: 4px;
+        --sp-6: 6px;
+        --sp-8: 8px;
+        --sp-10: 10px;
+        --sp-12: 12px;
+        --sp-14: 14px;
+        --sp-16: 16px;
+        --sp-18: 18px;
+        --sp-20: 20px;
+        --sp-24: 24px;
+        --sp-28: 28px;
+        --sp-30: 30px;
+        --sp-40: 40px;
+
+        /* Rayons */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-full: 50px;
+
+        /* Transitions */
+        --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
 
+      /* =====================================================
+           RESET & BASE
+        ====================================================== */
       * {
+        box-sizing: border-box;
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
       }
 
       body {
-        font-family: var(--font-display);
-        background: #f4f7f2;
-        color: var(--texte);
+        background: #f8f9fa;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        font-size: var(--fs-base);
+        color: var(--gf-text);
         line-height: 1.6;
-        min-height: 100vh;
       }
 
       a {
         text-decoration: none;
         color: inherit;
       }
+      ul {
+        list-style: none;
+      }
 
       .conteneur {
-        width: min(1320px, calc(100% - 36px));
+        max-width: 1280px;
         margin: 0 auto;
+        padding: 0 var(--sp-20);
       }
 
       /* =====================================================
-         NAVIGATION (inspirée Alibaba)
-      ====================================================== */
-      .nav-principale {
-        background: rgba(255, 255, 255, 0.86);
-        backdrop-filter: blur(16px);
-        border-bottom: 1px solid rgba(45, 106, 79, 0.12);
-        padding: 12px 0;
+           BARRE UTILITAIRE
+        ====================================================== */
+      .util-bar {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: var(--fs-sm);
+        color: #666;
         position: sticky;
         top: 0;
-        z-index: 100;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.03);
+        z-index: 1002;
+        height: 38px;
+        display: flex;
+        align-items: center;
+      }
+      .util-bar .conteneur {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: var(--sp-20);
+        padding: 0 var(--sp-20);
+        width: 100%;
+      }
+      .util-bar a {
+        color: #666;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-4);
+      }
+      .util-bar a:hover {
+        color: var(--ali-orange);
+      }
+      .util-right {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-18);
       }
 
-      .nav-conteneur {
+      /* =====================================================
+           HEADER PRINCIPAL
+        ====================================================== */
+      .market-header {
+        background: #ffffff;
+        padding: var(--sp-14) 0;
+        position: sticky;
+        top: 38px;
+        z-index: 1001;
+        border-bottom: 1px solid #e6e6e6;
+      }
+      .market-header .conteneur {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 14px;
+        gap: var(--sp-28);
       }
 
-      .logo {
-        font-size: 24px;
-        font-weight: 800;
-        color: var(--vert-fonce);
+      .mh-logo {
         display: flex;
         align-items: center;
-        gap: 8px;
-        letter-spacing: -0.5px;
+        flex-shrink: 0;
       }
-      .logo i {
-        color: var(--vert);
-        font-size: 28px;
+      .mh-logo-text {
+        font-size: var(--fs-3xl);
+        font-weight: 700;
+        color: var(--ali-orange);
+        letter-spacing: -1px;
       }
-      .logo span {
-        color: var(--or);
+      .mh-logo-text span {
+        color: #333;
+      }
+      .mh-logo-text i {
+        color: var(--gf-green);
+        font-size: var(--fs-xl);
+        margin-right: var(--sp-4);
       }
 
-      .nav-liens {
+      .mh-search {
+        flex: 1;
+        max-width: 700px;
+      }
+      .mh-search form {
+        display: flex;
+        height: 44px;
+        border: 2px solid var(--ali-orange);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+        background: #fff;
+      }
+      .mh-search input {
+        flex: 1;
+        border: none;
+        padding: 0 var(--sp-16);
+        font-size: var(--fs-base);
+        outline: none;
+        color: #333;
+      }
+      .mh-search input::placeholder {
+        color: #999;
+      }
+      .mh-search .search-icons {
         display: flex;
         align-items: center;
-        gap: 24px;
-        list-style: none;
-        flex-wrap: wrap;
-      }
-
-      .nav-liens a {
-        font-weight: 500;
-        font-size: 15px;
-        color: var(--gris);
-        transition: var(--transition);
-        padding: 6px 0;
-        border-bottom: 2px solid transparent;
-      }
-      .nav-liens a:hover {
-        color: var(--vert-fonce);
-        border-bottom-color: var(--vert);
-      }
-      .nav-liens a.actif {
-        color: var(--vert-fonce);
-        border-bottom-color: var(--vert);
-        font-weight: 600;
-      }
-
-      .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-
-      .btn-nav {
-        background: transparent;
-        border: 1.5px solid var(--vert);
-        color: var(--vert);
-        padding: 8px 18px;
-        border-radius: var(--rayon-pill);
-        font-weight: 600;
-        font-size: 14px;
-        transition: var(--transition);
+        padding-right: var(--sp-10);
+        color: #999;
+        gap: var(--sp-8);
         cursor: pointer;
-        font-family: inherit;
       }
-      .btn-nav:hover {
-        background: var(--vert);
-        color: white;
-        box-shadow: 0 8px 18px rgba(45, 106, 79, 0.25);
-      }
-      .btn-nav.plein {
-        background: var(--vert);
-        color: white;
-      }
-      .btn-nav.plein:hover {
-        background: var(--vert-fonce);
-        border-color: var(--vert-fonce);
-      }
-
-      .icone-panier {
-        position: relative;
-        font-size: 22px;
-        color: var(--vert-fonce);
-        transition: var(--transition);
-      }
-      .icone-panier:hover {
-        color: var(--vert);
-      }
-      .badge-panier {
-        position: absolute;
-        top: -8px;
-        right: -10px;
-        background: #c0392b;
-        color: white;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        font-size: 11px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-      }
-
-      /* =====================================================
-         HERO - MODERN & VERT
-      ====================================================== */
-      .hero {
+      .mh-search button {
         background: linear-gradient(
-          145deg,
-          #1d3e2b 0%,
-          #2b5a3f 60%,
-          #3d7a57 100%
+          135deg,
+          var(--ali-orange-light),
+          var(--ali-orange-dark)
         );
-        border-radius: var(--rayon);
-        margin: 20px auto 28px;
-        padding: 72px 0 80px;
-        text-align: center;
-        color: white;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 24px 60px rgba(26, 58, 42, 0.25);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .hero::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        opacity: 0.3;
-      }
-
-      .hero .conteneur {
-        position: relative;
-        z-index: 2;
-      }
-
-      .hero h1 {
-        font-size: clamp(38px, 5.2vw, 68px);
-        font-weight: 800;
-        letter-spacing: -2px;
-        margin-bottom: 12px;
-        font-family: var(--font-display);
-      }
-      .hero h1 span {
-        color: #f3e0c0;
-      }
-
-      .hero p {
-        font-size: 18px;
-        opacity: 0.92;
-        max-width: 640px;
-        margin: 0 auto 8px;
-        line-height: 1.8;
-      }
-
-      .hero .welcome-name {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        padding: 12px 24px;
-        border-radius: var(--rayon-pill);
+        border: none;
+        color: #fff;
+        padding: 0 var(--sp-28);
         font-weight: 600;
-        margin-top: 18px;
-        font-size: 16px;
-        color: #f3e0c0;
-      }
-
-      /* stats */
-      .hero-stats {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-top: 36px;
-      }
-      .hero-stats .stat {
-        background: rgba(255, 255, 255, 0.07);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 20px;
-        padding: 18px 12px;
-        transition: var(--transition);
-      }
-      .hero-stats .stat:hover {
-        background: rgba(255, 255, 255, 0.14);
-        transform: translateY(-3px);
-      }
-      .hero-stats .stat-number {
-        font-size: 34px;
-        font-weight: 700;
-        display: block;
-        line-height: 1.2;
-        font-family: var(--font-display);
-      }
-      .hero-stats .stat-label {
-        font-size: 13px;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        opacity: 0.7;
-        font-weight: 500;
-      }
-
-      /* =====================================================
-         MESSAGES FLASH
-      ====================================================== */
-      .message {
-        padding: 16px 22px;
-        border-radius: 18px;
-        margin: 18px 0;
-        font-weight: 600;
-        border-left: 5px solid transparent;
-        box-shadow: var(--ombre);
+        font-size: var(--fs-md);
+        cursor: pointer;
+        transition: opacity 0.2s;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: var(--sp-8);
       }
-      .message.success {
-        background: #e7f3e4;
-        border-color: #2d6a4f;
-        color: #1a3a2a;
-      }
-      .message.error {
-        background: #fde8e4;
-        border-color: #b85a4a;
-        color: #7a3326;
+      .mh-search button:hover {
+        opacity: 0.9;
       }
 
-      /* =====================================================
-         SECTIONS
-      ====================================================== */
-      .section {
-        padding: 24px 0 56px;
-      }
-      .section .conteneur {
-        background: rgba(255, 255, 255, 0.78);
-        backdrop-filter: blur(12px);
-        border-radius: var(--rayon);
-        padding: 36px 30px;
-        box-shadow: var(--ombre);
-        border: 1px solid rgba(45, 106, 79, 0.06);
-        transition: var(--transition);
-      }
-      .section.alt .conteneur {
-        background: linear-gradient(135deg, #f2f8f0 0%, #ffffff 80%);
-      }
-
-      .section-header {
-        text-align: center;
-        margin-bottom: 32px;
-      }
-      .section-header .badge-tag {
-        display: inline-flex;
+      .mh-actions {
+        display: flex;
         align-items: center;
-        gap: 8px;
-        background: var(--vert-pale);
-        color: var(--vert-fonce);
-        padding: 6px 18px;
-        border-radius: var(--rayon-pill);
-        font-size: 13px;
-        font-weight: 700;
-        margin-bottom: 10px;
-        border: 1px solid rgba(45, 106, 79, 0.12);
+        gap: var(--sp-18);
+        flex-shrink: 0;
       }
-      .section-header h2 {
-        font-size: clamp(26px, 3vw, 38px);
-        font-weight: 700;
-        color: var(--vert-fonce);
-        font-family: var(--font-display);
-        letter-spacing: -0.5px;
-      }
-      .section-header h2 i {
-        color: var(--vert);
-        margin-right: 10px;
-      }
-      .section-header p {
-        color: var(--gris);
-        font-size: 16px;
-        max-width: 600px;
-        margin: 0 auto;
-      }
-
-      /* =====================================================
-         GRILLE PRODUITS (CARTES)
-      ====================================================== */
-      .grid-produits {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 24px;
-      }
-
-      .carte-produit {
-        background: white;
-        border-radius: 24px;
-        padding: 22px 18px 24px;
-        box-shadow: var(--ombre);
-        transition: var(--transition);
-        border: 1px solid rgba(45, 106, 79, 0.06);
-        text-align: center;
-        position: relative;
-        overflow: hidden;
+      .mh-action {
         display: flex;
         flex-direction: column;
         align-items: center;
+        color: #333;
+        font-size: var(--fs-sm);
+        font-weight: 500;
+        transition: color 0.2s;
+        position: relative;
       }
-      .carte-produit::after {
+      .mh-action:hover {
+        color: var(--ali-orange);
+      }
+      .mh-action i {
+        font-size: var(--fs-xl);
+        margin-bottom: 0px;
+      }
+      .mh-action .cart-count {
+        position: absolute;
+        top: -4px;
+        right: -8px;
+        background: var(--ali-orange);
+        color: #fff;
+        font-size: var(--fs-xs);
+        font-weight: 700;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* BOUTONS UNIFORMISÉS */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--sp-8);
+        padding: var(--sp-10) var(--sp-20);
+        border: none;
+        border-radius: var(--radius-full);
+        font-size: var(--fs-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        min-height: 44px;
+        min-width: 120px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--gf-green),
+          var(--gf-forest-2)
+        );
+        color: #fff;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+      }
+
+      .btn-orange {
+        background: var(--ali-orange);
+        color: #fff;
+      }
+      .btn-orange:hover {
+        background: var(--ali-orange-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 106, 0, 0.3);
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--gf-green);
+        border: 2px solid var(--gf-green);
+      }
+      .btn-outline:hover {
+        background: var(--gf-green);
+        color: #fff;
+      }
+
+      .btn-sm {
+        padding: var(--sp-6) var(--sp-14);
+        font-size: var(--fs-sm);
+        min-height: 36px;
+        min-width: 80px;
+      }
+
+      .btn-block {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      .btn-cta-orange {
+        background: var(--ali-orange);
+        color: #fff !important;
+        padding: var(--sp-10) var(--sp-20);
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        font-size: var(--fs-base);
+        transition: background 0.2s;
+        display: inline-block;
+      }
+      .btn-cta-orange:hover {
+        background: var(--ali-orange-dark);
+        color: #fff;
+      }
+
+      /* =====================================================
+           CATÉGORIES STRIP AVEC POPUP
+        ====================================================== */
+      .cat-strip {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e5e5;
+        position: sticky;
+        top: 106px;
+        z-index: 1000;
+        padding: var(--sp-4) 0;
+      }
+      .cat-strip .conteneur {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-24);
+        padding: var(--sp-10) 0;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+      .cat-strip a {
+        color: #555;
+        font-size: var(--fs-base);
+        font-weight: 400;
+        transition: color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-4);
+        padding: var(--sp-4) 0;
+        position: relative;
+        cursor: pointer;
+      }
+      .cat-strip a:hover {
+        color: var(--ali-orange);
+      }
+      .cat-strip a.all-cat {
+        font-weight: 600;
+        color: #333;
+      }
+      .cat-strip a.all-cat i {
+        font-size: var(--fs-md);
+        margin-right: var(--sp-4);
+      }
+      .cat-strip a.about-link {
+        color: var(--ali-orange);
+        font-weight: 600;
+      }
+      .cat-strip a.about-link:hover {
+        color: var(--ali-orange-dark);
+      }
+      .cat-strip a.active-link {
+        color: var(--ali-orange-dark);
+      }
+      .cat-strip a.active-link::after {
         content: "";
         position: absolute;
-        inset: 0 auto auto 0;
+        bottom: -11px;
+        left: 0;
         width: 100%;
-        height: 4px;
-        background: linear-gradient(90deg, var(--vert), var(--or));
-        opacity: 0.6;
+        height: 3px;
+        background: var(--ali-orange);
+        border-radius: var(--sp-2);
       }
+
+      /* Popup */
+      .fragment-popup {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        border-bottom: 1px solid #e5e5e5;
+        padding: var(--sp-30) 0;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        z-index: 999;
+        animation: fadeSlideDown 0.3s ease-out;
+      }
+
+      .fragment-popup.visible {
+        display: block;
+      }
+
+      @keyframes fadeSlideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fragment-popup .conteneur {
+        display: grid;
+        grid-template-columns: 1.5fr 1.5fr 1fr;
+        gap: var(--sp-30);
+      }
+
+      .popup-card {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-12);
+      }
+      .popup-card h4 {
+        font-size: var(--fs-lg);
+        font-weight: 700;
+        color: #333;
+      }
+      .popup-card p {
+        font-size: var(--fs-base);
+        color: #666;
+        line-height: 1.6;
+      }
+      .popup-card .popup-img {
+        width: 100%;
+        height: 160px;
+        border-radius: var(--radius-md);
+        object-fit: cover;
+        background: #f0f0f0;
+      }
+      .popup-card img {
+        width: 100%;
+        height: 160px;
+        border-radius: var(--radius-md);
+        object-fit: cover;
+      }
+
+      .popup-app {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sp-12);
+      }
+      .popup-app h4 {
+        font-size: var(--fs-lg);
+        font-weight: 700;
+        color: #333;
+      }
+      .popup-app p {
+        font-size: var(--fs-base);
+        color: #666;
+        line-height: 1.6;
+      }
+      .popup-app .app-stores {
+        display: flex;
+        gap: var(--sp-10);
+        margin-top: var(--sp-4);
+        flex-wrap: wrap;
+      }
+      .popup-app .app-stores img {
+        height: 44px;
+        border-radius: var(--sp-6);
+      }
+
+      /* =====================================================
+           SECTIONS PRODUITS
+        ====================================================== */
+      .section {
+        padding: var(--sp-30) 0;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--sp-24);
+        padding-bottom: var(--sp-16);
+        border-bottom: 2px solid var(--gf-cream);
+        flex-wrap: wrap;
+        gap: var(--sp-12);
+      }
+      .section-header .htitle {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-12);
+      }
+      .section-header .htitle .ic {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-md);
+        background: linear-gradient(
+          135deg,
+          var(--gf-green-light),
+          var(--gf-green)
+        );
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--fs-xl);
+        box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3);
+        flex-shrink: 0;
+      }
+      .section-header h2 {
+        font-size: var(--fs-2xl);
+        font-weight: 800;
+        color: var(--gf-forest);
+      }
+      .section-header p {
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
+      }
+      .section-header .see-all {
+        font-size: var(--fs-base);
+        font-weight: 700;
+        color: var(--gf-green);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-6);
+        padding: var(--sp-8) var(--sp-16);
+        border-radius: var(--radius-xl);
+        transition: var(--transition);
+      }
+      .section-header .see-all:hover {
+        background: var(--gf-cream);
+      }
+
+      /* =====================================================
+           PRODUITS - CARTES
+        ====================================================== */
+      .scroll-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+        padding: 0 var(--sp-4);
+      }
+
+      .scroll-wrapper {
+        display: flex;
+        gap: var(--sp-20);
+        overflow-x: auto;
+        padding: var(--sp-8) var(--sp-4) var(--sp-16) var(--sp-4);
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+      .scroll-wrapper::-webkit-scrollbar {
+        display: none;
+      }
+
+      .carte-produit {
+        flex: 0 0 calc(33.333% - 14px);
+        min-width: 250px;
+        background: #ffffff;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: 1px solid var(--gf-line);
+        transition: var(--transition);
+        position: relative;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        display: flex;
+        flex-direction: column;
+      }
+
       .carte-produit:hover {
-        transform: translateY(-8px) scale(1.01);
+        transform: translateY(-6px);
         box-shadow: var(--ombre-forte);
-        border-color: rgba(45, 106, 79, 0.15);
+        border-color: var(--gf-green-light);
+      }
+
+      .carte-produit .image {
+        aspect-ratio: 1/1;
+        background: linear-gradient(145deg, #eaf3e8, #f6f0e6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .carte-produit .image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+      }
+
+      .carte-produit:hover .image img {
+        transform: scale(1.05);
       }
 
       .carte-produit .badge {
         position: absolute;
-        top: 14px;
-        right: 14px;
-        padding: 4px 14px;
-        border-radius: var(--rayon-pill);
-        font-size: 11px;
-        font-weight: 700;
+        top: var(--sp-12);
+        left: var(--sp-12);
+        padding: var(--sp-4) var(--sp-14);
+        border-radius: var(--radius-xl);
+        font-size: var(--fs-xs);
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: white;
+        color: #fff;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        z-index: 2;
       }
       .badge.bestseller {
         background: linear-gradient(135deg, #d4a373, #b8863f);
@@ -415,243 +655,403 @@
       .badge.nouveau {
         background: linear-gradient(135deg, #40916c, #2d6a4f);
       }
-      .badge.soldes {
-        background: linear-gradient(135deg, #c97789, #b64d4a);
+      .badge.promo {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
       }
 
-      .carte-produit .image {
-        width: 80px;
-        height: 80px;
-        margin: 8px auto 14px;
-        border-radius: 30px;
-        background: linear-gradient(135deg, #eaf3e8, #f6f0e6);
+      .carte-produit .infos {
+        padding: var(--sp-16) var(--sp-16) var(--sp-20);
+        flex: 1;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 42px;
-        transition: var(--transition);
-      }
-      .carte-produit:hover .image {
-        transform: scale(1.05) rotate(2deg);
+        flex-direction: column;
+        gap: var(--sp-4);
       }
 
       .carte-produit .nom {
         font-weight: 700;
-        font-size: 17px;
-        color: var(--vert-fonce);
-        margin-bottom: 2px;
-      }
-      .carte-produit .categorie {
-        font-size: 13px;
-        color: var(--gris);
-        margin-bottom: 8px;
-      }
-      .carte-produit .prix {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--vert-fonce);
-        margin-bottom: 6px;
+        font-size: var(--fs-md);
+        color: var(--gf-text);
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: 42px;
       }
 
-      .btn-ajouter {
-        background: var(--vert);
-        color: white;
-        border: none;
-        padding: 10px 24px;
-        border-radius: var(--rayon-pill);
-        font-weight: 600;
-        font-size: 14px;
-        cursor: pointer;
-        transition: var(--transition);
-        font-family: inherit;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 12px 28px rgba(45, 106, 79, 0.25);
-        margin-top: 10px;
+      .carte-produit .categorie {
+        font-size: var(--fs-xs);
+        color: var(--gf-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
-      .btn-ajouter:hover {
-        background: var(--vert-fonce);
-        transform: translateY(-2px);
-        box-shadow: 0 16px 32px rgba(26, 58, 42, 0.3);
+
+      .carte-produit .prix {
+        font-size: var(--fs-xl);
+        font-weight: 800;
+        color: var(--gf-forest);
+        margin-top: auto;
+        padding-top: var(--sp-8);
+      }
+      .carte-produit .prix .old-price {
+        font-size: var(--fs-base);
+        font-weight: 400;
+        color: #e74c3c;
+        text-decoration: line-through;
+        margin-left: var(--sp-8);
+      }
+
+      /* Bouton uniformisé sur les cartes */
+      .carte-produit .btn-ajouter {
+        margin-top: var(--sp-12);
+        padding: var(--sp-10) 0;
+        font-size: var(--fs-base);
+        min-height: 44px;
+        border-radius: var(--radius-md);
       }
 
       .aucun-produit {
         text-align: center;
-        color: var(--gris);
-        padding: 40px 0;
-        font-size: 16px;
+        color: var(--gf-muted);
+        padding: var(--sp-40) 0;
+        font-size: var(--fs-md);
+        width: 100%;
+      }
+
+      /* Contrôles de scroll */
+      .scroll-controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: var(--sp-12);
+        margin-bottom: var(--sp-16);
+      }
+
+      .scroll-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid var(--gf-line);
+        background: #fff;
+        color: var(--gf-text);
+        font-size: var(--fs-md);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+      .scroll-btn:hover {
+        background: var(--gf-green);
+        color: #fff;
+        border-color: var(--gf-green);
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.25);
+      }
+
+      /* Indicateur de progression */
+      .scroll-indicators {
+        display: flex;
+        justify-content: center;
+        gap: var(--sp-8);
+        margin-top: var(--sp-12);
+      }
+      .scroll-indicators .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--gf-line);
+        transition: var(--transition);
+        cursor: pointer;
+      }
+      .scroll-indicators .dot.active {
+        background: var(--gf-green);
+        width: 24px;
+        border-radius: var(--sp-4);
       }
 
       /* =====================================================
-         TEMOIGNAGES
-      ====================================================== */
+           GARANTIES
+        ====================================================== */
+      .assurance-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--sp-20);
+      }
+      .assurance-card {
+        text-align: center;
+        padding: var(--sp-24) var(--sp-16);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gf-line);
+        background: #fff;
+        transition: var(--transition);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      }
+      .assurance-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--ombre-forte);
+        border-color: var(--gf-green-light);
+      }
+      .assurance-card .ic {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--gf-cream), #e8f0e6);
+        color: var(--gf-green);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--fs-xl);
+        margin: 0 auto var(--sp-14);
+        transition: var(--transition);
+      }
+      .assurance-card:hover .ic {
+        background: linear-gradient(
+          135deg,
+          var(--gf-green),
+          var(--gf-forest-2)
+        );
+        color: #fff;
+        transform: scale(1.05);
+      }
+      .assurance-card h4 {
+        font-size: var(--fs-md);
+        font-weight: 700;
+        color: var(--gf-forest);
+        margin-bottom: var(--sp-6);
+      }
+      .assurance-card p {
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
+        line-height: 1.6;
+      }
+
+      /* =====================================================
+           TEMOIGNAGES
+        ====================================================== */
       .temoignages-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
+        gap: var(--sp-20);
       }
       .temoignage-card {
-        background: white;
-        padding: 28px 24px;
-        border-radius: 24px;
-        box-shadow: var(--ombre);
+        background: #fff;
+        padding: var(--sp-24);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gf-line);
         transition: var(--transition);
-        text-align: center;
-        border: 1px solid rgba(45, 106, 79, 0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
       }
       .temoignage-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-4px);
         box-shadow: var(--ombre-forte);
       }
       .temoignage-card .stars {
-        color: var(--or);
-        font-size: 18px;
-        margin-bottom: 12px;
+        color: var(--gf-gold);
+        font-size: var(--fs-md);
+        margin-bottom: var(--sp-12);
         letter-spacing: 2px;
       }
       .temoignage-card blockquote {
-        font-size: 15px;
-        color: var(--texte);
+        font-size: var(--fs-base);
+        color: var(--gf-text);
         line-height: 1.7;
         font-style: italic;
-        margin-bottom: 16px;
+        margin-bottom: var(--sp-16);
       }
       .temoignage-card .author {
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 14px;
+        gap: var(--sp-12);
       }
       .temoignage-card .avatar {
-        width: 48px;
-        height: 48px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
-        background: var(--vert-pale);
+        background: linear-gradient(
+          135deg,
+          var(--gf-green),
+          var(--gf-forest-2)
+        );
+        color: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 700;
-        color: var(--vert-fonce);
-        font-size: 18px;
+        font-size: var(--fs-md);
+        flex-shrink: 0;
       }
       .temoignage-card .name {
-        font-weight: 600;
-        font-size: 15px;
+        font-weight: 700;
+        font-size: var(--fs-base);
       }
       .temoignage-card .role {
-        font-size: 12px;
-        color: var(--gris);
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
       }
 
       /* =====================================================
-         FAQ
-      ====================================================== */
+           FAQ
+        ====================================================== */
       .faq-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 20px;
-        max-width: 900px;
-        margin: 0 auto;
+        gap: var(--sp-16);
       }
       .faq-item {
-        background: white;
-        padding: 20px 24px;
-        border-radius: 20px;
-        box-shadow: var(--ombre);
-        border-left: 4px solid var(--vert);
+        background: #fff;
+        padding: var(--sp-18) var(--sp-20);
+        border-radius: var(--radius-md);
+        border-left: 4px solid var(--gf-green);
         transition: var(--transition);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
       }
       .faq-item:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--ombre-forte);
+        box-shadow: var(--ombre);
+        transform: translateX(4px);
       }
       .faq-item h4 {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--vert-fonce);
-        margin-bottom: 4px;
+        font-size: var(--fs-base);
+        font-weight: 700;
+        color: var(--gf-forest);
+        margin-bottom: var(--sp-4);
       }
       .faq-item h4 i {
-        color: var(--vert);
-        margin-right: 8px;
+        color: var(--gf-green);
+        margin-right: var(--sp-10);
+        width: 20px;
       }
       .faq-item p {
-        font-size: 14px;
-        color: var(--gris);
-        margin-left: 28px;
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
+        margin-left: var(--sp-30);
       }
 
       /* =====================================================
-         FOOTER
-      ====================================================== */
+           FOOTER
+        ====================================================== */
       .footer {
-        background: #0f1f16;
+        background: var(--gf-forest);
         color: rgba(255, 255, 255, 0.7);
-        padding: 48px 0 20px;
-        margin-top: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.04);
+        margin-top: var(--sp-30);
+        border-top: 4px solid var(--gf-green-light);
       }
+      .footer-newsletter {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: var(--sp-28) 0;
+      }
+      .footer-newsletter .conteneur {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-20);
+        flex-wrap: wrap;
+      }
+      .footer-newsletter h3 {
+        color: #fff;
+        font-size: var(--fs-xl);
+        font-weight: 700;
+      }
+      .footer-newsletter p {
+        font-size: var(--fs-sm);
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .nl-form {
+        display: flex;
+        gap: 0;
+      }
+      .nl-form input {
+        border: none;
+        padding: 0 var(--sp-18);
+        height: 46px;
+        width: 260px;
+        border-radius: var(--radius-md) 0 0 var(--radius-md);
+        font-size: var(--fs-sm);
+        outline: none;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+      .nl-form input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+      .nl-form button {
+        background: linear-gradient(135deg, var(--gf-gold), #c9956b);
+        color: #2a1c0e;
+        border: none;
+        padding: 0 var(--sp-24);
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        font-weight: 700;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: var(--fs-base);
+        min-height: 46px;
+      }
+      .nl-form button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 20px rgba(212, 163, 115, 0.3);
+      }
+
       .footer-grid {
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr;
-        gap: 40px;
-        margin-bottom: 30px;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        gap: var(--sp-30);
+        padding: var(--sp-40) 0 var(--sp-28);
       }
       .footer .logo {
-        color: white;
-        font-size: 22px;
+        color: #fff;
+        font-size: var(--fs-xl);
         font-weight: 800;
         display: inline-block;
-        margin-bottom: 10px;
+        margin-bottom: var(--sp-12);
       }
       .footer .logo i {
-        color: #a8e6cf;
+        color: var(--gf-leaf);
       }
       .footer p {
-        font-size: 14px;
+        font-size: var(--fs-sm);
         line-height: 1.8;
         max-width: 280px;
       }
       .footer h4 {
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 12px;
-      }
-      .footer ul {
-        list-style: none;
+        color: #fff;
+        font-size: var(--fs-base);
+        font-weight: 700;
+        margin-bottom: var(--sp-14);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
       }
       .footer ul li {
-        margin-bottom: 8px;
+        margin-bottom: var(--sp-8);
       }
       .footer ul li a {
         color: rgba(255, 255, 255, 0.6);
-        font-size: 14px;
+        font-size: var(--fs-sm);
         transition: var(--transition);
       }
       .footer ul li a:hover {
-        color: white;
+        color: #fff;
+        padding-left: var(--sp-4);
       }
+
       .footer-bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
-        padding-top: 18px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: var(--sp-18) 0;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 12px;
-        font-size: 13px;
+        gap: var(--sp-12);
+        font-size: var(--fs-sm);
       }
       .footer-socials {
         display: flex;
-        gap: 12px;
+        gap: var(--sp-12);
       }
       .footer-socials a {
         width: 38px;
         height: 38px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.06);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -659,98 +1059,145 @@
         transition: var(--transition);
       }
       .footer-socials a:hover {
-        background: var(--vert);
-        color: white;
+        background: var(--gf-green);
+        color: #fff;
         transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
       }
 
       /* =====================================================
-         RESPONSIVE
-      ====================================================== */
-      @media (max-width: 1024px) {
-        .hero-stats {
-          grid-template-columns: repeat(2, 1fr);
+           RESPONSIVE
+        ====================================================== */
+      @media (max-width: 1100px) {
+        .carte-produit {
+          flex: 0 0 calc(50% - 10px);
+          min-width: 200px;
         }
-        .grid-produits {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .temoignages-grid {
+        .assurance-grid {
           grid-template-columns: repeat(2, 1fr);
         }
         .footer-grid {
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+        .fragment-popup .conteneur {
+          grid-template-columns: 1fr;
+          gap: var(--sp-20);
+        }
+        .fragment-popup {
+          position: relative;
+          top: auto;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .mh-actions .mh-action.delivery {
+          display: none;
+        }
+        .mh-action.btn-cta-orange {
+          display: none;
+        }
+        .cat-strip {
+          top: 98px;
         }
       }
 
       @media (max-width: 768px) {
-        .nav-conteneur {
-          flex-direction: column;
-          align-items: stretch;
-          gap: 10px;
+        .util-bar .util-right span:not(:first-child) {
+          display: none;
         }
-        .nav-liens {
-          justify-content: center;
-          gap: 16px;
+        .market-header .conteneur {
+          flex-wrap: wrap;
+          gap: var(--sp-15);
         }
-        .nav-actions {
-          justify-content: center;
+        .mh-logo-text {
+          font-size: var(--fs-xl);
         }
-        .hero {
-          padding: 56px 0 64px;
-          border-radius: 24px;
-          margin: 12px auto 20px;
+        .mh-search {
+          order: 3;
+          max-width: 100%;
+          width: 100%;
         }
-        .hero h1 {
-          font-size: 30px;
+        .mh-search form {
+          height: 38px;
         }
-        .hero-stats {
-          gap: 10px;
+        .mh-search button {
+          padding: 0 var(--sp-15);
+          font-size: var(--fs-sm);
         }
-        .hero-stats .stat-number {
-          font-size: 26px;
+
+        .carte-produit {
+          flex: 0 0 calc(100% - 10px);
+          min-width: 280px;
         }
-        .grid-produits {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 16px;
-        }
+
         .temoignages-grid {
           grid-template-columns: 1fr;
         }
         .faq-grid {
           grid-template-columns: 1fr;
         }
-        .section .conteneur {
-          padding: 24px 16px;
-        }
         .footer-grid {
-          grid-template-columns: 1fr;
-          text-align: center;
+          grid-template-columns: 1fr 1fr;
         }
-        .footer p {
-          max-width: 100%;
-        }
-        .footer-bottom {
+        .footer-newsletter .conteneur {
           flex-direction: column;
-          text-align: center;
+          align-items: flex-start;
+        }
+        .nl-form input {
+          width: 180px;
+        }
+        .assurance-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .section-header .htitle .ic {
+          width: 36px;
+          height: 36px;
+          font-size: var(--fs-md);
+        }
+        .section-header h2 {
+          font-size: var(--fs-xl);
+        }
+
+        .fragment-popup .conteneur {
+          padding: 0 var(--sp-15);
+        }
+        .popup-card .popup-img,
+        .popup-card img {
+          height: 120px;
+        }
+        .popup-app .app-stores img {
+          height: 36px;
+        }
+
+        .section-header {
+          flex-direction: column;
+          align-items: flex-start;
         }
       }
 
       @media (max-width: 480px) {
-        .hero-stats {
+        .assurance-grid {
           grid-template-columns: 1fr;
         }
-        .grid-produits {
+        .util-bar .conteneur {
+          justify-content: center;
+        }
+        .footer-grid {
           grid-template-columns: 1fr;
-          max-width: 320px;
-          margin: 0 auto;
         }
-        .nav-liens {
-          gap: 12px;
-          flex-wrap: wrap;
+
+        .carte-produit {
+          flex: 0 0 calc(100% - 10px);
+          min-width: 240px;
         }
-        .btn-nav {
-          padding: 6px 14px;
-          font-size: 13px;
+
+        .scroll-controls {
+          display: none;
+        }
+        .popup-card .popup-img,
+        .popup-card img {
+          height: 100px;
         }
       }
     </style>
@@ -758,190 +1205,398 @@
 
   <body>
     <!-- =====================================================
-         NAVIGATION
+         BARRE UTILITAIRE
     ====================================================== -->
-    <nav class="nav-principale">
-      <div class="conteneur nav-conteneur">
-        <a href="/" class="logo"
-          ><i class="fas fa-leaf"></i> green<span>Field</span></a
-        >
+    <div class="util-bar">
+      <div class="conteneur">
+        <div class="util-right">
+          <a href="#"><i class="fas fa-globe"></i> Français - MGA</a>
+          <a href="#"><i class="fas fa-question-circle"></i> Centre d'aide</a>
+          <a href="#"><i class="fas fa-user"></i> Se connecter</a>
+        </div>
+      </div>
+    </div>
 
-        <ul class="nav-liens">
-          <li><a href="/" class="actif">Accueil</a></li>
-          <li><a href="/produits">Boutique</a></li>
-          <li><a href="#bestsellers">Best-sellers</a></li>
-          <li><a href="#temoignages">Avis</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
+    <!-- =====================================================
+         HEADER PRINCIPAL
+    ====================================================== -->
+    <header class="market-header">
+      <div class="conteneur">
+        <a href="/" class="mh-logo">
+          <span class="mh-logo-text"
+            ><i class="fas fa-seedling"></i> green<span>Field</span></span
+          >
+        </a>
 
-        <div class="nav-actions">
-          <a href="/panier" class="icone-panier">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="badge-panier">3</span>
+        <div class="mh-search">
+          <form action="/produits" method="get">
+            <input
+              type="text"
+              name="motCle"
+              placeholder="Rechercher un produit, un producteur..."
+            />
+            <div class="search-icons">
+              <i class="fas fa-camera"></i>
+            </div>
+            <button type="submit">
+              <i class="fas fa-search"></i> Rechercher
+            </button>
+          </form>
+        </div>
+
+        <div class="mh-actions">
+          <a href="/commandes" class="mh-action">
+            <i class="fas fa-receipt"></i>
+            <span>Commandes</span>
           </a>
-          <a href="/login" class="btn-nav">Connexion</a>
-          <a href="/signup" class="btn-nav plein">Inscription</a>
+          <a href="/panier" class="mh-action">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" th:text="${session.cartCount} ?: 0"
+              >0</span
+            >
+            <span>Panier</span>
+          </a>
+          <a th:if="${session.client == null}" href="/login" class="mh-action">
+            <i class="fas fa-user"></i>
+            <span>Connexion</span>
+          </a>
+          <a th:if="${session.client != null}" href="/profil" class="mh-action">
+            <i class="fas fa-user-circle"></i>
+            <span>Mon compte</span>
+          </a>
+          <a
+            th:if="${session.client == null}"
+            href="/signup"
+            class="btn btn-orange btn-sm"
+            >Créer un compte</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- =====================================================
+         CATÉGORIES STRIP AVEC POPUP "À PROPOS"
+    ====================================================== -->
+    <nav class="cat-strip" id="catStripNav">
+      <div class="conteneur">
+        <a href="/produits" class="all-cat"
+          ><i class="fas fa-bars"></i> Toutes les catégories</a
+        >
+        <a href="#">Fleurs coupées</a>
+        <a href="#">Plantes d'intérieur</a>
+        <a href="#">Plantes vertes</a>
+        <a href="#">Cactus & Succulentes</a>
+        <a href="#">Arbres & Arbustes</a>
+        <a href="#">Accessoires</a>
+        <a href="#" id="aboutAliLink" class="about-link"
+          >À propos de Greenfield</a
+        >
+      </div>
+
+      <div id="fragmentPopup" class="fragment-popup">
+        <div class="conteneur">
+          <div class="popup-card">
+            <img
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80"
+              alt="Équipe"
+              class="popup-img"
+            />
+            <h4>Pourquoi Greenfield ?</h4>
+            <p>
+              Plus de 50 millions d'acheteurs ont trouvé leurs fournisseurs
+              certifiés sur notre plateforme B2B optimisée par l'IA.
+            </p>
+          </div>
+          <div class="popup-card">
+            <img
+              src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=600&q=80"
+              alt="Pitch"
+              class="popup-img"
+            />
+            <h4>CoCreate Pitch</h4>
+            <p>
+              Présentez votre start-up à l'international face à des jurys
+              d'élite, avec un prix total de 1 million de dollars.
+            </p>
+          </div>
+          <div class="popup-app">
+            <h4>Téléchargez l'application Greenfield</h4>
+            <p>
+              Trouvez des produits, communiquez avec des fournisseurs, gérez et
+              payez vos commandes avec l'application Greenfield partout et à
+              tout moment.
+            </p>
+            <div class="app-stores">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                alt="Google Play"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                alt="App Store"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </nav>
 
     <!-- =====================================================
-         HERO
-    ====================================================== -->
-    <section class="hero">
-      <div class="conteneur">
-        <h1>Bienvenue sur <span>greenField</span></h1>
-        <p>
-          Votre plateforme de confiance pour l'achat de produits agricoles
-          locaux, frais et de qualité
-        </p>
-
-        <div class="welcome-name" th:if="${session.client != null}">
-          <i class="fas fa-hand-peace"></i>
-          Heureux de vous revoir,
-          <span th:text="${session.client.prenom}"></span> !
-        </div>
-
-        <div class="hero-stats">
-          <div class="stat">
-            <span class="stat-number" th:text="${satisfaits} + 'k'">12k</span>
-            <span class="stat-label">Clients satisfaits</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number" th:text="${producteur} + '+'">140+</span>
-            <span class="stat-label">Producteurs locaux</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number" th:text="${livraison} + '%'">98%</span>
-            <span class="stat-label">Livraison à temps</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number" th:text="${note} + '★'">4.8★</span>
-            <span class="stat-label">Note moyenne</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- =====================================================
-         MESSAGES FLASH
-    ====================================================== -->
-    <div class="conteneur">
-      <div class="message success" th:if="${success}" th:text="${success}">
-        <i class="fas fa-check-circle"></i> Bienvenue sur greenField !
-      </div>
-      <div class="message error" th:if="${error}" th:text="${error}">
-        <i class="fas fa-exclamation-circle"></i> Une erreur est survenue.
-      </div>
-    </div>
-
-    <!-- =====================================================
-         BEST-SELLERS
+         BEST SELLERS
     ====================================================== -->
     <section class="section" id="bestsellers">
       <div class="conteneur">
         <div class="section-header">
-          <span class="badge-tag"
-            ><i class="fas fa-fire"></i> Les plus populaires</span
-          >
-          <h2><i class="fas fa-trophy"></i> Best-sellers</h2>
-          <p>Découvrez les produits les plus appréciés par notre communauté</p>
+          <div class="htitle">
+            <div class="ic"><i class="fas fa-trophy"></i></div>
+            <div>
+              <h2>Best-sellers</h2>
+              <p>Les produits les plus commandés cette semaine</p>
+            </div>
+          </div>
+          <a href="/produits" class="see-all">
+            Tout voir <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
 
-        <div
-          class="grid-produits"
-          th:if="${bestSellers != null and !bestSellers.isEmpty()}"
-        >
-          <div class="carte-produit" th:each="produit : ${bestSellers}">
-            <span class="badge bestseller">⭐ Best-seller</span>
-            <div class="image">🌱</div>
-            <div class="nom" th:text="${produit.nom}">Tomate Bio</div>
+        <div class="scroll-controls">
+          <button class="scroll-btn" id="scrollLeftBestsellers">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="scroll-btn" id="scrollRightBestsellers">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="scroll-container">
+          <div class="scroll-wrapper" id="scrollWrapperBestsellers">
             <div
-              class="categorie"
-              th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
+              class="carte-produit"
+              th:each="produit : ${bestSellers}"
+              th:if="${bestSellers != null and !bestSellers.isEmpty()}"
             >
-              Légume
+              <div class="image">
+                <span class="badge bestseller">⭐ Top vente</span>
+                <img
+                  src="https://images.unsplash.com/photo-1562690868-60bbe7293e94?auto=format&fit=crop&w=400&h=400&q=80"
+                  alt="Plante verte"
+                />
+              </div>
+              <div class="infos">
+                <div class="nom" th:text="${produit.nom}">Tomate Bio</div>
+                <div
+                  class="categorie"
+                  th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
+                >
+                  Légume
+                </div>
+                <div class="prix" th:text="${produit.pu} + ' Ar'">5 000 Ar</div>
+                <a
+                  class="btn btn-primary btn-block btn-ajouter"
+                  th:href="@{/produits/{id}(id=${produit.id})}"
+                >
+                  Voir le produit
+                </a>
+              </div>
             </div>
-            <div class="prix" th:text="${produit.pu} + ' Ar'">5 000 Ar</div>
-            <a
-              class="btn-ajouter"
-              th:href="@{/produits/{id}(id=${produit.id})}"
+
+            <p
+              class="aucun-produit"
+              th:unless="${bestSellers != null and !bestSellers.isEmpty()}"
             >
-              <i class="fas fa-eye"></i> Voir
-            </a>
+              Aucun best-seller disponible pour le moment.
+            </p>
           </div>
         </div>
-        <p
-          class="aucun-produit"
-          th:unless="${bestSellers != null and !bestSellers.isEmpty()}"
-        >
-          Aucun best-seller disponible pour le moment.
-        </p>
+
+        <div class="scroll-indicators" id="indicatorsBestsellers"></div>
       </div>
     </section>
 
     <!-- =====================================================
          NOUVEAUTÉS
     ====================================================== -->
-    <section class="section alt" id="nouveautes">
+    <section
+      class="section"
+      id="nouveautes"
+      style="background: var(--gf-cream); padding: 40px 0"
+    >
       <div class="conteneur">
         <div class="section-header">
-          <span class="badge-tag"><i class="fas fa-star"></i> Nouveautés</span>
-          <h2><i class="fas fa-sparkles"></i> Nouveaux produits</h2>
-          <p>Découvrez les dernières arrivées sur greenField</p>
+          <div class="htitle">
+            <div class="ic"><i class="fas fa-sparkles"></i></div>
+            <div>
+              <h2>Nouveaux produits</h2>
+              <p>Les dernières arrivées de nos producteurs</p>
+            </div>
+          </div>
+          <a href="/produits" class="see-all">
+            Tout voir <i class="fas fa-arrow-right"></i>
+          </a>
         </div>
 
-        <div
-          class="grid-produits"
-          th:if="${newProduits != null and !newProduits.isEmpty()}"
-        >
-          <div class="carte-produit" th:each="produit : ${newProduits}">
-            <span class="badge nouveau">Nouveau</span>
-            <div class="image">🌿</div>
-            <div class="nom" th:text="${produit.nom}">Piment Doux</div>
+        <div class="scroll-controls">
+          <button class="scroll-btn" id="scrollLeftNouveautes">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="scroll-btn" id="scrollRightNouveautes">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <div class="scroll-container">
+          <div class="scroll-wrapper" id="scrollWrapperNouveautes">
             <div
-              class="categorie"
-              th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
+              class="carte-produit"
+              th:each="produit : ${newProduits}"
+              th:if="${newProduits != null and !newProduits.isEmpty()}"
             >
-              Épice
+              <div class="image">
+                <span class="badge nouveau">✨ Nouveau</span>
+                <img
+                  src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=400&h=400&q=80"
+                  alt="Plante verte"
+                />
+              </div>
+              <div class="infos">
+                <div class="nom" th:text="${produit.nom}">Piment Doux</div>
+                <div
+                  class="categorie"
+                  th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
+                >
+                  Épice
+                </div>
+                <div class="prix" th:text="${produit.pu} + ' Ar'">3 200 Ar</div>
+                <a
+                  class="btn btn-primary btn-block btn-ajouter"
+                  th:href="@{/produits/{id}(id=${produit.id})}"
+                >
+                  Voir le produit
+                </a>
+              </div>
             </div>
-            <div class="prix" th:text="${produit.pu} + ' Ar'">3 200 Ar</div>
-            <a
-              class="btn-ajouter"
-              th:href="@{/produits/{id}(id=${produit.id})}"
+
+            <p
+              class="aucun-produit"
+              th:unless="${newProduits != null and !newProduits.isEmpty()}"
             >
-              <i class="fas fa-eye"></i> Voir
-            </a>
+              Aucun nouveau produit disponible pour le moment.
+            </p>
           </div>
         </div>
-        <p
-          class="aucun-produit"
-          th:unless="${newProduits != null and !newProduits.isEmpty()}"
-        >
-          Aucun nouveau produit disponible pour le moment.
-        </p>
+
+        <div class="scroll-indicators" id="indicatorsNouveautes"></div>
+      </div>
+    </section>
+
+    <!-- =====================================================
+         GARANTIES
+    ====================================================== -->
+    <section class="section" id="garanties">
+      <div class="conteneur">
+        <div class="section-header">
+          <div class="htitle">
+            <div class="ic"><i class="fas fa-shield-heart"></i></div>
+            <div>
+              <h2>Nos garanties</h2>
+              <p>Acheter local, en toute confiance</p>
+            </div>
+          </div>
+        </div>
+        <div class="assurance-grid">
+          <div class="assurance-card" th:each="garantie : ${garanties}">
+            <div class="ic" th:classappend="${garantie.icon}">
+              <i class="fas fa-truck-fast"></i>
+            </div>
+            <h4 th:text="${garantie.titre}">Livraison suivie</h4>
+            <p th:text="${garantie.description}">
+              Suivi de commande en temps réel jusqu'à votre porte.
+            </p>
+          </div>
+
+          <div
+            class="assurance-card"
+            th:if="${garanties == null or garanties.isEmpty()}"
+          >
+            <div class="ic"><i class="fas fa-truck-fast"></i></div>
+            <h4>Livraison suivie</h4>
+            <p>Suivi de commande en temps réel jusqu'à votre porte.</p>
+          </div>
+          <div
+            class="assurance-card"
+            th:if="${garanties == null or garanties.isEmpty()}"
+          >
+            <div class="ic"><i class="fas fa-leaf"></i></div>
+            <h4>Fraîcheur garantie</h4>
+            <p>Récolté puis livré en moins de 48h.</p>
+          </div>
+          <div
+            class="assurance-card"
+            th:if="${garanties == null or garanties.isEmpty()}"
+          >
+            <div class="ic"><i class="fas fa-rotate-left"></i></div>
+            <h4>Retours faciles</h4>
+            <p>7 jours pour changer d'avis sur un produit non ouvert.</p>
+          </div>
+          <div
+            class="assurance-card"
+            th:if="${garanties == null or garanties.isEmpty()}"
+          >
+            <div class="ic"><i class="fas fa-lock"></i></div>
+            <h4>Paiement sécurisé</h4>
+            <p>Mobile money et carte bancaire protégés.</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- =====================================================
          TEMOIGNAGES
     ====================================================== -->
-    <section class="section" id="temoignages">
+    <section
+      class="section"
+      id="temoignages"
+      style="background: var(--gf-cream); padding: 40px 0"
+    >
       <div class="conteneur">
         <div class="section-header">
-          <span class="badge-tag"
-            ><i class="fas fa-comment-dots"></i> Ils nous font confiance</span
-          >
-          <h2><i class="fas fa-heart"></i> Témoignages</h2>
-          <p>Ce que nos clients pensent de greenField</p>
+          <div class="htitle">
+            <div class="ic"><i class="fas fa-heart"></i></div>
+            <div>
+              <h2>Témoignages</h2>
+              <p>Ce que nos clients pensent de greenField</p>
+            </div>
+          </div>
         </div>
 
         <div class="temoignages-grid">
-          <div class="temoignage-card">
+          <div class="temoignage-card" th:each="avis : ${temoignages}">
+            <div class="stars" th:text="${avis.note} + '★'">★★★★★</div>
+            <blockquote th:text="${avis.message}">
+              Les produits sont toujours frais et la livraison est impeccable.
+            </blockquote>
+            <div class="author">
+              <div
+                class="avatar"
+                th:text="${#strings.substring(avis.nom, 0, 1)}"
+              >
+                MR
+              </div>
+              <div>
+                <div class="name" th:text="${avis.nom}">Marie Rakoto</div>
+                <div class="role" th:text="${avis.role}">Cliente fidèle</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="temoignage-card"
+            th:if="${temoignages == null or temoignages.isEmpty()}"
+          >
             <div class="stars">★★★★★</div>
             <blockquote>
-              "Les produits sont toujours frais et la livraison est impeccable.
-              Je recommande greenField à tous mes amis !"
+              Les produits sont toujours frais et la livraison est impeccable.
+              Je recommande greenField à tous mes amis !
             </blockquote>
             <div class="author">
               <div class="avatar">MR</div>
@@ -951,12 +1606,14 @@
               </div>
             </div>
           </div>
-
-          <div class="temoignage-card">
+          <div
+            class="temoignage-card"
+            th:if="${temoignages == null or temoignages.isEmpty()}"
+          >
             <div class="stars">★★★★★</div>
             <blockquote>
-              "Un service exceptionnel ! La commande en ligne est simple et le
-              retrait en magasin est très pratique."
+              Un service exceptionnel ! La commande en ligne est simple et le
+              retrait en magasin est très pratique.
             </blockquote>
             <div class="author">
               <div class="avatar">PR</div>
@@ -966,12 +1623,14 @@
               </div>
             </div>
           </div>
-
-          <div class="temoignage-card">
+          <div
+            class="temoignage-card"
+            th:if="${temoignages == null or temoignages.isEmpty()}"
+          >
             <div class="stars">★★★★★</div>
             <blockquote>
-              "Je suis ravi de soutenir l'agriculture locale avec greenField.
-              Les produits sont excellents et le prix est juste."
+              Je suis ravi de soutenir l'agriculture locale avec greenField. Les
+              produits sont excellents et le prix est juste.
             </blockquote>
             <div class="author">
               <div class="avatar">JR</div>
@@ -988,18 +1647,32 @@
     <!-- =====================================================
          FAQ
     ====================================================== -->
-    <section class="section alt" id="faq">
+    <section class="section" id="faq">
       <div class="conteneur">
         <div class="section-header">
-          <span class="badge-tag"
-            ><i class="fas fa-question-circle"></i> Questions fréquentes</span
-          >
-          <h2><i class="fas fa-circle-question"></i> FAQ</h2>
-          <p>Toutes les réponses à vos questions sur greenField</p>
+          <div class="htitle">
+            <div class="ic"><i class="fas fa-circle-question"></i></div>
+            <div>
+              <h2>FAQ</h2>
+              <p>Toutes les réponses à vos questions</p>
+            </div>
+          </div>
         </div>
 
         <div class="faq-grid">
-          <div class="faq-item">
+          <div class="faq-item" th:each="faq : ${faqList}">
+            <h4>
+              <i class="fas fa-truck"></i>
+              <span th:text="${faq.question}"
+                >Comment se passe la livraison ?</span
+              >
+            </h4>
+            <p th:text="${faq.reponse}">
+              Nous livrons dans toute l'île en 24-48h.
+            </p>
+          </div>
+
+          <div class="faq-item" th:if="${faqList == null or faqList.isEmpty()}">
             <h4>
               <i class="fas fa-truck"></i> Comment se passe la livraison ?
             </h4>
@@ -1008,7 +1681,7 @@
               domicile ou retrait en point de vente.
             </p>
           </div>
-          <div class="faq-item">
+          <div class="faq-item" th:if="${faqList == null or faqList.isEmpty()}">
             <h4>
               <i class="fas fa-credit-card"></i> Quels moyens de paiement ?
             </h4>
@@ -1017,21 +1690,21 @@
               Mastercard).
             </p>
           </div>
-          <div class="faq-item">
+          <div class="faq-item" th:if="${faqList == null or faqList.isEmpty()}">
             <h4><i class="fas fa-undo"></i> Puis-je retourner un produit ?</h4>
             <p>
               Oui, vous disposez de 7 jours pour retourner un produit non
               ouvert. Contactez notre service client.
             </p>
           </div>
-          <div class="faq-item">
+          <div class="faq-item" th:if="${faqList == null or faqList.isEmpty()}">
             <h4><i class="fas fa-leaf"></i> D'où viennent vos produits ?</h4>
             <p>
               Directement de producteurs locaux engagés dans une agriculture
               durable et respectueuse.
             </p>
           </div>
-          <div class="faq-item">
+          <div class="faq-item" th:if="${faqList == null or faqList.isEmpty()}">
             <h4>
               <i class="fas fa-percent"></i> Y a-t-il des frais de livraison ?
             </h4>
@@ -1040,7 +1713,7 @@
               vente est gratuit.
             </p>
           </div>
-          <div class="faq-item">
+          <div class="faq-item" th:if="${faqList == null or faqList.isEmpty()}">
             <h4><i class="fas fa-user-plus"></i> Comment créer un compte ?</h4>
             <p>
               Cliquez sur "Inscription", remplissez le formulaire et confirmez
@@ -1055,21 +1728,46 @@
          FOOTER
     ====================================================== -->
     <footer class="footer">
+      <div class="footer-newsletter">
+        <div class="conteneur">
+          <div>
+            <h3>Restez informé de nos récoltes</h3>
+            <p>Recevez nos offres et arrivages en avant-première.</p>
+          </div>
+          <form
+            class="nl-form"
+            th:action="@{/newsletter/subscribe}"
+            method="post"
+          >
+            <input
+              type="email"
+              name="email"
+              placeholder="Votre adresse email"
+              required
+            />
+            <button type="submit">
+              <i class="fas fa-paper-plane"></i> S'abonner
+            </button>
+          </form>
+        </div>
+      </div>
+
       <div class="conteneur">
         <div class="footer-grid">
           <div>
             <a href="/" class="logo"><i class="fas fa-leaf"></i> greenField</a>
             <p>
-              Votre plateforme de confiance pour l'achat de produits agricoles
-              locaux, frais et de qualité.
+              Votre marché en ligne pour l'achat de produits agricoles locaux,
+              frais et de qualité, directement auprès des producteurs.
             </p>
           </div>
           <div>
-            <h4>Liens rapides</h4>
+            <h4>Boutique</h4>
             <ul>
-              <li><a href="/produits">Boutique</a></li>
+              <li><a href="/produits">Tous les produits</a></li>
               <li><a href="#bestsellers">Best-sellers</a></li>
-              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#nouveautes">Nouveautés</a></li>
+              <li><a href="#">Promotions</a></li>
             </ul>
           </div>
           <div>
@@ -1079,6 +1777,14 @@
               <li><a href="/signup">Inscription</a></li>
               <li><a href="/panier">Panier</a></li>
               <li><a href="/commandes">Mes commandes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Producteurs</h4>
+            <ul>
+              <li><a href="#">Devenir partenaire</a></li>
+              <li><a href="#">Nos engagements</a></li>
+              <li><a href="#faq">FAQ</a></li>
             </ul>
           </div>
           <div>
@@ -1111,5 +1817,275 @@
         </div>
       </div>
     </footer>
+
+    <!-- =====================================================
+         SCRIPT
+    ====================================================== -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // =====================================================
+        // POPUP "À PROPOS"
+        // =====================================================
+        const aboutLink = document.getElementById("aboutAliLink");
+        const fragmentPopup = document.getElementById("fragmentPopup");
+        let timeoutId = null;
+        const isTouchDevice =
+          "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+        if (aboutLink && fragmentPopup) {
+          if (!isTouchDevice) {
+            aboutLink.addEventListener("mouseenter", function () {
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
+              fragmentPopup.classList.add("visible");
+              aboutLink.classList.add("active-link");
+            });
+
+            aboutLink.addEventListener("mouseleave", function () {
+              timeoutId = setTimeout(function () {
+                fragmentPopup.classList.remove("visible");
+                aboutLink.classList.remove("active-link");
+                timeoutId = null;
+              }, 3000);
+            });
+
+            fragmentPopup.addEventListener("mouseenter", function () {
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
+            });
+
+            fragmentPopup.addEventListener("mouseleave", function () {
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+                timeoutId = null;
+              }
+              fragmentPopup.classList.remove("visible");
+              aboutLink.classList.remove("active-link");
+            });
+          } else {
+            let isPopupVisible = false;
+
+            function closePopup() {
+              fragmentPopup.classList.remove("visible");
+              aboutLink.classList.remove("active-link");
+              isPopupVisible = false;
+            }
+
+            function openPopup() {
+              fragmentPopup.classList.add("visible");
+              aboutLink.classList.add("active-link");
+              isPopupVisible = true;
+            }
+
+            aboutLink.addEventListener("click", function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (isPopupVisible) {
+                closePopup();
+              } else {
+                openPopup();
+              }
+            });
+
+            document.addEventListener("click", function (e) {
+              if (
+                isPopupVisible &&
+                !fragmentPopup.contains(e.target) &&
+                e.target !== aboutLink
+              ) {
+                closePopup();
+              }
+            });
+
+            fragmentPopup.addEventListener("click", function (e) {
+              e.stopPropagation();
+            });
+          }
+        }
+
+        // =====================================================
+        // SCROLL AUTOMATIQUE
+        // =====================================================
+        function initAutoScroll(
+          wrapperId,
+          indicatorsId,
+          leftBtnId,
+          rightBtnId,
+        ) {
+          const wrapper = document.getElementById(wrapperId);
+          const indicators = document.getElementById(indicatorsId);
+          const leftBtn = document.getElementById(leftBtnId);
+          const rightBtn = document.getElementById(rightBtnId);
+
+          if (!wrapper) return;
+
+          let autoScrollInterval = null;
+          let currentIndex = 0;
+          let totalCards = 0;
+          let cardsPerView = 3;
+
+          function getCardsPerView() {
+            const cardWidth =
+              wrapper.querySelector(".carte-produit")?.offsetWidth || 250;
+            const gap = 20;
+            const wrapperWidth = wrapper.clientWidth;
+            const fullCardWidth = cardWidth + gap;
+            const count = Math.floor((wrapperWidth + gap) / fullCardWidth);
+            return Math.max(1, count);
+          }
+
+          function updateIndicators() {
+            if (!indicators) return;
+            const dots = indicators.querySelectorAll(".dot");
+            const totalDots = Math.ceil(totalCards / cardsPerView);
+            const activeIndex = Math.min(
+              Math.floor(currentIndex / cardsPerView),
+              totalDots - 1,
+            );
+
+            dots.forEach((dot, index) => {
+              dot.classList.toggle("active", index === activeIndex);
+            });
+          }
+
+          function createIndicators() {
+            if (!indicators) return;
+            const totalDots = Math.ceil(totalCards / cardsPerView);
+            indicators.innerHTML = "";
+            for (let i = 0; i < totalDots; i++) {
+              const dot = document.createElement("span");
+              dot.className = "dot" + (i === 0 ? " active" : "");
+              dot.addEventListener("click", function () {
+                const targetIndex = i * cardsPerView;
+                const cardWidth =
+                  wrapper.querySelector(".carte-produit")?.offsetWidth || 250;
+                const gap = 20;
+                const scrollAmount = targetIndex * (cardWidth + gap);
+                wrapper.scrollTo({ left: scrollAmount, behavior: "smooth" });
+                currentIndex = targetIndex;
+                updateIndicators();
+              });
+              indicators.appendChild(dot);
+            }
+          }
+
+          function updateCardCount() {
+            const cards = wrapper.querySelectorAll(".carte-produit");
+            totalCards = cards.length;
+            cardsPerView = getCardsPerView();
+            createIndicators();
+          }
+
+          function scrollToNext() {
+            const cardWidth =
+              wrapper.querySelector(".carte-produit")?.offsetWidth || 250;
+            const gap = 20;
+            const fullCardWidth = cardWidth + gap;
+
+            const maxScroll = wrapper.scrollWidth - wrapper.clientWidth;
+            const currentScroll = wrapper.scrollLeft;
+
+            let nextScroll = currentScroll + fullCardWidth;
+
+            if (nextScroll > maxScroll) {
+              nextScroll = 0;
+              currentIndex = 0;
+            } else {
+              currentIndex++;
+            }
+
+            wrapper.scrollTo({ left: nextScroll, behavior: "smooth" });
+            updateIndicators();
+          }
+
+          function startAutoScroll() {
+            if (autoScrollInterval) return;
+            autoScrollInterval = setInterval(scrollToNext, 3000);
+          }
+
+          function stopAutoScroll() {
+            if (autoScrollInterval) {
+              clearInterval(autoScrollInterval);
+              autoScrollInterval = null;
+            }
+          }
+
+          function restartAutoScroll() {
+            stopAutoScroll();
+            setTimeout(startAutoScroll, 1000);
+          }
+
+          if (leftBtn) {
+            leftBtn.addEventListener("click", function () {
+              stopAutoScroll();
+              const cardWidth =
+                wrapper.querySelector(".carte-produit")?.offsetWidth || 250;
+              const gap = 20;
+              const fullCardWidth = cardWidth + gap;
+              const currentScroll = wrapper.scrollLeft;
+              let prevScroll = Math.max(0, currentScroll - fullCardWidth);
+
+              if (prevScroll === 0 && currentScroll > 0) {
+                prevScroll = wrapper.scrollWidth - wrapper.clientWidth;
+              }
+
+              wrapper.scrollTo({ left: prevScroll, behavior: "smooth" });
+              currentIndex = Math.floor(prevScroll / fullCardWidth);
+              updateIndicators();
+              restartAutoScroll();
+            });
+          }
+
+          if (rightBtn) {
+            rightBtn.addEventListener("click", function () {
+              stopAutoScroll();
+              scrollToNext();
+              restartAutoScroll();
+            });
+          }
+
+          wrapper.addEventListener("mouseenter", stopAutoScroll);
+          wrapper.addEventListener("mouseleave", restartAutoScroll);
+
+          wrapper.addEventListener("touchstart", stopAutoScroll);
+          wrapper.addEventListener("touchend", restartAutoScroll);
+
+          setTimeout(() => {
+            updateCardCount();
+            startAutoScroll();
+          }, 500);
+
+          let resizeTimeout;
+          window.addEventListener("resize", function () {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+              cardsPerView = getCardsPerView();
+              createIndicators();
+              updateIndicators();
+            }, 300);
+          });
+
+          return { stopAutoScroll };
+        }
+
+        initAutoScroll(
+          "scrollWrapperBestsellers",
+          "indicatorsBestsellers",
+          "scrollLeftBestsellers",
+          "scrollRightBestsellers",
+        );
+
+        initAutoScroll(
+          "scrollWrapperNouveautes",
+          "indicatorsNouveautes",
+          "scrollLeftNouveautes",
+          "scrollRightNouveautes",
+        );
+      });
+    </script>
   </body>
 </html>

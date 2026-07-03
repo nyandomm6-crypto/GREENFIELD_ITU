@@ -4,183 +4,459 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Récapitulatif de la commande - greenField</title>
-    <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+      /* =====================================================
+           TOKENS - DESIGN SYSTEM UNIFIÉ
+        ====================================================== */
+      :root {
+        /* Couleurs principales */
+        --gf-forest: #0f2a1c;
+        --gf-forest-2: #173b26;
+        --gf-green: #2d6a4f;
+        --gf-green-light: #4c9a6f;
+        --gf-leaf: #8fd4a8;
+        --gf-gold: #d4a373;
+        --gf-cream: #f6f4ee;
+        --gf-line: #e2e8e0;
+        --gf-text: #1c2b21;
+        --gf-muted: #5f6f64;
+
+        /* Couleurs d'accent */
+        --ali-orange: #ff6a00;
+        --ali-orange-light: #ff9000;
+        --ali-orange-dark: #e65c00;
+        --danger: #d32f2f;
+        --success: #2e7d32;
+
+        /* Ombres */
+        --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
+        --ombre-forte: 0 8px 20px rgba(0, 0, 0, 0.1);
+
+        /* Tailles de police - DESIGN SYSTEM */
+        --fs-xs: 11px;
+        --fs-sm: 13px;
+        --fs-base: 14px;
+        --fs-md: 15px;
+        --fs-lg: 18px;
+        --fs-xl: 20px;
+        --fs-2xl: 24px;
+        --fs-3xl: 28px;
+
+        /* Espacements */
+        --sp-2: 2px;
+        --sp-4: 4px;
+        --sp-6: 6px;
+        --sp-8: 8px;
+        --sp-10: 10px;
+        --sp-12: 12px;
+        --sp-14: 14px;
+        --sp-16: 16px;
+        --sp-18: 18px;
+        --sp-20: 20px;
+        --sp-22: 22px;
+        --sp-24: 24px;
+        --sp-28: 28px;
+        --sp-30: 30px;
+        --sp-40: 40px;
+
+        /* Rayons */
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --radius-full: 50px;
+
+        /* Transitions */
+        --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+        --bg-panier: #f5f3ef;
+        --blanc: #ffffff;
       }
 
-      :root {
-        --vert-fonce: #0f2b22;
-        --vert-clair: #1e6b4c;
-        --vert-moyen: #2d8f68;
-        --vert-pale: #e3f2ed;
-        --gris-fonce: #1e293b;
-        --gris-moyen: #475569;
-        --gris-clair: #cbd5e1;
-        --gris-tres-clair: #f1f5f9;
-        --blanc: #ffffff;
-        --ombre: 0 8px 30px rgba(0, 0, 0, 0.08);
-        --ombre-forte: 0 12px 48px rgba(0, 0, 0, 0.12);
-        --rayon: 14px;
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      /* =====================================================
+           RESET & BASE
+        ====================================================== */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
 
       html,
       body {
-        height: 100vh;
-        overflow: hidden;
+        height: 100%;
+        margin: 0;
+        padding: 0;
       }
 
       body {
+        background: var(--bg-panier);
         font-family:
-          "Inter",
-          -apple-system,
-          BlinkMacSystemFont,
-          sans-serif;
-        background: var(--gris-tres-clair);
-        color: var(--gris-fonce);
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        font-size: var(--fs-base);
+        color: var(--gf-text);
         display: flex;
         flex-direction: column;
+        min-height: 100vh;
+        line-height: 1.6;
       }
 
-      /* ===== HEADER ===== */
-      .app-header {
-        background: var(--blanc);
-        padding: 14px 30px;
-        border-bottom: 2px solid var(--gris-clair);
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      ul {
+        list-style: none;
+      }
+      .conteneur {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 var(--sp-20);
+      }
+
+      /* =====================================================
+           BOUTONS UNIFORMISÉS
+        ====================================================== */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: var(--sp-8);
+        padding: var(--sp-12) var(--sp-28);
+        border: none;
+        border-radius: var(--radius-full);
+        font-size: var(--fs-base);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: center;
+        min-height: 48px;
+        min-width: 120px;
+        font-family: inherit;
+        line-height: 1.2;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--gf-green),
+          var(--gf-forest-2)
+        );
+        color: #fff;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+      }
+
+      .btn-orange {
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange-light),
+          var(--ali-orange-dark)
+        );
+        color: #fff;
+        box-shadow: 0 4px 16px rgba(255, 106, 0, 0.3);
+      }
+      .btn-orange:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(255, 106, 0, 0.4);
+        opacity: 0.9;
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--gf-green);
+        border: 2px solid var(--gf-green);
+      }
+      .btn-outline:hover {
+        background: var(--gf-green);
+        color: #fff;
+      }
+
+      .btn-secondary {
+        background: var(--gf-cream);
+        color: var(--gf-text);
+        border: 1.5px solid var(--gf-line);
+      }
+      .btn-secondary:hover {
+        background: #e8e8e0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      }
+      .btn-secondary i {
+        color: var(--gf-green);
+      }
+
+      .btn-sm {
+        padding: var(--sp-6) var(--sp-14);
+        font-size: var(--fs-sm);
+        min-height: 36px;
+        min-width: 80px;
+      }
+
+      .btn-block {
+        width: 100%;
         display: flex;
+        justify-content: center;
+      }
+
+      .btn-icon {
+        min-width: 44px;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        border-radius: 50%;
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      .btn-cta-orange {
+        background: var(--ali-orange);
+        color: #fff !important;
+        padding: var(--sp-10) var(--sp-20);
+        border-radius: var(--radius-full);
+        font-weight: 600;
+        font-size: var(--fs-base);
+        transition: background 0.2s;
+        display: inline-block;
+        min-height: 44px;
+        min-width: 120px;
+        text-align: center;
+        line-height: 1.2;
+      }
+      .btn-cta-orange:hover {
+        background: var(--ali-orange-dark);
+        color: #fff;
+      }
+
+      /* =====================================================
+           HEADER - UNIFORMISÉ AVEC LES AUTRES PAGES
+        ====================================================== */
+      .market-header {
+        background: #ffffff;
+        padding: var(--sp-12) 0;
+        position: sticky;
+        top: 0;
+        z-index: 1002;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        border-bottom: 1px solid #e6e6e6;
+      }
+      .market-header .conteneur {
+        display: flex;
+        align-items: center;
         justify-content: space-between;
+        gap: var(--sp-28);
+      }
+
+      .mh-logo {
+        display: flex;
         align-items: center;
         flex-shrink: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       }
-
-      .app-header .logo {
+      .mh-logo-text {
+        font-size: var(--fs-3xl);
         font-weight: 700;
-        font-size: 22px;
-        color: var(--vert-fonce);
-        letter-spacing: -0.3px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        color: var(--ali-orange);
+        letter-spacing: -1px;
+      }
+      .mh-logo-text span {
+        color: #333;
+      }
+      .mh-logo-text i {
+        color: var(--gf-green);
+        font-size: var(--fs-xl);
+        margin-right: var(--sp-4);
       }
 
-      .app-header .logo i {
-        color: var(--vert-clair);
-        font-size: 24px;
-      }
-
-      .app-header .badge-client {
-        background: var(--vert-pale);
-        color: var(--vert-clair);
-        padding: 8px 20px;
-        border-radius: 40px;
-        font-size: 14px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        border: 1px solid rgba(30, 107, 76, 0.15);
-      }
-
-      .app-header .badge-client i {
-        font-size: 16px;
-      }
-
-      /* ===== MAIN ===== */
-      .app-main {
+      .mh-search {
         flex: 1;
+        max-width: 700px;
+      }
+      .mh-search form {
+        display: flex;
+        height: 44px;
+        border: 2px solid var(--ali-orange);
+        border-radius: var(--radius-full);
+        overflow: hidden;
+        background: #fff;
+      }
+      .mh-search input {
+        flex: 1;
+        border: none;
+        padding: 0 var(--sp-16);
+        font-size: var(--fs-base);
+        outline: none;
+        color: #333;
+      }
+      .mh-search input::placeholder {
+        color: #999;
+      }
+      .mh-search .search-icons {
+        display: flex;
+        align-items: center;
+        padding-right: var(--sp-10);
+        color: #999;
+        gap: var(--sp-8);
+        cursor: pointer;
+      }
+      .mh-search button {
+        background: linear-gradient(
+          135deg,
+          var(--ali-orange-light),
+          var(--ali-orange-dark)
+        );
+        border: none;
+        color: #fff;
+        padding: 0 var(--sp-28);
+        font-weight: 600;
+        font-size: var(--fs-md);
+        cursor: pointer;
+        transition: opacity 0.2s;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-8);
+        min-height: 44px;
+      }
+      .mh-search button:hover {
+        opacity: 0.9;
+      }
+
+      .mh-actions {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-18);
+        flex-shrink: 0;
+      }
+      .mh-action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #333;
+        font-size: var(--fs-sm);
+        font-weight: 500;
+        transition: color 0.2s;
+        position: relative;
+      }
+      .mh-action:hover {
+        color: var(--ali-orange);
+      }
+      .mh-action i {
+        font-size: var(--fs-xl);
+        margin-bottom: 0px;
+      }
+      .mh-action .cart-count {
+        position: absolute;
+        top: -4px;
+        right: -8px;
+        background: var(--ali-orange);
+        color: #fff;
+        font-size: var(--fs-xs);
+        font-weight: 700;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px 24px;
-        min-height: 0;
       }
 
+      /* =====================================================
+         PAGE RECAPITULATIF
+        ====================================================== */
+      .page-recap {
+        padding: var(--sp-24) 0 var(--sp-40);
+        flex: 1 0 auto;
+        background: var(--bg-panier);
+      }
+
+      .breadcrumb {
+        font-size: var(--fs-sm);
+        color: var(--gf-muted);
+        margin-bottom: var(--sp-16);
+      }
+      .breadcrumb a {
+        color: var(--gf-green);
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .breadcrumb span {
+        color: var(--gf-text);
+        font-weight: 600;
+      }
+
+      .page-recap h1 {
+        font-size: var(--fs-2xl);
+        font-weight: 800;
+        color: var(--gf-forest);
+        margin-bottom: var(--sp-20);
+        display: flex;
+        align-items: center;
+        gap: var(--sp-12);
+      }
+      .page-recap h1 i {
+        color: var(--ali-orange);
+      }
+
+      /* ===== CARTE RECAP ===== */
       .carte-recap {
-        background: var(--blanc);
-        border-radius: var(--rayon);
+        background: #ffffff;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gf-line);
         box-shadow: var(--ombre);
-        padding: 28px 32px 24px 32px;
-        width: 100%;
-        max-width: 1160px;
-        max-height: 100%;
+        padding: var(--sp-28) var(--sp-32) var(--sp-24) var(--sp-32);
         display: flex;
         flex-direction: column;
-        border: 1px solid rgba(0, 0, 0, 0.04);
-        transition: var(--transition);
       }
 
-      .carte-recap:hover {
-        box-shadow: var(--ombre-forte);
-      }
-
-      /* ===== EN-TÊTE CARTE ===== */
+      /* En-tête carte */
       .recap-head {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 18px;
+        margin-bottom: var(--sp-22);
         flex-shrink: 0;
         flex-wrap: wrap;
-        gap: 12px;
-      }
-
-      .recap-head h1 {
-        font-size: 22px;
-        font-weight: 700;
-        color: var(--vert-fonce);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .recap-head h1 i {
-        color: var(--vert-clair);
-        font-size: 24px;
+        gap: var(--sp-12);
       }
 
       .recap-head .client-info {
-        font-size: 14px;
-        color: var(--gris-moyen);
-        background: var(--gris-tres-clair);
-        padding: 8px 20px;
-        border-radius: 40px;
+        font-size: var(--fs-base);
+        color: var(--gf-muted);
+        background: var(--gf-cream);
+        padding: var(--sp-8) var(--sp-22);
+        border-radius: var(--radius-full);
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: var(--sp-18);
         flex-wrap: wrap;
+        border: 1px solid var(--gf-line);
       }
 
       .recap-head .client-info i {
-        color: var(--vert-clair);
+        color: var(--gf-green);
         width: 16px;
       }
 
       .recap-head .client-info strong {
-        color: var(--vert-fonce);
+        color: var(--gf-forest);
       }
 
       .recap-head .client-info .separator {
-        opacity: 0.3;
+        opacity: 0.25;
         user-select: none;
       }
 
@@ -188,7 +464,7 @@
       .recap-grid {
         display: grid;
         grid-template-columns: 1.2fr 0.8fr;
-        gap: 28px;
+        gap: var(--sp-28);
         flex: 1;
         min-height: 0;
       }
@@ -196,44 +472,41 @@
       /* --- Colonne gauche : tableau --- */
       .table-wrapper {
         overflow-y: auto;
-        padding-right: 6px;
-        max-height: 100%;
+        padding-right: var(--sp-6);
+        max-height: 400px;
       }
 
       .table-wrapper::-webkit-scrollbar {
         width: 5px;
       }
-
       .table-wrapper::-webkit-scrollbar-track {
-        background: var(--gris-tres-clair);
-        border-radius: 6px;
+        background: var(--gf-cream);
+        border-radius: var(--sp-6);
       }
-
       .table-wrapper::-webkit-scrollbar-thumb {
-        background: var(--vert-clair);
-        border-radius: 6px;
+        background: var(--gf-green-light);
+        border-radius: var(--sp-6);
       }
-
       .table-wrapper::-webkit-scrollbar-thumb:hover {
-        background: var(--vert-fonce);
+        background: var(--gf-green);
       }
 
       table.recap {
         width: 100%;
         border-collapse: collapse;
-        font-size: 14px;
+        font-size: var(--fs-base);
       }
 
       table.recap thead th {
-        background: var(--vert-pale);
-        color: var(--vert-fonce);
-        font-weight: 600;
-        font-size: 11px;
+        background: var(--gf-cream);
+        color: var(--gf-forest);
+        font-weight: 700;
+        font-size: var(--fs-sm);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 12px 12px 12px 0;
+        letter-spacing: 0.05em;
+        padding: var(--sp-14) var(--sp-12) var(--sp-14) 0;
         text-align: left;
-        border-bottom: 2px solid var(--vert-clair);
+        border-bottom: 2px solid var(--gf-green);
         position: sticky;
         top: 0;
         z-index: 2;
@@ -244,186 +517,172 @@
       }
 
       table.recap tbody td {
-        padding: 12px 12px 12px 0;
-        border-bottom: 1px solid var(--gris-clair);
-        color: var(--gris-fonce);
+        padding: var(--sp-14) var(--sp-12) var(--sp-14) 0;
+        border-bottom: 1px solid var(--gf-line);
+        color: var(--gf-text);
         transition: var(--transition);
       }
 
       table.recap tbody td:last-child {
         text-align: right;
-        font-weight: 500;
+        font-weight: 600;
       }
 
       table.recap tbody tr:last-child td {
         border-bottom: none;
       }
 
-      table.recap tbody tr {
-        transition: var(--transition);
-      }
-
       table.recap tbody tr:hover {
-        background: var(--gris-tres-clair);
-        border-radius: 6px;
+        background: var(--gf-cream);
+        border-radius: var(--sp-6);
       }
 
       .ligne-total {
         font-weight: 700;
-        font-size: 17px;
-        color: var(--vert-fonce);
+        font-size: var(--fs-lg);
+        color: var(--gf-forest);
       }
 
       .ligne-total td {
-        padding-top: 14px !important;
-        border-top: 2px solid var(--vert-clair) !important;
-        background: var(--vert-pale);
-        border-radius: 0 0 8px 8px;
+        padding-top: var(--sp-16) !important;
+        border-top: 2px solid var(--gf-green) !important;
+        background: var(--gf-cream);
+        border-radius: 0 0 var(--radius-sm) var(--radius-sm);
       }
 
       .ligne-total td:last-child {
-        font-size: 18px;
-        color: var(--vert-clair);
+        font-size: var(--fs-xl);
+        color: var(--gf-green);
       }
 
       /* --- Colonne droite : formulaire --- */
       .form-col {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: var(--sp-12);
         overflow-y: auto;
-        padding-right: 4px;
+        padding-right: var(--sp-4);
+        max-height: 400px;
       }
 
       .form-col::-webkit-scrollbar {
         width: 5px;
       }
-
       .form-col::-webkit-scrollbar-track {
-        background: var(--gris-tres-clair);
-        border-radius: 6px;
+        background: var(--gf-cream);
+        border-radius: var(--sp-6);
       }
-
       .form-col::-webkit-scrollbar-thumb {
-        background: var(--vert-clair);
-        border-radius: 6px;
+        background: var(--gf-green-light);
+        border-radius: var(--sp-6);
+      }
+      .form-col::-webkit-scrollbar-thumb:hover {
+        background: var(--gf-green);
       }
 
       .form-group {
-        background: var(--gris-tres-clair);
-        border-radius: 10px;
-        padding: 14px 18px;
-        border-left: 4px solid var(--vert-clair);
+        background: var(--gf-cream);
+        border-radius: var(--radius-sm);
+        padding: var(--sp-14) var(--sp-18);
+        border-left: 4px solid var(--gf-green);
         transition: var(--transition);
       }
 
       .form-group:hover {
-        border-left-color: var(--vert-fonce);
+        border-left-color: var(--gf-forest);
+        background: #edf3ea;
       }
 
       .form-group label {
         font-weight: 600;
-        font-size: 12px;
+        font-size: var(--fs-sm);
         text-transform: uppercase;
         letter-spacing: 0.4px;
-        color: var(--gris-moyen);
+        color: var(--gf-muted);
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: var(--sp-8);
       }
 
       .form-group label i {
-        color: var(--vert-clair);
-        margin-right: 8px;
+        color: var(--gf-green);
+        margin-right: var(--sp-8);
         width: 16px;
       }
 
       .form-control {
         width: 100%;
-        padding: 10px 14px;
-        border: 1.5px solid var(--gris-clair);
-        border-radius: 8px;
-        font-size: 13px;
-        font-family: "Inter", sans-serif;
-        background: var(--blanc);
-        color: var(--gris-fonce);
+        padding: var(--sp-10) var(--sp-14);
+        border: 1.5px solid var(--gf-line);
+        border-radius: var(--radius-sm);
+        font-size: var(--fs-sm);
+        font-family: inherit;
+        background: #ffffff;
+        color: var(--gf-text);
         transition: var(--transition);
       }
 
       .form-control:focus {
-        border-color: var(--vert-clair);
-        box-shadow: 0 0 0 4px rgba(30, 107, 76, 0.1);
+        border-color: var(--gf-green);
+        box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.12);
         outline: none;
       }
 
       .form-control:hover {
-        border-color: var(--vert-moyen);
+        border-color: var(--gf-green-light);
       }
 
       textarea.form-control {
         resize: vertical;
         min-height: 42px;
-        font-family: "Inter", sans-serif;
+        font-family: inherit;
       }
 
       select.form-control {
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23475569' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235f6f64' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 14px center;
         cursor: pointer;
-      }
-
-      select.form-control option {
-        padding: 8px;
-      }
-
-      input[type="date"].form-control,
-      input[type="time"].form-control {
-        cursor: pointer;
-      }
-
-      input[type="date"].form-control::-webkit-calendar-picker-indicator,
-      input[type="time"].form-control::-webkit-calendar-picker-indicator {
-        cursor: pointer;
-        opacity: 0.6;
+        min-height: 44px;
       }
 
       .radio-group {
         display: flex;
-        gap: 24px;
+        gap: var(--sp-24);
         flex-wrap: wrap;
       }
 
       .radio-group label {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: var(--sp-10);
         font-weight: 500;
-        font-size: 14px;
+        font-size: var(--fs-base);
         text-transform: none;
         letter-spacing: 0;
-        color: var(--gris-fonce);
+        color: var(--gf-text);
         cursor: pointer;
-        padding: 6px 14px;
-        border-radius: 30px;
-        background: var(--blanc);
+        padding: var(--sp-6) var(--sp-16);
+        border-radius: var(--radius-full);
+        background: #ffffff;
         transition: var(--transition);
         border: 1.5px solid transparent;
+        min-height: 44px;
       }
 
       .radio-group label:hover {
-        background: var(--vert-pale);
-        border-color: var(--vert-clair);
+        background: #e6f4ee;
+        border-color: var(--gf-green-light);
       }
 
       .radio-group label:has(input:checked) {
-        background: var(--vert-pale);
-        border-color: var(--vert-clair);
-        color: var(--vert-fonce);
+        background: #e6f4ee;
+        border-color: var(--gf-green);
+        color: var(--gf-forest);
       }
 
       .radio-group input[type="radio"] {
-        accent-color: var(--vert-clair);
+        accent-color: var(--gf-green);
         width: 18px;
         height: 18px;
         margin: 0;
@@ -434,32 +693,26 @@
       .frais-badge {
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        background: var(--vert-pale);
-        padding: 8px 20px;
-        border-radius: 40px;
-        font-size: 14px;
+        gap: var(--sp-10);
+        background: #ffffff;
+        padding: var(--sp-8) var(--sp-20);
+        border-radius: var(--radius-full);
+        font-size: var(--fs-base);
         font-weight: 600;
-        color: var(--vert-fonce);
-        margin-top: 4px;
-        border: 1px solid rgba(30, 107, 76, 0.15);
+        color: var(--gf-forest);
+        margin-top: var(--sp-4);
+        border: 1px solid var(--gf-line);
+        min-height: 48px;
       }
 
       .frais-badge i {
-        color: var(--vert-clair);
+        color: var(--gf-green);
+        font-size: var(--fs-lg);
       }
 
       .frais-badge strong {
-        color: var(--vert-clair);
-        font-size: 18px;
-      }
-
-      .form-group .mt-2 {
-        margin-top: 8px;
-      }
-
-      .form-group .mt-2:first-child {
-        margin-top: 0;
+        color: var(--gf-green);
+        font-size: var(--fs-xl);
       }
 
       /* ===== FOOTER CARTE ===== */
@@ -467,92 +720,430 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        gap: 14px;
-        margin-top: 18px;
-        padding-top: 16px;
-        border-top: 2px solid var(--gris-clair);
+        gap: var(--sp-14);
+        margin-top: var(--sp-20);
+        padding-top: var(--sp-18);
+        border-top: 2px solid var(--gf-line);
+        flex-shrink: 0;
+        flex-wrap: wrap;
+      }
+
+      /* =====================================================
+         FOOTER
+        ====================================================== */
+      .footer {
+        background: var(--gf-forest);
+        color: rgba(255, 255, 255, 0.7);
+        margin-top: auto;
+        border-top: 3px solid var(--gf-green);
+        flex-shrink: 0;
+        width: 100%;
+      }
+      .footer-newsletter {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: var(--sp-24) 0;
+      }
+      .footer-newsletter .conteneur {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--sp-20);
+        flex-wrap: wrap;
+      }
+      .footer-newsletter .nl-text h3 {
+        color: #fff;
+        font-size: var(--fs-lg);
+        font-weight: 700;
+        margin-bottom: var(--sp-4);
+      }
+      .footer-newsletter .nl-text p {
+        font-size: var(--fs-base);
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+      }
+      .nl-form {
+        display: flex;
+        gap: 0;
         flex-shrink: 0;
       }
-
-      .btn {
+      .nl-form input {
+        border: none;
+        padding: 0 var(--sp-16);
+        height: 46px;
+        width: 280px;
+        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+        font-size: var(--fs-base);
+        outline: none;
+        background: rgba(255, 255, 255, 0.95);
+        min-height: 46px;
+      }
+      .nl-form input:focus {
+        background: #fff;
+      }
+      .nl-form button {
+        background: var(--gf-gold);
+        color: #2a1c0e;
+        border: none;
+        padding: 0 var(--sp-28);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        font-weight: 700;
+        font-size: var(--fs-base);
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        white-space: nowrap;
+        min-height: 46px;
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        padding: 12px 28px;
-        border: none;
-        border-radius: 40px;
-        font-size: 14px;
-        font-weight: 600;
-        font-family: "Inter", sans-serif;
-        cursor: pointer;
-        text-decoration: none;
-        transition: var(--transition);
+        gap: var(--sp-8);
+      }
+      .nl-form button:hover {
+        background: #e3b587;
       }
 
-      .btn i {
-        font-size: 15px;
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        gap: var(--sp-30);
+        padding: var(--sp-40) 0 var(--sp-28);
       }
-
-      .btn-primaire {
-        background: var(--vert-clair);
-        color: var(--blanc);
-        box-shadow: 0 4px 16px rgba(30, 107, 76, 0.25);
+      .footer .logo {
+        color: #fff;
+        font-size: var(--fs-xl);
+        font-weight: 800;
+        display: inline-block;
+        margin-bottom: var(--sp-12);
       }
-
-      .btn-primaire:hover {
-        background: var(--vert-fonce);
+      .footer .logo i {
+        color: var(--gf-leaf);
+      }
+      .footer .footer-description {
+        font-size: var(--fs-base);
+        line-height: 1.8;
+        max-width: 280px;
+        color: rgba(255, 255, 255, 0.65);
+        margin: 0;
+      }
+      .footer h4 {
+        color: #fff;
+        font-size: var(--fs-md);
+        font-weight: 700;
+        margin-bottom: var(--sp-14);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .footer ul li {
+        margin-bottom: var(--sp-8);
+      }
+      .footer ul li a {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: var(--fs-base);
+        transition: all 0.2s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--sp-4);
+      }
+      .footer ul li a:hover {
+        color: #fff;
+      }
+      .footer ul li i {
+        width: 22px;
+        color: var(--gf-gold);
+      }
+      .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding: var(--sp-18) 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--sp-12);
+        font-size: var(--fs-sm);
+      }
+      .footer-socials {
+        display: flex;
+        gap: var(--sp-10);
+      }
+      .footer-socials a {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.2s ease-in-out;
+        font-size: var(--fs-md);
+      }
+      .footer-socials a:hover {
+        background: var(--gf-green);
+        color: #fff;
         transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(30, 107, 76, 0.35);
       }
 
-      .btn-primaire:active {
-        transform: translateY(0);
+      /* =====================================================
+         RESPONSIVE
+        ====================================================== */
+      @media (max-width: 1024px) {
+        .footer-grid {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+        .nl-form input {
+          width: 220px;
+        }
       }
 
-      .btn-secondaire {
-        background: var(--gris-tres-clair);
-        color: var(--gris-fonce);
-        border: 1.5px solid var(--gris-clair);
-      }
-
-      .btn-secondaire:hover {
-        background: var(--gris-clair);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-      }
-
-      /* ===== RESPONSIVE ===== */
       @media (max-width: 900px) {
-        .recap-grid {
-          grid-template-columns: 1fr;
-          gap: 16px;
+        .mh-actions .mh-action.delivery {
+          display: none;
+        }
+        .btn-cta-orange {
+          display: none;
         }
 
-        .app-main {
-          padding: 12px 16px;
+        .recap-grid {
+          grid-template-columns: 1fr;
+          gap: var(--sp-16);
+        }
+
+        .page-recap {
+          padding: var(--sp-12) 0 var(--sp-30);
         }
 
         .carte-recap {
-          padding: 20px 18px 18px 18px;
-          max-height: 98vh;
+          padding: var(--sp-20) var(--sp-18) var(--sp-18) var(--sp-18);
         }
 
         .recap-head {
           flex-direction: column;
           align-items: flex-start;
-          gap: 10px;
+          gap: var(--sp-10);
         }
 
         .recap-head .client-info {
           width: 100%;
           justify-content: flex-start;
           flex-wrap: wrap;
-          font-size: 13px;
-          padding: 6px 16px;
+          font-size: var(--fs-sm);
+          padding: var(--sp-6) var(--sp-16);
         }
 
         .radio-group {
-          gap: 12px;
+          gap: var(--sp-12);
+        }
+
+        .table-wrapper {
+          max-height: 240px;
+        }
+
+        .form-col {
+          max-height: 320px;
+        }
+
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .market-header .conteneur {
+          flex-wrap: wrap;
+          gap: var(--sp-15);
+        }
+        .mh-logo-text {
+          font-size: var(--fs-xl);
+        }
+        .mh-search {
+          order: 3;
+          max-width: 100%;
+          width: 100%;
+        }
+        .mh-search form {
+          height: 38px;
+        }
+        .mh-search button {
+          padding: 0 var(--sp-15);
+          font-size: var(--fs-sm);
+        }
+
+        .page-recap h1 {
+          font-size: var(--fs-xl);
+        }
+
+        .recap-head .client-info {
+          font-size: var(--fs-sm);
+          padding: var(--sp-6) var(--sp-12);
+          gap: var(--sp-8);
+        }
+
+        .recap-head .client-info .separator {
+          display: none;
+        }
+
+        .form-group {
+          padding: var(--sp-10) var(--sp-14);
+        }
+
+        .form-group label {
+          font-size: var(--fs-xs);
+        }
+
+        .form-control {
+          font-size: var(--fs-sm);
+          padding: var(--sp-8) var(--sp-12);
+          min-height: 40px;
+        }
+
+        .btn {
+          padding: var(--sp-10) var(--sp-18);
+          font-size: var(--fs-sm);
+          min-height: 40px;
+          min-width: 100px;
+        }
+
+        .radio-group label {
+          font-size: var(--fs-sm);
+          padding: var(--sp-4) var(--sp-12);
+          min-height: 36px;
+        }
+
+        .recap-footer {
+          flex-direction: column-reverse;
+          gap: var(--sp-10);
+        }
+
+        .recap-footer .btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .frais-badge {
+          font-size: var(--fs-sm);
+          padding: var(--sp-6) var(--sp-16);
+          min-height: 40px;
+        }
+
+        .frais-badge strong {
+          font-size: var(--fs-md);
+        }
+
+        table.recap {
+          font-size: var(--fs-sm);
+        }
+
+        table.recap thead th {
+          font-size: var(--fs-xs);
+          padding: var(--sp-10) var(--sp-8) var(--sp-10) 0;
+        }
+
+        table.recap tbody td {
+          padding: var(--sp-10) var(--sp-8) var(--sp-10) 0;
+        }
+
+        .ligne-total {
+          font-size: var(--fs-base);
+        }
+
+        .ligne-total td:last-child {
+          font-size: var(--fs-md);
+        }
+
+        .footer-newsletter .conteneur {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .footer-newsletter .nl-text {
+          text-align: center;
+        }
+        .nl-form {
+          width: 100%;
+        }
+        .nl-form input {
+          width: 100%;
+          flex: 1;
+        }
+        .nl-form button {
+          padding: 0 var(--sp-20);
+          font-size: var(--fs-sm);
+        }
+        .footer-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: var(--sp-20);
+          padding: var(--sp-30) 0 var(--sp-20);
+        }
+        .footer .footer-description {
+          max-width: 100%;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .mh-logo-text {
+          font-size: var(--fs-lg);
+        }
+        .mh-logo-text i {
+          font-size: var(--fs-md);
+        }
+        .mh-search form {
+          height: 34px;
+          border-radius: var(--radius-xl);
+        }
+        .mh-search input {
+          font-size: var(--fs-sm);
+          padding: 0 var(--sp-12);
+        }
+        .mh-search button {
+          padding: 0 var(--sp-12);
+          font-size: var(--fs-sm);
+        }
+        .mh-search button span {
+          display: none;
+        }
+        .mh-actions {
+          gap: var(--sp-8);
+        }
+        .mh-action i {
+          font-size: var(--fs-md);
+        }
+        .mh-action .cart-count {
+          font-size: var(--fs-xs);
+          min-width: 14px;
+          height: 14px;
+          top: -3px;
+          right: -6px;
+        }
+        .btn-cta-orange {
+          padding: var(--sp-4) var(--sp-10);
+          font-size: var(--fs-xs);
+          border-radius: var(--radius-xl);
+          min-height: 28px;
+          min-width: 60px;
+        }
+        .market-header {
+          padding: var(--sp-8) 0;
+        }
+        .conteneur {
+          padding: 0 var(--sp-12);
+        }
+
+        .page-recap h1 {
+          font-size: var(--fs-lg);
+        }
+
+        .carte-recap {
+          padding: var(--sp-14) var(--sp-12);
+        }
+
+        .radio-group {
+          flex-direction: column;
+          gap: var(--sp-6);
+        }
+
+        .radio-group label {
+          width: 100%;
         }
 
         .table-wrapper {
@@ -562,289 +1153,392 @@
         .form-col {
           max-height: 280px;
         }
-      }
-
-      @media (max-width: 480px) {
-        .app-header {
-          padding: 10px 16px;
-          flex-direction: column;
-          gap: 8px;
-          text-align: center;
-        }
-
-        .app-header .badge-client {
-          font-size: 12px;
-          padding: 4px 14px;
-        }
-
-        .app-header .logo {
-          font-size: 18px;
-        }
-
-        .recap-head h1 {
-          font-size: 18px;
-        }
-
-        .recap-head .client-info {
-          font-size: 12px;
-          padding: 6px 12px;
-          gap: 8px;
-        }
-
-        .recap-head .client-info .separator {
-          display: none;
-        }
-
-        .form-group {
-          padding: 10px 14px;
-        }
-
-        .form-group label {
-          font-size: 11px;
-        }
-
-        .form-control {
-          font-size: 12px;
-          padding: 8px 12px;
-        }
-
-        .btn {
-          padding: 10px 18px;
-          font-size: 13px;
-        }
-
-        .btn i {
-          font-size: 13px;
-        }
-
-        .radio-group label {
-          font-size: 13px;
-          padding: 4px 12px;
-        }
-
-        .recap-footer {
-          flex-direction: column-reverse;
-          gap: 10px;
-        }
 
         .recap-footer .btn {
+          font-size: var(--fs-base);
+          padding: var(--sp-12) var(--sp-16);
+          min-height: 44px;
+        }
+
+        .footer-newsletter {
+          padding: var(--sp-18) 0;
+        }
+        .footer-newsletter .nl-text h3 {
+          font-size: var(--fs-md);
+        }
+        .footer-newsletter .nl-text p {
+          font-size: var(--fs-sm);
+        }
+        .nl-form {
+          flex-direction: column;
+          gap: var(--sp-8);
+        }
+        .nl-form input {
           width: 100%;
+          border-radius: var(--radius-sm);
+          height: 42px;
+          font-size: var(--fs-sm);
+          min-height: 42px;
+        }
+        .nl-form button {
+          border-radius: var(--radius-sm);
+          padding: var(--sp-12) 0;
+          width: 100%;
+          font-size: var(--fs-base);
+          min-height: 42px;
           justify-content: center;
         }
 
-        .frais-badge {
-          font-size: 13px;
-          padding: 6px 16px;
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: var(--sp-16);
+          padding: var(--sp-20) 0 var(--sp-16);
         }
-
-        .frais-badge strong {
-          font-size: 16px;
+        .footer h4 {
+          font-size: var(--fs-sm);
+          margin-bottom: var(--sp-10);
         }
-
-        table.recap {
-          font-size: 12px;
+        .footer ul li a,
+        .footer .footer-description {
+          font-size: var(--fs-sm);
         }
-
-        table.recap thead th {
-          font-size: 10px;
-          padding: 8px 8px 8px 0;
+        .footer .footer-description {
+          max-width: 100%;
         }
-
-        table.recap tbody td {
-          padding: 8px 8px 8px 0;
+        .footer-bottom {
+          flex-direction: column;
+          text-align: center;
+          padding: var(--sp-14) 0;
+          font-size: var(--fs-sm);
         }
-
-        .ligne-total {
-          font-size: 14px;
-        }
-
-        .ligne-total td:last-child {
-          font-size: 15px;
+        .footer-socials a {
+          width: 30px;
+          height: 30px;
+          font-size: var(--fs-sm);
         }
       }
 
       @media (max-width: 380px) {
         .carte-recap {
-          padding: 12px 10px;
-        }
-
-        .radio-group {
-          flex-direction: column;
-          gap: 6px;
-        }
-
-        .radio-group label {
-          width: 100%;
+          padding: var(--sp-10) var(--sp-8);
         }
       }
     </style>
   </head>
+
   <body>
-    <!-- ===== HEADER APP ===== -->
-    <header class="app-header">
-      <span class="logo"> <i class="fas fa-leaf"></i> greenField </span>
-      <span class="badge-client">
-        <i class="fas fa-check-circle"></i>
-        <span th:text="${client.prenom} + ' ' + ${client.nom}"></span>
-      </span>
+    <!-- =====================================================
+         HEADER - UNIFORMISÉ AVEC LES AUTRES PAGES
+    ====================================================== -->
+    <header class="market-header">
+      <div class="conteneur">
+        <a href="/" class="mh-logo">
+          <span class="mh-logo-text"
+            ><i class="fas fa-seedling"></i> green<span>Field</span></span
+          >
+        </a>
+
+        <div class="mh-search">
+          <form action="/produits" method="get">
+            <input
+              type="text"
+              name="motCle"
+              placeholder="Rechercher un produit, un producteur..."
+            />
+            <div class="search-icons">
+              <i class="fas fa-camera"></i>
+            </div>
+            <button type="submit">
+              <i class="fas fa-search"></i> Rechercher
+            </button>
+          </form>
+        </div>
+
+        <div class="mh-actions">
+          <a href="/commandes" class="mh-action">
+            <i class="fas fa-receipt"></i>
+            <span>Commandes</span>
+          </a>
+          <a href="/panier" class="mh-action">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-count" th:text="${session.cartCount} ?: 0"
+              >0</span
+            >
+            <span>Panier</span>
+          </a>
+          <a th:if="${session.client == null}" href="/login" class="mh-action">
+            <i class="fas fa-user"></i>
+            <span>Connexion</span>
+          </a>
+          <a th:if="${session.client != null}" href="/profil" class="mh-action">
+            <i class="fas fa-user-circle"></i>
+            <span>Mon compte</span>
+          </a>
+          <a
+            th:if="${session.client == null}"
+            href="/signup"
+            class="btn btn-orange btn-sm"
+            >Créer un compte</a
+          >
+        </div>
+      </div>
     </header>
 
-    <!-- ===== MAIN ===== -->
-    <main class="app-main">
-      <div class="carte-recap">
-        <!-- En-tête carte -->
-        <div class="recap-head">
-          <h1><i class="fas fa-clipboard-check"></i> Récapitulatif</h1>
-          <div class="client-info">
-            <span>
-              <i class="far fa-envelope"></i>
-              <span th:text="${client.mail}"></span>
-            </span>
-            <span class="separator">|</span>
-            <span>
-              <i class="far fa-user"></i>
-              <strong th:text="${client.prenom} + ' ' + ${client.nom}"></strong>
-            </span>
+    <!-- =====================================================
+         CONTENU PRINCIPAL
+    ====================================================== -->
+    <main class="page-recap">
+      <div class="conteneur">
+        <div class="breadcrumb">
+          <a href="/">Accueil</a> / <a href="/panier">Panier</a> /
+          <span>Récapitulatif</span>
+        </div>
+
+        <h1 style="font-size: 32px">
+          <i class="fas fa-clipboard-check"></i> Récapitulatif de la commande
+        </h1>
+
+        <!-- ===== CARTE RECAP ===== -->
+        <div class="carte-recap">
+          <!-- ===== FORMULAIRE ===== -->
+          <form
+            th:action="@{/commande/valider}"
+            method="post"
+            style="display: contents"
+          >
+            <div class="recap-grid">
+              <!-- Colonne gauche : Tableau -->
+              <div class="table-wrapper">
+                <table class="recap">
+                  <thead>
+                    <tr>
+                      <th>Produit</th>
+                      <th>Prix</th>
+                      <th>Qté</th>
+                      <th>Sous-total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="ligne : ${lignes}">
+                      <td th:text="${ligne.produit.nom}"></td>
+                      <td th:text="${ligne.produit.pu} + ' Ar'"></td>
+                      <td th:text="${ligne.quantite}"></td>
+                      <td th:text="${ligne.sousTotal} + ' Ar'"></td>
+                    </tr>
+                    <tr class="ligne-total">
+                      <td colspan="3" style="text-align: right">Total</td>
+                      <td th:text="${total} + ' Ar'"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Colonne droite : Formulaire -->
+              <div class="form-col">
+                <!-- 1. Mode de réception -->
+                <div class="form-group">
+                  <label><i class="fas fa-truck"></i> Mode de réception</label>
+                  <div class="radio-group">
+                    <label>
+                      <input
+                        type="radio"
+                        name="modeReception"
+                        value="Livraison_Domicile"
+                        onclick="changerMode()"
+                      />
+                      <i class="fas fa-home"></i> Livraison à domicile
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="modeReception"
+                        value="Retrait_Boutique"
+                        onclick="changerMode()"
+                        checked
+                      />
+                      <i class="fas fa-store"></i> Retrait en boutique
+                    </label>
+                  </div>
+                </div>
+
+                <!-- 2. Livraison - Adresse -->
+                <div
+                  id="blocLivraison"
+                  class="form-group"
+                  style="display: none"
+                >
+                  <label
+                    ><i class="fas fa-map-pin"></i> Adresse de livraison</label
+                  >
+                  <textarea
+                    class="form-control"
+                    name="adresse"
+                    rows="2"
+                    placeholder="Votre adresse complète..."
+                  ></textarea>
+                </div>
+
+                <!-- 3. Retrait - Point de retrait -->
+                <div id="blocRetrait" class="form-group">
+                  <label
+                    ><i class="fas fa-store-alt"></i> Point de retrait</label
+                  >
+                  <select class="form-control" name="pointRetrait">
+                    <option value="" disabled selected>
+                      Choisir un point de vente
+                    </option>
+                    <option
+                      th:each="pointDeVente : ${pointsDeVente}"
+                      th:value="${pointDeVente.code}"
+                      th:text="${pointDeVente.nom + ' - ' + pointDeVente.adresse}"
+                    ></option>
+                  </select>
+                </div>
+
+                <!-- 4. Date et heure -->
+                <div class="form-group">
+                  <label
+                    ><i class="fas fa-calendar-alt"></i> Date et heure de
+                    réception</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="dateReception"
+                    style="margin-bottom: var(--sp-8)"
+                  />
+                  <input
+                    type="time"
+                    class="form-control"
+                    name="heureReception"
+                    style="max-width: 160px"
+                  />
+                </div>
+
+                <!-- 5. Frais de livraison -->
+                <div class="form-group">
+                  <label
+                    ><i class="fas fa-receipt"></i> Récapitulatif des
+                    frais</label
+                  >
+                  <div class="frais-badge">
+                    <i class="fas fa-info-circle"></i> Frais de livraison :
+                    <strong id="frais">0 Ar</strong>
+                  </div>
+                </div>
+              </div>
+              <!-- fin form-col -->
+            </div>
+            <!-- fin recap-grid -->
+
+            <!-- ===== FOOTER CARTE ===== -->
+            <div class="recap-footer">
+              <a class="btn btn-secondary" th:href="@{/panier}">
+                <i class="fas fa-arrow-left"></i> Retour au panier
+              </a>
+              <button type="submit" class="btn btn-orange">
+                <i class="fas fa-check"></i> Confirmer la commande
+              </button>
+            </div>
+          </form>
+        </div>
+        <!-- fin carte-recap -->
+      </div>
+    </main>
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+    <footer class="footer">
+      <div class="footer-newsletter">
+        <div class="conteneur">
+          <div class="nl-text">
+            <h3>Restez informé de nos récoltes</h3>
+            <p>Recevez nos offres et arrivages en avant-première.</p>
+          </div>
+          <form
+            class="nl-form"
+            th:action="@{/newsletter/subscribe}"
+            method="post"
+          >
+            <input
+              type="email"
+              name="email"
+              placeholder="Votre adresse email"
+              required
+            />
+            <button type="submit">
+              <i class="fas fa-paper-plane"></i> S'abonner
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="conteneur">
+        <div class="footer-grid">
+          <div>
+            <a href="/" class="logo"><i class="fas fa-leaf"></i> greenField</a>
+            <p class="footer-description">
+              Votre marché en ligne pour l'achat de produits agricoles locaux,
+              frais et de qualité, directement auprès des producteurs.
+            </p>
+          </div>
+          <div>
+            <h4>Boutique</h4>
+            <ul>
+              <li><a href="/produits">Tous les produits</a></li>
+              <li><a href="#">Best-sellers</a></li>
+              <li><a href="#">Nouveautés</a></li>
+              <li><a href="#">Promotions</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Mon compte</h4>
+            <ul>
+              <li><a href="/login">Connexion</a></li>
+              <li><a href="/signup">Inscription</a></li>
+              <li><a href="/panier">Panier</a></li>
+              <li><a href="/commandes">Mes commandes</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Producteurs</h4>
+            <ul>
+              <li><a href="#">Devenir partenaire</a></li>
+              <li><a href="#">Nos engagements</a></li>
+              <li><a href="#">FAQ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Contact</h4>
+            <ul>
+              <li><i class="fas fa-envelope"></i> contact@greenfield.com</li>
+              <li><i class="fas fa-phone"></i> +261 34 12 345 67</li>
+              <li>
+                <i class="fas fa-map-marker-alt"></i> Antananarivo, Madagascar
+              </li>
+            </ul>
           </div>
         </div>
 
-        <!-- ===== FORMULAIRE ===== -->
-        <form
-          th:action="@{/commande/valider}"
-          method="post"
-          style="display: contents"
-        >
-          <div class="recap-grid">
-            <!-- Colonne gauche : Tableau -->
-            <div class="table-wrapper">
-              <table class="recap">
-                <thead>
-                  <tr>
-                    <th>Produit</th>
-                    <th>Prix</th>
-                    <th>Qté</th>
-                    <th>Sous-total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr th:each="ligne : ${lignes}">
-                    <td th:text="${ligne.produit.nom}"></td>
-                    <td th:text="${ligne.produit.pu} + ' Ar'"></td>
-                    <td th:text="${ligne.quantite}"></td>
-                    <td th:text="${ligne.sousTotal} + ' Ar'"></td>
-                  </tr>
-                  <tr class="ligne-total">
-                    <td colspan="3" style="text-align: right">Total</td>
-                    <td th:text="${total} + ' Ar'"></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Colonne droite : Formulaire -->
-            <div class="form-col">
-              <!-- 1. Mode de réception avec valeurs Retrait_Boutique et Livraison_Domicile -->
-              <div class="form-group">
-                <label><i class="fas fa-truck"></i> Mode de réception</label>
-                <div class="radio-group">
-                  <label>
-                    <input
-                      type="radio"
-                      name="modeReception"
-                      value="Livraison_Domicile"
-                      onclick="changerMode()"
-                    />
-                    <i class="fas fa-home"></i> Livraison à domicile
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="modeReception"
-                      value="Retrait_Boutique"
-                      onclick="changerMode()"
-                      checked
-                    />
-                    <i class="fas fa-store"></i> Retrait en boutique
-                  </label>
-                </div>
-              </div>
-
-              <!-- 2. Livraison - Adresse -->
-              <div id="blocLivraison" class="form-group" style="display: none">
-                <label
-                  ><i class="fas fa-map-pin"></i> Adresse de livraison</label
-                >
-                <textarea
-                  class="form-control"
-                  name="adresse"
-                  rows="2"
-                  placeholder="Votre adresse complète..."
-                ></textarea>
-              </div>
-
-              <!-- 3. Retrait - Point de retrait -->
-              <div id="blocRetrait" class="form-group">
-                <label><i class="fas fa-store-alt"></i> Point de retrait</label>
-                <select class="form-control" name="pointRetrait">
-                  <option value="" disabled selected>
-                    Choisir un point de vente
-                  </option>
-                  <option
-                    th:each="pointDeVente : ${pointsDeVente}"
-                    th:value="${pointDeVente.code}"
-                    th:text="${pointDeVente.nom + ' - ' + pointDeVente.adresse}"
-                  ></option>
-                </select>
-              </div>
-
-              <!-- 4. Date et heure -->
-              <div class="form-group">
-                <label
-                  ><i class="fas fa-calendar-alt"></i> Date et heure de
-                  réception</label
-                >
-                <input
-                  type="date"
-                  class="form-control"
-                  name="dateReception"
-                  style="margin-bottom: 8px"
-                />
-                <input
-                  type="time"
-                  class="form-control"
-                  name="heureReception"
-                  style="max-width: 160px"
-                />
-              </div>
-
-              <!-- 5. Frais de livraison -->
-              <div class="form-group">
-                <label
-                  ><i class="fas fa-receipt"></i> Récapitulatif des frais</label
-                >
-                <div class="frais-badge">
-                  <i class="fas fa-info-circle"></i> Frais de livraison :
-                  <strong id="frais">0 Ar</strong>
-                </div>
-              </div>
-            </div>
-            <!-- fin form-col -->
+        <div class="footer-bottom">
+          <span>&copy; 2026 greenField. Tous droits réservés.</span>
+          <div class="footer-socials">
+            <a href="#" aria-label="Facebook"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" aria-label="Instagram"
+              ><i class="fab fa-instagram"></i
+            ></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="LinkedIn"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
           </div>
-          <!-- fin recap-grid -->
-
-          <!-- ===== FOOTER ===== -->
-          <div class="recap-footer">
-            <a class="btn btn-secondaire" th:href="@{/panier}">
-              <i class="fas fa-arrow-left"></i> Retour au panier
-            </a>
-            <button type="submit" class="btn btn-primaire">
-              <i class="fas fa-check"></i> Confirmer la commande
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
-      <!-- fin carte-recap -->
-    </main>
+    </footer>
 
     <!-- ===== SCRIPT ===== -->
     <script>
@@ -867,7 +1561,6 @@
         }
       }
 
-      // Initialisation
       document.addEventListener("DOMContentLoaded", function () {
         changerMode();
       });

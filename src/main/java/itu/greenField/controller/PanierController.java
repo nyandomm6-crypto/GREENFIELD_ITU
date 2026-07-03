@@ -5,12 +5,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import itu.greenField.model.Client;
@@ -86,25 +90,110 @@ public class PanierController {
         return "front/panier/panier";
     }
 
-    @PostMapping("/panier/ajouter")
-    public String ajouterAuPanier(
-            @RequestParam Integer idProduit,
-            @RequestParam(defaultValue = "1") int quantite,
+    // @PostMapping("/panier/ajouter")
+    // public String ajouterAuPanier(
+    // @RequestParam Integer idProduit,
+    // @RequestParam(defaultValue = "1") int quantite,
+    // HttpServletRequest request,
+    // HttpServletResponse response,
+    // HttpSession session,
+    // RedirectAttributes redirectAttributes) {
+
+    // Panier panier = resoudrePanierCourant(request, response, session,
+    // panierService);
+    // String erreur = panierService.ajouterAuPanier(panier, idProduit, quantite);
+
+    // if (erreur != null) {
+    // redirectAttributes.addFlashAttribute("error", erreur);
+    // return "redirect:/produits/" + idProduit;
+    // }
+
+    // redirectAttributes.addFlashAttribute("success", "Produit ajouté au panier.");
+    // return "redirect:/panier";
+    // }
+    @PostMapping(value = "/panier/ajouter", produces = "application/json")
+    @ResponseBody
+    public Map<String, Object> ajouterAuPanier(
             HttpServletRequest request,
             HttpServletResponse response,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
+            HttpSession session) {
 
-        Panier panier = resoudrePanierCourant(request, response, session, panierService);
-        String erreur = panierService.ajouterAuPanier(panier, idProduit, quantite);
+        Map<String, Object> result = new HashMap<>();
 
-        if (erreur != null) {
-            redirectAttributes.addFlashAttribute("error", erreur);
-            return "redirect:/produits/" + idProduit;
+        try {
+            // Récupérer les paramètres manuellement
+            String idProduitStr = request.getParameter("idProduit");
+            String quantiteStr = request.getParameter("quantite");
+
+            System.out.println("=== AJOUT AU PANIER ===");
+            System.out.println("idProduitStr: '" + idProduitStr + "'");
+            System.out.println("quantiteStr: '" + quantiteStr + "'");
+
+            // Vérifier l'ID du produit
+            if (idProduitStr == null || idProduitStr.trim().isEmpty()) {
+                result.put("success", false);
+                result.put("message", "ID du produit manquant");
+                return result;
+            }
+
+            // Parser l'ID du produit
+            Integer idProduit;
+            try {
+                idProduit = Integer.parseInt(idProduitStr.trim());
+            } catch (NumberFormatException e) {
+                result.put("success", false);
+                result.put("message", "ID du produit invalide: " + idProduitStr);
+                return result;
+            }
+
+            // Parser la quantité (avec gestion des valeurs null/vides)
+            int quantite = 1; // valeur par défaut
+            if (quantiteStr != null && !quantiteStr.trim().isEmpty()) {
+                try {
+                    quantite = Integer.parseInt(quantiteStr.trim());
+                    if (quantite < 1) {
+                        quantite = 1; // quantité minimum
+                    }
+                } catch (NumberFormatException e) {
+                    // Si la quantité est invalide, on garde 1
+                    System.out.println("Quantité invalide, utilisation de 1 par défaut");
+                }
+            }
+
+            System.out.println("idProduit parsé: " + idProduit);
+            System.out.println("quantite parsée: " + quantite);
+
+            // Récupérer le panier
+            Panier panier = resoudrePanierCourant(request, response, session, panierService);
+            System.out.println("Panier trouvé: " + (panier != null ? panier.getId() : "null"));
+
+            // Ajouter au panier
+            String erreur = panierService.ajouterAuPanier(panier, idProduit, quantite);
+            System.out.println("Erreur: " + erreur);
+
+            if (erreur != null) {
+                result.put("success", false);
+                result.put("message", erreur);
+                return result;
+            }
+
+            // Calculer le nouveau total
+            int nouveauTotal = panier.getLignes().stream()
+                    .mapToInt(ligne -> ligne.getQuantite())
+                    .sum();
+
+            result.put("success", true);
+            result.put("message", "Produit ajouté au panier");
+            result.put("nouveauTotal", nouveauTotal);
+
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "Erreur: " + e.getMessage());
+            System.err.println("Erreur détaillée: ");
+            e.printStackTrace();
         }
 
-        redirectAttributes.addFlashAttribute("success", "Produit ajouté au panier.");
-        return "redirect:/panier";
+        return result;
     }
 
     @PostMapping("/panier/modifier")
