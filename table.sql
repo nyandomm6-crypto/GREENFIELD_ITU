@@ -368,3 +368,9 @@ ALTER TABLE vehicule
 ALTER COLUMN statut TYPE VARCHAR(100) USING statut::text;
 
 INSERT INTO statutcommande (nom) VALUES ('En cours de livraison');
+
+ALTER TABLE paiementfille
+ALTER COLUMN typepayement TYPE VARCHAR(50) USING typepayement::text;
+
+ALTER TABLE paiement
+ALTER COLUMN statut TYPE VARCHAR(50) USING statut::text;

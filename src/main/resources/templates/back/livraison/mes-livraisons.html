@@ -55,6 +55,23 @@
             <a th:href="@{/livreurs/livraisons/{id}(id=${livraison.id})}">
               Voir
             </a>
+            <a th:href="@{/livreurs/livraisons/{id}(id=${livraison.id})}">
+              Voir
+            </a>
+            <form th:action="@{/livreurs/livraisons/valider}" method="post">
+              <input
+                type="hidden"
+                name="idLivraison"
+                th:value="${livraison.id}"
+              />
+
+              <button
+                type="submit"
+                th:disabled="${livraison.statutLivraison.name() == 'Validee'}"
+              >
+                Valider
+              </button>
+            </form>
           </td>
         </tr>
       </tbody>

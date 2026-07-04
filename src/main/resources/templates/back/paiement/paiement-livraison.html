@@ -1,0 +1,362 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Paiement commande</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        margin: 0;
+        padding: 20px;
+      }
+
+      h2,
+      h3 {
+        margin-bottom: 10px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .section {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .info p {
+        margin: 6px 0;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background: white;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background: #f0f0f0;
+      }
+
+      select,
+      input {
+        width: 100%;
+        padding: 6px;
+      }
+
+      .btn {
+        padding: 10px 15px;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+      }
+
+      .btn-add {
+        background: #007bff;
+        color: white;
+      }
+
+      .btn-delete {
+        background: #dc3545;
+        color: white;
+      }
+
+      .btn-submit {
+        background: #28a745;
+        color: white;
+        width: 100%;
+        font-size: 16px;
+      }
+
+      .summary {
+        display: flex;
+        justify-content: space-between;
+        background: #fafafa;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 10px;
+      }
+
+      .error {
+        color: red;
+        margin-top: 10px;
+      }
+
+      .top-link {
+        margin-bottom: 15px;
+        display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>💳 Paiement de la commande</h2>
+
+      <a class="top-link" th:href="@{/livreurs/livraisons}">← Retour</a>
+
+      <!-- ================= COMMANDE ================= -->
+      <div class="section info">
+        <h3>📄 Commande</h3>
+
+        <p><strong>ID :</strong> <span th:text="${commande.id}"></span></p>
+
+        <p>
+          <strong>Client :</strong>
+          <span
+            th:text="${commande.client.nom + ' ' + commande.client.prenom}"
+          ></span>
+        </p>
+
+        <p>
+          <strong>Total :</strong>
+          <span id="total" th:text="${commande.totalGeneral}"></span>
+        </p>
+
+        <p>
+          <strong>Reste :</strong>
+          <span id="reste" th:text="${reste}"></span>
+        </p>
+      </div>
+
+      <!-- ================= HISTORIQUE ================= -->
+      <div class="section">
+        <h3>🧾 Paiements existants</h3>
+
+        <table>
+          <tr>
+            <th>#</th>
+            <th>Type</th>
+            <th>Montant</th>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(paiement.filles)}">
+            <td colspan="3">Aucun paiement</td>
+          </tr>
+
+          <tr th:each="pf, i : ${paiement.filles}">
+            <td th:text="${i.index + 1}"></td>
+            <td th:text="${pf.typePayement}"></td>
+            <td th:text="${pf.valeur}"></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- ================= FORM ================= -->
+      <div class="section">
+        <h3>➕ Nouveau paiement</h3>
+
+        <form
+          id="formPaiement"
+          th:action="@{/livreurs/paiements/ajouter-multiple}"
+          method="post"
+        >
+          <input type="hidden" name="idCommande" th:value="${commande.id}" />
+
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Montant</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody id="lines">
+              <tr>
+                <td>
+                  <select name="typePayement">
+                    <option
+                      th:each="t : ${typesPaiement}"
+                      th:value="${t}"
+                      th:text="${t}"
+                    ></option>
+                  </select>
+                </td>
+
+                <td>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    name="valeur"
+                    class="montant"
+                    required
+                  />
+                </td>
+
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-delete"
+                    onclick="removeLine(this)"
+                  >
+                    X
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <br />
+
+          <button type="button" class="btn btn-add" onclick="addLine()">
+            + Ajouter ligne
+          </button>
+
+          <div class="summary">
+            <div>Total saisi : <span id="totalSaisi">0</span></div>
+            <div>Reste : <span id="resteCalc">0</span></div>
+          </div>
+
+          <div class="error" id="error"></div>
+
+          <br />
+
+          <button class="btn btn-submit" type="submit">Valider paiement</button>
+        </form>
+      </div>
+    </div>
+
+    <script th:inline="javascript">
+      const resteInitial = parseFloat(
+        document.getElementById("reste").innerText,
+      );
+
+      const types = /*[[${typesPaiement}]]*/ [];
+
+      function buildOptions() {
+        let html = "";
+
+        types.forEach((t) => {
+          html += `<option value="${t}">${t}</option>`;
+        });
+
+        return html;
+      }
+
+      function inputs() {
+        return document.querySelectorAll(".montant");
+      }
+
+      function calculer() {
+        let somme = 0;
+
+        inputs().forEach((i) => {
+          somme += parseFloat(i.value || 0);
+        });
+
+        document.getElementById("totalSaisi").innerText = somme.toFixed(2);
+
+        document.getElementById("resteCalc").innerText = (
+          resteInitial - somme
+        ).toFixed(2);
+
+        document.getElementById("error").innerText = "";
+      }
+
+      function addLine() {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+
+        <td>
+            <select name="typePayement">
+                ${buildOptions()}
+            </select>
+        </td>
+
+        <td>
+            <input
+                type="number"
+                step="0.01"
+                min="0"
+                name="valeur"
+                class="montant"
+                required>
+        </td>
+
+        <td>
+            <button
+                type="button"
+                class="btn btn-delete"
+                onclick="removeLine(this)">
+                X
+            </button>
+        </td>
+
+    `;
+
+        document.getElementById("lines").appendChild(tr);
+
+        attach();
+
+        calculer();
+      }
+
+      function removeLine(btn) {
+        if (document.querySelectorAll("#lines tr").length == 1) {
+          return;
+        }
+
+        btn.closest("tr").remove();
+
+        calculer();
+      }
+
+      function attach() {
+        inputs().forEach((i) => {
+          i.oninput = calculer;
+        });
+      }
+
+      document
+        .getElementById("formPaiement")
+        .addEventListener("submit", function (e) {
+          let somme = 0;
+
+          inputs().forEach((i) => {
+            somme += parseFloat(i.value || 0);
+          });
+
+          if (somme <= 0) {
+            e.preventDefault();
+
+            document.getElementById("error").innerText =
+              "Veuillez saisir un montant.";
+
+            return;
+          }
+
+          if (somme > resteInitial) {
+            e.preventDefault();
+
+            document.getElementById("error").innerText =
+              "Le montant total dépasse le reste à payer.";
+
+            return;
+          }
+        });
+
+      attach();
+
+      calculer();
+    </script>
+  </body>
+</html>

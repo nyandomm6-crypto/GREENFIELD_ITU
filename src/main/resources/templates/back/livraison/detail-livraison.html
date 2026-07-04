@@ -74,7 +74,7 @@
 
           <td>
             <form
-              th:action="@{/livreurs/livraisons/valider}"
+              th:action="@{/livreurs/livraisonFille/valider}"
               method="post"
               style="display: inline"
             >
@@ -83,11 +83,17 @@
                 name="idLivraisonFille"
                 th:value="${lf.id}"
               />
+
+              <input
+                type="hidden"
+                name="idCommandes"
+                th:value="${lf.commande.id}"
+              />
               <button type="submit">Valider</button>
             </form>
 
             <form
-              th:action="@{/livreurs/livraisons/annuler}"
+              th:action="@{/livreurs/livraisonFille/annuler}"
               method="post"
               style="display: inline"
             >

@@ -114,4 +114,11 @@ public class LivraisonService {
     public List<Livraison> findByLivreur(Employes emp) {
         return livraisonRepository.findByLivreur(emp);
     }
+
+    public void validerFille(Integer idLivraisonFille) {
+        LivraisonFille lf = livraisonFilleRepository.findById(idLivraisonFille).orElse(null);
+        lf.setStatutLivraisonFille(StatutLivraison.Livre);
+        livraisonFilleRepository.save(lf);
+
+    }
 }
