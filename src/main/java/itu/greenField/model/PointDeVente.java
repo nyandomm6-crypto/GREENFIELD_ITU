@@ -38,14 +38,6 @@ public class PointDeVente {
     @OneToMany(mappedBy = "pointDeVente")
     private List<MvtStock> mouvementsStock;
 
-    @OneToMany(mappedBy = "pointDeVenteRetrait")
-    private List<Commandes> commandesRetrait;
-
-    @OneToMany(mappedBy = "pointDeVente")
-    private List<Transferts> transfertsDepart;
-
-    @OneToMany(mappedBy = "pointDeVenteCible")
-    private List<Transferts> transfertsArrivee;
 
     @OneToMany(mappedBy = "pointDeVente")
     private List<Notifications> notifications;
@@ -114,29 +106,6 @@ public class PointDeVente {
         this.mouvementsStock = mouvementsStock;
     }
 
-    public List<Commandes> getCommandesRetrait() {
-        return commandesRetrait;
-    }
-
-    public void setCommandesRetrait(List<Commandes> commandesRetrait) {
-        this.commandesRetrait = commandesRetrait;
-    }
-
-    public List<Transferts> getTransfertsDepart() {
-        return transfertsDepart;
-    }
-
-    public void setTransfertsDepart(List<Transferts> transfertsDepart) {
-        this.transfertsDepart = transfertsDepart;
-    }
-
-    public List<Transferts> getTransfertsArrivee() {
-        return transfertsArrivee;
-    }
-
-    public void setTransfertsArrivee(List<Transferts> transfertsArrivee) {
-        this.transfertsArrivee = transfertsArrivee;
-    }
 
     public List<Notifications> getNotifications() {
         return notifications;
