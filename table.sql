@@ -1,4 +1,4 @@
--- Active: 1781870061268@@127.0.0.1@5433@greenfield
+-- Active: 1780380832087@@127.0.0.1@5432@greenfield
 CREATE DATABASE greenfield;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
@@ -55,13 +55,6 @@ CREATE TYPE statut_livraison AS ENUM (
     'Annule'
 );
 
-CREATE TYPE statut_commande AS ENUM (
-    'Cree',
-    'En_cours',
-    'Paye',
-    'Annule'
-);
-
 CREATE TYPE type_flux AS ENUM (
     'Entree_Vente',
     'Depense_Exploitation'
@@ -77,6 +70,11 @@ CREATE TYPE statut_paiement AS ENUM (
     'Cree',
     'Reste',
     'Cloture'
+);
+
+CREATE TYPE type_commande AS ENUM (
+    'En ligne',
+    'En boutique'
 );
 
 -- =====================================================
@@ -103,6 +101,8 @@ CREATE TABLE Produit (
     pu DECIMAL(10, 2) NOT NULL,
     idcategorie INT REFERENCES CategorieProduit (id) ON DELETE SET NULL
 );
+
+ALTER TABLE Produit ADD COLUMN poids_moyenne_unitaire DECIMAL(10, 2) DEFAULT 0;
 
 -- =====================================================
 -- DEMANDES DE STOCK
@@ -156,6 +156,10 @@ CREATE TABLE Client (
     date DATE DEFAULT CURRENT_DATE
 );
 
+ALTER TABLE client ALTER COLUMN mail DROP NOT NULL;
+ALTER TABLE client ALTER COLUMN motdepasse DROP NOT NULL;
+ALTER TABLE client ALTER COLUMN estverifier DROP NOT NULL;
+
 -- =====================================================
 -- VEHICULES
 -- =====================================================
@@ -193,19 +197,64 @@ CREATE TABLE MvtStockFille (
 -- COMMANDES
 -- =====================================================
 
+CREATE TABLE provinceLivraison (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE fraisLivraison (
+    id SERIAL PRIMARY KEY,
+    idprovince INT REFERENCES provinceLivraison (id) ON DELETE SET NULL,
+    poidsreference DECIMAL(10, 2) NOT NULL,
+    montant DECIMAL(10, 2) NOT NULL
+);
+---DROP TYPE statut_commande;
+
+CREATE TABLE statutcommande (
+    id SERIAL PRIMARY KEY,
+    nom VARCHAR(60)
+);
+
 CREATE TABLE Commandes (
     id SERIAL PRIMARY KEY,
     idclient INT REFERENCES Client (id) ON DELETE SET NULL,
     datecommande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    mode_reception mode_reception NOT NULL,
+    mode_reception varchar(30),
     idptdevente_retrait VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
     adresse_livraison VARCHAR(255),
-    plage_horaire_souhaitee VARCHAR(100),
-    statutCommande statut_commande NOT NULL DEFAULT 'En_cours',
+    type_commande VARCHAR(30) DEFAULT 'En boutique',
+    statutActuel INT REFERENCES statutcommande (id) ON DELETE SET NULL DEFAULT 1,
+    provinceLivraisonId INT REFERENCES provinceLivraison (id) ON DELETE SET NULL,
+    heure_reception_debut TIMESTAMP,
+    heure_reception_fin TIMESTAMP,
     frais_livraison DECIMAL(10, 2) DEFAULT 0,
-    total_produits DECIMAL(10, 2) NOT NULL,
-    total_general DECIMAL(10, 2) NOT NULL
+    total_produits INT NOT NULL,
+    total_general DECIMAL(10, 2) NOT NULL,
+    poids_total DECIMAL(10, 2) DEFAULT 0
 );
+
+-- ALTER TABLE Commandes ALTER COLUMN mode_reception TYPE varchar(30);
+-- ALTER TABLE Commandes ADD COLUMN type_commande VARCHAR(30) DEFAULT 'En boutique';
+-- ALTER TABLE Commandes ADD COLUMN heure_reception_debut TIMESTAMP;
+-- ALTER TABLE Commandes ADD COLUMN heure_reception_fin TIMESTAMP;
+
+-- ALTER TABLE commandes DROP COLUMN statutCommande;
+
+-- ALTER TABLE commandes ADD COLUMN statutActuel INT REFERENCES statutcommande (id) ON DELETE SET NULL DEFAULT 1;
+-- ALTER TABLE commandes ADD COLUMN provinceLivraisonId INT REFERENCES provinceLivraison (id) ON DELETE SET NULL;
+
+-- ALTER TABLE commandes ADD COLUMN poids_total DECIMAL(10, 2) DEFAULT 0;
+
+
+
+CREATE TABLE histstatutcommande (
+    id SERIAL PRIMARY KEY,
+    idcommande INT REFERENCES commandes (id),
+    idstatut INT REFERENCES statutcommande(id),
+    datechangement TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+--ALTER TABLE Commandes ALTER COLUMN total_produits TYPE INT;
 
 CREATE TABLE DetailsCommande (
     id SERIAL PRIMARY KEY,
@@ -245,6 +294,8 @@ CREATE TABLE Livraison (
     statutLivraison statut_livraison DEFAULT 'En_attente',
     date DATE DEFAULT CURRENT_DATE
 );
+
+--drop table livraison;
 
 CREATE TABLE LivraisonFille (
     id SERIAL PRIMARY KEY,
@@ -307,3 +358,8 @@ CREATE TABLE validation_mail (
     est_verifie BOOLEAN DEFAULT FALSE,
     date_expiration TIMESTAMP NOT NULL
 );
+
+ALTER TABLE livraison ALTER COLUMN statutlivraison TYPE varchar(30);
+
+ALTER TABLE LivraisonFille
+ALTER COLUMN statutLivraisonFille TYPE varchar(30);

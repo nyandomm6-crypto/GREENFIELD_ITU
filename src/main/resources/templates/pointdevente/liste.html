@@ -19,6 +19,12 @@
 
       <a th:href="@{/pointdevente/ajouter}" class="btn-add">+ Ajouter un point de vente</a>
 
+      <form th:action="@{/pointdevente}" method="get" class="filter-form">
+        <input type="text" name="code" th:value="${code}" placeholder="Filtrer par code..." />
+        <button type="submit" class="btn-filter">Filtrer</button>
+        <a th:href="@{/pointdevente}" class="btn-reset">Réinitialiser</a>
+      </form>
+
       <table>
         <thead>
           <tr>

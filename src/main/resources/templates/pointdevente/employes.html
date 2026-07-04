@@ -22,7 +22,7 @@
             <select name="role">
               <option value="">Tous</option>
               <option
-                th:each="role : ${T(itu.GreenField.model.FRole).values()}"
+                th:each="role : ${T(itu.greenField.model.FRole).values()}"
                 th:value="${role}"
                 th:text="${role}"
                 th:selected="${role == role}"
