@@ -1,8 +1,7 @@
 -- Active: 1782932337041@@127.0.0.1@5433@greenfield
-CREATE DATABASE greenfield;
+CREATE DATABASE bisous;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
-\c greenfield
 -- =====================================================
 -- TYPES ENUM
 -- =====================================================
