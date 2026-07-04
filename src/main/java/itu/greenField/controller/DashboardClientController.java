@@ -8,11 +8,11 @@ import itu.greenField.service.ProduitService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
-public class DashboardController {
+public class DashboardClientController {
 
     private ProduitService produitService;
 
-    public DashboardController(ProduitService produitService) {
+    public DashboardClientController(ProduitService produitService) {
         this.produitService = produitService;
     }
 

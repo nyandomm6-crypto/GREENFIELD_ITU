@@ -18,4 +18,8 @@ public class EmployesService {
     public List<Employes> getLivreur() {
         return employeRepository.findAll();
     }
+
+    public Employes findByEmail(String email) {
+        return employeRepository.findByMail(email).orElse(null);
+    }
 }
