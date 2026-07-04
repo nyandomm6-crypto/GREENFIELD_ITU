@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Importation de commandes</title>
+    <style>
+        .d-none {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Importation de commandes</h1>
+    <div class="alert">
+        <div th:if="${alert}" class="alert alert-danger" th:text="${alert}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+        <div th:if="${succes}" class="alert alert-success" th:text="${succes}"></div>
+    </div>
+    <div class="bouton">
+        <a th:href="@{/commandes}" class="btn btn-secondary">Voir la liste</a>
+        <a th:href="@{/commandes/api/download-template}" class="btn btn-primary">Télécharger le modèle</a>
+        <a th:href="@{/commandes/form/new}" class="btn btn-info">Retour au formulaire</a>
+    </div><br><br>
+    <div class="container mt-5">
+        <form th:action="@{/commandes/importExcel}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="file">Sélectionnez un fichier Excel :</label>
+                <input type="file" class="form-control-file" id="file" name="file" accept=".xlsx" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Importer</button>
+        </form>
+        <div th:if="${message}" class="alert alert-info mt-3" th:text="${message}"></div>
+        <div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+    </div>
+    <script>
+        // Optional: Add JavaScript to handle file input validation or other interactions
+    </script>
+</body>
+</html>
