@@ -20,9 +20,11 @@ import itu.greenField.repository.CommandesRepository;
 import itu.greenField.repository.DetailsCommandeRepository;
 import itu.greenField.repository.PointDeVenteRepository;
 import itu.greenField.repository.StatutCommandeRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
-public class CommandeService {
+@RequiredArgsConstructor
+public class CommandeFrontService {
 
     private final CommandesRepository commandesRepository;
     private final DetailsCommandeRepository detailsCommandeRepository;
@@ -30,20 +32,6 @@ public class CommandeService {
     private final ProduitService produitService;
     private final PanierService panierService;
     private final StatutCommandeRepository statutCommandeRepository;
-
-    public CommandeService(CommandesRepository commandesRepository,
-            DetailsCommandeRepository detailsCommandeRepository,
-            PointDeVenteRepository pointDeVenteRepository,
-            ProduitService produitService,
-            PanierService panierService,
-            StatutCommandeRepository statutCommandeRepository) {
-        this.commandesRepository = commandesRepository;
-        this.detailsCommandeRepository = detailsCommandeRepository;
-        this.pointDeVenteRepository = pointDeVenteRepository;
-        this.produitService = produitService;
-        this.panierService = panierService;
-        this.statutCommandeRepository = statutCommandeRepository;
-    }
 
     /**
      * Valide l'achat : vérifie une dernière fois le stock de chaque ligne,

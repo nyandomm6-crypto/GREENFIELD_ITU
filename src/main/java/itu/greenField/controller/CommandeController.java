@@ -45,7 +45,7 @@ import org.springframework.http.MediaType;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/commandes")
-public class CommandeControllerA {
+public class CommandeController {
     private final ProduitService produitService;
     private final CommandesService commandeService;
     private final ClientService clientService;

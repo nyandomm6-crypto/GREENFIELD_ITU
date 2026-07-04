@@ -5,7 +5,7 @@ import itu.greenField.model.Commandes;
 import itu.greenField.model.DetailsCommande;
 import itu.greenField.repository.ClientRepository;
 import itu.greenField.repository.CommandesRepository;
-import itu.greenField.service.CommandeService;
+import itu.greenField.service.CommandeFrontService;
 import itu.greenField.service.PanierService;
 import itu.greenField.service.ValidationMailService;
 import itu.greenField.service.ValidationService;
@@ -31,12 +31,12 @@ public class AuthClientController {
     private ValidationService validationService;
     private ValidationMailService validationMailService;
     private PanierService panierService;
-    private CommandeService commandeService;
+    private CommandeFrontService commandeService;
     private CommandesRepository commandesRepository;
 
     public AuthClientController(ClientRepository clientRepository, ValidationService validationService,
             ValidationMailService validationMailService, PanierService panierService,
-            CommandeService commandeService, CommandesRepository commandesRepository) {
+            CommandeFrontService commandeService, CommandesRepository commandesRepository) {
         this.clientRepository = clientRepository;
         this.validationService = validationService;
         this.validationMailService = validationMailService;
