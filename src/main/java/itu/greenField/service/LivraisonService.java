@@ -110,4 +110,8 @@ public class LivraisonService {
     public Livraison getLivraisonById(Integer id) {
         return livraisonRepository.getById(id);
     }
+
+    public List<Livraison> findByLivreur(Employes emp) {
+        return livraisonRepository.findByLivreur(emp);
+    }
 }
