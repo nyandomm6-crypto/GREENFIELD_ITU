@@ -1,80 +1,7 @@
 -- Active: 1782932337041@@127.0.0.1@5433@bisous
-CREATE DATABASE tss;
+CREATE DATABASE huhu;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
--- =====================================================
--- TYPES ENUM
--- =====================================================
-
-CREATE TYPE type_message AS ENUM (
-    'DemandeStock',
-    'Autre'
-);
-
-CREATE TYPE f_role AS ENUM (
-    'Client',
-    'Administrateur',
-    'Caissier',
-    'Livreur',
-    'Employe',
-    'Responsable_Financier',
-    'RH',
-    'Manager'
-);
-
-CREATE TYPE statut_vehicule AS ENUM (
-    'Disponible',
-    'En_course',
-    'En_panne'
-);
-
-CREATE TYPE type_mvt AS ENUM (
-    'Entree_Production',
-    'Sortie_Transfert',
-    'Entree_Boutique',
-    'Vente_Client',
-    'Perte'
-);
-
-CREATE TYPE type_payement AS ENUM (
-    'Espece',
-    'Mobile_Money',
-    'Carte_Fidelite'
-);
-
-CREATE TYPE mode_reception AS ENUM (
-    'Retrait_Boutique',
-    'Livraison_Domicile'
-);
-
-CREATE TYPE statut_livraison AS ENUM (
-    'En_attente',
-    'Livre',
-    'Annule'
-);
-
-CREATE TYPE type_flux AS ENUM (
-    'Entree_Vente',
-    'Depense_Exploitation'
-);
-
-CREATE TYPE statut_transfert AS ENUM (
-    'Cree',
-    'En_cours',
-    'Termine'
-);
-
-CREATE TYPE statut_paiement AS ENUM (
-    'Cree',
-    'Reste',
-    'Cloture'
-);
-
-CREATE TYPE type_commande AS ENUM (
-    'En ligne',
-    'En boutique'
-);
-
 -- =====================================================
 -- TABLES DE BASE
 -- =====================================================
@@ -131,7 +58,7 @@ CREATE TABLE Employes (
     contact VARCHAR(50),
     mail VARCHAR(150) UNIQUE NOT NULL,
     motdepasse VARCHAR(255) NOT NULL,
-    role f_role NOT NULL,
+    role VARCHAR(50) NOT NULL,
     idptdevente VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
     est_actif BOOLEAN DEFAULT TRUE,
     date DATE DEFAULT CURRENT_DATE
@@ -164,7 +91,7 @@ CREATE TABLE Vehicule (
     modele VARCHAR(50) NOT NULL,
     annee INT,
     capacite DECIMAL(10, 2),
-    statut VARCHAR(100) DEFAULT 'Disponible',
+    statut VARCHAR(50) DEFAULT 'Disponible',
     date DATE DEFAULT CURRENT_DATE
 );
 
@@ -174,7 +101,7 @@ CREATE TABLE Vehicule (
 
 CREATE TABLE MvtStock (
     id SERIAL PRIMARY KEY,
-    type_mouvement type_mvt NOT NULL,
+    type_mouvement VARCHAR(50) NOT NULL,
     idptdevente VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
     dateMvt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -211,10 +138,10 @@ CREATE TABLE Commandes (
     id SERIAL PRIMARY KEY,
     idclient INT REFERENCES Client (id) ON DELETE SET NULL,
     datecommande TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    mode_reception VARCHAR(30),
+    mode_reception VARCHAR(50),
     idptdevente_retrait VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
     adresse_livraison VARCHAR(255),
-    type_commande VARCHAR(30) DEFAULT 'En boutique',
+    type_commande VARCHAR(50) DEFAULT 'En boutique',
     statutActuel INT REFERENCES statutcommande (id) ON DELETE SET NULL DEFAULT 1,
     provinceLivraisonId INT REFERENCES provinceLivraison (id) ON DELETE SET NULL,
     heure_reception_debut TIMESTAMP,
@@ -267,7 +194,7 @@ CREATE TABLE Livraison (
     idvehicule INT REFERENCES Vehicule (id) ON DELETE SET NULL,
     idlivreur INT REFERENCES Employes (id) ON DELETE SET NULL,
     dateLivraison TIMESTAMP,
-    statutLivraison VARCHAR(30) DEFAULT 'En_attente',
+    statutLivraison VARCHAR(50) DEFAULT 'En_attente',
     date DATE DEFAULT CURRENT_DATE
 );
 
@@ -275,7 +202,7 @@ CREATE TABLE LivraisonFille (
     id SERIAL PRIMARY KEY,
     idLivraison INT REFERENCES Livraison (id) ON DELETE CASCADE,
     idCommande INT REFERENCES Commandes (id) ON DELETE CASCADE,
-    statutLivraisonFille VARCHAR(30) DEFAULT 'En_attente'
+    statutLivraisonFille VARCHAR(50) DEFAULT 'En_attente'
 );
 
 -- =====================================================
@@ -284,7 +211,7 @@ CREATE TABLE LivraisonFille (
 
 CREATE TABLE Tresorerie (
     id SERIAL PRIMARY KEY,
-    type_mouvement type_flux NOT NULL,
+    type_mouvement VARCHAR(50) NOT NULL,
     montant DECIMAL(10, 2) NOT NULL,
     date_operation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     description TEXT,
@@ -299,7 +226,7 @@ CREATE TABLE Transferts (
     id SERIAL PRIMARY KEY,
     idPointDeVente VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
     idPointDeVenteCible VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
-    statut_transfert statut_transfert NOT NULL,
+    statut_transfert VARCHAR(50) NOT NULL,
     date_transfert TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -316,7 +243,7 @@ CREATE TABLE TransfertsFille (
 
 CREATE TABLE Notifications (
     id SERIAL PRIMARY KEY,
-    typeMessage type_message NOT NULL,
+    typeMessage VARCHAR(50) NOT NULL,
     objet VARCHAR(100),
     message TEXT,
     idptdevente VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL,
@@ -346,6 +273,3 @@ CREATE TABLE PanierFille (
     idProduit INT REFERENCES Produit (id) ON DELETE CASCADE,
     quantite INT NOT NULL
 );
-
--- Insertion des données initiales
-INSERT INTO statutcommande (nom) VALUES ('En cours de livraison');
