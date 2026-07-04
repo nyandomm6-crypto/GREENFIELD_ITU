@@ -51,8 +51,9 @@ public class AuthEmployeController {
         }
 
         if (employe.getRole().equals(FRole.Livreur)) {
-            return "redirect:/emp/dashboard/livreur";
+            session.setAttribute("employe", employe);
+            return "redirect:/livreurs/dashboard/livreur";
         }
-        return "back/auth/login";
+        return "redirect:/emp/login";
     }
 }
