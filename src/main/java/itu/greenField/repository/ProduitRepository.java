@@ -16,4 +16,6 @@ public interface ProduitRepository extends JpaRepository<Produit, Integer> {
 
     List<Produit> findByCategorie_IdAndNomContainingIgnoreCase(Integer idCategorie, String motCle);
 
+    public Optional<Produit> findFirstByNom(String nom);
+
 }
