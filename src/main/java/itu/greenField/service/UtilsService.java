@@ -16,7 +16,7 @@ public class UtilsService {
         }
 
         String nomFichier = getNomOriginal(pieceJointe).replaceAll("[^a-zA-Z0-9._-]", "_");
-        Path dossierTemporaire = Files.createTempDirectory("greenfield-email-");
+        Path dossierTemporaire = Files.createTempDirectory("greenField-email-");
         Path fichierTemporaire = dossierTemporaire.resolve(nomFichier);
 
         Files.copy(pieceJointe.getInputStream(), fichierTemporaire, StandardCopyOption.REPLACE_EXISTING);

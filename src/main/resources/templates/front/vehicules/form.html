@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${edit} ? 'Modifier un véhicule' : 'Ajouter un véhicule'"></title>
+  </head>
+  <body>
+    <main>
+      <h1 th:text="${edit} ? 'Modifier un véhicule' : 'Ajouter un véhicule'"></h1>
+
+      <form th:action="${edit} ? @{/vehicules/{id}/modifier(id=${vehicule.id})} : @{/vehicules/ajouter}" method="post">
+        <label>
+          Matricule
+          <input type="text" name="matricule" th:value="${vehicule.matricule}" required />
+        </label>
+
+        <label>
+          Marque
+          <input type="text" name="marque" th:value="${vehicule.marque}" required />
+        </label>
+
+        <label>
+          Modèle
+          <input type="text" name="modele" th:value="${vehicule.modele}" />
+        </label>
+
+        <label>
+          Année
+          <input type="number" name="annee" th:value="${vehicule.annee}" min="1900" max="2100" />
+        </label>
+
+        <label>
+          Capacité
+          <input type="number" step="0.01" name="capacite" th:value="${vehicule.capacite}" />
+        </label>
+
+        <label>
+          Statut
+          <select name="statut">
+            <option value="" th:selected="${vehicule.statut} == null">-- Choisir --</option>
+            <option th:each="etat : ${statuts}"
+                    th:value="${etat}"
+                    th:text="${etat}"
+                    th:selected="${etat} == ${vehicule.statut}">
+            </option>
+          </select>
+        </label>
+
+        <label>
+          Date d'entrée
+          <input type="date" name="date" th:value="${vehicule.date}" />
+        </label>
+
+        <button type="submit" th:text="${edit} ? 'Modifier' : 'Ajouter'"></button>
+      </form>
+
+      <p>
+        <a th:href="@{/vehicules}">Retour à la liste</a>
+      </p>
+    </main>
+  </body>
+</html>

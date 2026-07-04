@@ -1,6 +1,6 @@
 mamorona .env
 
-DB_URL=jdbc:postgresql://localhost:5432/greenfield
+DB_URL=jdbc:postgresql://localhost:5432/greenField
 DB_USERNAME=postgres
 DB_PASSWORD=postgres
 HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect

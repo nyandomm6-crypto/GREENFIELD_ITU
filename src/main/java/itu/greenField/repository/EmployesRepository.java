@@ -9,7 +9,6 @@ import itu.greenField.model.PointDeVente;
 import java.util.List;
 
 public interface EmployesRepository extends JpaRepository<Employes, Integer> {
-
     public Employes getById(Integer id);
     List<Employes> findByPointDeVente(PointDeVente pointDeVente);
     List<Employes> findByPointDeVenteAndNomContainingIgnoreCase(PointDeVente pointDeVente, String nom);

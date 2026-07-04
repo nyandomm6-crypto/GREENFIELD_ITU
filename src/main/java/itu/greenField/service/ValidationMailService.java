@@ -43,7 +43,7 @@ public class ValidationMailService {
         validationMailRepository.save(validationMail);
 
         envoiEmail.envoyerEmailAsync(
-                "GreenField",
+                "greenField",
                 "nyandomm6@gmail.com",
                 "wite ymxy elbc usra",
                 email,

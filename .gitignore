@@ -3,5 +3,8 @@ build/
 .idea/
 .vscode/
 *.iml
+
+.env
+.env.*
 *.class
-*.lst
+.env
