@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class FrontStatistiqueController {
     private StatistiqueService statistiqueService;
 
     @GetMapping("/top-produits")
-    public ResponseEntity<List<ProduitStatDto>> getTop5Produits() {
-        return ResponseEntity.ok(statistiqueService.getTop5Produits());
+    public ResponseEntity<List<ProduitStatDto>> getTop5Produits(@RequestParam(required = false) Integer year) {
+        return ResponseEntity.ok(statistiqueService.getTop5Produits(year));
     }
 
     @GetMapping("/nouveaux-produits")
