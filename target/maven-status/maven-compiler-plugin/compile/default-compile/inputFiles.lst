@@ -65,13 +65,13 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/PanierRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/PointDeVenteRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/ProduitRepository.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/StatutCommandeRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/TransfertsFilleRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/TransfertsRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/TresorerieRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/ValidationMailRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/repository/VehiculeRepository.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/CommandeService.java
-/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/CommandesService.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/EmployesService.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/EnvoiEmail.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/service/LivraisonService.java

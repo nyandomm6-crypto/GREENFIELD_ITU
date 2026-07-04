@@ -13,11 +13,13 @@ import itu.greenField.model.Commandes;
 import itu.greenField.model.DetailsCommande;
 import itu.greenField.model.ModeReception;
 import itu.greenField.model.PointDeVente;
+import itu.greenField.model.StatutCommande;
 import itu.greenField.model.Panier;
 import itu.greenField.model.PanierFille;
 import itu.greenField.repository.CommandesRepository;
 import itu.greenField.repository.DetailsCommandeRepository;
 import itu.greenField.repository.PointDeVenteRepository;
+import itu.greenField.repository.StatutCommandeRepository;
 
 @Service
 public class CommandeService {
@@ -27,17 +29,20 @@ public class CommandeService {
     private final PointDeVenteRepository pointDeVenteRepository;
     private final ProduitService produitService;
     private final PanierService panierService;
+    private final StatutCommandeRepository statutCommandeRepository;
 
     public CommandeService(CommandesRepository commandesRepository,
             DetailsCommandeRepository detailsCommandeRepository,
             PointDeVenteRepository pointDeVenteRepository,
             ProduitService produitService,
-            PanierService panierService) {
+            PanierService panierService,
+            StatutCommandeRepository statutCommandeRepository) {
         this.commandesRepository = commandesRepository;
         this.detailsCommandeRepository = detailsCommandeRepository;
         this.pointDeVenteRepository = pointDeVenteRepository;
         this.produitService = produitService;
         this.panierService = panierService;
+        this.statutCommandeRepository = statutCommandeRepository;
     }
 
     /**
@@ -53,7 +58,8 @@ public class CommandeService {
     public String validerAchat(Panier panier, Client client, ModeReception mode, String adresse, String point,
             LocalDateTime dateHeure) {
         List<PanierFille> lignes = panierService.listerLignes(panier);
-
+        StatutCommande statut = statutCommandeRepository.findByNom("Crée")
+                .orElseThrow(() -> new RuntimeException("Statut introuvable"));
         if (lignes.isEmpty()) {
             return "Le panier est vide.";
         }
@@ -103,6 +109,7 @@ public class CommandeService {
             }
             commande.setPointDeVenteRetrait(pointDeVente);
         }
+        commande.setStatutActuel(statut);
 
         commande = commandesRepository.save(commande);
 
@@ -145,5 +152,9 @@ public class CommandeService {
 
     public List<Commandes> findByClient(Client client) {
         return commandesRepository.findByClient(client);
+    }
+
+    public List<Commandes> getCommandesDispo() {
+        return commandesRepository.findAll();
     }
 }

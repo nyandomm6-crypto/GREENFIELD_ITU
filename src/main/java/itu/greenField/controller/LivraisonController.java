@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import itu.greenField.model.Livraison;
 import itu.greenField.model.StatutLivraison;
-import itu.greenField.service.CommandesService;
+import itu.greenField.service.CommandeService;
 import itu.greenField.service.EmployesService;
 import itu.greenField.service.LivraisonService;
 import itu.greenField.service.VehiculeService;
@@ -25,10 +25,10 @@ public class LivraisonController {
     private LivraisonService livraisonService;
     private VehiculeService vehiculeService;
     private EmployesService employesService;
-    private CommandesService commandesService;
+    private CommandeService commandesService;
 
     public LivraisonController(LivraisonService livraisonService, VehiculeService vehiculeService,
-            EmployesService employesService, CommandesService commandesService) {
+            EmployesService employesService, CommandeService commandesService) {
         this.livraisonService = livraisonService;
         this.vehiculeService = vehiculeService;
         this.employesService = employesService;

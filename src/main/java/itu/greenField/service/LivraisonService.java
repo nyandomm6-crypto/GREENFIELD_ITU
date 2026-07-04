@@ -11,12 +11,14 @@ import itu.greenField.model.Commandes;
 import itu.greenField.model.Employes;
 import itu.greenField.model.Livraison;
 import itu.greenField.model.LivraisonFille;
+import itu.greenField.model.StatutCommande;
 import itu.greenField.model.StatutLivraison;
 import itu.greenField.model.Vehicule;
 import itu.greenField.repository.CommandesRepository;
 import itu.greenField.repository.EmployesRepository;
 import itu.greenField.repository.LivraisonFilleRepository;
 import itu.greenField.repository.LivraisonRepository;
+import itu.greenField.repository.StatutCommandeRepository;
 import itu.greenField.repository.VehiculeRepository;
 
 @Service
@@ -26,15 +28,17 @@ public class LivraisonService {
     private EmployesRepository employeRepository;
     private LivraisonFilleRepository livraisonFilleRepository;
     private CommandesRepository commandesRepository;
+    private StatutCommandeRepository statutCommandeRepository;
 
     public LivraisonService(LivraisonRepository livraisonRepository, VehiculeRepository vehiculeRepository,
             EmployesRepository employeRepository, LivraisonFilleRepository livraisonFilleRepository,
-            CommandesRepository commandesRepository) {
+            CommandesRepository commandesRepository, StatutCommandeRepository statutCommandeRepository) {
         this.livraisonRepository = livraisonRepository;
         this.vehiculeRepository = vehiculeRepository;
         this.employeRepository = employeRepository;
         this.livraisonFilleRepository = livraisonFilleRepository;
         this.commandesRepository = commandesRepository;
+        this.statutCommandeRepository = statutCommandeRepository;
     }
 
     public Integer createLivraison(Integer idVehicule, Integer idEmploye, List<Integer> idCommande,
@@ -53,7 +57,10 @@ public class LivraisonService {
 
         for (Integer id : idCommande) {
             Commandes commande = commandesRepository.getById(id);
-
+            StatutCommande statut = statutCommandeRepository.findByNom("En cours de livraison")
+                    .orElseThrow(() -> new RuntimeException("Statut introuvable"));
+            commande.setStatutActuel(statut);
+            commandesRepository.save(commande);
             LivraisonFille livraisonFille = new LivraisonFille();
             livraisonFille.setCommande(commande);
             livraisonFille.setLivraison(livraison);
