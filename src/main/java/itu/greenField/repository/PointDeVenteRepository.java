@@ -1,6 +1,7 @@
 package itu.greenField.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,8 @@ public interface PointDeVenteRepository extends JpaRepository<PointDeVente, Inte
         @Param("date") LocalDateTime date,
         @Param("idProduit") Integer idProduit
     );
+
+    public Optional<PointDeVente> findFirstByCode(String code);
+
+    public Optional<PointDeVente> findFirstByNom(String nom);
 }
