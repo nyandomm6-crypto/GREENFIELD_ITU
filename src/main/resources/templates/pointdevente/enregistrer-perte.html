@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enregistrer Perte - Point de Vente</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Enregistrer Perte - <span th:text="${pointDeVente.nom}"></span></h1>
+
+      <div
+        class="message success"
+        th:if="${success}"
+        th:text="${success}"
+      ></div>
+      <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+      <form th:action="@{/pointdevente/{id}/enregistrer-perte(id=${pointDeVente.id})}" method="post" class="form">
+        <div class="form-group">
+          <label for="produit">Produit</label>
+          <select id="produit" name="idProduit" required>
+            <option value="">Sélectionner un produit</option>
+            <option
+              th:each="produit : ${produits}"
+              th:value="${produit.id}"
+              th:text="${produit.nom}"
+            ></option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="quantite">Quantité perdue</label>
+          <input
+            type="number"
+            id="quantite"
+            name="quantite"
+            min="1"
+            required
+            placeholder="Quantité"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="motif">Motif (optionnel)</label>
+          <textarea
+            id="motif"
+            name="motif"
+            rows="3"
+            placeholder="Raison de la perte..."
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-submit">Enregistrer</button>
+          <a th:href="@{/pointdevente/{id}/stock(id=${pointDeVente.id})}" class="btn-cancel">Annuler</a>
+        </div>
+      </form>
+
+      <div class="back-links">
+        <a th:href="@{/pointdevente/} + ${pointDeVente.id}">← Retour au détail</a>
+        <a th:href="@{/pointdevente}">Retour à la liste</a>
+      </div>
+    </div>
+  </body>
+</html>

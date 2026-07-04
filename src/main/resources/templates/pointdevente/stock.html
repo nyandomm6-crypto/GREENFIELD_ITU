@@ -45,7 +45,8 @@
       </div>
 
       <div>
-        <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/ajouter-produit'" class="btn-add">+ Ajouter un produit</a>
+        <a th:href="@{/pointdevente/{id}/ajouter-produit(id=${pointDeVente.id})}" class="btn-add">+ Ajouter un produit</a>
+        <a th:href="@{/pointdevente/{id}/enregistrer-perte(id=${pointDeVente.id})}" class="btn-perte">+ Enregistrer perte</a>
       </div>
 
       <table>
