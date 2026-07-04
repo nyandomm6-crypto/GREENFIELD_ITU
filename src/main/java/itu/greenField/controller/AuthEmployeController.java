@@ -52,7 +52,7 @@ public class AuthEmployeController {
 
         if (employe.getRole().equals(FRole.Livreur)) {
             session.setAttribute("employe", employe);
-            return "redirect:/livreurs/dashboard/livreur";
+            return "redirect:/livreurs/dashboard";
         }
         return "redirect:/emp/login";
     }

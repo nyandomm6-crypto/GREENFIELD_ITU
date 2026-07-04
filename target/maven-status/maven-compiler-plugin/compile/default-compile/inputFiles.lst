@@ -1,7 +1,8 @@
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/AuthClientController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/AuthEmployeController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/CommandeController.java
-/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/DashboardController.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/DashboardClientController.java
+/home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/DashboardLivreurController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/EmailController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/HomeController.java
 /home/huhu/Bureau/baovola_ok/GREENFIELD_ITU/src/main/java/itu/greenField/controller/LivraisonController.java

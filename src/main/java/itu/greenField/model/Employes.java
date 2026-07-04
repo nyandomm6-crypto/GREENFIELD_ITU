@@ -60,7 +60,6 @@ public class Employes {
         this.date = date;
     }
 
-
     public Integer getId() {
         return id;
     }
