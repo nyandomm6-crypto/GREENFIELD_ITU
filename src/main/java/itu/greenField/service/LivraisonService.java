@@ -121,4 +121,12 @@ public class LivraisonService {
         livraisonFilleRepository.save(lf);
 
     }
+
+    public void valider(Integer idLivraison) {
+        Livraison l = livraisonRepository.findById(idLivraison).orElse(null);
+        l.setStatutLivraison(StatutLivraison.Livre);
+        livraisonRepository.save(l);
+
+    }
+
 }

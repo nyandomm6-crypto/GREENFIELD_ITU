@@ -1,7 +1,6 @@
 package itu.greenField.controller;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -12,15 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import itu.greenField.model.Client;
 import itu.greenField.model.Commandes;
 import itu.greenField.model.Employes;
 import itu.greenField.model.FRole;
 import itu.greenField.model.Livraison;
 import itu.greenField.model.LivraisonFille;
 import itu.greenField.model.Paiement;
-import itu.greenField.model.PaiementFille;
-import itu.greenField.model.StatutCommande;
 import itu.greenField.model.TypePayement;
 import itu.greenField.repository.CommandesRepository;
 import itu.greenField.repository.LivraisonFilleRepository;
@@ -180,11 +176,11 @@ public class DashboardLivreurController {
             return "redirect:/emp/login";
         }
         paiementService.ajouterPayement(types, valeurs, idCommande);
-        return "redirect:/paiements/page?idCommande=" + idCommande;
+        return "redirect:/paiements/facture?idCommande=" + idCommande;
     }
 
     @PostMapping("/livraisons/valider")
-    String valider(@PathVariable Integer id,
+    String valider(@RequestParam Integer idLivraison,
             HttpSession session,
             Model model) {
         Employes employe = (Employes) session.getAttribute("employe");
@@ -193,7 +189,8 @@ public class DashboardLivreurController {
             session.invalidate();
             return "redirect:/emp/login";
         }
-        return "";
+        livraisonService.valider(idLivraison);
+        return "redirect:/livreurs/livraisons";
     }
 
 }
