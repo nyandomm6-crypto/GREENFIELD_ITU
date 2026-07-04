@@ -1,0 +1,52 @@
+<div th:fragment="menu(pageActive)" class="sidebar" data-background-color="dark">
+    <div class="sidebar-logo">
+        <div class="logo-header" data-background-color="dark">
+            <a th:href="@{/}" class="logo">
+                <img th:src="@{/assets/img/kaiadmin/logo_light.svg}" alt="navbar brand" class="navbar-brand" height="20" />
+            </a>
+            <div class="nav-toggle">
+                <button class="btn btn-toggle toggle-sidebar">
+                    <i class="gg-menu-right"></i>
+                </button>
+                <button class="btn btn-toggle sidenav-toggler">
+                    <i class="gg-menu-left"></i>
+                </button>
+            </div>
+            <button class="topbar-toggler more">
+                <i class="gg-more-vertical-alt"></i>
+            </button>
+        </div>
+        </div>
+    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+        <div class="sidebar-content">
+            <ul class="nav nav-secondary">
+                <li th:class="${pageActive == 'dashboard' ? 'nav-item active' : 'nav-item'}">
+                    <a data-bs-toggle="collapse" th:href="@{/dashboard}" th:class="${pageActive == 'dashboard' ? '' : 'collapsed'}" th:aria-expanded="${pageActive == 'dashboard' ? 'true' : 'false'}">
+                        <i class="fas fa-home"></i>
+                        <p>Tableau de bord</p>
+                    </a>
+                </li>
+                <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">Menu</h4>
+                </li>
+                
+                <li th:class="${pageActive == 'commande' ? 'nav-item active' : 'nav-item'}">
+                    <a data-bs-toggle="collapse" href="#base" th:class="${pageActive == 'commande' ? '' : 'collapsed'}" th:aria-expanded="${pageActive == 'commande' ? 'true' : 'false'}">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Commande</p>
+                        <span class="caret"></span>
+                    </a>
+                    <div th:class="${pageActive == 'commande' ? 'collapse show' : 'collapse'}" id="base">
+                        <ul class="nav nav-collapse">
+                            <li><a th:href="@{/commandes/form/new}"><span class="sub-item">Nouvelle Commande</span></a></li>
+                            <li><a th:href="@{/commandes/list}"><span class="sub-item">Liste des Commandes</span></a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
