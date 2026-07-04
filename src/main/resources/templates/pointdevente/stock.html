@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Produit - Point de Vente</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Stock Produit - <span th:text="${pointDeVente.nom}"></span></h1>
+
+      <div
+        class="message success"
+        th:if="${success}"
+        th:text="${success}"
+      ></div>
+      <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+      <div class="filter-section">
+        <h3>Filtres</h3>
+        <form th:action="@{/pointdevente/} + ${pointDeVente.id} + '/stock'" method="get" class="filter-form">
+          <!-- <label>
+            Catégorie
+            <select name="categorie">
+              <option value="">Toutes les catégories</option>
+              <option th:each="cat : ${categories}" th:value="${cat.libelle}" th:text="${cat.libelle}" th:selected="${categorie == cat.libelle}"></option>
+            </select>
+          </label> -->
+          <label>
+            Date
+            <input type="datetime-local" name="date" th:value="${date}" />
+          </label>
+          <label>
+            Produit
+            <input type="text" name="produit" th:value="${produit}" list="liste-produits" placeholder="Filtrer par produit" />
+            <datalist id="liste-produits">
+                <option th:each="produit : ${produits}" th:value="${produit.nom}"
+                    th:data-matricule="${produit.matricule}">
+                </option>
+            </datalist>
+          </label>
+          <button type="submit" class="btn-filter">Filtrer</button>
+        </form>
+      </div>
+
+      <div>
+        <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/ajouter-produit'" class="btn-add">+ Ajouter un produit</a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="stock : ${stockDisponible}">
+            <td>
+              <span th:text="${stock.produit.nom}"></span>
+            </td>
+            <td>
+              <span th:text="${stock.quantite}"></span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="back-links">
+        <a th:href="@{/pointdevente/} + ${pointDeVente.id}">← Retour au détail</a>
+        <a th:href="@{/pointdevente}">Retour à la liste</a>
+      </div>
+    </div>
+  </body>
+</html>
