@@ -1,7 +1,6 @@
 package itu.greenField.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -21,5 +20,4 @@ public interface ClientRepository extends JpaRepository<Client, Integer> {
             "WHERE (:query = '' OR c.nom ILIKE CONCAT('%', :query, '%')) " +
             "OR (:query = '' OR c.prenom ILIKE CONCAT('%', :query, '%'))", nativeQuery = true)
     List<Client> findClientsByWord(@Param("query") String query);
-
 }
