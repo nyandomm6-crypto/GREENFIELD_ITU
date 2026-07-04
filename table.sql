@@ -1,4 +1,4 @@
--- Active: 1782932337041@@127.0.0.1@5433@greenfield
+-- Active: 1782932337041@@127.0.0.1@5433@bisous
 CREATE DATABASE bisous;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
@@ -356,6 +356,20 @@ CREATE TABLE validation_mail (
     token VARCHAR(5),
     est_verifie BOOLEAN DEFAULT FALSE,
     date_expiration TIMESTAMP NOT NULL
+);
+
+CREATE TABLE Panier (
+    id SERIAL PRIMARY KEY,
+    idClient INT REFERENCES Client (id) ON DELETE CASCADE,
+    tokenSession VARCHAR(100) UNIQUE,
+    dateCreation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE PanierFille (
+    id SERIAL PRIMARY KEY,
+    idPanier INT REFERENCES Panier (id) ON DELETE CASCADE,
+    idProduit INT REFERENCES Produit (id) ON DELETE CASCADE,
+    quantite INT NOT NULL
 );
 
 ALTER TABLE livraison ALTER COLUMN statutlivraison TYPE varchar(30);
