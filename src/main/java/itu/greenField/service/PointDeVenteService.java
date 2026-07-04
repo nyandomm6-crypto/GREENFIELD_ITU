@@ -76,4 +76,12 @@ public class PointDeVenteService {
     public void deletePointDeVente(Integer id) {
         pointDeVenteRepository.deleteById(id);
     }
+
+    public PointDeVente findPointDeVenteByCode(String code){
+        return pointDeVenteRepository.findFirstByCode(code).orElse(null);
+    }
+
+    public PointDeVente findPointDeVenteByNom(String nom) {
+        return pointDeVenteRepository.findFirstByNom(nom).orElse(null);
+    }
 }
