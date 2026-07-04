@@ -1,4 +1,4 @@
--- Active: 1780380832087@@127.0.0.1@5432@greenfield
+-- Active: 1782932337041@@127.0.0.1@5433@greenfield
 CREATE DATABASE greenfield;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
@@ -50,7 +50,6 @@ CREATE TYPE mode_reception AS ENUM (
 
 CREATE TYPE statut_livraison AS ENUM (
     'En_attente',
-    'En_cours',
     'Livre',
     'Annule'
 );
@@ -102,7 +101,8 @@ CREATE TABLE Produit (
     idcategorie INT REFERENCES CategorieProduit (id) ON DELETE SET NULL
 );
 
-ALTER TABLE Produit ADD COLUMN poids_moyenne_unitaire DECIMAL(10, 2) DEFAULT 0;
+ALTER TABLE Produit
+ADD COLUMN poids_moyenne_unitaire DECIMAL(10, 2) DEFAULT 0;
 
 -- =====================================================
 -- DEMANDES DE STOCK
@@ -157,7 +157,9 @@ CREATE TABLE Client (
 );
 
 ALTER TABLE client ALTER COLUMN mail DROP NOT NULL;
+
 ALTER TABLE client ALTER COLUMN motdepasse DROP NOT NULL;
+
 ALTER TABLE client ALTER COLUMN estverifier DROP NOT NULL;
 
 -- =====================================================
@@ -245,12 +247,10 @@ CREATE TABLE Commandes (
 
 -- ALTER TABLE commandes ADD COLUMN poids_total DECIMAL(10, 2) DEFAULT 0;
 
-
-
 CREATE TABLE histstatutcommande (
     id SERIAL PRIMARY KEY,
     idcommande INT REFERENCES commandes (id),
-    idstatut INT REFERENCES statutcommande(id),
+    idstatut INT REFERENCES statutcommande (id),
     datechangement TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -363,3 +363,8 @@ ALTER TABLE livraison ALTER COLUMN statutlivraison TYPE varchar(30);
 
 ALTER TABLE LivraisonFille
 ALTER COLUMN statutLivraisonFille TYPE varchar(30);
+
+ALTER TABLE vehicule
+ALTER COLUMN statut TYPE VARCHAR(100) USING statut::text;
+
+INSERT INTO statutcommande (nom) VALUES ('En cours de livraison');

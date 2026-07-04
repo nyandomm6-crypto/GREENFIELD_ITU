@@ -107,7 +107,7 @@ public class AuthClientController {
             return "redirect:" + redirect;
         }
 
-        return "redirect:/produits";
+        return "redirect:/";
     }
 
     /**
