@@ -1,0 +1,10 @@
+target/
+build/
+.idea/
+.vscode/
+*.iml
+
+.env
+.env.*
+*.class
+.env

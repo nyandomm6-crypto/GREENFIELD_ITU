@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Livraison</title>
+  </head>
+  <body>
+    <main>
+      <h1>Creation Livraison</h1>
+      <div class="message error" th:if="${error}" th:text="${error}"></div>
+
+      <form th:action="@{/livraison/create}" method="post">
+        <label>
+          Date
+          <input type="datetime-local" name="date" />
+        </label>
+        <select name="idVehicule">
+          <option>Choisir vehicule</option>
+          <option
+            th:each="vehicule : ${vehicules}"
+            th:value="${vehicule.id}"
+            th:text="${vehicule.matricule}"
+          ></option>
+        </select>
+
+        <select name="idEmploye">
+          <option>Choisir livreur</option>
+
+          <option
+            th:each="employe : ${employes}"
+            th:value="${employe.id}"
+            th:text="${employe.nom}"
+          ></option>
+        </select>
+
+        <div th:each="commande : ${commandes}">
+          <label>
+            <input
+              type="checkbox"
+              name="idCommandes"
+              th:value="${commande.id}"
+            />
+            Commande N°
+            <span th:text="${commande.id}"></span>
+          </label>
+        </div>
+        <button type="submit">Creer</button>
+      </form>
+    </main>
+  </body>
+</html>

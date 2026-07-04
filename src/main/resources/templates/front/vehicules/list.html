@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liste des véhicules</title>
+  </head>
+  <body>
+    <main>
+      <h1>Liste des véhicules</h1>
+
+      <section>
+        <form th:action="@{/vehicules}" method="get">
+          <label>
+            Mot-clé
+            <input type="text" name="motCle" th:value="${motCle}" placeholder="marque, modèle, matricule" />
+          </label>
+
+          <label>
+            Date
+            <input type="date" name="date" th:value="${date}" />
+          </label>
+
+          <label>
+            Statut
+            <select name="statut">
+              <option value="" th:selected="${statut} == null">Tous</option>
+              <option th:each="etat : ${statuts}"
+                      th:value="${etat}"
+                      th:text="${etat}"
+                      th:selected="${etat} == ${statut}">
+              </option>
+            </select>
+          </label>
+
+          <button type="submit">Rechercher</button>
+          <a th:href="@{/vehicules/ajouter}">Ajouter un véhicule</a>
+        </form>
+      </section>
+
+      <section>
+        <table border="1" cellspacing="0" cellpadding="6">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Matricule</th>
+              <th>Marque</th>
+              <th>Modèle</th>
+              <th>Année</th>
+              <th>Capacité</th>
+              <th>Statut</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="vehicule : ${vehicules}">
+              <td th:text="${vehicule.id}"></td>
+              <td th:text="${vehicule.matricule}"></td>
+              <td th:text="${vehicule.marque}"></td>
+              <td th:text="${vehicule.modele}"></td>
+              <td th:text="${vehicule.annee}"></td>
+              <td th:text="${vehicule.capacite}"></td>
+              <td th:text="${vehicule.statut}"></td>
+              <td th:text="${vehicule.date}"></td>
+              <td>
+                <a th:href="@{/vehicules/{id}(id=${vehicule.id})}">Détails</a>
+                <a th:href="@{/vehicules/{id}/modifier(id=${vehicule.id})}">Modifier</a>
+                <form th:action="@{/vehicules/{id}/supprimer(id=${vehicule.id})}" method="post" style="display:inline;">
+                  <button type="submit">Supprimer</button>
+                </form>
+              </td>
+            </tr>
+            <tr th:if="${vehicules.empty}">
+              <td colspan="9">Aucun véhicule trouvé.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

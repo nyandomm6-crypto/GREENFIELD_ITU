@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tableau de bord Livreur</title>
+  </head>
+  <body>
+    <h1>Tableau de bord</h1>
+
+    <p>Bonjour mr <span th:text="${livreur.nom}"></span></p>
+
+    <ul>
+      <li>
+        <a th:href="@{/livreurs/livraisons}"> Mes livraisons </a>
+      </li>
+
+      <li>
+        <a th:href="@{/livreurs/historique}"> Historique des livraisons </a>
+      </li>
+
+      <li>
+        <a th:href="@{/livreurs/profil}"> Mon profil </a>
+      </li>
+    </ul>
+  </body>
+</html>
