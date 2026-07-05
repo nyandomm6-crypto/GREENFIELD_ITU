@@ -14,4 +14,5 @@ public interface StatistiqueService {
     Map<String, Object> getTresorerieStats(Integer year, String dateDebut, String dateFin);
     List<EvolutionVenteDto> getEvolutionVentes(Integer idproduit, Integer year);
     List<ClientStatDto> getTop5Clients(Integer year);
+    List<ProduitStatDto> getHistoriqueVentesGlobal(Integer year);
 }

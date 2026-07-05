@@ -103,6 +103,6 @@ public class BackStatistiqueController {
     @GetMapping("/historique-ventes")
     public ResponseEntity<List<ProduitStatDto>> getHistoriqueVentesGlobal(
             @RequestParam(required = false) Integer year) {
-        return ResponseEntity.ok(statistiqueService.getTop5Produits(year));
+        return ResponseEntity.ok(statistiqueService.getHistoriqueVentesGlobal(year));
     }
 }
