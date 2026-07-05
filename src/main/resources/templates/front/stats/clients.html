@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Greenfield - Clients</title>
+  <style>
+    :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --text:#e6edf3; --muted:#8b949e; --green:#2ea043; --blue:#58a6ff; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width:1100px; margin:0 auto; padding:24px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:24px; padding:20px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+    select { background:#0d1117; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+    ul { list-style:none; padding:0; margin:18px 0 0; }
+    li { display:flex; align-items:center; gap:12px; padding:14px 10px; border-bottom:1px solid rgba(48,54,61,.7); }
+    .rank { width:28px; height:28px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center; background:rgba(88,166,255,.15); color:var(--blue); font-weight:700; }
+    .name { flex:1; }
+    .value { font-weight:700; }
+    a { color:var(--blue); text-decoration:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <div style="color:var(--green); font-size:.78rem; text-transform:uppercase; letter-spacing:.14em;">Statistiques / Clients</div>
+        <h1 style="margin:.2rem 0 0;">Top 5 clients en ligne</h1>
+      </div>
+      <a th:href="@{/dashboard}">Retour au dashboard</a>
+    </div>
+
+    <section class="panel">
+      <select id="filter-clients-annee" onchange="loadTopClients()">
+        <option value="">Toutes les années</option>
+        <option value="2026" selected>2026</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+      </select>
+      <ul id="list-clients"><li style="color:var(--muted)">Chargement…</li></ul>
+    </section>
+  </div>
+
+<script>
+function renderTopClients(data) {
+  const ul = document.getElementById('list-clients');
+  if (!Array.isArray(data) || data.length === 0) {
+    ul.innerHTML = '<li style="color:var(--muted)">Aucun client trouvé pour cette période</li>';
+    return;
+  }
+  ul.innerHTML = data.map((c, i) => `<li><span class="rank">${i + 1}</span><span class="name">${c.nom} ${c.prenom}</span><span class="value">${Number(c.totalDepense ?? 0).toLocaleString('fr-MG')} Ar</span></li>`).join('');
+}
+async function loadTopClients() {
+  const year = document.getElementById('filter-clients-annee').value;
+  const query = year ? `?year=${year}` : '';
+  const resp = await fetch('/api/back/statistiques/top-clients' + query);
+  if (!resp.ok) return renderTopClients([]);
+  renderTopClients(await resp.json());
+}
+loadTopClients();
+</script>
+</body>
+</html>

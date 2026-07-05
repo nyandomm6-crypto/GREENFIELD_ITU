@@ -601,6 +601,8 @@
                             <option value="2026" selected>2026</option>
                             <option value="2025">2025</option>
                             <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
                         </select>
                     </div>
                     <div style="display:flex; flex-direction:column; gap:4px;">
@@ -710,11 +712,13 @@
                     <select id="filter-ventes-produit" onchange="loadVentesChart()" class="filter-select" style="max-width:140px;">
                         <option value="">Tous les produits</option>
                     </select>
-                    <select id="filter-ventes-annee" onchange="loadVentesChart()" class="filter-select">
+                        <select id="filter-ventes-annee" onchange="loadVentesChart()" class="filter-select">
                         <option value="">Toutes les années</option>
                         <option value="2026" selected>2026</option>
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
                     </select>
                 </div>
             </div>
@@ -736,6 +740,8 @@
                         <option value="2026" selected>2026</option>
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
                     </select>
                 </div>
             </div>
@@ -760,6 +766,8 @@
                         <option value="2026" selected>2026</option>
                         <option value="2025">2025</option>
                         <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
                     </select>
                 </div>
             </div>
@@ -1217,7 +1225,7 @@ function renderTopClients(data) {
         <li>
             <span class="rank ${RANK_CLASS[i] || ''}">${i + 1}</span>
             <span class="item-name">${c.nom} ${c.prenom}</span>
-            <span class="item-val">${Number(c.totalDepense).toLocaleString('fr-MG')} Ar</span>
+            <span class="item-val">${Number(c.totalDepense ?? c.totalDepense ?? 0).toLocaleString('fr-MG')} Ar</span>
         </li>
     `).join('');
 }

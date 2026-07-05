@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Greenfield - Statistiques</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --panel: #161b22;
+      --panel-2: #1c2333;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --line: #30363d;
+      --green: #2ea043;
+      --blue: #58a6ff;
+      --orange: #f0883e;
+      --red: #f85149;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(circle at top, rgba(46,160,67,0.12), transparent 35%), var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .shell { max-width: 1200px; margin: 0 auto; padding: 40px 24px 56px; }
+    .hero {
+      background: linear-gradient(180deg, rgba(28,35,51,0.96), rgba(22,27,34,0.96));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 28px;
+      margin-bottom: 24px;
+      display: grid;
+      gap: 16px;
+    }
+    .eyebrow { color: var(--green); font-size: 0.78rem; text-transform: uppercase; letter-spacing: .14em; }
+    h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.4rem); }
+    p { margin: 0; color: var(--muted); max-width: 70ch; line-height: 1.6; }
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 8px;
+    }
+    .card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      min-height: 132px;
+    }
+    .card:hover { transform: translateY(-2px); border-color: rgba(46,160,67,.7); background: #21293a; }
+    .card .tag { display: inline-flex; font-size: .72rem; color: var(--muted); margin-bottom: 12px; }
+    .card h2 { margin: 0 0 8px; font-size: 1.1rem; }
+    .card p { font-size: .92rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    .metric .label { color: var(--muted); font-size: .8rem; margin-bottom: 10px; }
+    .metric .value { font-size: 1.8rem; font-weight: 700; }
+    .footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="eyebrow">Greenfield / Statistiques</div>
+      <h1>Tableau de bord des statistiques</h1>
+      <p>Pages séparées pour les vues métiers: ventes, produits, clients et trésorerie. Chaque page recharge les mêmes API statistiques avec ses filtres dédiés.</p>
+      <div class="nav">
+        <a class="card" th:href="@{/stats/ventes}">
+          <span class="tag">Ventes</span>
+          <h2>Évolution des ventes</h2>
+          <p>Suivi journalier, filtrage par produit et par année.</p>
+        </a>
+        <a class="card" th:href="@{/stats/produits}">
+          <span class="tag">Catalogue</span>
+          <h2>Top produits</h2>
+          <p>Classement des produits les plus vendus sur une période donnée.</p>
+        </a>
+        <a class="card" th:href="@{/stats/clients}">
+          <span class="tag">Clients</span>
+          <h2>Top clients</h2>
+          <p>Meilleurs clients en ligne payés selon l’année choisie.</p>
+        </a>
+        <a class="card" th:href="@{/stats/tresorerie}">
+          <span class="tag">Finance</span>
+          <h2>Trésorerie</h2>
+          <p>Chiffre d’affaires fromage, entrées, dépenses et bénéfice.</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="metric">
+        <div class="label">Accès rapide</div>
+        <div class="value">4</div>
+        <p>Pages statistiques distinctes prêtes à être utilisées.</p>
+      </div>
+      <div class="metric">
+        <div class="label">Périmètre</div>
+        <div class="value">2022-2026</div>
+        <p>Les pages exploitent le jeu de données multi-années.</p>
+      </div>
+      <div class="metric">
+        <div class="label">API</div>
+        <div class="value">REST</div>
+        <p>Les vues consomment les endpoints back déjà existants.</p>
+      </div>
+    </section>
+
+    <div class="footer">Point d’entrée recommandé: <a th:href="@{/stats/ventes}" style="color:var(--blue)">/stats/ventes</a></div>
+  </div>
+</body>
+</html>
