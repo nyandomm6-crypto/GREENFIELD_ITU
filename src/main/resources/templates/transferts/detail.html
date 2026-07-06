@@ -1,0 +1,96 @@
+ <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="transferts/layout :: head"></head>
+<body>
+    <div th:fragment="content">
+        <!-- En-tête -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-file-alt text-info"></i> Détail du Transfert #<span th:text="${transfert.id}">1</span></h1>
+            <div>
+                <a href="/views/transferts" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+
+        <!-- Informations générales -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informations générales</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <strong><i class="fas fa-arrow-right text-primary"></i> Source :</strong>
+                        <p class="mt-1">
+                            <span class="badge bg-info p-2" th:text="${transfert.codePointDeVenteSource}">PDV001</span>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <strong><i class="fas fa-arrow-left text-warning"></i> Cible :</strong>
+                        <p class="mt-1">
+                            <span class="badge bg-warning p-2" th:text="${transfert.codePointDeVenteCible}">PDV002</span>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <strong><i class="fas fa-tag"></i> Statut :</strong>
+                        <p class="mt-1">
+                            <span class="badge p-2"
+                                  th:classappend="${transfert.statutTransfert == 'Termine' ? 'bg-success' : transfert.statutTransfert == 'En_cours' ? 'bg-warning' : 'bg-secondary'}"
+                                  th:text="${transfert.statutTransfert}">Termine</span>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <strong><i class="fas fa-calendar"></i> Date :</strong>
+                        <p class="mt-1" th:text="${#temporals.format(transfert.dateTransfert, 'dd/MM/yyyy HH:mm')}">01/01/2026</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produits transférés -->
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0"><i class="fas fa-boxes"></i> Produits transférés</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead class="table-primary">
+                            <tr>
+                                <th>#</th>
+                                <th>Produit</th>
+                                <th>Demandé</th>
+                                <th>Transféré</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ligne, iter : ${transfert.lignes}">
+                                <td th:text="${iter.index + 1}">1</td>
+                                <td th:text="${ligne.nomProduit}">Produit A</td>
+                                <td th:text="${ligne.quantiteDemandee}">10</td>
+                                <td th:text="${ligne.quantiteTransferee}">8</td>
+                                <td>
+                                    <span class="badge"
+                                          th:classappend="${ligne.transfertPartiel ? 'bg-warning' : 'bg-success'}"
+                                          th:text="${ligne.transfertPartiel ? 'Partiel' : 'Complet'}">
+                                        Complet
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="mt-4">
+            <a href="/views/transferts" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="transferts/layout :: head"></head>
+<body>
+    <div th:fragment="content">
+        <!-- En-tête -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-list text-primary"></i> Liste des Transferts</h1>
+            <div>
+                <a href="/views/transferts/demande" class="btn btn-warning me-2">
+                    <i class="fas fa-pen"></i> Demander
+                </a>
+                <a href="/views/transferts/creer" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Créer
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Date début</label>
+                        <input type="date" name="dateDebut" class="form-control" 
+                               th:value="${#dates.format(dateDebut, 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Date fin</label>
+                        <input type="date" name="dateFin" class="form-control"
+                               th:value="${#dates.format(dateFin, 'yyyy-MM-dd')}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Point de vente</label>
+                        <input type="text" name="codePointDeVente" class="form-control"
+                               placeholder="Code PDV" th:value="${codePointDeVente}">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i> Filtrer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tableau -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div th:if="${transferts.isEmpty()}" class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">Aucun transfert trouvé</p>
+                </div>
+                <div th:unless="${transferts.isEmpty()}">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>#</th>
+                                    <th><i class="fas fa-arrow-right"></i> Source</th>
+                                    <th><i class="fas fa-arrow-left"></i> Cible</th>
+                                    <th><i class="fas fa-tag"></i> Statut</th>
+                                    <th><i class="fas fa-calendar"></i> Date</th>
+                                    <th><i class="fas fa-boxes"></i> Produits</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="t : ${transferts}">
+                                    <td th:text="${t.id}">1</td>
+                                    <td>
+                                        <span class="badge bg-info" th:text="${t.codePointDeVenteSource}">PDV001</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning" th:text="${t.codePointDeVenteCible}">PDV002</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${t.statutTransfert == 'Termine' ? 'bg-success' : t.statutTransfert == 'En_cours' ? 'bg-warning' : 'bg-secondary'}"
+                                              th:text="${t.statutTransfert}">Termine</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(t.dateTransfert, 'dd/MM/yyyy HH:mm')}">01/01/2026</td>
+                                    <td th:text="${t.lignes.size()}">0</td>
+                                    <td>
+                                        <a th:href="@{/views/transferts/{id}(id=${t.id})}" 
+                                           class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

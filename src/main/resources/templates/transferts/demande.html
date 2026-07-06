@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="transferts/layout :: head"></head>
+<body>
+    <div th:fragment="content">
+        <!-- En-tête -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-pen text-warning"></i> Demander un Transfert</h1>
+            <a href="/views/transferts" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
+        </div>
+
+        <!-- Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show">
+            <i class="fas fa-check-circle"></i> <span th:text="${success}">Succès</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}">Erreur</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form th:action="@{/views/transferts/demande}" th:object="${demande}" method="post">
+                    <!-- Point de vente demandeur -->
+                    <div class="mb-3">
+                        <label class="form-label">Point de vente demandeur *</label>
+                        <input type="text" class="form-control" th:field="*{codePointDeVenteDemandeur}"
+                               placeholder="Ex: PDV001" required>
+                    </div>
+
+                    <!-- Objet -->
+                    <div class="mb-3">
+                        <label class="form-label">Objet *</label>
+                        <input type="text" class="form-control" th:field="*{objet}"
+                               placeholder="Ex: Besoin de stock" required>
+                    </div>
+
+                    <!-- Message -->
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" th:field="*{message}" rows="3"
+                                  placeholder="Détails de votre demande..."></textarea>
+                    </div>
+
+                    <!-- Date cible -->
+                    <div class="mb-3">
+                        <label class="form-label">Date cible *</label>
+                        <input type="datetime-local" class="form-control" th:field="*{dateCible}" required>
+                    </div>
+
+                    <!-- Produits -->
+                    <div class="mb-3">
+                        <label class="form-label">Produits demandés *</label>
+                        <div id="produits-container">
+                            <div class="row mb-2 produit-ligne">
+                                <div class="col-md-6">
+                                    <select class="form-control" th:field="*{produits[0].idProduit}" required>
+                                        <option value="">Sélectionner un produit</option>
+                                        <option th:each="p : ${produits}" th:value="${p.id}" th:text="${p.nom}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <input type="number" class="form-control" th:field="*{produits[0].quantite}"
+                                           placeholder="Quantité" min="1" required>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger w-100" onclick="supprimerLigne(this)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary mt-2" onclick="ajouterLigne()">
+                            <i class="fas fa-plus"></i> Ajouter un produit
+                        </button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Envoyer la demande
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ligneIndex = 1;
+        function ajouterLigne() {
+            const container = document.getElementById('produits-container');
+            const div = document.createElement('div');
+            div.className = 'row mb-2 produit-ligne';
+            div.innerHTML = `
+                <div class="col-md-6">
+                    <select class="form-control" name="produits[${ligneIndex}].idProduit" required>
+                        <option value="">Sélectionner un produit</option>
+                        ${document.querySelectorAll('#produits-container select option:not([value=""])')[0]?.outerHTML || ''}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" name="produits[${ligneIndex}].quantite"
+                           placeholder="Quantité" min="1" required>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger w-100" onclick="supprimerLigne(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(div);
+            ligneIndex++;
+        }
+        function supprimerLigne(btn) {
+            const row = btn.closest('.produit-ligne');
+            if (document.querySelectorAll('.produit-ligne').length > 1) {
+                row.remove();
+            } else {
+                alert('Vous devez avoir au moins un produit.');
+            }
+        }
+    </script>
+</body>
+</html>

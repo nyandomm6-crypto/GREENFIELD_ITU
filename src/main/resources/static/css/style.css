@@ -1,0 +1,61 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.card {
+    border-radius: 10px;
+    border: none;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.table th {
+    white-space: nowrap;
+}
+
+.badge {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.8rem;
+}
+
+.btn {
+    border-radius: 8px;
+}
+
+.produit-ligne {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.alert {
+    border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.7rem;
+    }
+}
