@@ -31,11 +31,17 @@
                 </div>
 
                 <form th:action="@{/views/transferts/creer}" th:object="${transfert}" method="post">
-                    <!-- Point de vente cible -->
+                    <!-- ✅ Point de vente cible - Liste déroulante -->
                     <div class="mb-3">
                         <label class="form-label">Point de vente cible *</label>
-                        <input type="text" class="form-control" th:field="*{codePointDeVenteCible}"
-                               placeholder="Ex: PDV002" required>
+                        <select class="form-select" th:field="*{codePointDeVenteCible}" required>
+                            <option value="">Sélectionner un point de vente</option>
+                            <option th:each="pdv : ${pointsDeVente}" 
+                                    th:value="${pdv.code}" 
+                                    th:text="${pdv.code} + ' - ' + ${pdv.nom}">
+                            </option>
+                        </select>
+                        <small class="text-muted">Choisissez le point de vente qui recevra les produits</small>
                     </div>
 
                     <!-- Produits -->
@@ -44,7 +50,7 @@
                         <div id="produits-container">
                             <div class="row mb-2 produit-ligne">
                                 <div class="col-md-6">
-                                    <select class="form-control" th:field="*{produits[0].idProduit}" required>
+                                    <select class="form-select" th:field="*{produits[0].idProduit}" required>
                                         <option value="">Sélectionner un produit</option>
                                         <option th:each="p : ${produits}" th:value="${p.id}" th:text="${p.nom}"></option>
                                     </select>
@@ -79,11 +85,19 @@
             const container = document.getElementById('produits-container');
             const div = document.createElement('div');
             div.className = 'row mb-2 produit-ligne';
+            
+            // Récupérer les options des produits existants
+            const options = document.querySelectorAll('#produits-container select option:not([value=""])');
+            let optionsHtml = '';
+            options.forEach(opt => {
+                optionsHtml += opt.outerHTML;
+            });
+            
             div.innerHTML = `
                 <div class="col-md-6">
-                    <select class="form-control" name="produits[${ligneIndex}].idProduit" required>
+                    <select class="form-select" name="produits[${ligneIndex}].idProduit" required>
                         <option value="">Sélectionner un produit</option>
-                        ${document.querySelectorAll('#produits-container select option:not([value=""])')[0]?.outerHTML || ''}
+                        ${optionsHtml}
                     </select>
                 </div>
                 <div class="col-md-4">
@@ -99,6 +113,7 @@
             container.appendChild(div);
             ligneIndex++;
         }
+        
         function supprimerLigne(btn) {
             const row = btn.closest('.produit-ligne');
             if (document.querySelectorAll('.produit-ligne').length > 1) {

@@ -3,9 +3,11 @@ package itu.GreenField.controller;
 import itu.GreenField.dto.CreerTransfertRequest;
 import itu.GreenField.dto.DemandeTransfertRequest;
 import itu.GreenField.dto.ProduitQuantiteDTO;
+import itu.GreenField.model.PointDeVente;
 import itu.GreenField.model.Produit;
 import itu.GreenField.service.TransfertService;
 import itu.GreenField.repository.ProduitRepository;
+import itu.GreenField.repository.PointDeVenteRepository; // ✅ AJOUT
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -25,6 +27,9 @@ public class TransfertViewController {
 
     @Autowired
     private ProduitRepository produitRepository;
+
+    @Autowired
+    private PointDeVenteRepository pointDeVenteRepository; // ✅ AJOUT
 
     /**
      * Page : Liste des transferts avec filtres
@@ -63,6 +68,7 @@ public class TransfertViewController {
     public String formulaireDemande(Model model) {
         model.addAttribute("demande", new DemandeTransfertRequest());
         model.addAttribute("produits", produitRepository.findAll());
+        model.addAttribute("pointsDeVente", pointDeVenteRepository.findAll()); // ✅ AJOUT
         model.addAttribute("pageTitle", "Demander un Transfert");
         return "transferts/demande";
     }
@@ -80,6 +86,7 @@ public class TransfertViewController {
         } catch (Exception e) {
             model.addAttribute("error", "❌ Erreur : " + e.getMessage());
             model.addAttribute("produits", produitRepository.findAll());
+            model.addAttribute("pointsDeVente", pointDeVenteRepository.findAll()); // ✅ AJOUT
             return "transferts/demande";
         }
     }
@@ -91,8 +98,10 @@ public class TransfertViewController {
     public String formulaireCreation(Model model) {
         CreerTransfertRequest transfert = new CreerTransfertRequest();
         transfert.setProduits(new ArrayList<>());
+
         model.addAttribute("transfert", transfert);
         model.addAttribute("produits", produitRepository.findAll());
+        model.addAttribute("pointsDeVente", pointDeVenteRepository.findAll()); // ✅ AJOUT
         model.addAttribute("pageTitle", "Créer un Transfert");
         return "transferts/creer";
     }
@@ -110,6 +119,7 @@ public class TransfertViewController {
         } catch (Exception e) {
             model.addAttribute("error", "❌ Erreur : " + e.getMessage());
             model.addAttribute("produits", produitRepository.findAll());
+            model.addAttribute("pointsDeVente", pointDeVenteRepository.findAll()); // ✅ AJOUT
             return "transferts/creer";
         }
     }
