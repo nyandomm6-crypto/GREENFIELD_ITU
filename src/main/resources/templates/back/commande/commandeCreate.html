@@ -16,7 +16,6 @@
     <div class="head">
         <h1>Formulaire d'une nouvelle commande</h1>
         <a th:href="@{/commandes}">Voir la liste</a>
-        <a th:href="@{/commandes/importExcel}">Importer depuis un fichier Excel</a>
     </div><br>
     <form th:action="@{/commandes/save}" th:object="${commandeBackFormDto}" method="POST" id="form">
         <div th:if="${globalError}" class="alert alert-danger" role="alert">
@@ -83,6 +82,17 @@
                     th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''" />
 
                 <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
+            </div>
+
+            <div id="bloc-point-vente" class="d-none" style="margin-top: 10px;">
+                <label for="pointDeVenteId">Point de vente de retrait :</label>
+                <select id="pointDeVenteId" th:field="*{pointDeVenteId}"
+                    th:classappend="${#fields.hasErrors('pointDeVenteId')} ? 'is-invalid' : ''">
+                    <option value="">Sélectionnez un point de vente</option>
+                    <option th:each="pdv : ${pointDeVenteOptions}" th:value="${pdv.id}"
+                        th:text="|${pdv.nom} - ${pdv.code}|"></option>
+                </select>
+                <p class="text-danger" th:if="${#fields.hasErrors('pointDeVenteId')}" th:errors="*{pointDeVenteId}"></p>
             </div>
 
             <p>Plage temporelle de récupération :</p>
@@ -180,13 +190,15 @@
 
         function toggleReceptionMode() {
             const blocAdresse = document.getElementById('bloc-adresse');
+            const blocPointVente = document.getElementById('bloc-point-vente');
             if (receptionLivraison.checked) {
                 receptionRetrait.checked = false;
                 blocAdresse.classList.remove('d-none');
+                blocPointVente.classList.add('d-none');
             } else if (receptionRetrait.checked) {
                 receptionLivraison.checked = false;
-                const blocAdresse = document.getElementById('bloc-adresse');
                 blocAdresse.classList.add('d-none');
+                blocPointVente.classList.remove('d-none');
             }
         }
 
