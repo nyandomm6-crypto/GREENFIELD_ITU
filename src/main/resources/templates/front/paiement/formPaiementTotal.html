@@ -4,18 +4,136 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formulaire paiement total</title>
+    <title>Formulaire paiement</title>
 </head>
 
 <body>
-    <h1>Formulaire paiement total</h1>
+    <h1 th:text="${modeReste} ? 'Payer le reste' : 'Paiement total'"></h1>
 
-    <form action="#" method="POST">
+    <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+    <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
 
+    <p>Commande #<span th:text="${commande.id}"></span></p>
+    <p>Montant total a payer : <strong th:text="${montantTotal}"></strong></p>
+    <p>Frais de livraison : <span th:text="${commande.fraisLivraison}"></span></p>
+    <p th:if="${modeReste}">Montant deja paye : <span th:text="${montantPaye}"></span></p>
+    <p>Montant restant a payer : <strong th:text="${montantRestant}"></strong></p>
+
+    <div th:if="${fillesExistantes != null and !#lists.isEmpty(fillesExistantes)}">
+        <h2>Paiements deja enregistres</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Montant</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="fille : ${fillesExistantes}">
+                    <td th:text="${fille.typePayement}"></td>
+                    <td th:text="${fille.valeur}"></td>
+                    <td th:text="${fille.date}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <form th:action="${modeReste} ? @{|/paiements/reste/${commande.id}|} : @{|/paiements/total/${commande.id}|}"
+        th:object="${paiementFormDto}" method="POST">
+        <input type="hidden" th:field="*{commandeId}">
+
+        <table id="table-paiement">
+            <thead>
+                <tr>
+                    <th>Type de paiement</th>
+                    <th>Montant</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="ligne-paiement" th:each="ligne, stat : *{lignes}">
+                    <td>
+                        <select class="type-paiement" th:field="*{lignes[__${stat.index}__].typePayement}">
+                            <option th:each="type : ${typesPaiement}" th:value="${type}" th:text="${type}"></option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01" th:field="*{lignes[__${stat.index}__].montant}" required>
+                    </td>
+                    <td>
+                        <button type="button" onclick="supprimerLignePaiement(this)">Supprimer</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" onclick="ajouterLignePaiement()">+</button>
+
+        <div id="bloc-mobile-money">
+            <p>Numeros de transfert :</p>
+            <ul>
+                <li th:each="numero : ${numerosTransfert}" th:text="${numero}"></li>
+            </ul>
+        </div>
 
         <button type="submit">Payer</button>
     </form>
 
+    <script th:inline="javascript">
+        const typesPaiement = /*[[${typesPaiement}]]*/[];
+
+        function ajouterLignePaiement() {
+            const tbody = document.querySelector('#table-paiement tbody');
+            const index = tbody.querySelectorAll('.ligne-paiement').length;
+            const options = typesPaiement.map(type => `<option value="${type}">${type}</option>`).join('');
+            tbody.insertAdjacentHTML('beforeend', `
+                <tr class="ligne-paiement">
+                    <td>
+                        <select class="type-paiement" name="lignes[${index}].typePayement" onchange="toggleMobileMoney()">
+                            ${options}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" step="0.01" name="lignes[${index}].montant" required>
+                    </td>
+                    <td>
+                        <button type="button" onclick="supprimerLignePaiement(this)">Supprimer</button>
+                    </td>
+                </tr>
+            `);
+            toggleMobileMoney();
+        }
+
+        function supprimerLignePaiement(button) {
+            const lignes = document.querySelectorAll('.ligne-paiement');
+            if (lignes.length <= 1) {
+                alert('Vous devez garder au moins une ligne de paiement.');
+                return;
+            }
+            button.closest('.ligne-paiement').remove();
+            reindexerLignes();
+            toggleMobileMoney();
+        }
+
+        function reindexerLignes() {
+            document.querySelectorAll('.ligne-paiement').forEach((ligne, index) => {
+                ligne.querySelector('.type-paiement').name = `lignes[${index}].typePayement`;
+                ligne.querySelector('input[type="number"]').name = `lignes[${index}].montant`;
+            });
+        }
+
+        function toggleMobileMoney() {
+            const hasMobileMoney = Array.from(document.querySelectorAll('.type-paiement'))
+                .some(select => select.value === 'Mobile_Money');
+            document.getElementById('bloc-mobile-money').style.display = hasMobileMoney ? 'block' : 'none';
+        }
+
+        document.querySelectorAll('.type-paiement').forEach(select => {
+            select.addEventListener('change', toggleMobileMoney);
+        });
+        toggleMobileMoney();
+    </script>
 </body>
 
 </html>

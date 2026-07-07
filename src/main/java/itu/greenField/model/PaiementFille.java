@@ -1,6 +1,7 @@
 package itu.greenField.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,6 +18,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "paiementfille")
 public class PaiementFille {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -31,6 +33,9 @@ public class PaiementFille {
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valeur;
+
+    @Column(name = "date")
+    private LocalDate date;
 
     public Integer getId() {
         return id;
@@ -62,5 +67,13 @@ public class PaiementFille {
 
     public void setValeur(BigDecimal valeur) {
         this.valeur = valeur;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

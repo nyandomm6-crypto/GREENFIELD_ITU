@@ -1,19 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
-<html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Choix du paiement</title>
 </head>
 
 <body>
-    <a th:href="@{/paiements/avance}">Payer l'avance</a>
-    <p>ou</p>
-    <a th:href="@{/paiements/total}">Payer en totalite</a>
+    <h1>Choix du paiement</h1>
 
+    <div th:if="${commande == null}">
+        <p>Commande introuvable.</p>
+    </div>
+
+    <div th:if="${commande != null}">
+        <p>Commande #<span th:text="${commande.id}"></span></p>
+        <p>Total produits : <span th:text="${commande.totalGeneral}"></span></p>
+        <p>Frais de livraison : <span th:text="${commande.fraisLivraison}"></span></p>
+
+        <a th:href="@{|/paiements/avance/${commande.id}|}">Payer l'avance</a>
+        <p>ou</p>
+        <a th:href="@{|/paiements/total/${commande.id}|}">Payer en totalite</a>
+    </div>
 </body>
 
 </html>

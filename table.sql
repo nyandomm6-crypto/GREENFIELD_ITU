@@ -363,3 +363,6 @@ ALTER TABLE livraison ALTER COLUMN statutlivraison TYPE varchar(30);
 
 ALTER TABLE LivraisonFille
 ALTER COLUMN statutLivraisonFille TYPE varchar(30);
+
+ALTER TABLE paiementfille
+ADD COLUMN date DATE DEFAULT CURRENT_DATE;

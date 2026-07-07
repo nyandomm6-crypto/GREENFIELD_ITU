@@ -17,7 +17,7 @@
         <a th:href="@{/commandes}">Retour</a>
         <a th:href="@{|/commandes/annuler/${commande.id}|}">Anuler</a>
         <a th:href="@{|/commandes/form/edit/${commande.id}|}">Modifier</a>
-        <a th:href="@{/paiements/choix}">Choix de paiement</a>
+        <a th:href="@{|/paiements/choix/${commande.id}|}">Choix de paiement</a>
 
     </div>
     <div class="info-general">

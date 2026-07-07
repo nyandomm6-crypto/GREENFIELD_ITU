@@ -173,6 +173,8 @@
                             <a th:href="@{|/commandes/fo/detail/${cmd.id}|}">Detail</a>
                             <a th:href="@{|/commandes/fo/form/edit/${cmd.id}|}">Modifier</a>
                             <a th:href="@{|/commandes/fo/delete/${cmd.id}|}">Supprimer</a>
+                            <a th:if="${commandesAvecResteAPayer != null and commandesAvecResteAPayer.contains(cmd.id)}"
+                                th:href="@{|/paiements/reste/${cmd.id}|}">Payer le reste</a>
                         </td>
                     </tr>
                 </tbody>

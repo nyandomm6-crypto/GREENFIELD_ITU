@@ -1,11 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Liste des paiements</title>
 </head>
+
 <body>
-    
+    <h1>Liste des paiements</h1>
+
+    <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+    <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+
+    <form th:action="@{/paiements/list}" method="GET">
+        <label for="statut">Filtrer par statut :</label>
+        <select id="statut" name="statut">
+            <option value="">Tous</option>
+            <option th:each="s : ${statutsPaiement}" th:value="${s}" th:text="${s}" th:selected="${s == statut}">
+            </option>
+        </select>
+        <button type="submit">Filtrer</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Commande</th>
+                <th>Date</th>
+                <th>Statut</th>
+                <th>Total</th>
+                <th>Espece a confirmer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="paiement : ${paiements}">
+                <td th:text="${paiement.id}"></td>
+                <td th:text="${paiement.commande.id}"></td>
+                <td th:text="${paiement.date}"></td>
+                <td th:text="${paiement.statut}"></td>
+                <td th:text="${paiementService.getMontantTotalCommande(paiement.commande)}"></td>
+                <td th:text="${paiementService.getMontantEspece(paiement)}"></td>
+                <td>
+                    <a th:href="@{|/paiements/detail/${paiement.id}|}">Details</a>
+                    <form th:if="${paiement.statut.name() == 'Reste' and paiementService.aUnPaiementEnEspece(paiement)}"
+                        th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST"
+                        style="display:inline">
+                        <button type="submit">Confirmer paiement en espece</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </body>
+
 </html>

@@ -101,6 +101,17 @@ public class CommandesService {
 
     @Transactional
     public Commandes saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
+        return saveCommande(commandeFormDto, TypeCommande.En_boutique, null);
+    }
+
+    @Transactional
+    public Commandes saveFrontCommande(CommandeBackFormDto commandeFormDto) throws Exception {
+        return saveCommande(commandeFormDto, TypeCommande.En_ligne, commandeFormDto.getPointDeVenteId());
+    }
+
+    @Transactional
+    private Commandes saveCommande(CommandeBackFormDto commandeFormDto, TypeCommande typeCommande,
+            Integer pointDeVenteId) throws Exception {
         Integer clientId = commandeFormDto.getClientId();
         Client client = null;
         if (clientId != null) {
@@ -113,7 +124,6 @@ public class CommandesService {
         }
 
         ModeReception modeReception = ModeReception.fromString(commandeFormDto.getModeReception());
-        TypeCommande typeCommande = TypeCommande.En_boutique;
         
         Commandes commande = null;
         HistoriqueStatutCommande hist = null;
@@ -153,12 +163,15 @@ public class CommandesService {
 
         /* Static pour le moment */
         if (commandeFormDto.getAddress() == null || modeReception == ModeReception.Retrait_Boutique) {
-            PointDeVente pdv = pointDeVenteService.findPointDeVenteById(1);
+            Integer idPdv = pointDeVenteId == null ? 1 : pointDeVenteId;
+            PointDeVente pdv = pointDeVenteService.findPointDeVenteById(idPdv);
             commande.setPointDeVenteRetrait(pdv);
             commande.setAdresseLivraison(null);
+            commande.setProvinceLivraison(null);
         } else {
             ProvinceLivraison provinceLivraison = provinceLivraisonService.getProvinceById(commandeFormDto.getProvinceId());
             commande.setProvinceLivraison(provinceLivraison);
+            commande.setPointDeVenteRetrait(null);
         }
 
         int qteTotal = 0;
@@ -216,9 +229,9 @@ public class CommandesService {
 
         // 1. Filtre Statut (statutcommande)
         if (filter.getStatutCommande() != null && !filter.getStatutCommande().isEmpty()) {
-            sb.append("AND c.statutcommande = :statut ");
-            sbCount.append("AND c.statutcommande = :statut ");
-            params.put("statut", filter.getStatutCommande());
+            sb.append("AND c.statutactuel = :statut ");
+            sbCount.append("AND c.statutactuel = :statut ");
+            params.put("statut", Integer.valueOf(filter.getStatutCommande()));
         }
 
         // 2. Filtre Mode Réception (mode_reception)

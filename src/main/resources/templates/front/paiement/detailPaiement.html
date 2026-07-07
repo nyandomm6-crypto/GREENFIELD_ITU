@@ -1,13 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Details du paiement</title>
 </head>
+
 <body>
-    
+    <h1>Details du paiement</h1>
+
+    <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+    <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+
+    <p>Paiement #<span th:text="${paiement.id}"></span></p>
+    <p>Statut : <span th:text="${paiement.statut}"></span></p>
+    <p>Commande #<span th:text="${paiement.commande.id}"></span></p>
+    <p>Frais de livraison : <span th:text="${paiement.commande.fraisLivraison}"></span></p>
+    <p>Montant total : <strong th:text="${montantTotal}"></strong></p>
+    <p>Montant paye : <span th:text="${montantPaye}"></span></p>
+    <p>Montant restant : <span th:text="${montantRestant}"></span></p>
+
+    <h2>Paiements filles</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Montant</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="fille : ${filles}">
+                <td th:text="${fille.typePayement}"></td>
+                <td th:text="${fille.valeur}"></td>
+                <td th:text="${fille.date}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Commande correspondante</h2>
+    <p>Client : <span th:text="|${paiement.commande.client.nom} ${paiement.commande.client.prenom}|"></span></p>
+    <p>Mode de reception : <span th:text="${paiement.commande.modeReception}"></span></p>
+    <p>Lieu : <span
+            th:text="${paiement.commande.pointDeVenteRetrait?.code != null ? paiement.commande.pointDeVenteRetrait.code : paiement.commande.adresseLivraison}"></span>
+    </p>
+
+    <form th:if="${paiement.statut.name() == 'Reste' and paiementService.aUnPaiementEnEspece(paiement)}"
+        th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST">
+        <button type="submit">Confirmer paiement en espece</button>
+    </form>
+
+    <button type="button">Exporter la facture</button>
 </body>
+
 </html>
