@@ -84,4 +84,8 @@ public class PointDeVenteService {
     public PointDeVente findPointDeVenteByNom(String nom) {
         return pointDeVenteRepository.findFirstByNom(nom).orElse(null);
     }
+
+    public List<PointDeVente> getAll() {
+        return pointDeVenteRepository.findAll();
+    }
 }
