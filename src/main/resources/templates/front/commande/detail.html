@@ -1361,6 +1361,15 @@
               <a class="btn btn-secondary" th:href="@{/commandes}">
                 <i class="fas fa-arrow-left"></i> Retour aux commandes
               </a>
+              <form
+                th:action="@{/paiements/choix/{id}(id=${commande.id})}"
+                method="get"
+                style="display: inline"
+              >
+                <button type="submit" class="btn btn-secondary">
+                  <i class="fas fa-check"></i> Valider achat
+                </button>
+              </form>
             </div>
           </aside>
         </div>

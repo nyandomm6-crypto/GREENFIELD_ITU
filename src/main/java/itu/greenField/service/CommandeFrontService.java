@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,7 @@ public class CommandeFrontService {
      */
     @Transactional
     public String validerAchat(Panier panier, Client client, ModeReception mode, String adresse, String point,
-            LocalDateTime dateHeure) {
+            LocalDateTime dateHeure, AtomicReference<Integer> idCommande) {
         List<PanierFille> lignes = panierService.listerLignes(panier);
         StatutCommande statut = statutCommandeRepository.findByNom("Créée")
                 .orElseThrow(() -> new RuntimeException("Statut introuvable"));
@@ -100,6 +101,7 @@ public class CommandeFrontService {
         commande.setStatutActuel(statut);
 
         commande = commandesRepository.save(commande);
+        idCommande.set(commande.getId());
 
         for (PanierFille ligne : lignes) {
             DetailsCommande detail = new DetailsCommande();

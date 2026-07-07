@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -104,6 +105,7 @@ public class CommandeFrontController {
                 return "redirect:/commande/recapitulatif";
             }
         }
+        AtomicReference<Integer> idCommande = new AtomicReference<>();
         ModeReception modeReception = ModeReception.valueOf(mode);
         String erreur = commandeService.validerAchat(
                 panier,
@@ -111,7 +113,7 @@ public class CommandeFrontController {
                 modeReception,
                 adresse,
                 pointRetrait,
-                dateHeure);
+                dateHeure, idCommande);
 
         if (erreur != null) {
             redirectAttributes.addFlashAttribute("error", erreur);
@@ -121,7 +123,12 @@ public class CommandeFrontController {
         redirectAttributes.addFlashAttribute(
                 "success",
                 "Votre achat a été validé avec succès !");
+        Integer id = idCommande.get();
+        if (id != -1) {
+            return "redirect:/commandes/" + id;
+        } else {
+            return "redirect:/panier";
+        }
 
-        return "redirect:/produits";
     }
 }
