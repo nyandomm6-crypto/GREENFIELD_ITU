@@ -262,7 +262,7 @@ public class CommandeController {
             model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
             model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
             model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
-            return "front/commande/commandeCreate";
+            return "front/commande_ta/commandeCreate";
         }
 
         try {
@@ -277,11 +277,11 @@ public class CommandeController {
             model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
             model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
             model.addAttribute("globalError", "Erreur lors de la sauvegarde : " + e.getMessage());
-            return "front/commande/commandeCreate";
+            return "front/commande_ta/commandeCreate";
         }
     }
 
-    @GetMapping({ "/", "", "/list" })
+    @GetMapping({ "/list" })
     public ModelAndView listCommandes() {
         ModelAndView mv = new ModelAndView("back/commande/listeCommande");
         CommandeBackFilterDto filter = new CommandeBackFilterDto();
