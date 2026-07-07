@@ -1,4 +1,4 @@
-package itu.greenField.repository;
+package itu.GreenField.repository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -8,9 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import itu.greenField.model.FRole;
-import itu.greenField.model.PointDeVente;
-import itu.greenField.model.Employes;
+import itu.GreenField.model.FRole;
+import itu.GreenField.model.Employes;
 
 public interface EmployesRepository extends JpaRepository<Employes, Integer> {
     Optional<Employes> findByMailIgnoreCase(String mail);
@@ -46,17 +45,4 @@ public interface EmployesRepository extends JpaRepository<Employes, Integer> {
             @Param("motCle") String motCle,
             @Param("date") LocalDate date,
             @Param("role") String role);
-
-    public Employes getById(Integer id);
-
-    List<Employes> findByPointDeVente(PointDeVente pointDeVente);
-
-    List<Employes> findByPointDeVenteAndNomContainingIgnoreCase(PointDeVente pointDeVente, String nom);
-
-    List<Employes> findByPointDeVenteAndRole(PointDeVente pointDeVente, FRole role);
-
-    List<Employes> findByPointDeVenteAndNomContainingIgnoreCaseAndRole(PointDeVente pointDeVente, String nom,
-            FRole role);
-
-    Optional<Employes> findByMail(String mail);
 }

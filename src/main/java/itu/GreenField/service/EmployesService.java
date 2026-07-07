@@ -1,4 +1,4 @@
-package itu.greenField.service;
+package itu.GreenField.service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -7,11 +7,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import itu.greenField.model.Employes;
-import itu.greenField.model.FRole;
-import itu.greenField.model.PointDeVente;
-import itu.greenField.repository.EmployesRepository;
-import itu.greenField.repository.PointDeVenteRepository;
+import itu.GreenField.model.Employes;
+import itu.GreenField.model.FRole;
+import itu.GreenField.model.PointDeVente;
+import itu.GreenField.repository.EmployesRepository;
+import itu.GreenField.repository.PointDeVenteRepository;
 
 @Service
 public class EmployesService {
@@ -26,7 +26,6 @@ public class EmployesService {
         this.employesRepository = employesRepository;
         this.pointDeVenteRepository = pointDeVenteRepository;
         this.jdbcTemplate = jdbcTemplate;
-
     }
 
     public List<Employes> filtrer(Boolean estActif, String motCle, LocalDate date, FRole role) {
@@ -182,13 +181,5 @@ public class EmployesService {
 
     private boolean aDuTexte(String valeur) {
         return valeur != null && !valeur.trim().isEmpty();
-    }
-
-    public List<Employes> getLivreur() {
-        return employesRepository.findAll();
-    }
-
-    public Employes findByEmail(String email) {
-        return employesRepository.findByMail(email).orElse(null);
     }
 }
