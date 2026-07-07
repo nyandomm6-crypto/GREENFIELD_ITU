@@ -69,7 +69,7 @@ public class ProduitController {
         return "front/produits/detail";
     }
 
-    @GetMapping(value = "/{matricule}/detail-json", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/produits/{matricule}/detail-json", produces = "application/json;charset=UTF-8")
     @ResponseBody
     public String getProduit(@PathVariable String matricule) {
         return produitService.produitToJson(produitService.findProduitByMatricule(matricule));
