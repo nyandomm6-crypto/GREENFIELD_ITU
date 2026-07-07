@@ -1,5 +1,5 @@
 -- Active: 1782932337041@@127.0.0.1@5433@bisous
-CREATE DATABASE huhu;
+CREATE DATABASE gr;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
 -- =====================================================
@@ -274,5 +274,4 @@ CREATE TABLE PanierFille (
     quantite INT NOT NULL
 );
 
-ALTER TABLE paiementfille
-ADD COLUMN date DATE DEFAULT CURRENT_DATE;
+ALTER TABLE paiementfille ADD COLUMN date DATE DEFAULT CURRENT_DATE;

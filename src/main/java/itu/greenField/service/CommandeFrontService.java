@@ -46,7 +46,7 @@ public class CommandeFrontService {
     public String validerAchat(Panier panier, Client client, ModeReception mode, String adresse, String point,
             LocalDateTime dateHeure) {
         List<PanierFille> lignes = panierService.listerLignes(panier);
-        StatutCommande statut = statutCommandeRepository.findByNom("Crée")
+        StatutCommande statut = statutCommandeRepository.findByNom("Créée")
                 .orElseThrow(() -> new RuntimeException("Statut introuvable"));
         if (lignes.isEmpty()) {
             return "Le panier est vide.";
