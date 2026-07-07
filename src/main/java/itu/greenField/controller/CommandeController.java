@@ -205,6 +205,10 @@ public class CommandeController {
                         "La province de livraison est obligatoire pour une livraison à domicile.");
             }
         }
+        if ("Retrait_Boutique".equalsIgnoreCase(form.getModeReception()) && form.getPointDeVenteId() == null) {
+            bindingResult.rejectValue("pointDeVenteId", "error.pointDeVenteId",
+                    "Le point de vente de retrait est obligatoire.");
+        }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("clients", clientService.getAll());

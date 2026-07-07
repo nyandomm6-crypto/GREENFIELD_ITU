@@ -101,7 +101,7 @@ public class CommandesService {
 
     @Transactional
     public Commandes saveBackCommande(CommandeBackFormDto commandeFormDto) throws Exception {
-        return saveCommande(commandeFormDto, TypeCommande.En_boutique, null);
+        return saveCommande(commandeFormDto, TypeCommande.En_boutique, commandeFormDto.getPointDeVenteId());
     }
 
     @Transactional

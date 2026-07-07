@@ -84,6 +84,17 @@
                 <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
             </div>
 
+            <div id="bloc-point-vente" class="d-none" style="margin-top: 10px;">
+                <label for="pointDeVenteId">Point de vente de retrait :</label>
+                <select id="pointDeVenteId" th:field="*{pointDeVenteId}"
+                    th:classappend="${#fields.hasErrors('pointDeVenteId')} ? 'is-invalid' : ''">
+                    <option value="">Sélectionnez un point de vente</option>
+                    <option th:each="pdv : ${pointDeVenteOptions}" th:value="${pdv.id}"
+                        th:text="|${pdv.nom} - ${pdv.code}|"></option>
+                </select>
+                <p class="text-danger" th:if="${#fields.hasErrors('pointDeVenteId')}" th:errors="*{pointDeVenteId}"></p>
+            </div>
+
             <p>Plage temporelle de récupération :</p>
 
             <label for="heure-reception-debut">Date et heure début :</label>
@@ -179,13 +190,15 @@
 
         function toggleReceptionMode() {
             const blocAdresse = document.getElementById('bloc-adresse');
+            const blocPointVente = document.getElementById('bloc-point-vente');
             if (receptionLivraison.checked) {
                 receptionRetrait.checked = false;
                 blocAdresse.classList.remove('d-none');
+                blocPointVente.classList.add('d-none');
             } else if (receptionRetrait.checked) {
                 receptionLivraison.checked = false;
-                const blocAdresse = document.getElementById('bloc-adresse');
                 blocAdresse.classList.add('d-none');
+                blocPointVente.classList.remove('d-none');
             }
         }
 
