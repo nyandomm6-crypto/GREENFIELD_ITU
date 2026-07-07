@@ -11,16 +11,16 @@ import itu.greenField.model.TypeMvt;
 import java.util.List;
 
 public interface MvtStockRepository extends JpaRepository<MvtStock, Integer> {
-    List<MvtStock> findByPointDeVente(PointDeVente pointDeVente);
+        List<MvtStock> findByPointDeVente(PointDeVente pointDeVente);
 
-    List<MvtStock> findByPointDeVenteAndTypeMouvement(PointDeVente pointDeVente, TypeMvt typeMouvement);
+        List<MvtStock> findByPointDeVenteAndTypeMouvement(PointDeVente pointDeVente, TypeMvt typeMouvement);
 
-    @Query("SELECT COALESCE(SUM(CASE " +
-            "  WHEN ms.typeMouvement IN (itu.GreenField.model.TypeMvt.Entree_Production, itu.GreenField.model.TypeMvt.Entree_Boutique) THEN msf.quantite "
-            +
-            "  ELSE -msf.quantite END), 0) " +
-            "FROM MvtStockFille msf JOIN msf.mvtStock ms " +
-            "WHERE msf.produit.id = :idProduit AND (:ptDeVenteCode IS NULL OR ms.pointDeVente.code = :ptDeVenteCode)")
-    Integer getStockByProduitAndOptionalPointDeVente(@Param("idProduit") Integer idProduit,
-            @Param("ptDeVenteCode") String ptDeVenteCode);
+        @Query("SELECT COALESCE(SUM(CASE " +
+                        "  WHEN ms.typeMouvement IN (itu.greenField.model.TypeMvt.Entree_Production, itu.greenField.model.TypeMvt.Entree_Boutique) THEN msf.quantite "
+                        +
+                        "  ELSE -msf.quantite END), 0) " +
+                        "FROM MvtStockFille msf JOIN msf.mvtStock ms " +
+                        "WHERE msf.produit.id = :idProduit AND (:ptDeVenteCode IS NULL OR ms.pointDeVente.code = :ptDeVenteCode)")
+        Integer getStockByProduitAndOptionalPointDeVente(@Param("idProduit") Integer idProduit,
+                        @Param("ptDeVenteCode") String ptDeVenteCode);
 }

@@ -1,112 +1,150 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>GreenField - Formulaire Produit</title>
     <style>
-        .error {
-            color: red;
-            font-size: 12px;
-        }
-        input.error-border, select.error-border {
-            border: 2px solid red;
-        }
-        button:disabled {
-            background: gray;
-            cursor: not-allowed;
-        }
+      .error {
+        color: red;
+        font-size: 12px;
+      }
+      input.error-border,
+      select.error-border {
+        border: 2px solid red;
+      }
+      button:disabled {
+        background: gray;
+        cursor: not-allowed;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <a th:href="@{/produits}">Catalogue</a> | 
-        <a th:href="@{/produits/nouveau}">Ajouter Produit</a> | 
-        <a th:href="@{/stocks}">Stocks</a> | 
-        <a th:href="@{/stocks/entree}">Entrée de Stock</a>
+      <a th:href="@{/back/produits}">Catalogue</a> |
+      <a th:href="@{/back/produits/nouveau}">Ajouter Produit</a> |
+      <a th:href="@{/back/stocks}">Stocks</a> |
+      <a th:href="@{/back/stocks/entree}">Entrée de Stock</a>
     </nav>
-    <hr>
+    <hr />
 
-    <h1 th:text="${isEdit ? 'Modifier le Produit' : 'Ajouter un Nouveau Produit'}"></h1>
+    <h1
+      th:text="${isEdit ? 'Modifier le Produit' : 'Ajouter un Nouveau Produit'}"
+    ></h1>
 
-    <form id="produitForm" method="post" th:action="${isEdit ? '/produits/modifier/' + produit.id : '/produits/nouveau'}">
-        <input type="hidden" id="prodId" name="id" th:value="${produit.id}">
+    <form
+      id="produitForm"
+      method="post"
+      th:action="${isEdit ? '/back/produits/modifier/' + produit.id : '/back/produits/nouveau'}"
+    >
+      <input type="hidden" id="prodId" name="id" th:value="${produit.id}" />
 
-        <label>
-            Nom du Produit :<br>
-            <input type="text" id="nom" name="nom" th:value="${produit.nom}" required>
-        </label><br>
-        <span class="error" id="err-nom"></span><br>
+      <label>
+        Nom du Produit :<br />
+        <input
+          type="text"
+          id="nom"
+          name="nom"
+          th:value="${produit.nom}"
+          required
+        /> </label
+      ><br />
+      <span class="error" id="err-nom"></span><br />
 
-        <label>
-            Matricule :<br>
-            <input type="text" id="matricule" name="matricule" th:value="${produit.matricule}" required>
-        </label><br>
-        <span class="error" id="err-matricule"></span><br>
+      <label>
+        Matricule :<br />
+        <input
+          type="text"
+          id="matricule"
+          name="matricule"
+          th:value="${produit.matricule}"
+          required
+        /> </label
+      ><br />
+      <span class="error" id="err-matricule"></span><br />
 
-        <label>
-            Prix Unitaire (Ar) :<br>
-            <input type="number" step="0.01" id="pu" name="pu" th:value="${produit.pu}" required>
-        </label><br>
-        <span class="error" id="err-pu"></span><br>
+      <label>
+        Prix Unitaire (Ar) :<br />
+        <input
+          type="number"
+          step="0.01"
+          id="pu"
+          name="pu"
+          th:value="${produit.pu}"
+          required
+        /> </label
+      ><br />
+      <span class="error" id="err-pu"></span><br />
 
-        <label>
-            Catégorie :<br>
-            <select id="idCategorie" name="categorie.id" required>
-                <option value="">-- Sélectionner --</option>
-                <option th:each="cat : ${categories}" 
-                        th:value="${cat.id}" 
-                        th:text="${cat.libelle}"
-                        th:selected="${produit.categorie != null && cat.id == produit.categorie.id}"></option>
-            </select>
-        </label><br>
-        <span class="error" id="err-categorie"></span><br><br>
+      <label>
+        Catégorie :<br />
+        <select id="idCategorie" name="categorie.id" required>
+          <option value="">-- Sélectionner --</option>
+          <option
+            th:each="cat : ${categories}"
+            th:value="${cat.id}"
+            th:text="${cat.libelle}"
+            th:selected="${produit.categorie != null && cat.id == produit.categorie.id}"
+          ></option>
+        </select> </label
+      ><br />
+      <span class="error" id="err-categorie"></span><br /><br />
 
-        <button type="submit" id="btnSubmit">Enregistrer</button>
-        <a th:href="@{/produits}">Annuler</a>
+      <button type="submit" id="btnSubmit">Enregistrer</button>
+      <a th:href="@{/back/produits}">Annuler</a>
     </form>
 
     <script>
-        const formInputs = document.querySelectorAll("#produitForm input, #produitForm select");
-        const btnSubmit = document.getElementById("btnSubmit");
+      const formInputs = document.querySelectorAll(
+        "#produitForm input, #produitForm select",
+      );
+      const btnSubmit = document.getElementById("btnSubmit");
 
-        async function validateForm() {
-            const formData = new URLSearchParams();
-            formData.append("id", document.getElementById("prodId").value);
-            formData.append("nom", document.getElementById("nom").value);
-            formData.append("matricule", document.getElementById("matricule").value);
-            formData.append("pu", document.getElementById("pu").value);
-            formData.append("idCategorie", document.getElementById("idCategorie").value);
+      async function validateForm() {
+        const formData = new URLSearchParams();
+        formData.append("id", document.getElementById("prodId").value);
+        formData.append("nom", document.getElementById("nom").value);
+        formData.append(
+          "matricule",
+          document.getElementById("matricule").value,
+        );
+        formData.append("pu", document.getElementById("pu").value);
+        formData.append(
+          "idCategorie",
+          document.getElementById("idCategorie").value,
+        );
 
-            const response = await fetch("/produits/validation", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: formData
-            });
+        const response = await fetch("/back/produits/validation", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: formData,
+        });
 
-            const errors = await response.json();
-            let hasError = false;
+        const errors = await response.json();
+        let hasError = false;
 
-            // Réinitialiser l'interface
-            formInputs.forEach(i => i.classList.remove("error-border"));
-            document.querySelectorAll(".error").forEach(e => e.textContent = "");
+        // Réinitialiser l'interface
+        formInputs.forEach((i) => i.classList.remove("error-border"));
+        document
+          .querySelectorAll(".error")
+          .forEach((e) => (e.textContent = ""));
 
-            // Afficher les erreurs
-            for (let field in errors) {
-                hasError = true;
-                
-                const inputName = (field === 'categorie') ? 'categorie.id' : field;
-                const input = document.querySelector(`[name="${inputName}"]`);
-                const errorSpan = document.getElementById("err-" + field);
+        // Afficher les erreurs
+        for (let field in errors) {
+          hasError = true;
 
-                if (input) input.classList.add("error-border");
-                if (errorSpan) errorSpan.textContent = errors[field];
-            }
+          const inputName = field === "categorie" ? "categorie.id" : field;
+          const input = document.querySelector(`[name="${inputName}"]`);
+          const errorSpan = document.getElementById("err-" + field);
 
-            // Activer ou non le bouton
-            btnSubmit.disabled = hasError;
+          if (input) input.classList.add("error-border");
+          if (errorSpan) errorSpan.textContent = errors[field];
         }
 
-        formInputs.forEach(i => i.addEventListener("input", validateForm));
+        // Activer ou non le bouton
+        btnSubmit.disabled = hasError;
+      }
+
+      formInputs.forEach((i) => i.addEventListener("input", validateForm));
     </script>
-</body>
+  </body>
 </html>

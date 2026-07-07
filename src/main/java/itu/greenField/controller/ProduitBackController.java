@@ -14,6 +14,7 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/back")
 public class ProduitBackController {
 
     private final ProduitBackService produitService;
@@ -64,7 +65,7 @@ public class ProduitBackController {
         }
         produitService.save(produit);
         redirectAttributes.addFlashAttribute("success", "Produit créé avec succès.");
-        return "redirect:/produits";
+        return "redirect:back/produits";
     }
 
     @GetMapping("/produits/modifier/{id}")
@@ -92,7 +93,7 @@ public class ProduitBackController {
         }
         produitService.save(produit);
         redirectAttributes.addFlashAttribute("success", "Produit modifié avec succès.");
-        return "redirect:/produits";
+        return "redirect:/back/produits";
     }
 
     @GetMapping("/produits/supprimer/{id}")
@@ -103,7 +104,7 @@ public class ProduitBackController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Impossible de supprimer ce produit.");
         }
-        return "redirect:/produits";
+        return "redirect:/back/produits";
     }
 
     @PostMapping(value = "/produits/validation", produces = "application/json")
@@ -168,7 +169,7 @@ public class ProduitBackController {
         try {
             produitService.addStock(idProduit, ptDeVenteCode, typeMouvement, quantite);
             redirectAttributes.addFlashAttribute("success", "Entrée de stock effectuée avec succès.");
-            return "redirect:/stocks";
+            return "redirect:/back/stocks";
         } catch (Exception e) {
             model.addAttribute("error", "Erreur : " + e.getMessage());
             model.addAttribute("produits", produitService.search(null, null));

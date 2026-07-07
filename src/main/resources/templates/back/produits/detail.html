@@ -1,47 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>GreenField - Détail du Produit</title>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <a th:href="@{/produits}">Catalogue</a> | 
-        <a th:href="@{/produits/nouveau}">Ajouter Produit</a> | 
-        <a th:href="@{/stocks}">Stocks</a> | 
-        <a th:href="@{/stocks/entree}">Entrée de Stock</a>
+      <a th:href="@{/back/produits}">Catalogue</a> |
+      <a th:href="@{/back/produits/nouveau}">Ajouter Produit</a> |
+      <a th:href="@{/back/stocks}">Stocks</a> |
+      <a th:href="@{/back/stocks/entree}">Entrée de Stock</a>
     </nav>
-    <hr>
+    <hr />
 
     <h1>Fiche Produit</h1>
 
     <ul>
-        <li><b>Nom :</b> <span th:text="${produit.nom}"></span></li>
-        <li><b>Matricule :</b> <span th:text="${produit.matricule}"></span></li>
-        <li><b>Prix Unitaire :</b> <span th:text="${produit.pu + ' Ar'}"></span></li>
-        <li><b>Catégorie :</b> <span th:text="${produit.categorie != null ? produit.categorie.libelle : 'Non spécifié'}"></span></li>
-        <li><b>Stock Total Global :</b> <span th:text="${globalStock}"></span></li>
+      <li><b>Nom :</b> <span th:text="${produit.nom}"></span></li>
+      <li><b>Matricule :</b> <span th:text="${produit.matricule}"></span></li>
+      <li>
+        <b>Prix Unitaire :</b> <span th:text="${produit.pu + ' Ar'}"></span>
+      </li>
+      <li>
+        <b>Catégorie :</b>
+        <span
+          th:text="${produit.categorie != null ? produit.categorie.libelle : 'Non spécifié'}"
+        ></span>
+      </li>
+      <li>
+        <b>Stock Total Global :</b> <span th:text="${globalStock}"></span>
+      </li>
     </ul>
 
     <h2>Détail Stock par Point de Vente</h2>
     <table border="1">
-        <thead>
-            <tr>
-                <th>Code PDV</th>
-                <th>Nom PDV</th>
-                <th>Quantité en Stock</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="pdv : ${pdvs}">
-                <td th:text="${pdv.code}"></td>
-                <td th:text="${pdv.nom}"></td>
-                <td th:text="${produitService.getStock(produit.id, pdv.code)}"></td>
-            </tr>
-        </tbody>
+      <thead>
+        <tr>
+          <th>Code PDV</th>
+          <th>Nom PDV</th>
+          <th>Quantité en Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="pdv : ${pdvs}">
+          <td th:text="${pdv.code}"></td>
+          <td th:text="${pdv.nom}"></td>
+          <td th:text="${produitService.getStock(produit.id, pdv.code)}"></td>
+        </tr>
+      </tbody>
     </table>
 
-    <br>
-    <a th:href="@{/produits}">Retour au catalogue</a>
-</body>
+    <br />
+    <a th:href="@{/back/produits}">Retour au catalogue</a>
+  </body>
 </html>

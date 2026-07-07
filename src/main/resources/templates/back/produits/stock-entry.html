@@ -1,86 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>GreenField - Entrée de Stock</title>
     <style>
-        .error {
-            color: red;
-            font-size: 12px;
-        }
-        input.error-border {
-            border: 2px solid red;
-        }
+      .error {
+        color: red;
+        font-size: 12px;
+      }
+      input.error-border {
+        border: 2px solid red;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <a th:href="@{/produits}">Catalogue</a> | 
-        <a th:href="@{/produits/nouveau}">Ajouter Produit</a> | 
-        <a th:href="@{/stocks}">Stocks</a> | 
-        <a th:href="@{/stocks/entree}"><b>Entrée de Stock</b></a>
+      <a th:href="@{/back/produits}">Catalogue</a> |
+      <a th:href="@{/back/produits/nouveau}">Ajouter Produit</a> |
+      <a th:href="@{/back/stocks}">Stocks</a> |
+      <a th:href="@{/back/stocks/entree}"><b>Entrée de Stock</b></a>
     </nav>
-    <hr>
+    <hr />
 
     <h1>Nouvelle Entrée de Stock</h1>
 
-    <div th:if="${error}" style="color: red;" th:text="${error}"></div>
+    <div th:if="${error}" style="color: red" th:text="${error}"></div>
 
-    <form id="stockEntryForm" method="post" th:action="@{/stocks/entree}" onsubmit="return validateQty();">
-        <label>
-            Produit :<br>
-            <select name="idProduit" required>
-                <option value="">-- Choisir --</option>
-                <option th:each="p : ${produits}" 
-                        th:value="${p.id}" 
-                        th:text="${p.matricule + ' - ' + p.nom}"></option>
-            </select>
-        </label><br><br>
+    <form
+      id="stockEntryForm"
+      method="post"
+      th:action="@{/back/stocks/entree}"
+      onsubmit="return validateQty();"
+    >
+      <label>
+        Produit :<br />
+        <select name="idProduit" required>
+          <option value="">-- Choisir --</option>
+          <option
+            th:each="p : ${produits}"
+            th:value="${p.id}"
+            th:text="${p.matricule + ' - ' + p.nom}"
+          ></option>
+        </select> </label
+      ><br /><br />
 
-        <label>
-            Point de vente :<br>
-            <select name="ptDeVenteCode">
-                <option value="">Aucun (Global/Non assigné)</option>
-                <option th:each="pdv : ${pointsDeVente}" 
-                        th:value="${pdv.code}" 
-                        th:text="${pdv.nom}"></option>
-            </select>
-        </label><br><br>
+      <label>
+        Point de vente :<br />
+        <select name="ptDeVenteCode">
+          <option value="">Aucun (Global/Non assigné)</option>
+          <option
+            th:each="pdv : ${pointsDeVente}"
+            th:value="${pdv.code}"
+            th:text="${pdv.nom}"
+          ></option>
+        </select> </label
+      ><br /><br />
 
-        <label>
-            Type de Mouvement :<br>
-            <select name="typeMouvement" required>
-                <option th:each="t : ${entryTypes}" 
-                        th:value="${t}" 
-                        th:text="${t}"></option>
-            </select>
-        </label><br><br>
+      <label>
+        Type de Mouvement :<br />
+        <select name="typeMouvement" required>
+          <option
+            th:each="t : ${entryTypes}"
+            th:value="${t}"
+            th:text="${t}"
+          ></option>
+        </select> </label
+      ><br /><br />
 
-        <label>
-            Quantité :<br>
-            <input type="number" id="quantite" name="quantite" required>
-        </label><br>
-        <span class="error" id="err-quantite"></span><br><br>
+      <label>
+        Quantité :<br />
+        <input type="number" id="quantite" name="quantite" required /> </label
+      ><br />
+      <span class="error" id="err-quantite"></span><br /><br />
 
-        <button type="submit">Enregistrer l'Entrée</button>
+      <button type="submit">Enregistrer l'Entrée</button>
     </form>
 
     <script>
-        function validateQty() {
-            const qtyInput = document.getElementById("quantite");
-            const errSpan = document.getElementById("err-quantite");
-            const value = parseInt(qtyInput.value);
+      function validateQty() {
+        const qtyInput = document.getElementById("quantite");
+        const errSpan = document.getElementById("err-quantite");
+        const value = parseInt(qtyInput.value);
 
-            if (isNaN(value) || value <= 0) {
-                qtyInput.classList.add("error-border");
-                errSpan.textContent = "La quantité doit être strictement positive (> 0).";
-                return false;
-            }
-
-            qtyInput.classList.remove("error-border");
-            errSpan.textContent = "";
-            return true;
+        if (isNaN(value) || value <= 0) {
+          qtyInput.classList.add("error-border");
+          errSpan.textContent =
+            "La quantité doit être strictement positive (> 0).";
+          return false;
         }
+
+        qtyInput.classList.remove("error-border");
+        errSpan.textContent = "";
+        return true;
+      }
     </script>
-</body>
+  </body>
 </html>
