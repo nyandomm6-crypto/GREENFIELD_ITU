@@ -273,3 +273,6 @@ CREATE TABLE PanierFille (
     idProduit INT REFERENCES Produit (id) ON DELETE CASCADE,
     quantite INT NOT NULL
 );
+
+ALTER TABLE paiementfille
+ADD COLUMN date DATE DEFAULT CURRENT_DATE;
