@@ -12,13 +12,10 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/back")
+@RequiredArgsConstructor
 public class ProduitBackController {
 
     private final ProduitService produitService;
-
-    public ProduitBackController(ProduitService produitService) {
-        this.produitService = produitService;
-    }
 
     @GetMapping({ "/produits", "/produits/list" })
     public String listProduits(@RequestParam(required = false) Integer idCategorie,
