@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulaire avance</title>
+</head>
+
+<body>
+    <h1>Formulaire avance</h1>
+
+    <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+    <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+
+    <form th:action="@{|/paiements/avance/${commande.id}|}" method="POST">
+        <p>Commande #<span th:text="${commande.id}"></span></p>
+        <p>Montant total a payer : <strong th:text="${montantTotal}"></strong></p>
+        <p>Frais de livraison : <span th:text="${commande.fraisLivraison}"></span></p>
+        <p>Avance a payer : <strong th:text="${avanceAPayer}"></strong></p>
+
+        <p>Mode de paiement :</p>
+        <div>
+            <div th:each="t : ${typesPaiement}">
+                <label>
+                    <input type="radio" name="typePayement" th:value="${t}" checked>
+                    <span th:text="${t}"></span>
+                </label>
+            </div>
+        </div>
+
+        <label for="montant">Montant de l'avance :</label>
+        <input type="number" id="montant" name="montant" step="0.01" th:value="${avanceAPayer}" required>
+
+        <div>
+            <p>Numeros de transfert :</p>
+            <ul>
+                <li th:each="numero : ${numerosTransfert}" th:text="${numero}"></li>
+            </ul>
+        </div>
+
+        <button type="submit">Payer</button>
+    </form>
+</body>
+
+</html>
