@@ -14,7 +14,6 @@ import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/back")
 public class ProduitBackController {
 
     private final ProduitBackService produitService;
@@ -28,7 +27,7 @@ public class ProduitBackController {
         model.addAttribute("categories", produitService.findAllCategories());
         model.addAttribute("selectedCategorie", idCategorie);
         model.addAttribute("motCle", motCle);
-        return "front/produits/list";
+        return "back/produits/list";
     }
 
     @GetMapping("/produits/detail/{id}")
@@ -41,7 +40,7 @@ public class ProduitBackController {
         List<PointDeVente> pdvs = produitService.findAllPointsDeVente();
         model.addAttribute("pdvs", pdvs);
         model.addAttribute("produitService", produitService);
-        return "front/produits/detail";
+        return "back/produits/detail";
     }
 
     @GetMapping("/produits/nouveau")
@@ -49,7 +48,7 @@ public class ProduitBackController {
         model.addAttribute("produit", new Produit());
         model.addAttribute("categories", produitService.findAllCategories());
         model.addAttribute("isEdit", false);
-        return "front/produits/form";
+        return "back/produits/form";
     }
 
     @PostMapping("/produits/nouveau")
@@ -61,7 +60,7 @@ public class ProduitBackController {
             model.addAttribute("errors", errors);
             model.addAttribute("categories", produitService.findAllCategories());
             model.addAttribute("isEdit", false);
-            return "front/produits/form";
+            return "back/produits/form";
         }
         produitService.save(produit);
         redirectAttributes.addFlashAttribute("success", "Produit créé avec succès.");
@@ -75,7 +74,7 @@ public class ProduitBackController {
         model.addAttribute("produit", produit);
         model.addAttribute("categories", produitService.findAllCategories());
         model.addAttribute("isEdit", true);
-        return "front/produits/form";
+        return "back/produits/form";
     }
 
     @PostMapping("/produits/modifier/{id}")
@@ -89,7 +88,7 @@ public class ProduitBackController {
             model.addAttribute("errors", errors);
             model.addAttribute("categories", produitService.findAllCategories());
             model.addAttribute("isEdit", true);
-            return "front/produits/form";
+            return "back/produits/form";
         }
         produitService.save(produit);
         redirectAttributes.addFlashAttribute("success", "Produit modifié avec succès.");
@@ -140,7 +139,7 @@ public class ProduitBackController {
         model.addAttribute("selectedCategorie", idCategorie);
         model.addAttribute("motCle", motCle);
         model.addAttribute("selectedPdv", ptDeVenteCode);
-        return "front/produits/stock";
+        return "back/produits/stock";
     }
 
     @GetMapping("/stocks/entree")
@@ -148,7 +147,7 @@ public class ProduitBackController {
         model.addAttribute("produits", produitService.search(null, null));
         model.addAttribute("pointsDeVente", produitService.findAllPointsDeVente());
         model.addAttribute("entryTypes", List.of(TypeMvt.Entree_Production, TypeMvt.Entree_Boutique));
-        return "front/produits/stock-entry";
+        return "back/produits/stock-entry";
     }
 
     @PostMapping("/stocks/entree")
@@ -163,7 +162,7 @@ public class ProduitBackController {
             model.addAttribute("produits", produitService.search(null, null));
             model.addAttribute("pointsDeVente", produitService.findAllPointsDeVente());
             model.addAttribute("entryTypes", List.of(TypeMvt.Entree_Production, TypeMvt.Entree_Boutique));
-            return "front/produits/stock-entry";
+            return "back/produits/stock-entry";
         }
 
         try {
@@ -175,7 +174,7 @@ public class ProduitBackController {
             model.addAttribute("produits", produitService.search(null, null));
             model.addAttribute("pointsDeVente", produitService.findAllPointsDeVente());
             model.addAttribute("entryTypes", List.of(TypeMvt.Entree_Production, TypeMvt.Entree_Boutique));
-            return "front/produits/stock-entry";
+            return "back/produits/stock-entry";
         }
     }
 }
