@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import itu.greenField.model.Produit;
 
@@ -17,5 +19,17 @@ public interface ProduitRepository extends JpaRepository<Produit, Integer> {
     List<Produit> findByCategorie_IdAndNomContainingIgnoreCase(Integer idCategorie, String motCle);
 
     public Optional<Produit> findFirstByNom(String nom);
+
+    @Query("SELECT p FROM Produit p WHERE " +
+            "(:idCategorie IS NULL OR p.categorie.id = :idCategorie) AND " +
+            "(:motCle IS NULL OR LOWER(p.nom) LIKE :motClePattern " +
+            "OR LOWER(p.matricule) LIKE :motClePattern)")
+    List<Produit> searchProduits(@Param("idCategorie") Integer idCategorie,
+            @Param("motCle") String motCle,
+            @Param("motClePattern") String motClePattern);
+
+    boolean existsByMatricule(String matricule);
+
+    boolean existsByMatriculeAndIdNot(String matricule, Integer id);
 
 }

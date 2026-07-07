@@ -1,7 +1,7 @@
 package itu.greenField.controller;
 
 import itu.greenField.model.*;
-import itu.greenField.service.ProduitService;
+import itu.greenField.service.ProduitBackService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ProduitBackController {
 
-    private final ProduitService produitService;
+    private final ProduitBackService produitService;
 
     @GetMapping({ "/produits", "/produits/list" })
     public String listProduits(@RequestParam(required = false) Integer idCategorie,
