@@ -1,4 +1,4 @@
-package itu.GreenField.controller;
+package itu.greenField.controller;
 
 import java.time.LocalDate;
 
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import itu.GreenField.model.Employes;
-import itu.GreenField.model.FRole;
-import itu.GreenField.repository.PointDeVenteRepository;
-import itu.GreenField.service.EmployesService;
+import itu.greenField.model.Employes;
+import itu.greenField.model.FRole;
+import itu.greenField.repository.PointDeVenteRepository;
+import itu.greenField.service.EmployesService;
 
 @Controller
 @RequestMapping("/employes")

@@ -37,4 +37,8 @@ public interface PointDeVenteRepository extends JpaRepository<PointDeVente, Inte
 
         public Optional<PointDeVente> findFirstByNom(String nom);
 
+        List<PointDeVente> findAllByOrderByNomAsc();
+
+        Optional<PointDeVente> findByCode(String code);
+
 }
