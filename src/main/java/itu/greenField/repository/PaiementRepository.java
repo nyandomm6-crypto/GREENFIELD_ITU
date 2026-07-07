@@ -1,6 +1,7 @@
 package itu.greenField.repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import itu.greenField.model.Commandes;
 import itu.greenField.model.Paiement;
+import itu.greenField.model.StatutPaiement;
 
 public interface PaiementRepository extends JpaRepository<Paiement, Integer> {
     // Paiement findByCommande(Commandes commande);
@@ -21,4 +23,9 @@ public interface PaiementRepository extends JpaRepository<Paiement, Integer> {
             WHERE pf.paiement.commande.id = :idCommande
             """)
     BigDecimal sommePaye(@Param("idCommande") Integer idCommande);
+
+    Optional<Paiement> findByCommandeId(Integer commandeId);
+
+    List<Paiement> findByStatut(StatutPaiement statut);
+
 }
