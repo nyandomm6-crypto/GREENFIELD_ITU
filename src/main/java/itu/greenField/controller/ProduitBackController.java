@@ -2,6 +2,8 @@ package itu.greenField.controller;
 
 import itu.greenField.model.*;
 import itu.greenField.service.ProduitBackService;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/back")
 @RequiredArgsConstructor
+@RequestMapping("/back")
 public class ProduitBackController {
 
     private final ProduitBackService produitService;
