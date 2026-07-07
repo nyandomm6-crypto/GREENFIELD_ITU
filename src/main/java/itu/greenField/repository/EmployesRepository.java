@@ -13,50 +13,49 @@ import itu.greenField.model.PointDeVente;
 import itu.greenField.model.Employes;
 
 public interface EmployesRepository extends JpaRepository<Employes, Integer> {
-    Optional<Employes> findByMailIgnoreCase(String mail);
+        Optional<Employes> findByMailIgnoreCase(String mail);
 
-    @Query("""
-            SELECT e
-            FROM Employes e
-            LEFT JOIN FETCH e.pointDeVente
-            WHERE e.id = :id
-            """)
-    Optional<Employes> findWithPointDeVenteById(@Param("id") Integer id);
+        @Query("""
+                        SELECT e
+                        FROM Employes e
+                        LEFT JOIN FETCH e.pointDeVente
+                        WHERE e.id = :id
+                        """)
+        Optional<Employes> findWithPointDeVenteById(@Param("id") Integer id);
 
-    @Query(value = """
-            SELECT e.*
-            FROM employes e
-            LEFT JOIN pointdevente p ON p.code = e.idptdevente
-            WHERE COALESCE(e.est_actif, true) = :estActif
-              AND (CAST(:date AS date) IS NULL OR e.date = CAST(:date AS date))
-              AND (CAST(:role AS f_role) IS NULL OR e.role = CAST(:role AS f_role))
-              AND (
-                    CAST(:motCle AS text) IS NULL
-                    OR COALESCE(e.nom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                    OR COALESCE(e.prenom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                    OR COALESCE(e.mail, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                    OR COALESCE(e.contact, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                    OR COALESCE(p.nom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                    OR COALESCE(p.code, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-              )
-            ORDER BY e.nom ASC, e.prenom ASC
-            """, nativeQuery = true)
-    List<Employes> filtrer(
-            @Param("estActif") Boolean estActif,
-            @Param("motCle") String motCle,
-            @Param("date") LocalDate date,
-            @Param("role") String role);
+        @Query(value = """
+                        SELECT e.*
+                        FROM employes e
+                        LEFT JOIN pointdevente p ON p.code = e.idptdevente
+                        WHERE COALESCE(e.est_actif, true) = :estActif
+                          AND (CAST(:date AS date) IS NULL OR e.date = CAST(:date AS date))
+                          AND (
+                                CAST(:motCle AS text) IS NULL
+                                OR COALESCE(e.nom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
+                                OR COALESCE(e.prenom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
+                                OR COALESCE(e.mail, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
+                                OR COALESCE(e.contact, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
+                                OR COALESCE(p.nom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
+                                OR COALESCE(p.code, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
+                          )
+                        ORDER BY e.nom ASC, e.prenom ASC
+                        """, nativeQuery = true)
+        List<Employes> filtrer(
+                        @Param("estActif") Boolean estActif,
+                        @Param("motCle") String motCle,
+                        @Param("date") LocalDate date,
+                        @Param("role") String role);
 
-    public Employes getById(Integer id);
+        public Employes getById(Integer id);
 
-    List<Employes> findByPointDeVente(PointDeVente pointDeVente);
+        List<Employes> findByPointDeVente(PointDeVente pointDeVente);
 
-    List<Employes> findByPointDeVenteAndNomContainingIgnoreCase(PointDeVente pointDeVente, String nom);
+        List<Employes> findByPointDeVenteAndNomContainingIgnoreCase(PointDeVente pointDeVente, String nom);
 
-    List<Employes> findByPointDeVenteAndRole(PointDeVente pointDeVente, FRole role);
+        List<Employes> findByPointDeVenteAndRole(PointDeVente pointDeVente, FRole role);
 
-    List<Employes> findByPointDeVenteAndNomContainingIgnoreCaseAndRole(PointDeVente pointDeVente, String nom,
-            FRole role);
+        List<Employes> findByPointDeVenteAndNomContainingIgnoreCaseAndRole(PointDeVente pointDeVente, String nom,
+                        FRole role);
 
-    Optional<Employes> findByMail(String mail);
+        Optional<Employes> findByMail(String mail);
 }
