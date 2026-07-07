@@ -28,17 +28,18 @@ public interface EmployesRepository extends JpaRepository<Employes, Integer> {
                         FROM employes e
                         LEFT JOIN pointdevente p ON p.code = e.idptdevente
                         WHERE COALESCE(e.est_actif, true) = :estActif
-                          AND (CAST(:date AS date) IS NULL OR e.date = CAST(:date AS date))
+                          AND (:date IS NULL OR e.date = :date)
+                          AND (:role IS NULL OR e.role = :role)
                           AND (
-                                CAST(:motCle AS text) IS NULL
-                                OR COALESCE(e.nom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                                OR COALESCE(e.prenom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                                OR COALESCE(e.mail, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                                OR COALESCE(e.contact, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                                OR COALESCE(p.nom, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
-                                OR COALESCE(p.code, '') ILIKE CONCAT('%', CAST(:motCle AS text), '%')
+                                :motCle IS NULL
+                                OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
                           )
-                        ORDER BY e.nom ASC, e.prenom ASC
+                        ORDER BY e.nom, e.prenom
                         """, nativeQuery = true)
         List<Employes> filtrer(
                         @Param("estActif") Boolean estActif,
