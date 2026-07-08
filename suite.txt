@@ -9,5 +9,7 @@ prendre les modele deja present dans commande
 
 - Mettre responsive le design et bien centre tout dans back office (exemple : formulaire ,liste,.....)
 
+- ajoute le formulaire de mouvement tresorerie : avec le drop down de type flux : pour entrer staticement les carburant, salaire,.....
+
 
 - changer le logo par l'image envoye : n'ajoute pas de fond pour le logo
