@@ -275,3 +275,9 @@ CREATE TABLE PanierFille (
 );
 
 ALTER TABLE paiementfille ADD COLUMN date DATE DEFAULT CURRENT_DATE;
+
+CREATE TABLE imageProduit (
+    id SERIAL PRIMARY KEY,
+    idProduit INT REFERENCES produit (id) ON DELETE CASCADE,
+    path VARCHAR(100) UNIQUE
+)
