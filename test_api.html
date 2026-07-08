@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Greenfield — Dashboard de Test API</title>
+    <title>Greenfield — Dashboard de Test API & Statistiques</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
@@ -217,6 +217,11 @@
             border: 1px solid rgba(88,166,255,0.3);
             letter-spacing: 0.3px;
         }
+        .method-badge.post-badge {
+            background: rgba(240,136,62,0.15);
+            color: var(--accent-orange);
+            border: 1px solid rgba(240,136,62,0.3);
+        }
         .endpoint-path {
             font-family: 'Inter', monospace;
             font-size: 0.8rem;
@@ -423,6 +428,99 @@
 
         /* ── TIMING BADGE ── */
         .timing { font-size: 0.72rem; color: var(--text-muted); }
+
+        /* ── TRESORERIE SECTION ── */
+        .treso-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        @media (max-width: 900px) { .treso-grid { grid-template-columns: 1fr; } }
+        
+        .treso-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .treso-card-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .treso-form-group {
+            margin-bottom: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .treso-form-group label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .treso-form-group input, .treso-form-group select, .treso-form-group textarea {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            font-family: inherit;
+            font-size: 0.82rem;
+            transition: all var(--transition);
+        }
+        .treso-form-group input:focus, .treso-form-group select:focus, .treso-form-group textarea:focus {
+            outline: none;
+            border-color: var(--green-main);
+            box-shadow: 0 0 0 3px var(--green-glow);
+        }
+        .treso-stats-display {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .treso-stat-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .treso-stat-box-label {
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .treso-stat-box-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .filter-select {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            outline: none;
+            transition: border-color var(--transition);
+        }
+        .filter-select:focus {
+            border-color: var(--green-main);
+        }
     </style>
 </head>
 <body>
@@ -433,7 +531,7 @@
         <div class="logo">
             <div class="logo-icon">♻️</div>
             <span>Greenfield</span>
-            <span class="badge-test">API Test Dashboard</span>
+            <span class="badge-test">API & Stats Dashboard</span>
         </div>
         <div class="server-status">
             <div class="dot" id="status-dot"></div>
@@ -457,7 +555,7 @@
         <div class="stat-card">
             <div class="stat-label">Endpoints testés</div>
             <div class="stat-value" id="stat-tested">0</div>
-            <div class="stat-sub">/ 6 endpoints</div>
+            <div class="stat-sub">/ 8 endpoints</div>
         </div>
         <div class="stat-card">
             <div class="stat-label">Succès</div>
@@ -488,6 +586,100 @@
         <button class="btn-copy" onclick="clearAll()">🗑️ Effacer résultats</button>
     </div>
 
+    <!-- TRESORERIE SECTION (BACK-OFFICE) -->
+    <div class="section-title">💶 Trésorerie & Chiffre d'Affaires Catégorie Fromage</div>
+    <div class="treso-grid">
+        <!-- Display Stats -->
+        <div class="treso-card">
+            <div>
+                <div class="treso-card-title">📈 Données financières calculées</div>
+                <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; margin-bottom:15px;">
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <span style="font-size:0.75rem; color:var(--text-secondary)">Année</span>
+                        <select id="filter-treso-annee" onchange="loadTresorerieStats()" class="filter-select">
+                            <option value="">Toutes</option>
+                            <option value="2026" selected>2026</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <span style="font-size:0.75rem; color:var(--text-secondary)">Date début</span>
+                        <input type="datetime-local" id="filter-treso-debut" onchange="loadTresorerieStats()" style="background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); border-radius:4px; padding:3px 8px; font-size:0.75rem; outline:none;">
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:4px;">
+                        <span style="font-size:0.75rem; color:var(--text-secondary)">Date fin</span>
+                        <input type="datetime-local" id="filter-treso-fin" onchange="loadTresorerieStats()" style="background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); border-radius:4px; padding:3px 8px; font-size:0.75rem; outline:none;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="treso-stats-display">
+                <div class="treso-stat-box" style="border-left: 3px solid var(--accent-purple)">
+                    <span class="treso-stat-box-label">CA Fromage</span>
+                    <span class="treso-stat-box-value" id="stats-ca-fromage">—</span>
+                </div>
+                <div class="treso-stat-box" style="border-left: 3px solid var(--green-bright)">
+                    <span class="treso-stat-box-label">Total Entrées</span>
+                    <span class="treso-stat-box-value" id="stats-total-entrees" style="color:var(--green-bright)">—</span>
+                </div>
+                <div class="treso-stat-box" style="border-left: 3px solid var(--accent-red)">
+                    <span class="treso-stat-box-label">Total Dépenses</span>
+                    <span class="treso-stat-box-value" id="stats-total-depenses" style="color:var(--accent-red)">—</span>
+                </div>
+                <div class="treso-stat-box" id="stats-box-benefice" style="border-left: 3px solid var(--accent-blue)">
+                    <span class="treso-stat-box-label">Bénéfice Net</span>
+                    <span class="treso-stat-box-value" id="stats-benefice-global">—</span>
+                </div>
+            </div>
+            <button class="btn-call" onclick="loadTresorerieStats()" style="margin-top:15px; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-secondary);">
+                🔄 Actualiser les indicateurs
+            </button>
+        </div>
+
+        <!-- Form creation -->
+        <div class="treso-card">
+            <div class="treso-card-title">✍️ Créer un formulaire de trésorerie</div>
+            <form id="form-tresorerie" onsubmit="submitTresorerie(event)" style="display:flex; flex-direction:column; gap:0px; width:100%;">
+                <div class="treso-grid" style="grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0px;">
+                    <div class="treso-form-group">
+                        <label for="treso-type">Type mouvement</label>
+                        <select id="treso-type" required>
+                            <option value="Entree_Vente">Entrée (Vente)</option>
+                            <option value="Depense_Exploitation" selected>Dépense (Exploitation)</option>
+                        </select>
+                    </div>
+                    <div class="treso-form-group">
+                        <label for="treso-montant">Montant (Ar)</label>
+                        <input type="number" id="treso-montant" step="0.01" placeholder="Montant en Ariary..." required>
+                    </div>
+                </div>
+
+                <div class="treso-grid" style="grid-template-columns: 1.2fr 0.8fr; gap: 10px; margin-bottom: 0px;">
+                    <div class="treso-form-group">
+                        <label for="treso-date">Date opération</label>
+                        <input type="datetime-local" id="treso-date">
+                    </div>
+                    <div class="treso-form-group">
+                        <label for="treso-commande-id">ID Commande (optionnel)</label>
+                        <input type="number" id="treso-commande-id" placeholder="Ex: 5">
+                    </div>
+                </div>
+
+                <div class="treso-form-group">
+                    <label for="treso-desc">Description / Libellé</label>
+                    <input type="text" id="treso-desc" placeholder="Ex: Carburant pour livraison..." required>
+                </div>
+
+                <button type="submit" class="btn-call">
+                    💾 Enregistrer en Base de Données
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- RESPONSE VIEWER -->
     <div class="response-section">
         <div class="section-title">📋 Réponse brute</div>
@@ -509,16 +701,50 @@
     <!-- CHARTS -->
     <div class="section-title">📈 Visualisation des données</div>
     <div class="charts-grid">
+        <!-- Ventes courbe -->
         <div class="chart-card">
-            <div class="chart-card-title">Évolution des ventes</div>
-            <div class="chart-card-sub">Chiffre d'affaires journalier (commandes payées)</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                <div>
+                    <div class="chart-card-title">Évolution des ventes (Courbe)</div>
+                    <div class="chart-card-sub">Chiffre d'affaires journalier (commandes payées)</div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                    <select id="filter-ventes-produit" onchange="loadVentesChart()" class="filter-select" style="max-width:140px;">
+                        <option value="">Tous les produits</option>
+                    </select>
+                        <select id="filter-ventes-annee" onchange="loadVentesChart()" class="filter-select">
+                        <option value="">Toutes les années</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+            </div>
             <div class="chart-wrapper">
                 <canvas id="chart-ventes"></canvas>
             </div>
         </div>
+
+        <!-- Produits histogramme -->
         <div class="chart-card">
-            <div class="chart-card-title">Top 5 Produits</div>
-            <div class="chart-card-sub">Quantités vendues</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                <div>
+                    <div class="chart-card-title">Top 5 Produits (Histogramme)</div>
+                    <div class="chart-card-sub">Quantités totales vendues</div>
+                </div>
+                <div>
+                    <select id="filter-produits-annee" onchange="loadProduitsChart()" class="filter-select">
+                        <option value="">Toutes les années</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+            </div>
             <div class="chart-wrapper">
                 <canvas id="chart-produits"></canvas>
             </div>
@@ -527,13 +753,30 @@
 
     <!-- TOP LISTS -->
     <div class="charts-grid">
+        <!-- Top Clients -->
         <div class="chart-card">
-            <div class="chart-card-title">🏆 Top 5 Clients</div>
-            <div class="chart-card-sub">Meilleurs clients par montant total dépensé</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+                <div>
+                    <div class="chart-card-title">🏆 Top 5 Clients (En ligne)</div>
+                    <div class="chart-card-sub">Meilleurs clients par dépenses en ligne payées</div>
+                </div>
+                <div>
+                    <select id="filter-clients-annee" onchange="loadTopClients()" class="filter-select">
+                        <option value="">Toutes les années</option>
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                    </select>
+                </div>
+            </div>
             <ul class="top-list" id="list-clients">
                 <li style="color:var(--text-muted); font-size:0.82rem;">Pas encore chargé — cliquez sur l'endpoint top-clients</li>
             </ul>
         </div>
+
+        <!-- Nouveaux Produits -->
         <div class="chart-card">
             <div class="chart-card-title">🆕 Nouveaux Produits</div>
             <div class="chart-card-sub">Derniers produits ajoutés au catalogue</div>
@@ -572,8 +815,8 @@ const ENDPOINTS = [
         id: 'benefice-fromage',
         method: 'GET',
         path: '/api/back/statistiques/benefice-fromage',
-        label: 'CA Catégorie Fromage',
-        desc: 'Chiffre d\'affaires total généré par la catégorie "Fromage".',
+        label: 'CA / Trésorerie Fromage',
+        desc: 'Chiffre d\'affaires fromage, dépenses et bénéfice global calculés.',
         tag: 'BACK'
     },
     {
@@ -589,7 +832,7 @@ const ENDPOINTS = [
         method: 'GET',
         path: '/api/back/statistiques/top-clients',
         label: 'Top 5 Meilleurs Clients',
-        desc: 'Clients avec le montant total de commandes payées le plus élevé.',
+        desc: 'Clients avec le montant total de commandes payées le plus élevé (en ligne).',
         tag: 'BACK'
     },
     {
@@ -598,6 +841,22 @@ const ENDPOINTS = [
         path: '/api/back/statistiques/historique-ventes',
         label: 'Historique ventes global',
         desc: 'Liste des produits avec quantités vendues (vue globale).',
+        tag: 'BACK'
+    },
+    {
+        id: 'get-produits',
+        method: 'GET',
+        path: '/api/back/statistiques/produits',
+        label: 'Liste des produits',
+        desc: 'Liste complète des produits (pour alimenter le filtre de courbe).',
+        tag: 'BACK'
+    },
+    {
+        id: 'post-tresorerie',
+        method: 'POST',
+        path: '/api/back/statistiques/tresorerie',
+        label: 'Enregistrer Trésorerie',
+        desc: 'Crée un nouveau mouvement de trésorerie en base.',
         tag: 'BACK'
     }
 ];
@@ -615,6 +874,7 @@ let ventesChart, produitsChart;
 document.addEventListener('DOMContentLoaded', () => {
     renderEndpoints();
     initCharts();
+    initFilterData();
 });
 
 function getBase() {
@@ -630,10 +890,11 @@ function renderEndpoints() {
     ENDPOINTS.forEach(ep => {
         const tagColor = ep.tag === 'FRONT' ? 'var(--accent-purple)' : 'var(--accent-orange)';
         const tagBg = ep.tag === 'FRONT' ? 'rgba(163,113,247,0.12)' : 'rgba(240,136,62,0.12)';
+        const methodBadgeClass = ep.method === 'POST' ? 'method-badge post-badge' : 'method-badge';
         grid.innerHTML += `
             <div class="endpoint-card" id="card-${ep.id}">
                 <div class="card-header" onclick="callEndpoint('${ep.id}')">
-                    <span class="method-badge">${ep.method}</span>
+                    <span class="${methodBadgeClass}">${ep.method}</span>
                     <span class="endpoint-path">${ep.path}</span>
                     <span style="font-size:0.68rem;font-weight:700;padding:2px 7px;border-radius:4px;background:${tagBg};color:${tagColor}">${ep.tag}</span>
                 </div>
@@ -649,14 +910,37 @@ function renderEndpoints() {
 }
 
 // ================================================================
-//  CALL ENDPOINT
+//  CALL ENDPOINT (WITH ACTIVE FILTERS)
 // ================================================================
 async function callEndpoint(id) {
     const ep = ENDPOINTS.find(e => e.id === id);
     const btn = document.getElementById(`btn-${id}`);
     const chip = document.getElementById(`chip-${id}`);
     const card = document.getElementById(`card-${id}`);
-    const url = getBase() + ep.path;
+
+    // Append active filters to query parameters
+    let queryParams = '';
+    if (id === 'evolution-ventes') {
+        const prod = document.getElementById('filter-ventes-produit').value;
+        const year = document.getElementById('filter-ventes-annee').value;
+        if (prod) queryParams += (queryParams ? '&' : '?') + `idproduit=${prod}`;
+        if (year) queryParams += (queryParams ? '&' : '?') + `year=${year}`;
+    } else if (id === 'top-clients') {
+        const year = document.getElementById('filter-clients-annee').value;
+        if (year) queryParams += (queryParams ? '&' : '?') + `year=${year}`;
+    } else if (id === 'top-produits' || id === 'historique-ventes') {
+        const year = document.getElementById('filter-produits-annee').value;
+        if (year) queryParams += (queryParams ? '&' : '?') + `year=${year}`;
+    } else if (id === 'benefice-fromage') {
+        const year = document.getElementById('filter-treso-annee').value;
+        const db = document.getElementById('filter-treso-debut').value;
+        const df = document.getElementById('filter-treso-fin').value;
+        if (year) queryParams += (queryParams ? '&' : '?') + `year=${year}`;
+        if (db) queryParams += (queryParams ? '&' : '?') + `dateDebut=${db}`;
+        if (df) queryParams += (queryParams ? '&' : '?') + `dateFin=${df}`;
+    }
+
+    const url = getBase() + ep.path + queryParams;
 
     // Loading state
     btn.classList.add('loading');
@@ -668,7 +952,28 @@ async function callEndpoint(id) {
     let status, data, ok;
 
     try {
-        const resp = await fetch(url);
+        let options = { method: ep.method };
+        if (ep.method === 'POST') {
+            options.headers = { 'Content-Type': 'application/json' };
+            
+            // Build body from Trésorerie form or use mock defaults if empty
+            let tType = document.getElementById('treso-type').value;
+            let tMontant = parseFloat(document.getElementById('treso-montant').value);
+            let tDate = document.getElementById('treso-date').value;
+            let tDesc = document.getElementById('treso-desc').value;
+            let tCmd = document.getElementById('treso-commande-id').value;
+
+            let payload = {
+                typeMouvement: tType || 'Depense_Exploitation',
+                montant: isNaN(tMontant) ? 15000.00 : tMontant,
+                dateOperation: tDate || null,
+                description: tDesc || 'Mouvement test via Dashboard',
+                idcommande: tCmd ? parseInt(tCmd) : null
+            };
+            options.body = JSON.stringify(payload);
+        }
+        
+        const resp = await fetch(url, options);
         status = resp.status;
         ok = resp.ok;
         data = await resp.json();
@@ -702,6 +1007,8 @@ async function callEndpoint(id) {
         if (id === 'top-produits' || id === 'historique-ventes') updateProduitsChart(data);
         if (id === 'top-clients') renderTopClients(data);
         if (id === 'nouveaux-produits') renderNouveauxProduits(data);
+        if (id === 'benefice-fromage') updateTresoStatsDisplay(data);
+        if (id === 'get-produits') populateProductsFilter(data);
     }
 
     updateStats();
@@ -762,6 +1069,14 @@ function clearAll() {
     document.getElementById('resp-timing').textContent = '';
     document.getElementById('list-clients').innerHTML = '<li style="color:var(--text-muted); font-size:0.82rem;">Pas encore chargé</li>';
     document.getElementById('list-nouveaux').innerHTML = '<li style="color:var(--text-muted); font-size:0.82rem;">Pas encore chargé</li>';
+    
+    // Clear Treso Displays
+    document.getElementById('stats-ca-fromage').textContent = '—';
+    document.getElementById('stats-total-entrees').textContent = '—';
+    document.getElementById('stats-total-depenses').textContent = '—';
+    document.getElementById('stats-benefice-global').textContent = '—';
+    document.getElementById('stats-box-benefice').style.borderLeftColor = 'var(--border)';
+
     updateStats();
     if (ventesChart) { ventesChart.data.labels = []; ventesChart.data.datasets[0].data = []; ventesChart.update(); }
     if (produitsChart) { produitsChart.data.labels = []; produitsChart.data.datasets[0].data = []; produitsChart.update(); }
@@ -798,6 +1113,14 @@ async function pingServer() {
         dot.className = 'dot online';
         txt.textContent = `Connecté — ${ms} ms`;
         showToast(`✅ Serveur en ligne (${ms} ms)`, 'success');
+        
+        // Dynamic loading once connected
+        loadProductsDropdown();
+        loadTresorerieStats();
+        loadVentesChart();
+        loadProduitsChart();
+        loadTopClients();
+        callEndpoint('nouveaux-produits');
     } catch {
         dot.className = 'dot offline';
         txt.textContent = 'Serveur introuvable';
@@ -806,7 +1129,7 @@ async function pingServer() {
 }
 
 // ================================================================
-//  CHARTS
+//  CHARTS INITIALIZATION
 // ================================================================
 function initCharts() {
     const ventesCtx = document.getElementById('chart-ventes').getContext('2d');
@@ -838,26 +1161,32 @@ function initCharts() {
 
     const produitsCtx = document.getElementById('chart-produits').getContext('2d');
     produitsChart = new Chart(produitsCtx, {
-        type: 'doughnut',
+        type: 'bar', // CHANGED FROM DOUGHNUT TO BAR (HISTOGRAMME)
         data: {
             labels: [],
             datasets: [{
+                label: 'Quantité vendue',
                 data: [],
                 backgroundColor: [
-                    'rgba(46,160,67,0.8)',
-                    'rgba(88,166,255,0.8)',
-                    'rgba(163,113,247,0.8)',
-                    'rgba(240,136,62,0.8)',
-                    'rgba(248,81,73,0.8)'
+                    'rgba(46,160,67,0.85)',
+                    'rgba(88,166,255,0.85)',
+                    'rgba(163,113,247,0.85)',
+                    'rgba(240,136,62,0.85)',
+                    'rgba(248,81,73,0.85)'
                 ],
                 borderColor: '#1c2333',
-                borderWidth: 2
+                borderWidth: 1,
+                borderRadius: 4
             }]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom', labels: { color: '#8b949e', font: { size: 10 }, padding: 12 } }
+                legend: { display: false }
+            },
+            scales: {
+                x: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: 'transparent' } },
+                y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { color: '#21262d' } }
             }
         }
     });
@@ -881,18 +1210,22 @@ function updateProduitsChart(data) {
 }
 
 // ================================================================
-//  TOP LISTS
+//  TOP LISTS & RENDERERS
 // ================================================================
 const RANK_CLASS = ['gold', 'silver', 'bronze', '', ''];
 
 function renderTopClients(data) {
     if (!Array.isArray(data)) return;
     const ul = document.getElementById('list-clients');
+    if (data.length === 0) {
+        ul.innerHTML = '<li style="color:var(--text-muted); font-size:0.82rem;">Aucun client en ligne enregistré pour cette année</li>';
+        return;
+    }
     ul.innerHTML = data.map((c, i) => `
         <li>
             <span class="rank ${RANK_CLASS[i] || ''}">${i + 1}</span>
             <span class="item-name">${c.nom} ${c.prenom}</span>
-            <span class="item-val">${Number(c.totalDepense).toLocaleString('fr-MG')} Ar</span>
+            <span class="item-val">${Number(c.totalDepense ?? c.totalDepense ?? 0).toLocaleString('fr-MG')} Ar</span>
         </li>
     `).join('');
 }
@@ -907,6 +1240,162 @@ function renderNouveauxProduits(data) {
             <span class="item-val">${Number(p.pu).toLocaleString('fr-MG')} Ar</span>
         </li>
     `).join('');
+}
+
+// ================================================================
+//  DYNAMIC CHARTS LOADING & FILTERS
+// ================================================================
+function initFilterData() {
+    // Set default date picker values or year if needed
+    document.getElementById('treso-date').value = new Date().toISOString().substring(0, 16);
+}
+
+async function loadProductsDropdown() {
+    try {
+        const resp = await fetch(getBase() + '/api/back/statistiques/produits');
+        if (resp.ok) {
+            const data = await resp.json();
+            populateProductsFilter(data);
+        }
+    } catch (e) {
+        console.error("Impossible de charger les produits pour le filtre :", e);
+    }
+}
+
+function populateProductsFilter(data) {
+    if (!Array.isArray(data)) return;
+    const select = document.getElementById('filter-ventes-produit');
+    select.innerHTML = '<option value="">Tous les produits</option>';
+    data.forEach(p => {
+        select.innerHTML += `<option value="${p.id}">${p.nom} (${p.matricule})</option>`;
+    });
+}
+
+async function loadTresorerieStats() {
+    const year = document.getElementById('filter-treso-annee').value;
+    const db = document.getElementById('filter-treso-debut').value;
+    const df = document.getElementById('filter-treso-fin').value;
+
+    let queryParams = '';
+    if (year) queryParams += (queryParams ? '&' : '?') + `year=${year}`;
+    if (db) queryParams += (queryParams ? '&' : '?') + `dateDebut=${db}`;
+    if (df) queryParams += (queryParams ? '&' : '?') + `dateFin=${df}`;
+
+    try {
+        const resp = await fetch(getBase() + '/api/back/statistiques/benefice-fromage' + queryParams);
+        if (resp.ok) {
+            const data = await resp.json();
+            updateTresoStatsDisplay(data);
+        }
+    } catch (e) {
+        showToast("❌ Erreur de chargement des stats trésorerie", "error");
+    }
+}
+
+function updateTresoStatsDisplay(data) {
+    document.getElementById('stats-ca-fromage').textContent = Number(data.chiffreAffairesFromage || 0).toLocaleString('fr-MG') + ' Ar';
+    document.getElementById('stats-total-entrees').textContent = Number(data.totalEntrees || 0).toLocaleString('fr-MG') + ' Ar';
+    document.getElementById('stats-total-depenses').textContent = Number(data.totalDepenses || 0).toLocaleString('fr-MG') + ' Ar';
+    
+    const benef = data.beneficeGlobal || 0;
+    const benefEl = document.getElementById('stats-benefice-global');
+    benefEl.textContent = Number(benef).toLocaleString('fr-MG') + ' Ar';
+    benefEl.style.color = benef >= 0 ? 'var(--green-bright)' : 'var(--accent-red)';
+    
+    document.getElementById('stats-box-benefice').style.borderLeftColor = benef >= 0 ? 'var(--green-bright)' : 'var(--accent-red)';
+}
+
+async function loadVentesChart() {
+    const prod = document.getElementById('filter-ventes-produit').value;
+    const year = document.getElementById('filter-ventes-annee').value;
+
+    let queryParams = '';
+    if (prod) queryParams += (queryParams ? '&' : '?') + `idproduit=${prod}`;
+    if (year) queryParams += (queryParams ? '&' : '?') + `year=${year}`;
+
+    try {
+        const resp = await fetch(getBase() + '/api/back/statistiques/evolution-ventes' + queryParams);
+        if (resp.ok) {
+            const data = await resp.json();
+            updateVentesChart(data);
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function loadProduitsChart() {
+    const year = document.getElementById('filter-produits-annee').value;
+    let queryParams = year ? `?year=${year}` : '';
+
+    try {
+        const resp = await fetch(getBase() + '/api/back/statistiques/top-produits' + queryParams);
+        if (resp.ok) {
+            const data = await resp.json();
+            updateProduitsChart(data);
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+async function loadTopClients() {
+    const year = document.getElementById('filter-clients-annee').value;
+    let queryParams = year ? `?year=${year}` : '';
+
+    try {
+        const resp = await fetch(getBase() + '/api/back/statistiques/top-clients' + queryParams);
+        if (resp.ok) {
+            const data = await resp.json();
+            renderTopClients(data);
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+// ================================================================
+//  TREASURY FORM SUBMISSION
+// ================================================================
+async function submitTresorerie(event) {
+    event.preventDefault();
+    const type = document.getElementById('treso-type').value;
+    const montant = parseFloat(document.getElementById('treso-montant').value);
+    const date = document.getElementById('treso-date').value;
+    const desc = document.getElementById('treso-desc').value;
+    const commandeId = document.getElementById('treso-commande-id').value;
+
+    const payload = {
+        typeMouvement: type,
+        montant: montant,
+        dateOperation: date || null,
+        description: desc,
+        idcommande: commandeId ? parseInt(commandeId) : null
+    };
+
+    try {
+        const resp = await fetch(getBase() + '/api/back/statistiques/tresorerie', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (resp.ok) {
+            showToast("✅ Mouvement de trésorerie enregistré avec succès !", "success");
+            // Reset form fields except date
+            document.getElementById('treso-montant').value = '';
+            document.getElementById('treso-desc').value = '';
+            document.getElementById('treso-commande-id').value = '';
+            
+            // Refresh stats
+            loadTresorerieStats();
+        } else {
+            const err = await resp.json();
+            showToast("❌ Erreur : " + (err.error || resp.statusText), "error");
+        }
+    } catch (e) {
+        showToast("❌ Échec de la connexion au serveur", "error");
+    }
 }
 
 // ================================================================

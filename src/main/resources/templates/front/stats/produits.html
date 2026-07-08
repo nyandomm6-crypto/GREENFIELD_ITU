@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Greenfield - Produits</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --text:#e6edf3; --muted:#8b949e; --green:#2ea043; --blue:#58a6ff; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width:1200px; margin:0 auto; padding:24px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:24px; padding:20px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+    select { background:#0d1117; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+    .chart { height:520px; margin-top:12px; }
+    canvas { width:100% !important; height:100% !important; }
+    a { color:var(--blue); text-decoration:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <div style="color:var(--green); font-size:.78rem; text-transform:uppercase; letter-spacing:.14em;">Statistiques / Produits</div>
+        <h1 style="margin:.2rem 0 0;">Top produits</h1>
+      </div>
+      <a th:href="@{/dashboard}">Retour au dashboard</a>
+    </div>
+
+    <section class="panel">
+      <select id="filter-produits-annee" onchange="loadProduitsChart()">
+        <option value="">Toutes les années</option>
+        <option value="2026" selected>2026</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+      </select>
+      <div class="chart"><canvas id="chart-produits"></canvas></div>
+    </section>
+  </div>
+
+<script>
+let produitsChart;
+function initChart() {
+  const ctx = document.getElementById('chart-produits').getContext('2d');
+  produitsChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: [], datasets: [{ label: 'Quantité vendue', data: [], backgroundColor: ['rgba(46,160,67,.85)','rgba(88,166,255,.85)','rgba(163,113,247,.85)','rgba(240,136,62,.85)','rgba(248,81,73,.85)'] }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#8b949e' } }, y: { ticks: { color: '#8b949e' } } } }
+  });
+}
+async function loadProduitsChart() {
+  const year = document.getElementById('filter-produits-annee').value;
+  const query = year ? `?year=${year}` : '';
+  const resp = await fetch('/api/back/statistiques/top-produits' + query);
+  if (!resp.ok) return;
+  const data = await resp.json();
+  produitsChart.data.labels = data.map(d => d.nom);
+  produitsChart.data.datasets[0].data = data.map(d => d.quantiteVendue);
+  produitsChart.update();
+}
+initChart();
+loadProduitsChart();
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Greenfield - Trésorerie</title>
+  <style>
+    :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --text:#e6edf3; --muted:#8b949e; --green:#2ea043; --blue:#58a6ff; --red:#f85149; --orange:#f0883e; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text); }
+    .wrap { max-width:1200px; margin:0 auto; padding:24px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:24px; padding:20px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+    .filters { display:flex; gap:10px; flex-wrap:wrap; margin:16px 0; }
+    select,input { background:#0d1117; color:var(--text); border:1px solid var(--line); border-radius:10px; padding:10px 12px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:18px; }
+    .box { background:#1c2333; border:1px solid var(--line); border-radius:18px; padding:18px; }
+    .label { color:var(--muted); font-size:.82rem; margin-bottom:8px; }
+    .value { font-size:1.7rem; font-weight:800; }
+    a { color:var(--blue); text-decoration:none; }
+    button { background:var(--green); color:#fff; border:none; border-radius:12px; padding:10px 14px; font-weight:700; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <div style="color:var(--green); font-size:.78rem; text-transform:uppercase; letter-spacing:.14em;">Statistiques / Trésorerie</div>
+        <h1 style="margin:.2rem 0 0;">Finances et bénéfice</h1>
+      </div>
+      <a th:href="@{/dashboard}">Retour au dashboard</a>
+    </div>
+
+    <section class="panel">
+      <div class="filters">
+        <select id="filter-treso-annee" onchange="loadTresorerieStats()">
+          <option value="">Toutes</option>
+          <option value="2026" selected>2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+        </select>
+        <input type="datetime-local" id="filter-treso-debut" onchange="loadTresorerieStats()" />
+        <input type="datetime-local" id="filter-treso-fin" onchange="loadTresorerieStats()" />
+        <button onclick="loadTresorerieStats()">Actualiser</button>
+      </div>
+
+      <div class="grid">
+        <div class="box"><div class="label">CA fromage</div><div class="value" id="stats-ca-fromage">—</div></div>
+        <div class="box"><div class="label">Total entrées</div><div class="value" id="stats-total-entrees">—</div></div>
+        <div class="box"><div class="label">Total dépenses</div><div class="value" id="stats-total-depenses">—</div></div>
+        <div class="box"><div class="label">Bénéfice net</div><div class="value" id="stats-benefice-global">—</div></div>
+      </div>
+    </section>
+  </div>
+
+<script>
+function setMoney(id, value) { document.getElementById(id).textContent = Number(value || 0).toLocaleString('fr-MG') + ' Ar'; }
+async function loadTresorerieStats() {
+  const year = document.getElementById('filter-treso-annee').value;
+  const db = document.getElementById('filter-treso-debut').value;
+  const df = document.getElementById('filter-treso-fin').value;
+  let query = '';
+  if (year) query += (query ? '&' : '?') + `year=${year}`;
+  if (db) query += (query ? '&' : '?') + `dateDebut=${db}`;
+  if (df) query += (query ? '&' : '?') + `dateFin=${df}`;
+  const resp = await fetch('/api/back/statistiques/benefice-fromage' + query);
+  if (!resp.ok) return;
+  const data = await resp.json();
+  setMoney('stats-ca-fromage', data.chiffreAffairesFromage);
+  setMoney('stats-total-entrees', data.totalEntrees);
+  setMoney('stats-total-depenses', data.totalDepenses);
+  setMoney('stats-benefice-global', data.beneficeGlobal);
+  document.getElementById('stats-benefice-global').style.color = (data.beneficeGlobal || 0) >= 0 ? 'var(--green)' : 'var(--red)';
+}
+loadTresorerieStats();
+</script>
+</body>
+</html>
