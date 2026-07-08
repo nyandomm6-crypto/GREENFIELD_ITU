@@ -1,8 +1,8 @@
-package itu.greenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.MvtStockFille;
+import itu.greenfield.model.MvtStockFille;
 
 public interface MvtStockFilleRepository extends JpaRepository<MvtStockFille, Integer> {
 }

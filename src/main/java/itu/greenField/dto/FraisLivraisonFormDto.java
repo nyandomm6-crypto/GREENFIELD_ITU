@@ -1,6 +1,6 @@
-package itu.greenField.dto;
+package itu.greenfield.dto;
 
-import itu.greenField.model.FraisLivraison; // Assure-toi que le package de ton modèle est correct
+import itu.greenfield.model.FraisLivraison; // Assure-toi que le package de ton modèle est correct
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;

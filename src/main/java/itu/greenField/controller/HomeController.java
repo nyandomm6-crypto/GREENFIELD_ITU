@@ -1,4 +1,4 @@
-package itu.greenField.controller;
+package itu.greenfield.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

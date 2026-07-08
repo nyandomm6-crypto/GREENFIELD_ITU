@@ -1,6 +1,7 @@
 package itu.greenfield.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import itu.greenfield.dto.ClientStatDto;
@@ -30,12 +31,12 @@ public class StatistiqueServiceImpl implements StatistiqueService {
     @Override
     public List<ProduitStatDto> getTop5Produits(Integer year) {
         Timestamp[] range = resolveTimestampRange(year, null, null);
-        return statistiqueRepository.findTop5ProduitsPlusVendus(range[0], range[1]);
+        return statistiqueRepository.findTop5ProduitsPlusVendus(range[0], range[1], PageRequest.of(0, 5));
     }
 
     @Override
     public List<Produit> getNouveauxProduits() {
-        return statistiqueRepository.findNouveauxProduits();
+        return statistiqueRepository.findNouveauxProduits(PageRequest.of(0, 5));
     }
 
     @Override
@@ -67,7 +68,7 @@ public class StatistiqueServiceImpl implements StatistiqueService {
     @Override
     public List<ClientStatDto> getTop5Clients(Integer year) {
         Timestamp[] range = resolveTimestampRange(year, null, null);
-        return statistiqueRepository.findTop5MeilleursClients(range[0], range[1]);
+        return statistiqueRepository.findTop5MeilleursClients(range[0], range[1], PageRequest.of(0, 5));
     }
 
     @Override

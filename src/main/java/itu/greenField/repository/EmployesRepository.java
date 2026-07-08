@@ -2,9 +2,9 @@ package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.Employes;
-import itu.greenField.model.FRole;
-import itu.greenField.model.PointDeVente;
+import itu.greenfield.model.Employes;
+import itu.greenfield.model.FRole;
+import itu.greenfield.model.PointDeVente;
 
 import java.util.List;
 

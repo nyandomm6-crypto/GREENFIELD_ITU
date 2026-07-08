@@ -2,9 +2,9 @@ package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.MvtStock;
-import itu.greenField.model.PointDeVente;
-import itu.greenField.model.TypeMvt;
+import itu.greenfield.model.MvtStock;
+import itu.greenfield.model.PointDeVente;
+import itu.greenfield.model.TypeMvt;
 
 import java.util.List;
 

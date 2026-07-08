@@ -1,4 +1,4 @@
-package itu.greenField.filtre;
+package itu.greenfield.filtre;
 
 public enum FiltreNombreBackFraisOption {
     ALL("", "Tous"),

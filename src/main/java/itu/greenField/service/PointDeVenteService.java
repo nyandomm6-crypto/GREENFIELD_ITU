@@ -1,4 +1,4 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.Optional;
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
-import itu.greenField.model.MvtStockFille;
-import itu.greenField.model.PointDeVente;
-import itu.greenField.model.Produit;
-import itu.greenField.repository.PointDeVenteRepository;
-import itu.greenField.repository.ProduitRepository;
+import itu.greenfield.model.MvtStockFille;
+import itu.greenfield.model.PointDeVente;
+import itu.greenfield.model.Produit;
+import itu.greenfield.repository.PointDeVenteRepository;
+import itu.greenfield.repository.ProduitRepository;
 
 @Service
 public class PointDeVenteService {

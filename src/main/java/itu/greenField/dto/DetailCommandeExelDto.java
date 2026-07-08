@@ -1,6 +1,6 @@
-package itu.greenField.dto;
+package itu.greenfield.dto;
 
-import itu.greenField.model.Produit;
+import itu.greenfield.model.Produit;
 
 public class DetailCommandeExelDto {
     private Integer numCommande;

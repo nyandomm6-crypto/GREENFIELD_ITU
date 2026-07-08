@@ -1,4 +1,4 @@
-package itu.greenField.controller;
+package itu.greenfield.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,19 +14,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import itu.greenField.model.Employes;
-import itu.greenField.model.MvtStock;
-import itu.greenField.model.MvtStockFille;
-import itu.greenField.model.PointDeVente;
-import itu.greenField.model.Produit;
-import itu.greenField.model.TypeMvt;
-import itu.greenField.repository.EmployesRepository;
-import itu.greenField.repository.MvtStockFilleRepository;
-import itu.greenField.repository.MvtStockRepository;
-import itu.greenField.repository.PointDeVenteRepository;
-import itu.greenField.repository.ProduitRepository;
-import itu.greenField.repository.CategorieProduitRepository;
-import itu.greenField.service.PointDeVenteService;
+import itu.greenfield.model.Employes;
+import itu.greenfield.model.MvtStock;
+import itu.greenfield.model.MvtStockFille;
+import itu.greenfield.model.PointDeVente;
+import itu.greenfield.model.Produit;
+import itu.greenfield.model.TypeMvt;
+import itu.greenfield.repository.EmployesRepository;
+import itu.greenfield.repository.MvtStockFilleRepository;
+import itu.greenfield.repository.MvtStockRepository;
+import itu.greenfield.repository.PointDeVenteRepository;
+import itu.greenfield.repository.ProduitRepository;
+import itu.greenfield.repository.CategorieProduitRepository;
+import itu.greenfield.service.PointDeVenteService;
 
 @Controller
 @RequestMapping("/pointdevente")
@@ -217,13 +217,13 @@ public class PointDeVenteController {
             List<Employes> employes;
             if (motCle != null && !motCle.isEmpty() && role != null && !role.isEmpty()) {
                 employes = employesRepository.findByPointDeVenteAndNomContainingIgnoreCaseAndRole(
-                        pointDeVente.get(), motCle, itu.greenField.model.FRole.valueOf(role));
+                        pointDeVente.get(), motCle, itu.greenfield.model.FRole.valueOf(role));
             } else if (motCle != null && !motCle.isEmpty()) {
                 employes = employesRepository.findByPointDeVenteAndNomContainingIgnoreCase(
                         pointDeVente.get(), motCle);
             } else if (role != null && !role.isEmpty()) {
                 employes = employesRepository.findByPointDeVenteAndRole(
-                        pointDeVente.get(), itu.greenField.model.FRole.valueOf(role));
+                        pointDeVente.get(), itu.greenfield.model.FRole.valueOf(role));
             } else {
                 employes = employesRepository.findByPointDeVente(pointDeVente.get());
             }
