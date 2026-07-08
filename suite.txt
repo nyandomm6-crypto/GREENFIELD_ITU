@@ -5,11 +5,21 @@ prendre les modele deja present dans commande
 
 - ajouter upload image dans create et modifier produit et afficher l'image des produits dans le design ( cree table photo (id,idproduit,path))
 
-- faire marcher le bouton export facture en pdf (ca doit vraiment etre comme des vrai facture dans les grandes surfaces)
+- faire marcher le bouton export facture en pdf (ca doit vraiment etre comme des vrai facture dans les grandes surfaces 
+comme dans la photo comme modele que je vais t'envoye ,plus moderne meme , ne pas ecrire les info du client)
 
 - Mettre responsive le design et bien centre tout dans back office (exemple : formulaire ,liste,.....)
 
-- ajoute le formulaire de mouvement tresorerie : avec le drop down de type flux : pour entrer staticement les carburant, salaire,.....
+- ajoute aussi les fonctionnalites pour les statistiques :
+    - dans le front office : faire vraiment marcher les best seller(5 produit les plus vendu) et les nouveaux produit (10)
+    - dans le back office : 
+                - chiffre d'affaire en fromage (benefice et depense) : ajouter filtre par date debut et date fin
+                - Meilleurs vente sous forme de courbe (filtre par produit et annee)
+                - top 5 des produit les plus vendu en histogramme ( filtre par annee et categorie)
+
+- ajoute le formulaire de mouvement tresorerie : avec le drop down de type flux : pour entrer statiquement les carburant, salaire,.....
 
 
 - changer le logo par l'image envoye : n'ajoute pas de fond pour le logo
+
+
