@@ -1,0 +1,13 @@
+- ajoute les fonctionnalites import excel,export excel,template(telecharger modele) pour vehicule,employe,produit,categorie met les boutons dans chacune des liste:
+prendre les modele deja present dans commande
+
+- ajouter pagination pour chaque liste (prendre le modele dans commande) , recherche par mot si pas encore present
+
+- ajouter upload image dans create et modifier produit et afficher l'image des produits dans le design ( cree table photo (id,idproduit,path))
+
+- faire marcher le bouton export facture en pdf (ca doit vraiment etre comme des vrai facture dans les grandes surfaces)
+
+- Mettre responsive le design et bien centre tout dans back office (exemple : formulaire ,liste,.....)
+
+
+- changer le logo par l'image envoye : n'ajoute pas de fond pour le logo
