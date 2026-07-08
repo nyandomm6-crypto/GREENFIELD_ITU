@@ -6,7 +6,6 @@ import itu.greenField.model.Commandes;
 import itu.greenField.model.HistoriqueStatutCommande;
 
 import java.util.Optional;
-import java.util.List;
 
 
 public interface HistoriqueStatutCommandeRepository extends JpaRepository<HistoriqueStatutCommande, Integer>{

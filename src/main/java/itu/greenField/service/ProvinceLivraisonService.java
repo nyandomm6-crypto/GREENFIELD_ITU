@@ -23,4 +23,8 @@ public class ProvinceLivraisonService {
         return provinceLivraisonRepository.findById(id)
                 .orElse(null);
     }
+
+    public ProvinceLivraison findByWordInNom(String word) {
+        return provinceLivraisonRepository.findFirstByNomContainingIgnoreCase(word).orElse(null);
+    }
 }

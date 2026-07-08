@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des frais de livraison</title>
+    <style>
+        .d-none { display: none; }
+        .filtre-actif { background-color: #e2e8f0; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px; }
+        .filtre { margin-bottom: 10px; display: inline-block; margin-right: 15px; }
+        .table-container { margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
+        th { background-color: #f1f5f9; }
+    </style>
+</head>
+
+<body>
+    <div class="head">
+        <h1>Frais de livraison</h1>
+        <a th:href="@{/frais/form/new}">Ajouter un frais</a>
+    </div><br>
+
+    <div class="section-alert">
+        <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+        <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+    </div>
+
+    <form th:action="@{/frais/list}" th:object="${fraisFilterDto}" method="POST" id="form">
+        
+        <div class="section-filtre">
+            
+            <div class="filtre">
+                <label for="province-select">Province :</label>
+                <select id="province-select" onchange="addProvinceFilter(this)">
+                    <option value="">Toutes</option>
+                    <option th:each="prov : ${provinceLivraisonOptions}" th:value="${prov.id}" th:text="${prov.nom}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="filtre">
+                <label>Filtre pour les montants & poids :</label>
+                <select id="filtre-nombre-option">
+                    <option th:each="opt : ${filtreNombreOptions}" th:value="${opt.value}" th:text="${opt.label}">
+                    </option>
+                </select>
+
+                <select id="calcul-nombre-option">
+                    <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}"></option>
+                </select>
+
+                <input type="number" id="nombre-value-input" step="any" placeholder="Valeur..." />
+                <button type="button" id="ajouter-filtre-nombre">Ajouter</button>
+            </div>
+
+            <div id="activeFiltresDiv" class="active-filtres d-flex flex-wrap gap-2 mb-3">
+                
+                <div th:if="${fraisFilterDto?.idProvince != null}" th:each="provId : ${fraisFilterDto.idProvince}"
+                    class="filtre-actif">
+                    <span th:text="'Province ID: ' + ${provId}"></span>
+                    <input type="hidden" name="idProvince" th:value="${provId}" />
+                    <button type="button" onclick="removeArrayFilter(this)">x</button>
+                </div>
+
+                <th:block th:if="${fraisFilterDto?.typeFiltreNombre != null and !#lists.isEmpty(fraisFilterDto.typeFiltreNombre)}">
+                    <div th:each="typeNombre, iter : ${fraisFilterDto.typeFiltreNombre}" class="filtre-actif">
+                        <span th:text="${typeNombre == 'poidsreference' ? 'Poids' : 'Montant'} + ' ' + ${fraisFilterDto.operateurNombre[iter.index]} + ' ' + ${fraisFilterDto.nombreValue[iter.index]}"></span>
+                        <input type="hidden" name="typeFiltreNombre" th:value="${typeNombre}" />
+                        <input type="hidden" name="operateurNombre" th:value="${fraisFilterDto.operateurNombre[iter.index]}" />
+                        <input type="hidden" name="nombreValue" th:value="${fraisFilterDto.nombreValue[iter.index]}" />
+                        <button type="button" onclick="removeArrayFilter(this)">x</button>
+                    </div>
+                </th:block>
+            </div>
+
+            <button type="submit">Appliquer les filtres</button>
+            <a th:href="@{/frais/list}">Réinitialiser</a>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Province de livraison</th>
+                        <th>Poids de référence (kg)</th>
+                        <th>Montant du Frais</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="frais : ${fraisLivraisonList}">
+                        <td th:text="${frais.id}"></td>
+                        <td th:text="${frais.provinceLivraison != null ? frais.provinceLivraison.nom : 'Toutes'}"></td>
+                        <td th:text="${frais.poidsReference}"></td>
+                        <td th:text="${#numbers.formatDecimal(frais.montant, 1, 'DEFAULT', 2, 'DEFAULT')} + ' Ar'"></td>
+                        <td>
+                            <a th:href="@{|/frais/form/edit/${frais.id}|}">Modifier</a>
+                            <a th:href="@{|/frais/delete/${frais.id}|}">Supprimer</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section-pagination">
+            <label for="line-number">Nombre de lignes</label>
+            <input type="number" th:field="*{lineNumber}" id="line-number">
+            <input type="hidden" th:field="*{pageNumber}" id="pageParam">
+            <button type="submit">Appliquer</button>
+            
+            <div class="pagination">
+                <button type="button" th:if="${hasPrevious}"
+                    th:onclick="'changePage(' + (${fraisFilterDto.pageNumber - 1}) + ')'" class="btn-pagination">
+                    « Précédent
+                </button>
+
+                <span>Page <strong th:text="${fraisFilterDto.pageNumber}">1</strong> sur <strong th:text="${totalPages}">1</strong></span>
+
+                <button type="button" th:if="${hasNext}"
+                    th:onclick="'changePage(' + (${fraisFilterDto.pageNumber + 1}) + ')'" class="btn-pagination">
+                    Suivant »
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        // Changement de page
+        function changePage(page) {
+            document.getElementById('pageParam').value = page;
+            document.getElementById('form').submit();
+        }
+
+        // Suppression d'un badge du DOM
+        function removeArrayFilter(button) {
+            button.parentElement.remove();
+        }
+
+        // Ajout dynamique d'un badge de province au conteneur
+        function addProvinceFilter(selectElement) {
+            const val = selectElement.value;
+            const text = selectElement.options[selectElement.selectedIndex].text;
+            if (!val) return;
+
+            const container = document.getElementById('activeFiltresDiv');
+            
+            // Éviter les doublons de province
+            const existing = container.querySelector(`input[name="idProvince"][value="${val}"]`);
+            if (existing) return;
+
+            const div = document.createElement('div');
+            div.className = 'filtre-actif';
+            div.innerHTML = `
+                <span>Province: ${text}</span>
+                <input type="hidden" name="idProvince" value="${val}" />
+                <button type="button" onclick="removeArrayFilter(this)">x</button>
+            `;
+            container.appendChild(div);
+            selectElement.value = ''; // Reset du select
+        }
+
+        // Ajout dynamique d'un filtre numérique (Poids ou Montant)
+        document.getElementById('ajouter-filtre-nombre').addEventListener('click', function() {
+            const type = document.getElementById('filtre-nombre-option').value;
+            const typeText = document.getElementById('filtre-nombre-option').options[document.getElementById('filtre-nombre-option').selectedIndex].text;
+            const op = document.getElementById('calcul-nombre-option').value;
+            const val = document.getElementById('nombre-value-input').value;
+
+            if (!type || !val) return;
+
+            const container = document.getElementById('activeFiltresDiv');
+            const div = document.createElement('div');
+            div.className = 'filtre-actif';
+            div.innerHTML = `
+                <span>${typeText} ${op} ${val}</span>
+                <input type="hidden" name="typeFiltreNombre" value="${type}" />
+                <input type="hidden" name="operateurNombre" value="${op}" />
+                <input type="hidden" name="nombreValue" value="${val}" />
+                <button type="button" onclick="removeArrayFilter(this)">x</button>
+            `;
+            container.appendChild(div);
+            document.getElementById('nombre-value-input').value = ''; // Reset du champ
+        });
+    </script>
+</body>
+</html>

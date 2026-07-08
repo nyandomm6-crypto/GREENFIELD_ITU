@@ -22,6 +22,10 @@ public class ProduitService {
         return produitRepository.findByMatricule(matricule).orElse(null);
     }
 
+    public Produit findProduitByNom(String nom) {
+        return produitRepository.findFirstByNom(nom).orElse(null);
+    }
+
     public String produitToJson(Produit produit) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");

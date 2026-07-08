@@ -16,6 +16,7 @@
     <div class="head">
         <h1>Formulaire d'une nouvelle commande</h1>
         <a th:href="@{/commandes}">Voir la liste</a>
+        <a th:href="@{/commandes/importExcel}">Importer depuis un fichier Excel</a>
     </div><br>
     <form th:action="@{/commandes/save}" th:object="${commandeBackFormDto}" method="POST" id="form">
         <div th:if="${globalError}" class="alert alert-danger" role="alert">

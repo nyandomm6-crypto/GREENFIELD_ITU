@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "detailscommande")
@@ -28,6 +29,7 @@ public class DetailsCommande {
     private Produit produit;
 
     @Column(nullable = false)
+    @Positive
     private Integer quantite;
 
     @Column(name = "pu_au_moment_achat", nullable = false, precision = 10, scale = 2)
