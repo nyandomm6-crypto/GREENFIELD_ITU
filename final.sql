@@ -1,5 +1,5 @@
 -- Active: 1782932337041@@127.0.0.1@5433@bisous
-CREATE DATABASE gr;
+CREATE DATABASE gf;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
 -- =====================================================
