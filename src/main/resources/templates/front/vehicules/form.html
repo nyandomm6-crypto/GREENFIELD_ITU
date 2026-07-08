@@ -1,63 +1,86 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${edit} ? 'Modifier un véhicule' : 'Ajouter un véhicule'"></title>
-  </head>
-  <body>
-    <main>
-      <h1 th:text="${edit} ? 'Modifier un véhicule' : 'Ajouter un véhicule'"></h1>
 
-      <form th:action="${edit} ? @{/vehicules/{id}/modifier(id=${vehicule.id})} : @{/vehicules/ajouter}" method="post">
-        <label>
-          Matricule
-          <input type="text" name="matricule" th:value="${vehicule.matricule}" required />
-        </label>
+<head th:replace="~{back/fragments/layout :: head(${edit} ? 'Modifier un véhicule' : 'Ajouter un véhicule')}"></head>
 
-        <label>
-          Marque
-          <input type="text" name="marque" th:value="${vehicule.marque}" required />
-        </label>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('vehicules')}"></aside>
 
-        <label>
-          Modèle
-          <input type="text" name="modele" th:value="${vehicule.modele}" />
-        </label>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Véhicules')}"></header>
 
-        <label>
-          Année
-          <input type="number" name="annee" th:value="${vehicule.annee}" min="1900" max="2100" />
-        </label>
+        <div class="bo-contenu bo-contenu-etroit">
 
-        <label>
-          Capacité
-          <input type="number" step="0.01" name="capacite" th:value="${vehicule.capacite}" />
-        </label>
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/vehicules}">Véhicules</a> / Formulaire</p>
+                    <h1 th:text="${edit} ? 'Modifier un véhicule' : 'Ajouter un véhicule'"></h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/vehicules}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour à la liste</a>
+                </div>
+            </div>
 
-        <label>
-          Statut
-          <select name="statut">
-            <option value="" th:selected="${vehicule.statut} == null">-- Choisir --</option>
-            <option th:each="etat : ${statuts}"
-                    th:value="${etat}"
-                    th:text="${etat}"
-                    th:selected="${etat} == ${vehicule.statut}">
-            </option>
-          </select>
-        </label>
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-truck"></i> Informations du véhicule</h2>
+                </div>
+                <div class="carte-corps">
+                    <form th:action="${edit} ? @{/vehicules/{id}/modifier(id=${vehicule.id})} : @{/vehicules/ajouter}" method="post">
 
-        <label>
-          Date d'entrée
-          <input type="date" name="date" th:value="${vehicule.date}" />
-        </label>
+                        <div class="grille-form">
+                            <div class="champ">
+                                <label>Matricule</label>
+                                <input type="text" name="matricule" th:value="${vehicule.matricule}" required />
+                            </div>
 
-        <button type="submit" th:text="${edit} ? 'Modifier' : 'Ajouter'"></button>
-      </form>
+                            <div class="champ">
+                                <label>Marque</label>
+                                <input type="text" name="marque" th:value="${vehicule.marque}" required />
+                            </div>
 
-      <p>
-        <a th:href="@{/vehicules}">Retour à la liste</a>
-      </p>
+                            <div class="champ">
+                                <label>Modèle</label>
+                                <input type="text" name="modele" th:value="${vehicule.modele}" />
+                            </div>
+
+                            <div class="champ">
+                                <label>Année</label>
+                                <input type="number" name="annee" th:value="${vehicule.annee}" min="1900" max="2100" />
+                            </div>
+
+                            <div class="champ">
+                                <label>Capacité</label>
+                                <input type="number" step="0.01" name="capacite" th:value="${vehicule.capacite}" />
+                            </div>
+
+                            <div class="champ">
+                                <label>Statut</label>
+                                <select name="statut">
+                                    <option value="" th:selected="${vehicule.statut} == null">-- Choisir --</option>
+                                    <option th:each="etat : ${statuts}" th:value="${etat}" th:text="${etat}" th:selected="${etat} == ${vehicule.statut}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="champ">
+                                <label>Date d'entrée</label>
+                                <input type="date" name="date" th:value="${vehicule.date}" />
+                            </div>
+                        </div>
+
+                        <div class="btn-list barre-form">
+                            <a th:href="@{/vehicules}" class="btn btn-ligne">Annuler</a>
+                            <button type="submit" class="btn btn-vert" th:text="${edit} ? 'Modifier' : 'Ajouter'"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
     </main>
-  </body>
+</body>
+
 </html>

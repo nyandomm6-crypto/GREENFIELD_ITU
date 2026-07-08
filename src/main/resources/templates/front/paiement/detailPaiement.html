@@ -1,57 +1,120 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Details du paiement</title>
-</head>
+<head th:replace="~{back/fragments/layout :: head('Détail du paiement')}"></head>
 
-<body>
-    <h1>Details du paiement</h1>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
 
-    <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
-    <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
 
-    <p>Paiement #<span th:text="${paiement.id}"></span></p>
-    <p>Statut : <span th:text="${paiement.statut}"></span></p>
-    <p>Commande #<span th:text="${paiement.commande.id}"></span></p>
-    <p>Frais de livraison : <span th:text="${paiement.commande.fraisLivraison}"></span></p>
-    <p>Montant total : <strong th:text="${montantTotal}"></strong></p>
-    <p>Montant paye : <span th:text="${montantPaye}"></span></p>
-    <p>Montant restant : <span th:text="${montantRestant}"></span></p>
+        <div class="bo-contenu bo-contenu-etroit">
 
-    <h2>Paiements filles</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Type</th>
-                <th>Montant</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="fille : ${filles}">
-                <td th:text="${fille.typePayement}"></td>
-                <td th:text="${fille.valeur}"></td>
-                <td th:text="${fille.date}"></td>
-            </tr>
-        </tbody>
-    </table>
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/paiements/list}">Paiements</a> / Détail</p>
+                    <h1 th:text="|Paiement #${paiement.id}|">Détail du paiement</h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/paiements/list}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+                </div>
+            </div>
 
-    <h2>Commande correspondante</h2>
-    <p>Client : <span th:text="|${paiement.commande.client.nom} ${paiement.commande.client.prenom}|"></span></p>
-    <p>Mode de reception : <span th:text="${paiement.commande.modeReception}"></span></p>
-    <p>Lieu : <span
-            th:text="${paiement.commande.pointDeVenteRetrait?.code != null ? paiement.commande.pointDeVenteRetrait.code : paiement.commande.adresseLivraison}"></span>
-    </p>
+            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
+            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
 
-    <form th:if="${paiement.statut.name() == 'Reste' and paiementService.aUnPaiementEnEspece(paiement)}"
-        th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST">
-        <button type="submit">Confirmer paiement en espece</button>
-    </form>
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-circle-info"></i> Informations</h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>Statut</dt>
+                        <dd><span class="badge badge-vert" th:text="${paiement.statut}"></span></dd>
 
-    <button type="button">Exporter la facture</button>
+                        <dt>Commande</dt>
+                        <dd class="mono" th:text="|#${paiement.commande.id}|"></dd>
+
+                        <dt>Frais de livraison</dt>
+                        <dd class="mono" th:text="${paiement.commande.fraisLivraison}"></dd>
+
+                        <dt>Montant total</dt>
+                        <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
+
+                        <dt>Montant payé</dt>
+                        <dd class="mono" th:text="${montantPaye}"></dd>
+
+                        <dt>Montant restant</dt>
+                        <dd class="mono" th:text="${montantRestant}"></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-receipt"></i> Paiements filles</h2>
+                </div>
+                <div class="carte-corps">
+                    <div class="tableau-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th class="num">Montant</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="fille : ${filles}">
+                                    <td th:text="${fille.typePayement}"></td>
+                                    <td class="num mono" th:text="${fille.valeur}"></td>
+                                    <td th:text="${fille.date}"></td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(filles)}">
+                                    <td colspan="3">
+                                        <div class="vide">
+                                            <i class="fa-solid fa-receipt"></i>
+                                            <p>Aucun paiement enregistré.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-basket-shopping"></i> Commande correspondante</h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>Client</dt>
+                        <dd th:text="|${paiement.commande.client.nom} ${paiement.commande.client.prenom}|"></dd>
+
+                        <dt>Mode de réception</dt>
+                        <dd th:text="${paiement.commande.modeReception}"></dd>
+
+                        <dt>Lieu</dt>
+                        <dd th:text="${paiement.commande.pointDeVenteRetrait?.code != null ? paiement.commande.pointDeVenteRetrait.code : paiement.commande.adresseLivraison}"></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="barre-form">
+                <form th:if="${paiement.statut.name() == 'Reste' and paiementService.aUnPaiementEnEspece(paiement)}"
+                    th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST">
+                    <button type="submit" class="btn btn-doux"><i class="fa-solid fa-check"></i> Confirmer paiement en espèce</button>
+                </form>
+                <button type="button" class="btn btn-vert"><i class="fa-solid fa-file-invoice"></i> Exporter la facture</button>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
 </body>
 
 </html>

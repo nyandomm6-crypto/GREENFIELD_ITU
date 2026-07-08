@@ -1,59 +1,88 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des paiements</title>
-</head>
+<head th:replace="~{back/fragments/layout :: head('Paiements')}"></head>
 
-<body>
-    <h1>Liste des paiements</h1>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
 
-    <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
-    <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
 
-    <form th:action="@{/paiements/list}" method="GET">
-        <label for="statut">Filtrer par statut :</label>
-        <select id="statut" name="statut">
-            <option value="">Tous</option>
-            <option th:each="s : ${statutsPaiement}" th:value="${s}" th:text="${s}" th:selected="${s == statut}">
-            </option>
-        </select>
-        <button type="submit">Filtrer</button>
-    </form>
+        <div class="bo-contenu">
 
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Commande</th>
-                <th>Date</th>
-                <th>Statut</th>
-                <th>Total</th>
-                <th>Espece a confirmer</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="paiement : ${paiements}">
-                <td th:text="${paiement.id}"></td>
-                <td th:text="${paiement.commande.id}"></td>
-                <td th:text="${paiement.date}"></td>
-                <td th:text="${paiement.statut}"></td>
-                <td th:text="${paiementService.getMontantTotalCommande(paiement.commande)}"></td>
-                <td th:text="${paiementService.getMontantEspece(paiement)}"></td>
-                <td>
-                    <a th:href="@{|/paiements/detail/${paiement.id}|}">Details</a>
-                    <form th:if="${paiement.statut.name() == 'Reste' and paiementService.aUnPaiementEnEspece(paiement)}"
-                        th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST"
-                        style="display:inline">
-                        <button type="submit">Confirmer paiement en espece</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+            <div class="page-tete">
+                <div>
+                    <p class="fil">Ventes <i class="fas fa-chevron-right"></i> Paiements</p>
+                    <h1>Liste des paiements</h1>
+                </div>
+            </div>
+
+            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
+            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
+
+            <form th:action="@{/paiements/list}" method="GET" class="section-filtre barre-filtres">
+                <div class="filtre">
+                    <label for="statut">Statut</label>
+                    <select id="statut" name="statut">
+                        <option value="">Tous</option>
+                        <option th:each="s : ${statutsPaiement}" th:value="${s}" th:text="${s}" th:selected="${s == statut}">
+                        </option>
+                    </select>
+                </div>
+                <div class="barre-form" style="justify-content: flex-start;">
+                    <button type="submit" class="btn btn-vert btn-sm">Filtrer</button>
+                </div>
+            </form>
+
+            <div class="tableau-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Commande</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th class="num">Total</th>
+                            <th class="num">Espèce à confirmer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="paiement : ${paiements}">
+                            <td class="mono" th:text="${paiement.id}"></td>
+                            <td class="mono" th:text="${paiement.commande.id}"></td>
+                            <td th:text="${paiement.date}"></td>
+                            <td><span class="badge badge-vert" th:text="${paiement.statut}"></span></td>
+                            <td class="num texte-ocre" th:text="${paiementService.getMontantTotalCommande(paiement.commande)}"></td>
+                            <td class="num mono" th:text="${paiementService.getMontantEspece(paiement)}"></td>
+                            <td>
+                                <div class="cellule-actions">
+                                    <a th:href="@{|/paiements/detail/${paiement.id}|}" class="btn btn-sm btn-ligne">Détails</a>
+                                    <form th:if="${paiement.statut.name() == 'Reste' and paiementService.aUnPaiementEnEspece(paiement)}"
+                                        th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST"
+                                        style="display:inline">
+                                        <button type="submit" class="btn btn-sm btn-doux">Confirmer espèce</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(paiements)}">
+                            <td colspan="7">
+                                <div class="vide">
+                                    <i class="fa-solid fa-money-bill-wave"></i>
+                                    <p>Aucun paiement trouvé.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
 </body>
 
 </html>

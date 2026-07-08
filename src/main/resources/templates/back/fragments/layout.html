@@ -1,0 +1,197 @@
+<!doctype html>
+<!-- =====================================================================
+  greenField — LAYOUT BACK OFFICE
+  Fragments réutilisables par toutes les pages d'administration :
+
+    head(titre)     : <head> complet (fonts, CSS, favicon)
+    sidebar(actif)  : navigation latérale — 'actif' met l'entrée en surbrillance
+                      valeurs : produits | stocks | stock-entree | commandes |
+                                paiements | frais | livraisons | livreur |
+                                vehicules | pdv | employes
+    topbar(titre)   : barre supérieure avec titre de page
+    alertes         : affiche automatiquement success / succes / error / alert / message
+    pied            : pied de page
+===================================================================== -->
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="head(titre)">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${titre} + ' · greenField Admin'">greenField Admin</title>
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23009951'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial'%3Eg%3C/text%3E%3C/svg%3E" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" th:href="@{/css/greenfield.css}" />
+    <link rel="stylesheet" th:href="@{/css/back.css}" />
+  </head>
+
+  <body>
+    <!-- =================================================================
+       SIDEBAR
+    ================================================================== -->
+    <aside class="bo-sidebar" th:fragment="sidebar(actif)">
+      <a th:href="@{/commandes/list}" class="bo-brand">
+        <span class="bo-brand-icone"><i class="fas fa-seedling"></i></span>
+        <span>
+          <span class="bo-brand-nom">green<span>Field</span></span>
+          <span class="bo-brand-sous">Administration</span>
+        </span>
+      </a>
+      <div class="sillons"></div>
+
+      <nav class="bo-nav">
+        <p class="bo-nav-groupe">Catalogue</p>
+        <a
+          th:href="@{/back/produits}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'produits'} ? 'actif'"
+        >
+          <i class="fas fa-carrot"></i> Produits
+        </a>
+        <a
+          th:href="@{/back/stocks}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'stocks'} ? 'actif'"
+        >
+          <i class="fas fa-boxes-stacked"></i> Suivi des stocks
+        </a>
+        <a
+          th:href="@{/back/stocks/entree}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'stock-entree'} ? 'actif'"
+        >
+          <i class="fas fa-dolly"></i> Entrée de stock
+        </a>
+
+        <p class="bo-nav-groupe">Ventes</p>
+        <a
+          th:href="@{/commandes/list}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'commandes'} ? 'actif'"
+        >
+          <i class="fas fa-receipt"></i> Commandes
+        </a>
+        <a
+          th:href="@{/paiements/list}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'paiements'} ? 'actif'"
+        >
+          <i class="fas fa-coins"></i> Paiements
+        </a>
+        <a
+          th:href="@{/frais/list}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'frais'} ? 'actif'"
+        >
+          <i class="fas fa-truck-ramp-box"></i> Frais de livraison
+        </a>
+
+        <p class="bo-nav-groupe">Logistique</p>
+        <a
+          th:href="@{/livraison}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'livraisons'} ? 'actif'"
+        >
+          <i class="fas fa-route"></i> Livraisons
+        </a>
+        <a
+          th:href="@{/livreurs/dashboard}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'livreur'} ? 'actif'"
+        >
+          <i class="fas fa-motorcycle"></i> Espace livreur
+        </a>
+        <a
+          th:href="@{/vehicules}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'vehicules'} ? 'actif'"
+        >
+          <i class="fas fa-truck"></i> Véhicules
+        </a>
+
+        <p class="bo-nav-groupe">Réseau &amp; équipe</p>
+        <a
+          th:href="@{/pointdevente}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'pdv'} ? 'actif'"
+        >
+          <i class="fas fa-store"></i> Points de vente
+        </a>
+        <a
+          th:href="@{/employes}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'employes'} ? 'actif'"
+        >
+          <i class="fas fa-users"></i> Employés
+        </a>
+      </nav>
+
+      <div class="bo-sidebar-pied">
+        <a th:href="@{/}"><i class="fas fa-arrow-up-right-from-square"></i> Voir la boutique</a>
+        <div>&copy; 2026 greenField</div>
+      </div>
+    </aside>
+
+    <!-- =================================================================
+       TOPBAR
+    ================================================================== -->
+    <header class="bo-topbar" th:fragment="topbar(titre)">
+      <h1 class="bo-topbar-titre" th:text="${titre}">Titre de page</h1>
+      <div class="bo-topbar-espace"></div>
+      <a th:href="@{/}" class="bo-topbar-lien">
+        <i class="fas fa-store"></i> Voir la boutique
+      </a>
+      <div class="bo-topbar-profil">
+        <span class="bo-avatar"><i class="fas fa-user"></i></span>
+      </div>
+    </header>
+
+    <!-- =================================================================
+       ALERTES — couvre tous les noms d'attributs utilisés par les contrôleurs
+    ================================================================== -->
+    <th:block th:fragment="alertes">
+      <div class="alerte alerte-succes" th:if="${success}">
+        <i class="fas fa-circle-check"></i>
+        <span th:text="${success}"></span>
+      </div>
+      <div class="alerte alerte-succes" th:if="${succes}">
+        <i class="fas fa-circle-check"></i>
+        <span th:text="${succes}"></span>
+      </div>
+      <div class="alerte alerte-erreur" th:if="${error}">
+        <i class="fas fa-circle-exclamation"></i>
+        <span th:text="${error}"></span>
+      </div>
+      <div class="alerte alerte-erreur" th:if="${alert}">
+        <i class="fas fa-circle-exclamation"></i>
+        <span th:text="${alert}"></span>
+      </div>
+      <div class="alerte alerte-erreur" th:if="${globalError}">
+        <i class="fas fa-circle-exclamation"></i>
+        <span th:text="${globalError}"></span>
+      </div>
+      <div class="alerte alerte-info" th:if="${message}">
+        <i class="fas fa-circle-info"></i>
+        <span th:text="${message}"></span>
+      </div>
+    </th:block>
+
+    <!-- =================================================================
+       PIED DE PAGE
+    ================================================================== -->
+    <footer class="bo-pied" th:fragment="pied">
+      <span>greenField · Marché des producteurs — console d'administration</span>
+      <span>Antananarivo, Madagascar</span>
+    </footer>
+  </body>
+</html>

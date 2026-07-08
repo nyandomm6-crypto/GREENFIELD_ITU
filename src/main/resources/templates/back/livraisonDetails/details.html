@@ -1,180 +1,173 @@
-<!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Détail Livraison</title>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
+<head th:replace="~{back/fragments/layout :: head('Détail livraison')}"></head>
 
-  <body class="container mt-4">
-    <button type="button" onclick="window.history.back()">Retours</button>
-    <h2>Détail de la Livraison</h2>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('livraisons')}"></aside>
 
-    <div th:if="${livraison != null}">
-      <p><strong>ID :</strong> <span th:text="${livraison.id}"></span></p>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Livraisons')}"></header>
 
-      <p>
-        <strong>Statut :</strong>
-        <span th:text="${livraison.statutLivraison}"></span>
-      </p>
+        <div class="bo-contenu">
 
-      <p>
-        <strong>Date :</strong>
-        <span th:text="${livraison.dateLivraison}"></span>
-      </p>
-
-      <p>
-        <strong>Véhicule :</strong>
-        <span th:text="${livraison.vehicule.matricule}"></span>
-      </p>
-
-      <p>
-        <strong>Livreur :</strong>
-        <span th:text="${livraison.livreur.nom}"></span>
-      </p>
-
-      <hr />
-
-      <h3>Commandes</h3>
-
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>ID Ligne</th>
-            <th>Commande</th>
-            <th>Statut</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr th:each="f : ${livraison.filles}">
-            <td th:text="${f.id}"></td>
-
-            <td th:text="${f.commande.id}"></td>
-
-            <!-- IMPORTANT: id ajouté pour AJAX -->
-            <td>
-              <span
-                th:id="'statut_' + ${f.id}"
-                th:text="${f.statutLivraisonFille}"
-              ></span>
-            </td>
-
-            <td>
-              <!-- VALIDER -->
-              <button
-                type="button"
-                class="btn btn-success btn-sm"
-                th:if="${f.statutLivraisonFille.name() == 'En_attente'}"
-                th:attr="onclick=|valider(${f.id},${livraison.id})|"
-              >
-                Valider
-              </button>
-
-              <!-- ACTION MODAL -->
-              <button
-                type="button"
-                class="btn btn-danger btn-sm"
-                th:if="${f.statutLivraisonFille.name() != 'Annule'
-                        && f.statutLivraisonFille.name() != 'Livre'}"
-                data-bs-toggle="modal"
-                th:attr="data-bs-target='#modal_' + ${f.id}"
-              >
-                Action
-              </button>
-
-              <!-- MODAL -->
-              <div class="modal fade" th:id="'modal_' + ${f.id}" tabindex="-1">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Gestion Livraison</h5>
-                      <button
-                        type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                      ></button>
-                    </div>
-
-                    <div class="modal-body">
-                      <p>
-                        <strong>Commande :</strong>
-                        <span th:text="${f.commande.id}"></span>
-                      </p>
-
-                      <hr />
-
-                      <!-- ANNULER -->
-                      <h6>Annuler commande</h6>
-
-                      <button
-                        type="button"
-                        class="btn btn-danger btn-sm"
-                        th:attr="onclick=|annuler(${f.id},${livraison.id})|"
-                      >
-                        Confirmer annulation
-                      </button>
-
-                      <hr />
-
-                      <!-- REPORTER -->
-                      <h6>Reporter livraison</h6>
-
-                      <form
-                        th:action="@{'/livraison-fille/reporter'}"
-                        method="post"
-                      >
-                        <label>Date de report :</label>
-                        <input type="date" name="dateReport" required />
-                        <input
-                          type="hidden"
-                          name="id"
-                          th:value="${f.id}"
-                          required
-                        />
-                        <input
-                          type="hidden"
-                          name="idLivraison"
-                          th:value="${livraison.id}"
-                          required
-                        />
-
-                        <br /><br />
-
-                        <button type="submit" class="btn btn-warning btn-sm">
-                          Confirmer report
-                        </button>
-                      </form>
-                    </div>
-
-                    <div class="modal-footer">
-                      <button class="btn btn-secondary" data-bs-dismiss="modal">
-                        Fermer
-                      </button>
-                    </div>
-                  </div>
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/livraison}">Livraisons</a> / Détail</p>
+                    <h1>Détail de la livraison</h1>
                 </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                <div class="page-actions">
+                    <button type="button" onclick="window.history.back()" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour</button>
+                </div>
+            </div>
 
-    <div th:if="${livraison == null}">
-      <p>Aucune livraison trouvée.</p>
-    </div>
+            <div th:if="${livraison != null}">
 
-    <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                <div class="carte">
+                    <div class="carte-tete">
+                        <h2><i class="fa-solid fa-circle-info"></i> Informations générales</h2>
+                    </div>
+                    <div class="carte-corps">
+                        <dl class="fiche">
+                            <dt>ID</dt>
+                            <dd class="mono" th:text="${livraison.id}"></dd>
 
-    <!-- JS AJAX -->
+                            <dt>Statut</dt>
+                            <dd><span class="badge badge-vert" th:text="${livraison.statutLivraison}"></span></dd>
+
+                            <dt>Date</dt>
+                            <dd th:text="${livraison.dateLivraison}"></dd>
+
+                            <dt>Véhicule</dt>
+                            <dd class="mono" th:text="${livraison.vehicule.matricule}"></dd>
+
+                            <dt>Livreur</dt>
+                            <dd th:text="${livraison.livreur.nom}"></dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="carte">
+                    <div class="carte-tete">
+                        <h2><i class="fa-solid fa-basket-shopping"></i> Commandes</h2>
+                    </div>
+                    <div class="carte-corps">
+                        <div class="tableau-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID ligne</th>
+                                        <th>Commande</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr th:each="f : ${livraison.filles}">
+                                        <td class="mono" th:text="${f.id}"></td>
+
+                                        <td class="mono" th:text="${f.commande.id}"></td>
+
+                                        <!-- IMPORTANT: id ajouté pour AJAX -->
+                                        <td>
+                                            <span class="badge badge-vert" th:id="'statut_' + ${f.id}" th:text="${f.statutLivraisonFille}"></span>
+                                        </td>
+
+                                        <td>
+                                            <div class="cellule-actions">
+                                                <!-- VALIDER -->
+                                                <button type="button" class="btn btn-sm btn-doux"
+                                                    th:if="${f.statutLivraisonFille.name() == 'En_attente'}"
+                                                    th:attr="onclick=|valider(${f.id},${livraison.id})|">
+                                                    Valider
+                                                </button>
+
+                                                <!-- OUVRIR MODALE -->
+                                                <button type="button" class="btn btn-sm btn-doux-rouge"
+                                                    th:if="${f.statutLivraisonFille.name() != 'Annule'
+                                                            && f.statutLivraisonFille.name() != 'Livre'}"
+                                                    th:attr="onclick=|ouvrirModal('modal_${f.id}')|">
+                                                    Action
+                                                </button>
+
+                                                <!-- MODALE -->
+                                                <div class="gf-modal" th:id="'modal_' + ${f.id}">
+                                                    <div class="gf-modal-boite">
+                                                        <div class="gf-modal-tete">
+                                                            <h3>Gestion livraison</h3>
+                                                            <button type="button" class="gf-modal-fermer"
+                                                                th:attr="onclick=|fermerModal('modal_${f.id}')|"><i class="fa-solid fa-xmark"></i></button>
+                                                        </div>
+
+                                                        <div class="gf-modal-corps">
+                                                            <p><strong>Commande :</strong> <span th:text="${f.commande.id}"></span></p>
+
+                                                            <p class="sous-titre-form">Annuler commande</p>
+                                                            <button type="button" class="btn btn-sm btn-doux-rouge"
+                                                                th:attr="onclick=|annuler(${f.id},${livraison.id})|">
+                                                                Confirmer annulation
+                                                            </button>
+
+                                                            <p class="sous-titre-form" style="margin-top: 18px;">Reporter livraison</p>
+                                                            <form th:action="@{'/livraison-fille/reporter'}" method="post">
+                                                                <div class="champ">
+                                                                    <label>Date de report</label>
+                                                                    <input type="date" name="dateReport" required />
+                                                                </div>
+                                                                <input type="hidden" name="id" th:value="${f.id}" required />
+                                                                <input type="hidden" name="idLivraison" th:value="${livraison.id}" required />
+
+                                                                <button type="submit" class="btn btn-sm btn-ocre">
+                                                                    Confirmer report
+                                                                </button>
+                                                            </form>
+                                                        </div>
+
+                                                        <div class="gf-modal-pied">
+                                                            <button class="btn btn-sm btn-ligne" th:attr="onclick=|fermerModal('modal_${f.id}')|">
+                                                                Fermer
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${livraison == null}" class="vide">
+                <i class="fa-solid fa-truck"></i>
+                <p>Aucune livraison trouvée.</p>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+
     <script>
+      function ouvrirModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add('ouverte');
+      }
+
+      function fermerModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.remove('ouverte');
+      }
+
+      document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('gf-modal')) {
+          event.target.classList.remove('ouverte');
+        }
+      });
+
       function annuler(id, livraisonId) {
         fetch("/livraison-fille/annuler/" + id, {
           method: "POST",
@@ -207,5 +200,6 @@
           });
       }
     </script>
-  </body>
+</body>
+
 </html>

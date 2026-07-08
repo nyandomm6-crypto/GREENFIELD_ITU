@@ -1,68 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Employés - Point de Vente</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Employés - <span th:text="${pointDeVente.nom}"></span></h1>
 
-      <div class="filter-section">
-        <h3>Filtres</h3>
-        <form th:action="@{/pointdevente/} + ${pointDeVente.id} + '/employes'" method="get" class="filter-form">
-          <label>
-            Mot clé
-            <input type="text" name="motCle" th:value="${motCle}" placeholder="Rechercher par nom" />
-          </label>
-          <label>
-            Rôle
-            <select name="role">
-              <option value="">Tous</option>
-              <option
-                th:each="role : ${T(itu.greenField.model.FRole).values()}"
-                th:value="${role}"
-                th:text="${role}"
-                th:selected="${role == role}"
-              ></option>
-            </select>
-          </label>
-          <button type="submit" class="btn-filter">Filtrer</button>
-        </form>
-      </div>
+<head th:replace="~{back/fragments/layout :: head('Employés du point de vente')}"></head>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Email</th>
-            <th>Contact</th>
-            <th>Rôle</th>
-            <th>Actif</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="employe : ${employes}">
-            <td th:text="${employe.nom}"></td>
-            <td th:text="${employe.prenom}"></td>
-            <td th:text="${employe.mail}"></td>
-            <td th:text="${employe.contact}"></td>
-            <td th:text="${employe.role}"></td>
-            <td>
-              <span th:class="${employe.estActif} ? 'status-active' : 'status-inactive'" 
-                    th:text="${employe.estActif} ? 'Oui' : 'Non'"></span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('pdv')}"></aside>
 
-      <div class="back-links">
-        <a th:href="@{/pointdevente/} + ${pointDeVente.id}">← Retour au détail</a>
-        <a th:href="@{/pointdevente}">Retour à la liste</a>
-      </div>
-    </div>
-  </body>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Points de vente')}"></header>
+
+        <div class="bo-contenu">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/pointdevente}">Points de vente</a> / <a th:href="@{/pointdevente/} + ${pointDeVente.id}" th:text="${pointDeVente.nom}"></a> / Employés</p>
+                    <h1>Employés — <span th:text="${pointDeVente.nom}"></span></h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/pointdevente/} + ${pointDeVente.id}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour au détail</a>
+                </div>
+            </div>
+
+            <form th:action="@{/pointdevente/} + ${pointDeVente.id} + '/employes'" method="get" class="section-filtre barre-filtres">
+                <div class="filtre filtre-large">
+                    <label>Mot clé</label>
+                    <input type="text" name="motCle" th:value="${motCle}" placeholder="Rechercher par nom" />
+                </div>
+                <div class="filtre">
+                    <label>Rôle</label>
+                    <select name="role">
+                        <option value="">Tous</option>
+                        <option th:each="role : ${T(itu.greenField.model.FRole).values()}" th:value="${role}" th:text="${role}"
+                            th:selected="${role == role}"></option>
+                    </select>
+                </div>
+                <div class="barre-form" style="justify-content: flex-start;">
+                    <button type="submit" class="btn btn-vert btn-sm">Filtrer</button>
+                </div>
+            </form>
+
+            <div class="tableau-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Rôle</th>
+                            <th>Actif</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="employe : ${employes}">
+                            <td th:text="${employe.nom}"></td>
+                            <td th:text="${employe.prenom}"></td>
+                            <td th:text="${employe.mail}"></td>
+                            <td th:text="${employe.contact}"></td>
+                            <td><span class="badge badge-vert" th:text="${employe.role}"></span></td>
+                            <td>
+                                <span th:class="${employe.estActif} ? 'status-active' : 'status-inactive'"
+                                    th:text="${employe.estActif} ? 'Oui' : 'Non'"></span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(employes)}">
+                            <td colspan="6">
+                                <div class="vide">
+                                    <i class="fa-solid fa-users"></i>
+                                    <p>Aucun employé trouvé.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
 </html>

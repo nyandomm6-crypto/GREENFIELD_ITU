@@ -1,44 +1,78 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Détail Point de Vente</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Détail du Point de Vente</h1>
 
-      <div class="detail-card">
-        <div class="detail-item">
-          <strong>Nom</strong>
-          <span th:text="${pointDeVente.nom}"></span>
-        </div>
-        <div class="detail-item">
-          <strong>Code</strong>
-          <span th:text="${pointDeVente.code}"></span>
-        </div>
-        <div class="detail-item">
-          <strong>Adresse</strong>
-          <span th:text="${pointDeVente.adresse}"></span>
-        </div>
-        <div class="detail-item">
-          <strong>Contact</strong>
-          <span th:text="${pointDeVente.contact}"></span>
-        </div>
-      </div>
+<head th:replace="~{back/fragments/layout :: head('Détail point de vente')}"></head>
 
-      <div class="actions">
-        <h2>Actions</h2>
-        <div class="action-buttons">
-          <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/modifier'" class="btn-modify">Modifier</a>
-          <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/stock'" class="btn-stock">Voir le stock</a>
-          <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/employes'" class="btn-employees">Voir les employés</a>
-          <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/mouvements'" class="btn-movements">Voir les mouvements</a>
-          <a th:href="@{/pointdevente}" class="btn-back">Retour à la liste</a>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('pdv')}"></aside>
+
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Points de vente')}"></header>
+
+        <div class="bo-contenu">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/pointdevente}">Points de vente</a> / Détail</p>
+                    <h1 th:text="${pointDeVente.nom}">Détail du point de vente</h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/pointdevente}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour à la liste</a>
+                    <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/modifier'" class="btn btn-vert"><i class="fa-solid fa-pen"></i> Modifier</a>
+                </div>
+            </div>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-shop"></i> Informations</h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>Nom</dt>
+                        <dd th:text="${pointDeVente.nom}"></dd>
+
+                        <dt>Code</dt>
+                        <dd class="mono" th:text="${pointDeVente.code}"></dd>
+
+                        <dt>Adresse</dt>
+                        <dd th:text="${pointDeVente.adresse}"></dd>
+
+                        <dt>Contact</dt>
+                        <dd th:text="${pointDeVente.contact}"></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="tuiles">
+                <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/stock'" class="tuile">
+                    <div class="tuile-icone"><i class="fa-solid fa-boxes-stacked"></i></div>
+                    <div>
+                        <h3>Stock</h3>
+                        <p>Voir les niveaux de stock du point de vente</p>
+                    </div>
+                </a>
+
+                <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/employes'" class="tuile tuile-ocre">
+                    <div class="tuile-icone"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <h3>Employés</h3>
+                        <p>Voir les employés affectés</p>
+                    </div>
+                </a>
+
+                <a th:href="@{/pointdevente/} + ${pointDeVente.id} + '/mouvements'" class="tuile">
+                    <div class="tuile-icone"><i class="fa-solid fa-right-left"></i></div>
+                    <div>
+                        <h3>Mouvements</h3>
+                        <p>Historique des mouvements de stock</p>
+                    </div>
+                </a>
+            </div>
+
         </div>
-      </div>
-    </div>
-  </body>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
 </html>

@@ -1,84 +1,131 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formulaire paiement</title>
-</head>
+<head th:replace="~{back/fragments/layout :: head(${modeReste} ? 'Payer le reste' : 'Paiement total')}"></head>
 
-<body>
-    <h1 th:text="${modeReste} ? 'Payer le reste' : 'Paiement total'"></h1>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
 
-    <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
-    <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
 
-    <p>Commande #<span th:text="${commande.id}"></span></p>
-    <p>Montant total a payer : <strong th:text="${montantTotal}"></strong></p>
-    <p>Frais de livraison : <span th:text="${commande.fraisLivraison}"></span></p>
-    <p th:if="${modeReste}">Montant deja paye : <span th:text="${montantPaye}"></span></p>
-    <p>Montant restant a payer : <strong th:text="${montantRestant}"></strong></p>
+        <div class="bo-contenu bo-contenu-etroit">
 
-    <div th:if="${fillesExistantes != null and !#lists.isEmpty(fillesExistantes)}">
-        <h2>Paiements deja enregistres</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Type</th>
-                    <th>Montant</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="fille : ${fillesExistantes}">
-                    <td th:text="${fille.typePayement}"></td>
-                    <td th:text="${fille.valeur}"></td>
-                    <td th:text="${fille.date}"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/paiements/list}">Paiements</a> / Formulaire</p>
+                    <h1 th:text="${modeReste} ? 'Payer le reste' : 'Paiement total'"></h1>
+                </div>
+            </div>
 
-    <form th:action="${modeReste} ? @{|/paiements/reste/${commande.id}|} : @{|/paiements/total/${commande.id}|}"
-        th:object="${paiementFormDto}" method="POST">
-        <input type="hidden" th:field="*{commandeId}">
+            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
+            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
 
-        <table id="table-paiement">
-            <thead>
-                <tr>
-                    <th>Type de paiement</th>
-                    <th>Montant</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="ligne-paiement" th:each="ligne, stat : *{lignes}">
-                    <td>
-                        <select class="type-paiement" th:field="*{lignes[__${stat.index}__].typePayement}">
-                            <option th:each="type : ${typesPaiement}" th:value="${type}" th:text="${type}"></option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" step="0.01" th:field="*{lignes[__${stat.index}__].montant}" required>
-                    </td>
-                    <td>
-                        <button type="button" onclick="supprimerLignePaiement(this)">Supprimer</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-circle-info"></i> Commande #<span th:text="${commande.id}"></span></h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>Montant total à payer</dt>
+                        <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
 
-        <button type="button" onclick="ajouterLignePaiement()">+</button>
+                        <dt>Frais de livraison</dt>
+                        <dd class="mono" th:text="${commande.fraisLivraison}"></dd>
 
-        <div id="bloc-mobile-money">
-            <p>Numeros de transfert :</p>
-            <ul>
-                <li th:each="numero : ${numerosTransfert}" th:text="${numero}"></li>
-            </ul>
+                        <dt th:if="${modeReste}">Montant déjà payé</dt>
+                        <dd th:if="${modeReste}" class="mono" th:text="${montantPaye}"></dd>
+
+                        <dt>Montant restant à payer</dt>
+                        <dd class="mono texte-ocre" th:text="${montantRestant}"></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div th:if="${fillesExistantes != null and !#lists.isEmpty(fillesExistantes)}" class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-receipt"></i> Paiements déjà enregistrés</h2>
+                </div>
+                <div class="carte-corps">
+                    <div class="tableau-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th class="num">Montant</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="fille : ${fillesExistantes}">
+                                    <td th:text="${fille.typePayement}"></td>
+                                    <td class="num mono" th:text="${fille.valeur}"></td>
+                                    <td th:text="${fille.date}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-money-bill-wave"></i> Nouveau paiement</h2>
+                </div>
+                <div class="carte-corps">
+                    <form th:action="${modeReste} ? @{|/paiements/reste/${commande.id}|} : @{|/paiements/total/${commande.id}|}"
+                        th:object="${paiementFormDto}" method="POST">
+                        <input type="hidden" th:field="*{commandeId}">
+
+                        <div class="tableau-scroll">
+                            <table id="table-paiement">
+                                <thead>
+                                    <tr>
+                                        <th>Type de paiement</th>
+                                        <th class="num">Montant</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="ligne-paiement" th:each="ligne, stat : *{lignes}">
+                                        <td>
+                                            <select class="type-paiement" th:field="*{lignes[__${stat.index}__].typePayement}">
+                                                <option th:each="type : ${typesPaiement}" th:value="${type}" th:text="${type}"></option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.01" class="montant" th:field="*{lignes[__${stat.index}__].montant}" required>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-doux-rouge" onclick="supprimerLignePaiement(this)"><i class="fa-solid fa-xmark"></i> Supprimer</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="barre-form" style="justify-content: flex-start; margin-bottom: 10px;">
+                            <button type="button" class="btn btn-doux btn-sm" onclick="ajouterLignePaiement()"><i class="fa-solid fa-plus"></i> Ajouter une ligne</button>
+                        </div>
+
+                        <div id="bloc-mobile-money" class="champ">
+                            <label>Numéros de transfert</label>
+                            <div class="liste-coche" style="max-height: none;">
+                                <p th:each="numero : ${numerosTransfert}" th:text="${numero}" style="margin: 0; padding: 4px 0;"></p>
+                            </div>
+                        </div>
+
+                        <div class="barre-form">
+                            <button type="submit" class="btn btn-vert"><i class="fa-solid fa-check"></i> Payer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div>
 
-        <button type="submit">Payer</button>
-    </form>
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
 
     <script th:inline="javascript">
         const typesPaiement = /*[[${typesPaiement}]]*/[];
@@ -95,10 +142,10 @@
                         </select>
                     </td>
                     <td>
-                        <input type="number" step="0.01" name="lignes[${index}].montant" required>
+                        <input type="number" step="0.01" class="montant" name="lignes[${index}].montant" required>
                     </td>
                     <td>
-                        <button type="button" onclick="supprimerLignePaiement(this)">Supprimer</button>
+                        <button type="button" class="btn btn-sm btn-doux-rouge" onclick="supprimerLignePaiement(this)"><i class="fa-solid fa-xmark"></i> Supprimer</button>
                     </td>
                 </tr>
             `);

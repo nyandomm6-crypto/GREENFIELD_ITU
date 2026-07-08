@@ -1,97 +1,105 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>GreenField - Formulaire Produit</title>
-    <style>
-      .error {
-        color: red;
-        font-size: 12px;
-      }
-      input.error-border,
-      select.error-border {
-        border: 2px solid red;
-      }
-      button:disabled {
-        background: gray;
-        cursor: not-allowed;
-      }
-    </style>
-  </head>
-  <body>
-    <nav>
-      <a th:href="@{/back/produits}">Catalogue</a> |
-      <a th:href="@{/back/produits/nouveau}">Ajouter Produit</a> |
-      <a th:href="@{/back/stocks}">Stocks</a> |
-      <a th:href="@{/back/stocks/entree}">Entrée de Stock</a>
-    </nav>
-    <hr />
+  <head th:replace="~{back/fragments/layout :: head(${isEdit ? 'Modifier un produit' : 'Nouveau produit'})}"></head>
 
-    <h1
-      th:text="${isEdit ? 'Modifier le Produit' : 'Ajouter un Nouveau Produit'}"
-    ></h1>
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('produits')}"></aside>
 
-    <form
-      id="produitForm"
-      method="post"
-      th:action="${isEdit ? '/back/produits/modifier/' + produit.id : '/back/produits/nouveau'}"
-    >
-      <input type="hidden" id="prodId" name="id" th:value="${produit.id}" />
+    <main class="bo-main">
+      <header th:replace="~{back/fragments/layout :: topbar(${isEdit ? 'Modifier un produit' : 'Nouveau produit'})}"></header>
 
-      <label>
-        Nom du Produit :<br />
-        <input
-          type="text"
-          id="nom"
-          name="nom"
-          th:value="${produit.nom}"
-          required
-        /> </label
-      ><br />
-      <span class="error" id="err-nom"></span><br />
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/back/produits}">Produits</a>
+              <i class="fas fa-chevron-right"></i>
+              <span th:text="${isEdit ? 'Modification' : 'Création'}"></span>
+            </p>
+            <h1 th:text="${isEdit ? 'Modifier le produit' : 'Ajouter un nouveau produit'}"></h1>
+            <p class="sous-titre">Les champs sont vérifiés en direct pendant la saisie.</p>
+          </div>
+        </div>
 
-      <label>
-        Matricule :<br />
-        <input
-          type="text"
-          id="matricule"
-          name="matricule"
-          th:value="${produit.matricule}"
-          required
-        /> </label
-      ><br />
-      <span class="error" id="err-matricule"></span><br />
+        <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
 
-      <label>
-        Prix Unitaire (Ar) :<br />
-        <input
-          type="number"
-          step="0.01"
-          id="pu"
-          name="pu"
-          th:value="${produit.pu}"
-          required
-        /> </label
-      ><br />
-      <span class="error" id="err-pu"></span><br />
+        <form
+          id="produitForm"
+          method="post"
+          th:action="${isEdit ? '/back/produits/modifier/' + produit.id : '/back/produits/nouveau'}"
+          class="carte"
+        >
+          <div class="carte-corps">
+            <input type="hidden" id="prodId" name="id" th:value="${produit.id}" />
 
-      <label>
-        Catégorie :<br />
-        <select id="idCategorie" name="categorie.id" required>
-          <option value="">-- Sélectionner --</option>
-          <option
-            th:each="cat : ${categories}"
-            th:value="${cat.id}"
-            th:text="${cat.libelle}"
-            th:selected="${produit.categorie != null && cat.id == produit.categorie.id}"
-          ></option>
-        </select> </label
-      ><br />
-      <span class="error" id="err-categorie"></span><br /><br />
+            <div class="grille-form">
+              <div class="champ">
+                <label for="nom">Nom du produit</label>
+                <input
+                  type="text"
+                  id="nom"
+                  name="nom"
+                  th:value="${produit.nom}"
+                  placeholder="Ex : Fromage de chèvre affiné"
+                  required
+                />
+                <span class="error" id="err-nom"></span>
+              </div>
 
-      <button type="submit" id="btnSubmit">Enregistrer</button>
-      <a th:href="@{/back/produits}">Annuler</a>
-    </form>
+              <div class="champ">
+                <label for="matricule">Matricule</label>
+                <input
+                  type="text"
+                  id="matricule"
+                  name="matricule"
+                  th:value="${produit.matricule}"
+                  placeholder="Ex : PRD-0042"
+                  required
+                />
+                <span class="error" id="err-matricule"></span>
+              </div>
+
+              <div class="champ">
+                <label for="pu">Prix unitaire (Ar)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  id="pu"
+                  name="pu"
+                  th:value="${produit.pu}"
+                  placeholder="0.00"
+                  required
+                />
+                <span class="error" id="err-pu"></span>
+              </div>
+
+              <div class="champ">
+                <label for="idCategorie">Catégorie</label>
+                <select id="idCategorie" name="categorie.id" required>
+                  <option value="">-- Sélectionner --</option>
+                  <option
+                    th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.libelle}"
+                    th:selected="${produit.categorie != null && cat.id == produit.categorie.id}"
+                  ></option>
+                </select>
+                <span class="error" id="err-categorie"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="carte-pied flex gap-12 aligne-centre">
+            <button type="submit" id="btnSubmit" class="btn btn-vert">
+              <i class="fas fa-floppy-disk"></i> Enregistrer
+            </button>
+            <a th:href="@{/back/produits}" class="btn btn-ligne">Annuler</a>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
 
     <script>
       const formInputs = document.querySelectorAll(

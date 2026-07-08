@@ -11,13 +11,13 @@
         <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
             <div>
                 <p style="color: var(--gf-gris); font-size: 13px; margin-bottom: 4px;">
-                    <a th:href="@{/commandes/fo}" style="color: var(--gf-gris);">Mes commandes</a> / Détail
+                    <a th:href="@{/commandes/fo/list}" style="color: var(--gf-gris);">Mes commandes</a> / Détail
                 </p>
                 <h1 style="margin: 0;" th:text="|Commande #${commande.id}|">Commande</h1>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <a th:href="@{/commandes/fo}" class="btn btn-ligne">Retour</a>
-                <a th:href="@{|/commandes/fo/annuler/${commande.id}|}" class="btn btn-doux-rouge"><i class="fa-solid fa-ban"></i> Annuler</a>
+                <a th:href="@{/commandes/fo/list}" class="btn btn-ligne">Retour</a>
+                <a th:href="@{|/commandes/annuler/${commande.id}|}" class="btn btn-doux-rouge"><i class="fa-solid fa-ban"></i> Annuler</a>
                 <a th:href="@{|/commandes/fo/form/edit/${commande.id}|}" class="btn btn-doux"><i class="fa-solid fa-pen"></i> Modifier</a>
                 <a th:href="@{|/paiements/choix/${commande.id}|}" class="btn btn-vert"><i class="fa-solid fa-money-bill-wave"></i> Choix de paiement</a>
             </div>

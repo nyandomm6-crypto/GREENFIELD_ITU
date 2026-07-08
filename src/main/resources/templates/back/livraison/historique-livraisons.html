@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head th:replace="~{back/fragments/layout :: head('Historique des livraisons')}"></head>
+
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('livreur')}"></aside>
+
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Historique des livraisons')}"></header>
+
+        <div class="bo-contenu">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/livreurs/dashboard}">Tableau de bord</a> / Historique</p>
+                    <h1>Historique des livraisons</h1>
+                    <p class="sous-titre">Bonjour <strong th:text="${livreur.prenom + ' ' + livreur.nom}"></strong></p>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/livreurs/dashboard}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Tableau de bord</a>
+                    <a th:href="@{/livreurs/livraisons}" class="btn btn-vert"><i class="fa-solid fa-truck"></i> Mes livraisons en cours</a>
+                </div>
+            </div>
+
+            <div class="vide">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <p>L'historique détaillé des livraisons n'est pas encore disponible sur cette page.</p>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
+</html>

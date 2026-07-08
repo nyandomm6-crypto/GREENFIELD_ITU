@@ -1,56 +1,83 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>GreenField - Détail du Produit</title>
-  </head>
-  <body>
-    <nav>
-      <a th:href="@{/back/produits}">Catalogue</a> |
-      <a th:href="@{/back/produits/nouveau}">Ajouter Produit</a> |
-      <a th:href="@{/back/stocks}">Stocks</a> |
-      <a th:href="@{/back/stocks/entree}">Entrée de Stock</a>
-    </nav>
-    <hr />
+  <head th:replace="~{back/fragments/layout :: head('Fiche produit')}"></head>
 
-    <h1>Fiche Produit</h1>
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('produits')}"></aside>
 
-    <ul>
-      <li><b>Nom :</b> <span th:text="${produit.nom}"></span></li>
-      <li><b>Matricule :</b> <span th:text="${produit.matricule}"></span></li>
-      <li>
-        <b>Prix Unitaire :</b> <span th:text="${produit.pu + ' Ar'}"></span>
-      </li>
-      <li>
-        <b>Catégorie :</b>
-        <span
-          th:text="${produit.categorie != null ? produit.categorie.libelle : 'Non spécifié'}"
-        ></span>
-      </li>
-      <li>
-        <b>Stock Total Global :</b> <span th:text="${globalStock}"></span>
-      </li>
-    </ul>
+    <main class="bo-main">
+      <header th:replace="~{back/fragments/layout :: topbar('Fiche produit')}"></header>
 
-    <h2>Détail Stock par Point de Vente</h2>
-    <table border="1">
-      <thead>
-        <tr>
-          <th>Code PDV</th>
-          <th>Nom PDV</th>
-          <th>Quantité en Stock</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr th:each="pdv : ${pdvs}">
-          <td th:text="${pdv.code}"></td>
-          <td th:text="${pdv.nom}"></td>
-          <td th:text="${produitService.getStock(produit.id, pdv.code)}"></td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/back/produits}">Produits</a>
+              <i class="fas fa-chevron-right"></i>
+              <span class="mono" th:text="${produit.matricule}"></span>
+            </p>
+            <h1 th:text="${produit.nom}"></h1>
+          </div>
+          <div class="page-actions">
+            <a th:href="@{/back/produits}" class="btn btn-ligne">
+              <i class="fas fa-arrow-left"></i> Retour au catalogue
+            </a>
+            <a th:href="@{/back/produits/modifier/{id}(id=${produit.id})}" class="btn btn-vert">
+              <i class="fas fa-pen"></i> Modifier
+            </a>
+          </div>
+        </div>
 
-    <br />
-    <a th:href="@{/back/produits}">Retour au catalogue</a>
+        <div class="kpi-grille">
+          <div class="kpi kpi-ocre">
+            <p class="kpi-libelle"><i class="fas fa-tag"></i> Prix unitaire</p>
+            <p class="kpi-valeur"><span th:text="${produit.pu}"></span> <small>Ar</small></p>
+          </div>
+          <div class="kpi">
+            <p class="kpi-libelle"><i class="fas fa-boxes-stacked"></i> Stock total global</p>
+            <p class="kpi-valeur" th:text="${globalStock}"></p>
+          </div>
+          <div class="kpi kpi-feuille">
+            <p class="kpi-libelle"><i class="fas fa-layer-group"></i> Catégorie</p>
+            <p class="kpi-valeur" style="font-size: 18px"
+               th:text="${produit.categorie != null ? produit.categorie.libelle : 'Non spécifié'}"></p>
+          </div>
+        </div>
+
+        <div class="carte">
+          <div class="carte-tete">
+            <h2><i class="fas fa-store texte-vert"></i> Stock par point de vente</h2>
+          </div>
+          <div class="tableau-scroll" style="border: none; border-radius: 0 0 var(--rayon-lg) var(--rayon-lg)">
+            <table>
+              <thead>
+                <tr>
+                  <th>Code PDV</th>
+                  <th>Nom du point de vente</th>
+                  <th class="num">Quantité en stock</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="pdv : ${pdvs}">
+                  <td class="mono" th:text="${pdv.code}"></td>
+                  <td th:text="${pdv.nom}"></td>
+                  <td class="num" th:text="${produitService.getStock(produit.id, pdv.code)}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(pdvs)}">
+                  <td colspan="3">
+                    <div class="vide">
+                      <i class="fas fa-store-slash"></i>
+                      <p>Aucun point de vente enregistré.</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
   </body>
 </html>
