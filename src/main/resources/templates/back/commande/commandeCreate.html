@@ -14,11 +14,14 @@
             <div class="page-tete">
                 <div>
                     <p class="fil"><a th:href="@{/commandes/list}">Commandes</a> / Formulaire</p>
-                    <h1 th:text="${commandeBackFormDto.commandeId != null ? 'Modifier la commande' : 'Nouvelle commande'}">Nouvelle commande</h1>
+                    <h1
+                        th:text="${commandeBackFormDto.commandeId != null ? 'Modifier la commande' : 'Nouvelle commande'}">
+                        Nouvelle commande</h1>
                 </div>
                 <div class="page-actions">
-                    <a th:href="@{/commandes/list}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Voir la liste</a>
-        <a th:href="@{/commandes/importExcel}">Importer depuis un fichier Excel</a>
+                    <a th:href="@{/commandes/list}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Voir la
+                        liste</a>
+                    <a th:href="@{/commandes/importExcel}">Importer depuis un fichier Excel</a>
 
                 </div>
             </div>
@@ -39,18 +42,22 @@
                         <div class="grille-form">
                             <div class="champ">
                                 <label for="client-input-nom">Nom</label>
-                                <input type="text" id="client-input-nom" th:field="*{clientNom}" placeholder="Tapez le nom du client"
+                                <input type="text" id="client-input-nom" th:field="*{clientNom}"
+                                    placeholder="Tapez le nom du client"
                                     th:readonly="${commandeBackFormDto.commandeId != null}"
                                     th:classappend="${#fields.hasErrors('clientNom')} ? 'is-invalid' : ''" />
-                                <p class="text-danger" th:if="${#fields.hasErrors('clientNom')}" th:errors="*{clientNom}"></p>
+                                <p class="text-danger" th:if="${#fields.hasErrors('clientNom')}"
+                                    th:errors="*{clientNom}"></p>
                             </div>
 
                             <div class="champ">
                                 <label for="client-input-prenom">Prénom</label>
                                 <input type="text" id="client-input-prenom" th:field="*{clientPrenom}"
-                                    th:readonly="${commandeBackFormDto.commandeId != null}" placeholder="Tapez le prénom du client"
+                                    th:readonly="${commandeBackFormDto.commandeId != null}"
+                                    placeholder="Tapez le prénom du client"
                                     th:classappend="${#fields.hasErrors('clientPrenom')} ? 'is-invalid' : ''" />
-                                <p class="text-danger" th:if="${#fields.hasErrors('clientPrenom')}" th:errors="*{clientPrenom}"></p>
+                                <p class="text-danger" th:if="${#fields.hasErrors('clientPrenom')}"
+                                    th:errors="*{clientPrenom}"></p>
                             </div>
                         </div>
 
@@ -76,32 +83,39 @@
                             <label>Mode de réception</label>
                             <div class="choix-ligne">
                                 <div th:each="mode : ${modeReceptionOptions}" class="choix-pastille">
-                                    <input type="radio" th:id="${'mode-' + mode}" th:value="${mode}" th:field="*{modeReception}" />
+                                    <input type="radio" th:id="${'mode-' + mode}" th:value="${mode}"
+                                        th:field="*{modeReception}" />
                                     <label th:for="${'mode-' + mode}"
                                         th:text="${mode == 'Retrait_Boutique' ? 'Retrait' : (mode == 'Livraison_Domicile' ? 'Livraison' : mode)}">
                                     </label>
                                 </div>
                             </div>
-                            <p class="text-danger" th:if="${#fields.hasErrors('modeReception')}" th:errors="*{modeReception}"></p>
+                            <p class="text-danger" th:if="${#fields.hasErrors('modeReception')}"
+                                th:errors="*{modeReception}"></p>
                         </div>
 
                         <div id="bloc-adresse" class="d-none">
                             <div class="grille-form">
                                 <div class="champ">
                                     <label for="province">Province de livraison</label>
-                                    <select id="province" th:field="*{provinceId}" th:classappend="${#fields.hasErrors('provinceId')} ? 'is-invalid' : ''">
+                                    <select id="province" th:field="*{provinceId}"
+                                        th:classappend="${#fields.hasErrors('provinceId')} ? 'is-invalid' : ''">
                                         <option value="">Sélectionnez une province</option>
-                                        <option th:each="province : ${provinceLivraisonOptions}" th:value="${province.id}" th:text="${province.nom}">
+                                        <option th:each="province : ${provinceLivraisonOptions}"
+                                            th:value="${province.id}" th:text="${province.nom}">
                                         </option>
                                     </select>
-                                    <p class="text-danger" th:if="${#fields.hasErrors('provinceId')}" th:errors="*{provinceId}"></p>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('provinceId')}"
+                                        th:errors="*{provinceId}"></p>
                                 </div>
 
                                 <div class="champ">
                                     <label for="address">Adresse de livraison</label>
-                                    <input type="text" id="address" th:field="*{address}" placeholder="Tapez l'adresse de livraison"
+                                    <input type="text" id="address" th:field="*{address}"
+                                        placeholder="Tapez l'adresse de livraison"
                                         th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''" />
-                                    <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></p>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('address')}"
+                                        th:errors="*{address}"></p>
                                 </div>
                             </div>
                         </div>
@@ -115,7 +129,8 @@
                                     <option th:each="pdv : ${pointDeVenteOptions}" th:value="${pdv.id}"
                                         th:text="|${pdv.nom} - ${pdv.code}|"></option>
                                 </select>
-                                <p class="text-danger" th:if="${#fields.hasErrors('pointDeVenteId')}" th:errors="*{pointDeVenteId}"></p>
+                                <p class="text-danger" th:if="${#fields.hasErrors('pointDeVenteId')}"
+                                    th:errors="*{pointDeVenteId}"></p>
                             </div>
                         </div>
 
@@ -124,7 +139,8 @@
                         <div class="grille-form">
                             <div class="champ">
                                 <label for="heure-reception-debut">Date et heure début</label>
-                                <input type="datetime-local" id="heure-reception-debut" th:field="*{heureReceptionDebut}"
+                                <input type="datetime-local" id="heure-reception-debut"
+                                    th:field="*{heureReceptionDebut}"
                                     th:classappend="${#fields.hasErrors('heureReceptionDebut')} ? 'is-invalid' : ''" />
                                 <p class="text-danger" th:if="${#fields.hasErrors('heureReceptionDebut')}"
                                     th:errors="*{heureReceptionDebut}"></p>
@@ -134,7 +150,8 @@
                                 <label for="heure-reception-fin">Date et heure fin</label>
                                 <input type="datetime-local" id="heure-reception-fin" th:field="*{heureReceptionFin}"
                                     th:classappend="${#fields.hasErrors('heureReceptionFin')} ? 'is-invalid' : ''" />
-                                <p class="text-danger" th:if="${#fields.hasErrors('heureReceptionFin')}" th:errors="*{heureReceptionFin}">
+                                <p class="text-danger" th:if="${#fields.hasErrors('heureReceptionFin')}"
+                                    th:errors="*{heureReceptionFin}">
                                 </p>
                             </div>
                         </div>
@@ -146,7 +163,8 @@
                         <h2><i class="fa-solid fa-basket-shopping"></i> Produits commandés</h2>
                     </div>
                     <div class="carte-corps">
-                        <p class="text-danger" th:if="${#fields.hasErrors('detailsCommande')}" th:errors="*{detailsCommande}"></p>
+                        <p class="text-danger" th:if="${#fields.hasErrors('detailsCommande')}"
+                            th:errors="*{detailsCommande}"></p>
 
                         <div class="tableau-scroll">
                             <table id="table">
@@ -193,12 +211,16 @@
                                                 th:errors="*{detailsCommande[__${stat.index}__].quantite}"></p>
                                         </td>
 
-                                        <td class="total-cell num" th:text="${detail.quantite != null ? 'A calculer' : '0'}">0</td>
+                                        <td class="total-cell num"
+                                            th:text="${detail.quantite != null ? 'A calculer' : '0'}">0</td>
                                         <td>
                                             <div class="cellule-actions">
                                                 <button type="button" class="remove-row btn btn-doux-rouge btn-sm"
-                                                    onclick="removeProductLine(this)"><i class="fa-solid fa-trash-can"></i> Supprimer</button>
-                                                <button type="button" id="add-row" class="btn btn-doux btn-sm" onclick="addProductLine()"><i class="fa-solid fa-plus"></i> Ajouter</button>
+                                                    onclick="removeProductLine(this)"><i
+                                                        class="fa-solid fa-trash-can"></i> Supprimer</button>
+                                                <button type="button" id="add-row" class="btn btn-doux btn-sm"
+                                                    onclick="addProductLine()"><i class="fa-solid fa-plus"></i>
+                                                    Ajouter</button>
                                             </div>
                                         </td>
                                     </tr>
