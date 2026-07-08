@@ -21,28 +21,25 @@ import itu.greenField.model.Produit;
 import itu.greenField.model.TypeCommande;
 import itu.greenField.service.ClientService;
 import itu.greenField.service.CommandesService;
-import itu.greenField.service.PaiementService;
-import itu.greenField.service.PointDeVenteService;
 import itu.greenField.service.ProduitService;
 import itu.greenField.service.ProvinceLivraisonService;
 import itu.greenField.service.StatutCommandeService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/commandes")
@@ -52,21 +49,15 @@ public class CommandeController {
     private final ClientService clientService;
     private final StatutCommandeService statutCommandeService;
     private final ProvinceLivraisonService provinceLivraisonService;
-    private final PointDeVenteService pointDeVenteService;
-    private final PaiementService paiementService;
 
     public CommandeController(CommandesService commandeService, ClientService clientService,
             ProduitService produitService, StatutCommandeService statutCommandeService,
-            ProvinceLivraisonService provinceLivraisonService,
-            PointDeVenteService pointDeVenteService,
-            PaiementService paiementService) {
+            ProvinceLivraisonService provinceLivraisonService) {
         this.commandeService = commandeService;
         this.clientService = clientService;
         this.produitService = produitService;
         this.statutCommandeService = statutCommandeService;
         this.provinceLivraisonService = provinceLivraisonService;
-        this.pointDeVenteService = pointDeVenteService;
-        this.paiementService = paiementService;
     }
 
     @GetMapping("/form/new")
@@ -81,7 +72,6 @@ public class CommandeController {
         mv.addObject("produits", produitService.getAllProduits());
         mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
         mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-        mv.addObject("pointDeVenteOptions", pointDeVenteService.getAll());
         return mv;
     }
 
@@ -97,7 +87,6 @@ public class CommandeController {
         mv.addObject("produits", produitService.getAllProduits());
         mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
         mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-        mv.addObject("pointDeVenteOptions", pointDeVenteService.getAll());
         return mv;
     }
 
@@ -115,11 +104,55 @@ public class CommandeController {
             mv.addObject("produits", produitService.getAllProduits());
             mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
             mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            mv.addObject("pointDeVenteOptions", pointDeVenteService.getAll());
         } catch (Exception e) {
             mv.addObject("alert", "La commande #" + id + " ne peut pas être modifiée. " + e.getMessage());
             mv.setViewName("back/commande/detailCommande");
             mv.addObject("commande", cmd);
+        }
+
+        return mv;
+    }
+
+    @GetMapping("/api/download-template")
+    @ResponseBody
+    public ResponseEntity<byte[]> downloadTemplateFile() throws Exception {
+        List<Produit> produits = produitService.getAllProduits();
+
+        byte[] excelContent = commandeService.generateTemplateExcelFile(produits);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(
+                MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", "template_commande.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelContent);
+    }
+
+    @GetMapping("/importExcel")
+    public ModelAndView getImportExcelForm() {
+        ModelAndView mv = new ModelAndView("back/commande/commandeImportExcel");
+        return mv;
+    }
+    
+
+    @PostMapping("/importExcel")
+    public ModelAndView importExcel(@RequestParam("file") MultipartFile file) {
+        ModelAndView mv = new ModelAndView("back/commande/commandeImportExcel");
+        // Vérification du type de fichier
+        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".xlsx")) {
+            mv.addObject("error", "Veuillez sélectionner un fichier Excel valide (.xlsx) pour l'importation.");
+            return mv;
+        }
+
+        try {
+            commandeService.saveDataFromExcelUpload(file.getInputStream());
+            mv.addObject("succes", "Les commandes ont été importées avec succès depuis le fichier Excel.");
+        } catch (Exception e) {
+            mv.addObject("alert", "Une erreur est survenue lors de l'importation des commandes depuis le fichier Excel : "
+                    + e.getMessage());
+            e.printStackTrace();
         }
 
         return mv;
@@ -139,7 +172,6 @@ public class CommandeController {
             mv.addObject("produits", produitService.getAllProduits());
             mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
             mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            mv.addObject("pointDeVenteOptions", pointDeVenteService.getAll());
         } catch (Exception e) {
             mv.addObject("alert", "La commande #" + id + " ne peut pas être modifiée. " + e.getMessage());
             mv.setViewName("front/commande/detailCommande");
@@ -212,17 +244,12 @@ public class CommandeController {
                         "La province de livraison est obligatoire pour une livraison à domicile.");
             }
         }
-        if ("Retrait_Boutique".equalsIgnoreCase(form.getModeReception()) && form.getPointDeVenteId() == null) {
-            bindingResult.rejectValue("pointDeVenteId", "error.pointDeVenteId",
-                    "Le point de vente de retrait est obligatoire.");
-        }
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("clients", clientService.getAll());
             model.addAttribute("produits", produitService.getAllProduits());
             model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
             model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
             return "back/commande/commandeCreate";
         }
 
@@ -236,59 +263,12 @@ public class CommandeController {
             model.addAttribute("produits", produitService.getAllProduits());
             model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
             model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
             model.addAttribute("globalError", "Erreur lors de la sauvegarde : " + e.getMessage());
             return "back/commande/commandeCreate";
         }
     }
 
-    @PostMapping("/fo/save")
-    public String saveFront(
-            @Valid @ModelAttribute("commandeBackFormDto") CommandeBackFormDto form,
-            BindingResult bindingResult,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-
-        if ("Livraison_Domicile".equalsIgnoreCase(form.getModeReception())) {
-            if (form.getAddress() == null || form.getAddress().trim().isEmpty()) {
-                bindingResult.rejectValue("address", "error.address",
-                        "L'adresse est obligatoire pour une livraison à domicile.");
-            }
-            if (form.getProvinceId() == null) {
-                bindingResult.rejectValue("provinceId", "error.provinceId",
-                        "La province de livraison est obligatoire pour une livraison à domicile.");
-            }
-        }
-        if ("Retrait_Boutique".equalsIgnoreCase(form.getModeReception()) && form.getPointDeVenteId() == null) {
-            bindingResult.rejectValue("pointDeVenteId", "error.pointDeVenteId",
-                    "Le point de vente de retrait est obligatoire.");
-        }
-
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("produits", produitService.getAllProduits());
-            model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
-            model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
-            return "front/commande_ta/commandeCreate";
-        }
-
-        try {
-            Commandes cmd = commandeService.saveFrontCommande(form);
-            redirectAttributes.addFlashAttribute("succes",
-                    "La commande a été sauvegardée avec succès. #" + cmd.getId());
-            return "redirect:/paiements/choix/" + cmd.getId();
-        } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("produits", produitService.getAllProduits());
-            model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
-            model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
-            model.addAttribute("globalError", "Erreur lors de la sauvegarde : " + e.getMessage());
-            return "front/commande_ta/commandeCreate";
-        }
-    }
-
-    @GetMapping({ "/list" })
+    @GetMapping({ "/", "", "/list" })
     public ModelAndView listCommandes() {
         ModelAndView mv = new ModelAndView("back/commande/listeCommande");
         CommandeBackFilterDto filter = new CommandeBackFilterDto();
@@ -335,15 +315,6 @@ public class CommandeController {
             mv.addObject("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
             mv.addObject("statutCommandeOptions", statutCommandeService.getAll());
             mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            mv.addObject("pointDeVenteOptions", pointDeVenteService.getAll());
-
-            Set<Integer> commandesAvecResteAPayer = commandePage.getContent().stream()
-                    .filter(cmd -> paiementService.getMontantRestant(cmd).compareTo(java.math.BigDecimal.ZERO) > 0)
-                    .filter(cmd -> cmd.getPaiement() != null
-                            && cmd.getPaiement().getStatut() == itu.greenField.model.StatutPaiement.Reste)
-                    .map(Commandes::getId)
-                    .collect(Collectors.toSet());
-            mv.addObject("commandesAvecResteAPayer", commandesAvecResteAPayer);
         }
     }
 
@@ -365,53 +336,6 @@ public class CommandeController {
             model.addAttribute("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
             model.addAttribute("statutCommandeOptions", statutCommandeService.getAll());
             model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
         }
     }
-
-    @GetMapping("/api/download-template")
-    @ResponseBody
-    public ResponseEntity<byte[]> downloadTemplateFile() throws Exception {
-        List<Produit> produits = produitService.getAllProduits();
-
-        byte[] excelContent = commandeService.generateTemplateExcelFile(produits);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(
-                MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.setContentDispositionFormData("attachment", "template_commande.xlsx");
-
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(excelContent);
-    }
-
-    @GetMapping("/importExcel")
-    public ModelAndView getImportExcelForm() {
-        ModelAndView mv = new ModelAndView("back/commande/commandeImportExcel");
-        return mv;
-    }
-
-    @PostMapping("/importExcel")
-    public ModelAndView importExcel(@RequestParam("file") MultipartFile file) {
-        ModelAndView mv = new ModelAndView("back/commande/commandeImportExcel");
-        // Vérification du type de fichier
-        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".xlsx")) {
-            mv.addObject("error", "Veuillez sélectionner un fichier Excel valide (.xlsx) pour l'importation.");
-            return mv;
-        }
-
-        try {
-            commandeService.saveDataFromExcelUpload(file.getInputStream());
-            mv.addObject("succes", "Les commandes ont été importées avec succès depuis le fichier Excel.");
-        } catch (Exception e) {
-            mv.addObject("alert",
-                    "Une erreur est survenue lors de l'importation des commandes depuis le fichier Excel : "
-                            + e.getMessage());
-            e.printStackTrace();
-        }
-
-        return mv;
-    }
-
 }
