@@ -1,220 +1,258 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head th:replace="~{back/fragments/layout :: head('Commandes')}"></head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Liste de commandes</title>
-    <style>
-        .d-none {
-            display: none;
-        }
-    </style>
-</head>
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('commandes')}"></aside>
 
-<body>
-    <div class="head">
-        <h1>Liste des commandes</h1>
-        <a th:href="@{/commandes/form/new}">Ajouter nouveau</a>
-    </div><br>
-    <div class="section-alert">
-        <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
-        <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
-    </div>
-    <form th:action="@{/commandes/list}" th:object="${commandeFilterDto}" method="POST" id="form">
-        <div class="section-filtre">
-            <div class="filtre">
-                <label for="client-input">Client:</label>
-                <input type="text" id="client-input" placeholder="Tapez le nom ou le prénom du client" />
-                <div id="liste-clients" class="d-none"></div>
-            </div>
-            <div class="filtre">
-                <label for="mode-reception-input">Mode de réception:</label>
-                <select id="mode-reception-option">
-                    <option value="">Tous</option>
-                    <option th:each="mode : ${modeReceptionOptions}" th:value="${mode}"
-                        th:text="${mode == 'Retrait_Boutique' ? 'Retrait' : (mode == 'Livraison_Domicile' ? 'Livraison' : mode)}">
-                    </option>
-                </select>
-            </div>
-            <div class="filtre">
-                <label for="type-commande">Type de commande:</label>
-                <select id="type-commande">
-                    <option value="">Tous</option>
-                    <option th:each="type : ${typeCommandeOptions}" th:value="${type}" th:text="${type}">
-                    </option>
-                </select>
-            </div>
-            <div class="filtre">
-                <label for="statut-commande">Statut de commande:</label>
-                <select id="statut-commande">
-                    <option value="">Tous</option>
-                    <option th:each="statut : ${statutCommandeOptions}" th:value="${statut.id}"
-                        th:text="${statut.nom}"></option>
-                </select>
-            </div>
-            <div class="filtre">
-                <label for="date-debut-commande">Filtre pour les dates</label>
-                <select id="filtre-date-option">
-                    <option th:each="opt : ${filtreDateOptions}" th:value="${opt.value}" th:text="${opt.label}">
-                    </option>
-                </select>
+    <main class="bo-main">
+      <header th:replace="~{back/fragments/layout :: topbar('Commandes')}"></header>
 
-                <select id="calcul-date-option">
-                    <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}">
-                    </option>
-                </select>
-                <input type="datetime-local" id="date-input">
-                <button id="ajouter-filtre-date" type="button">Ajouter</button>
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">Ventes <i class="fas fa-chevron-right"></i> Commandes</p>
+            <h1>Liste des commandes</h1>
+            <p class="sous-titre">Recherchez, filtrez et gérez toutes les commandes de la boutique.</p>
+          </div>
+          <div class="page-actions">
+            <a th:href="@{/commandes/form/new}" class="btn btn-vert">
+              <i class="fas fa-plus"></i> Nouvelle commande
+            </a>
+          </div>
+        </div>
+
+        <div class="section-alert">
+          <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+          <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+        </div>
+
+        <form th:action="@{/commandes/list}" th:object="${commandeFilterDto}" method="POST" id="form">
+          <div class="section-filtre barre-filtres">
+            <div class="filtre filtre-large">
+              <label for="client-input">Client</label>
+              <input type="text" id="client-input" placeholder="Tapez le nom ou le prénom du client" />
+              <div id="liste-clients" class="d-none"></div>
             </div>
             <div class="filtre">
-                <label>Filtre pour les nombres :</label>
-                <select id="filtre-nombre-option">
-                    <option th:each="opt : ${filtreNombreOptions}" th:value="${opt.value}" th:text="${opt.label}">
-                    </option>
-                </select>
-
-                <select id="calcul-nombre-option">
-                    <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}"></option>
-                </select>
-
-                <input type="number" id="nombre-value-input" step="any" placeholder="Valeur..." />
-                <button type="button" id="ajouter-filtre-nombre">Ajouter</button>
+              <label for="mode-reception-option">Mode de réception</label>
+              <select id="mode-reception-option">
+                <option value="">Tous</option>
+                <option th:each="mode : ${modeReceptionOptions}" th:value="${mode}"
+                  th:text="${mode == 'Retrait_Boutique' ? 'Retrait' : (mode == 'Livraison_Domicile' ? 'Livraison' : mode)}">
+                </option>
+              </select>
             </div>
+            <div class="filtre">
+              <label for="type-commande">Type de commande</label>
+              <select id="type-commande">
+                <option value="">Tous</option>
+                <option th:each="type : ${typeCommandeOptions}" th:value="${type}" th:text="${type}">
+                </option>
+              </select>
+            </div>
+            <div class="filtre">
+              <label for="statut-commande">Statut</label>
+              <select id="statut-commande">
+                <option value="">Tous</option>
+                <option th:each="statut : ${statutCommandeOptions}" th:value="${statut.id}"
+                  th:text="${statut.nom}"></option>
+              </select>
+            </div>
+            <div class="filtre filtre-large">
+              <label for="filtre-date-option">Filtre sur les dates</label>
+              <div class="flex gap-8 flex-wrap">
+                <select id="filtre-date-option" style="flex: 1 1 130px">
+                  <option th:each="opt : ${filtreDateOptions}" th:value="${opt.value}" th:text="${opt.label}">
+                  </option>
+                </select>
+                <select id="calcul-date-option" style="flex: 0 1 90px">
+                  <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}">
+                  </option>
+                </select>
+                <input type="datetime-local" id="date-input" style="flex: 1 1 170px" />
+                <button id="ajouter-filtre-date" type="button" class="btn btn-doux btn-sm">
+                  <i class="fas fa-plus"></i> Ajouter
+                </button>
+              </div>
+            </div>
+            <div class="filtre filtre-large">
+              <label>Filtre sur les nombres</label>
+              <div class="flex gap-8 flex-wrap">
+                <select id="filtre-nombre-option" style="flex: 1 1 130px">
+                  <option th:each="opt : ${filtreNombreOptions}" th:value="${opt.value}" th:text="${opt.label}">
+                  </option>
+                </select>
+                <select id="calcul-nombre-option" style="flex: 0 1 90px">
+                  <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}"></option>
+                </select>
+                <input type="number" id="nombre-value-input" step="any" placeholder="Valeur…" style="flex: 1 1 110px" />
+                <button type="button" id="ajouter-filtre-nombre" class="btn btn-doux btn-sm">
+                  <i class="fas fa-plus"></i> Ajouter
+                </button>
+              </div>
+            </div>
+
             <div id="activeFiltresDiv" class="active-filtres d-flex flex-wrap gap-2 mb-3">
-                <div th:if="${commandeFilterDto?.statutCommande != null and !#strings.isEmpty(commandeFilterDto.statutCommande)}"
-                    class="filtre-actif">
-                    <span th:text="'Statut de commande: ' + ${commandeFilterDto.statutCommande}"></span>
-                    <input type="hidden" name="statutCommande" th:value="${commandeFilterDto.statutCommande}" />
-                    <button type="button" onclick="removeStaticFilter(this, 'statutCommandeSelect')">x</button>
+              <div th:if="${commandeFilterDto?.statutCommande != null and !#strings.isEmpty(commandeFilterDto.statutCommande)}"
+                class="filtre-actif">
+                <span th:text="'Statut de commande: ' + ${commandeFilterDto.statutCommande}"></span>
+                <input type="hidden" name="statutCommande" th:value="${commandeFilterDto.statutCommande}" />
+                <button type="button" onclick="removeStaticFilter(this, 'statutCommandeSelect')">x</button>
+              </div>
+
+              <div th:if="${commandeFilterDto?.typeCommande != null and !#strings.isEmpty(commandeFilterDto.typeCommande)}"
+                class="filtre-actif">
+                <span th:text="'Type de commande: ' + ${commandeFilterDto.typeCommande}"></span>
+                <input type="hidden" name="typeCommande" th:value="${commandeFilterDto.typeCommande}" />
+                <button type="button" onclick="removeStaticFilter(this, 'typeCommandeSelect')">x</button>
+              </div>
+
+              <div th:if="${commandeFilterDto?.modeReception != null and !#strings.isEmpty(commandeFilterDto.modeReception)}"
+                class="filtre-actif">
+                <span th:text="'Mode de réception: ' + ${commandeFilterDto.modeReception}"></span>
+                <input type="hidden" name="modeReception" th:value="${commandeFilterDto.modeReception}" />
+                <button type="button" onclick="removeStaticFilter(this, 'modeReceptionSelect')">x</button>
+              </div>
+
+              <div th:if="${commandeFilterDto?.clientId != null}" th:each="cId : ${commandeFilterDto.clientId}"
+                class="filtre-actif">
+                <span th:text="'Client ID: ' + ${cId}"></span>
+                <input type="hidden" name="clientId" th:value="${cId}" />
+                <button type="button" onclick="removeArrayFilter(this)">x</button>
+              </div>
+
+              <th:block
+                th:if="${commandeFilterDto?.typeFiltreDate != null and !#lists.isEmpty(commandeFilterDto.typeFiltreDate)}">
+                <div th:each="typeDate, iter : ${commandeFilterDto.typeFiltreDate}" class="filtre-actif">
+                  <span
+                    th:text="'Filtre date: ' + ${typeDate} + ' ' + ${commandeFilterDto.operateurDate[iter.index]} + ' ' + ${commandeFilterDto.dateValue[iter.index]}"></span>
+                  <input type="hidden" name="typeFiltreDate" th:value="${typeDate}" />
+                  <input type="hidden" name="operateurDate"
+                    th:value="${commandeFilterDto.operateurDate[iter.index]}" />
+                  <input type="hidden" name="dateValue" th:value="${commandeFilterDto.dateValue[iter.index]}" />
+                  <button type="button" onclick="removeArrayFilter(this)">x</button>
                 </div>
+              </th:block>
 
-                <div th:if="${commandeFilterDto?.typeCommande != null and !#strings.isEmpty(commandeFilterDto.typeCommande)}"
-                    class="filtre-actif">
-                    <span th:text="'Type de commande: ' + ${commandeFilterDto.typeCommande}"></span>
-                    <input type="hidden" name="typeCommande" th:value="${commandeFilterDto.typeCommande}" />
-                    <button type="button" onclick="removeStaticFilter(this, 'typeCommandeSelect')">x</button>
+              <th:block
+                th:if="${commandeFilterDto?.typeFiltreNombre != null and !#lists.isEmpty(commandeFilterDto.typeFiltreNombre)}">
+                <div th:each="typeNombre, iter : ${commandeFilterDto.typeFiltreNombre}" class="filtre-actif">
+                  <span
+                    th:text="'Filtre nombre: ' + ${typeNombre} + ' ' + ${commandeFilterDto.operateurNombre[iter.index]} + ' ' + ${commandeFilterDto.nombreValue[iter.index]}"></span>
+                  <input type="hidden" name="typeFiltreNombre" th:value="${typeNombre}" />
+                  <input type="hidden" name="operateurNombre"
+                    th:value="${commandeFilterDto.operateurNombre[iter.index]}" />
+                  <input type="hidden" name="nombreValue"
+                    th:value="${commandeFilterDto.nombreValue[iter.index]}" />
+                  <button type="button" onclick="removeArrayFilter(this)">x</button>
                 </div>
-
-                <div th:if="${commandeFilterDto?.modeReception != null and !#strings.isEmpty(commandeFilterDto.modeReception)}"
-                    class="filtre-actif">
-                    <span th:text="'Mode de réception: ' + ${commandeFilterDto.modeReception}"></span>
-                    <input type="hidden" name="modeReception" th:value="${commandeFilterDto.modeReception}" />
-                    <button type="button" onclick="removeStaticFilter(this, 'modeReceptionSelect')">x</button>
-                </div>
-
-                <div th:if="${commandeFilterDto?.clientId != null}" th:each="cId : ${commandeFilterDto.clientId}"
-                    class="filtre-actif">
-                    <span th:text="'Client ID: ' + ${cId}"></span>
-                    <input type="hidden" name="clientId" th:value="${cId}" />
-                    <button type="button" onclick="removeArrayFilter(this)">x</button>
-                </div>
-
-                <th:block
-                    th:if="${commandeFilterDto?.typeFiltreDate != null and !#lists.isEmpty(commandeFilterDto.typeFiltreDate)}">
-                    <div th:each="typeDate, iter : ${commandeFilterDto.typeFiltreDate}" class="filtre-actif">
-                        <span
-                            th:text="'Filtre date: ' + ${typeDate} + ' ' + ${commandeFilterDto.operateurDate[iter.index]} + ' ' + ${commandeFilterDto.dateValue[iter.index]}"></span>
-                        <input type="hidden" name="typeFiltreDate" th:value="${typeDate}" />
-                        <input type="hidden" name="operateurDate"
-                            th:value="${commandeFilterDto.operateurDate[iter.index]}" />
-                        <input type="hidden" name="dateValue" th:value="${commandeFilterDto.dateValue[iter.index]}" />
-                        <button type="button" onclick="removeArrayFilter(this)">x</button>
-                    </div>
-                </th:block>
-
-                <th:block
-                    th:if="${commandeFilterDto?.typeFiltreNombre != null and !#lists.isEmpty(commandeFilterDto.typeFiltreNombre)}">
-                    <div th:each="typeNombre, iter : ${commandeFilterDto.typeFiltreNombre}" class="filtre-actif">
-                        <span
-                            th:text="'Filtre nombre: ' + ${typeNombre} + ' ' + ${commandeFilterDto.operateurNombre[iter.index]} + ' ' + ${commandeFilterDto.nombreValue[iter.index]}"></span>
-                        <input type="hidden" name="typeFiltreNombre" th:value="${typeNombre}" />
-                        <input type="hidden" name="operateurNombre"
-                            th:value="${commandeFilterDto.operateurNombre[iter.index]}" />
-                        <input type="hidden" name="nombreValue"
-                            th:value="${commandeFilterDto.nombreValue[iter.index]}" />
-                        <button type="button" onclick="removeArrayFilter(this)">x</button>
-                    </div>
-                </th:block>
+              </th:block>
             </div>
-            <button type="submit">Appliquer les filtres</button>
-            <a th:href="@{/commandes/list}">Réinitialiser</a>
-        </div>
-        <div class="table-container">
+
+            <div class="filtre-actions">
+              <button type="submit" class="btn btn-vert">
+                <i class="fas fa-filter"></i> Appliquer les filtres
+              </button>
+              <a th:href="@{/commandes/list}" class="btn btn-ligne">Réinitialiser</a>
+            </div>
+          </div>
+
+          <div class="table-container tableau-scroll">
             <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Date</th>
-                        <th>Client</th>
-                        <th>Type</th>
-                        <th>Mode de réception</th>
-                        <th>Lieu de récupération</th>
-                        <th>Début de récupération</th>
-                        <th>Fin de récupération</th>
-                        <th>Frais de livraison</th>
-                        <th>Statut</th>
-                        <th>Quantité totale</th>
-                        <th>Poids total</th>
-                        <th>Valeur totale</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="cmd : ${commandes}">
-                        <td th:text="${cmd.id}"></td>
-                        <td
-                            th:text="${cmd.datecommande != null ? #dates.format(cmd.datecommande, 'yyyy-MM-dd HH:mm') : ''}">
-                        </td>
-                        <td th:text="|${cmd.client.nom} ${cmd.client.prenom}|"></td>
-                        <td th:text="${cmd.typeCommande}"></td>
-                        <td th:text="${cmd.modeReception}"></td>
-                        <td
-                            th:text="${cmd.pointDeVenteRetrait?.code != null ? cmd.pointDeVenteRetrait?.code : cmd.adresseLivraison}">
-                        </td>
-                        <td
-                            th:text="${cmd.heureReceptionDebut != null ? #dates.format(cmd.heureReceptionDebut, 'yyyy-MM-dd HH:mm') : ''}">
-                        </td>
-                        <td
-                            th:text="${cmd.heureReceptionFin != null ? #dates.format(cmd.heureReceptionFin, 'yyyy-MM-dd HH:mm') : ''}">
-                        </td>
-                        <td th:text="${cmd.fraisLivraison}"></td>
-                        <td th:text="${cmd.statutActuel?.nom}"></td>
-                        <td th:text="${cmd.totalProduits}"></td>
-                        <td th:text="${cmd.poidsTotal}"></td>
-                        <td th:text="${cmd.totalGeneral}"></td>
-                        <td>
-                            <a th:href="@{|/commandes/detail/${cmd.id}|}">Detail</a>
-                            <a th:href="@{|/commandes/form/edit/${cmd.id}|}">Modifier</a>
-                            <a th:href="@{|/commandes/delete/${cmd.id}|}">Supprimer</a>
-                            <a th:if="${commandesAvecResteAPayer != null and commandesAvecResteAPayer.contains(cmd.id)}"
-                                th:href="@{|/paiements/reste/${cmd.id}|}">Payer le reste</a>
-                        </td>
-                    </tr>
-                </tbody>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Date</th>
+                  <th>Client</th>
+                  <th>Type</th>
+                  <th>Mode de réception</th>
+                  <th>Lieu de récupération</th>
+                  <th>Début de récupération</th>
+                  <th>Fin de récupération</th>
+                  <th class="num">Frais de livraison</th>
+                  <th>Statut</th>
+                  <th class="num">Quantité totale</th>
+                  <th class="num">Poids total</th>
+                  <th class="num">Valeur totale</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="cmd : ${commandes}">
+                  <td class="mono" th:text="${cmd.id}"></td>
+                  <td
+                    th:text="${cmd.datecommande != null ? #dates.format(cmd.datecommande, 'yyyy-MM-dd HH:mm') : ''}">
+                  </td>
+                  <td><strong th:text="|${cmd.client.nom} ${cmd.client.prenom}|"></strong></td>
+                  <td th:text="${cmd.typeCommande}"></td>
+                  <td>
+                    <span class="badge badge-sans-point"
+                      th:classappend="${cmd.modeReception == 'Retrait_Boutique'} ? 'badge-feuille' : 'badge-ocre'"
+                      th:text="${cmd.modeReception == 'Retrait_Boutique' ? 'Retrait' : (cmd.modeReception == 'Livraison_Domicile' ? 'Livraison' : cmd.modeReception)}"></span>
+                  </td>
+                  <td
+                    th:text="${cmd.pointDeVenteRetrait?.code != null ? cmd.pointDeVenteRetrait?.code : cmd.adresseLivraison}">
+                  </td>
+                  <td
+                    th:text="${cmd.heureReceptionDebut != null ? #dates.format(cmd.heureReceptionDebut, 'yyyy-MM-dd HH:mm') : ''}">
+                  </td>
+                  <td
+                    th:text="${cmd.heureReceptionFin != null ? #dates.format(cmd.heureReceptionFin, 'yyyy-MM-dd HH:mm') : ''}">
+                  </td>
+                  <td class="num" th:text="${cmd.fraisLivraison}"></td>
+                  <td><span class="badge badge-vert" th:text="${cmd.statutActuel?.nom}"></span></td>
+                  <td class="num" th:text="${cmd.totalProduits}"></td>
+                  <td class="num" th:text="${cmd.poidsTotal}"></td>
+                  <td class="num texte-ocre" th:text="${cmd.totalGeneral}"></td>
+                  <td>
+                    <div class="cellule-actions">
+                      <a th:href="@{|/commandes/detail/${cmd.id}|}" class="btn btn-sm btn-ligne">Détail</a>
+                      <a th:href="@{|/commandes/form/edit/${cmd.id}|}" class="btn btn-sm btn-doux">Modifier</a>
+                      <a th:href="@{|/commandes/delete/${cmd.id}|}" class="btn btn-sm btn-doux-rouge">Supprimer</a>
+                      <a th:if="${commandesAvecResteAPayer != null and commandesAvecResteAPayer.contains(cmd.id)}"
+                        th:href="@{|/paiements/reste/${cmd.id}|}" class="btn btn-sm btn-ocre">Payer le reste</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(commandes)}">
+                  <td colspan="14">
+                    <div class="vide">
+                      <i class="fas fa-receipt"></i>
+                      <p>Aucune commande ne correspond à ces filtres.</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
             </table>
-        </div>
-        <div class="section-pagination">
+          </div>
+
+          <div class="section-pagination">
             <label for="line-number">Nombre de lignes</label>
             <input type="number" th:field="*{lineNumber}" id="line-number">
             <input type="hidden" th:field="*{pageNumber}" id="pageParam">
-            <button type="submit">Appliquer</button>
+            <button type="submit" class="btn btn-ligne btn-sm">Appliquer</button>
             <div class="pagination">
-                <button type="button" th:if="${hasPrevious}"
-                    th:onclick="'changePage(' + (${commandeFilterDto.pageNumber - 1}) + ')'" class="btn-pagination">
-                    « Précédent
-                </button>
+              <button type="button" th:if="${hasPrevious}"
+                th:onclick="'changePage(' + (${commandeFilterDto.pageNumber - 1}) + ')'" class="btn-pagination">
+                « Précédent
+              </button>
 
-                <span>Page <strong th:text="${commandeFilterDto.pageNumber}">1</strong> sur <strong
-                        th:text="${totalPages}">5</strong></span>
+              <span>Page <strong th:text="${commandeFilterDto.pageNumber}">1</strong> sur <strong
+                  th:text="${totalPages}">5</strong></span>
 
-                <button type="button" th:if="${hasNext}"
-                    th:onclick="'changePage(' + (${commandeFilterDto.pageNumber + 1}) + ')'" class="btn-pagination">
-                    Suivant »
-                </button>
+              <button type="button" th:if="${hasNext}"
+                th:onclick="'changePage(' + (${commandeFilterDto.pageNumber + 1}) + ')'" class="btn-pagination">
+                Suivant »
+              </button>
             </div>
-        </div>
-    </form>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+
     <script>
         function searchClients(word) {
             const url = '/clients/searchByWord';
@@ -502,4 +540,5 @@
             }
         });
     </script>
-</body>
+  </body>
+</html>

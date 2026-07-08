@@ -1,131 +1,145 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head th:replace="~{back/fragments/layout :: head('Frais de livraison')}"></head>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gestion des frais de livraison</title>
-    <style>
-        .d-none { display: none; }
-        .filtre-actif { background-color: #e2e8f0; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 5px; }
-        .filtre { margin-bottom: 10px; display: inline-block; margin-right: 15px; }
-        .table-container { margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: left; }
-        th { background-color: #f1f5f9; }
-    </style>
-</head>
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('frais')}"></aside>
 
-<body>
-    <div class="head">
-        <h1>Frais de livraison</h1>
-        <a th:href="@{/frais/form/new}">Ajouter un frais</a>
-    </div><br>
+    <main class="bo-main">
+      <header th:replace="~{back/fragments/layout :: topbar('Frais de livraison')}"></header>
 
-    <div class="section-alert">
-        <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
-        <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
-    </div>
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">Ventes <i class="fas fa-chevron-right"></i> Frais de livraison</p>
+            <h1>Frais de livraison</h1>
+            <p class="sous-titre">Gérez les barèmes de frais par province et par poids.</p>
+          </div>
+          <div class="page-actions">
+            <a th:href="@{/frais/form/new}" class="btn btn-vert"><i class="fas fa-plus"></i> Ajouter un frais</a>
+          </div>
+        </div>
 
-    <form th:action="@{/frais/list}" th:object="${fraisFilterDto}" method="POST" id="form">
-        
-        <div class="section-filtre">
-            
+        <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
+
+        <form th:action="@{/frais/list}" th:object="${fraisFilterDto}" method="POST" id="form">
+
+          <div class="section-filtre barre-filtres">
             <div class="filtre">
-                <label for="province-select">Province :</label>
-                <select id="province-select" onchange="addProvinceFilter(this)">
-                    <option value="">Toutes</option>
-                    <option th:each="prov : ${provinceLivraisonOptions}" th:value="${prov.id}" th:text="${prov.nom}">
-                    </option>
-                </select>
+              <label for="province-select">Province</label>
+              <select id="province-select" onchange="addProvinceFilter(this)">
+                <option value="">Toutes</option>
+                <option th:each="prov : ${provinceLivraisonOptions}" th:value="${prov.id}" th:text="${prov.nom}">
+                </option>
+              </select>
             </div>
 
-            <div class="filtre">
-                <label>Filtre pour les montants & poids :</label>
-                <select id="filtre-nombre-option">
-                    <option th:each="opt : ${filtreNombreOptions}" th:value="${opt.value}" th:text="${opt.label}">
-                    </option>
+            <div class="filtre filtre-large">
+              <label>Filtre pour les montants &amp; poids</label>
+              <div class="flex gap-8 flex-wrap">
+                <select id="filtre-nombre-option" style="flex: 1 1 150px">
+                  <option th:each="opt : ${filtreNombreOptions}" th:value="${opt.value}" th:text="${opt.label}">
+                  </option>
                 </select>
 
-                <select id="calcul-nombre-option">
-                    <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}"></option>
+                <select id="calcul-nombre-option" style="flex: 0 1 90px">
+                  <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}"></option>
                 </select>
 
-                <input type="number" id="nombre-value-input" step="any" placeholder="Valeur..." />
-                <button type="button" id="ajouter-filtre-nombre">Ajouter</button>
+                <input type="number" id="nombre-value-input" step="any" placeholder="Valeur…" style="flex: 1 1 110px" />
+                <button type="button" id="ajouter-filtre-nombre" class="btn btn-doux btn-sm">
+                  <i class="fas fa-plus"></i> Ajouter
+                </button>
+              </div>
             </div>
 
             <div id="activeFiltresDiv" class="active-filtres d-flex flex-wrap gap-2 mb-3">
-                
-                <div th:if="${fraisFilterDto?.idProvince != null}" th:each="provId : ${fraisFilterDto.idProvince}"
-                    class="filtre-actif">
-                    <span th:text="'Province ID: ' + ${provId}"></span>
-                    <input type="hidden" name="idProvince" th:value="${provId}" />
-                    <button type="button" onclick="removeArrayFilter(this)">x</button>
-                </div>
 
-                <th:block th:if="${fraisFilterDto?.typeFiltreNombre != null and !#lists.isEmpty(fraisFilterDto.typeFiltreNombre)}">
-                    <div th:each="typeNombre, iter : ${fraisFilterDto.typeFiltreNombre}" class="filtre-actif">
-                        <span th:text="${typeNombre == 'poidsreference' ? 'Poids' : 'Montant'} + ' ' + ${fraisFilterDto.operateurNombre[iter.index]} + ' ' + ${fraisFilterDto.nombreValue[iter.index]}"></span>
-                        <input type="hidden" name="typeFiltreNombre" th:value="${typeNombre}" />
-                        <input type="hidden" name="operateurNombre" th:value="${fraisFilterDto.operateurNombre[iter.index]}" />
-                        <input type="hidden" name="nombreValue" th:value="${fraisFilterDto.nombreValue[iter.index]}" />
-                        <button type="button" onclick="removeArrayFilter(this)">x</button>
-                    </div>
-                </th:block>
+              <div th:if="${fraisFilterDto?.idProvince != null}" th:each="provId : ${fraisFilterDto.idProvince}"
+                class="filtre-actif">
+                <span th:text="'Province ID: ' + ${provId}"></span>
+                <input type="hidden" name="idProvince" th:value="${provId}" />
+                <button type="button" onclick="removeArrayFilter(this)">x</button>
+              </div>
+
+              <th:block th:if="${fraisFilterDto?.typeFiltreNombre != null and !#lists.isEmpty(fraisFilterDto.typeFiltreNombre)}">
+                <div th:each="typeNombre, iter : ${fraisFilterDto.typeFiltreNombre}" class="filtre-actif">
+                  <span th:text="${typeNombre == 'poidsreference' ? 'Poids' : 'Montant'} + ' ' + ${fraisFilterDto.operateurNombre[iter.index]} + ' ' + ${fraisFilterDto.nombreValue[iter.index]}"></span>
+                  <input type="hidden" name="typeFiltreNombre" th:value="${typeNombre}" />
+                  <input type="hidden" name="operateurNombre" th:value="${fraisFilterDto.operateurNombre[iter.index]}" />
+                  <input type="hidden" name="nombreValue" th:value="${fraisFilterDto.nombreValue[iter.index]}" />
+                  <button type="button" onclick="removeArrayFilter(this)">x</button>
+                </div>
+              </th:block>
             </div>
 
-            <button type="submit">Appliquer les filtres</button>
-            <a th:href="@{/frais/list}">Réinitialiser</a>
-        </div>
+            <div class="barre-form" style="justify-content: flex-start;">
+              <button type="submit" class="btn btn-vert btn-sm">Appliquer les filtres</button>
+              <a th:href="@{/frais/list}" class="btn btn-ligne btn-sm">Réinitialiser</a>
+            </div>
+          </div>
 
-        <div class="table-container">
+          <div class="table-container tableau-scroll">
             <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Province de livraison</th>
-                        <th>Poids de référence (kg)</th>
-                        <th>Montant du Frais</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="frais : ${fraisLivraisonList}">
-                        <td th:text="${frais.id}"></td>
-                        <td th:text="${frais.provinceLivraison != null ? frais.provinceLivraison.nom : 'Toutes'}"></td>
-                        <td th:text="${frais.poidsReference}"></td>
-                        <td th:text="${#numbers.formatDecimal(frais.montant, 1, 'DEFAULT', 2, 'DEFAULT')} + ' Ar'"></td>
-                        <td>
-                            <a th:href="@{|/frais/form/edit/${frais.id}|}">Modifier</a>
-                            <a th:href="@{|/frais/delete/${frais.id}|}">Supprimer</a>
-                        </td>
-                    </tr>
-                </tbody>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Province de livraison</th>
+                  <th class="num">Poids de référence (kg)</th>
+                  <th class="num">Montant du frais</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="frais : ${fraisLivraisonList}">
+                  <td class="mono" th:text="${frais.id}"></td>
+                  <td th:text="${frais.provinceLivraison != null ? frais.provinceLivraison.nom : 'Toutes'}"></td>
+                  <td class="num" th:text="${frais.poidsReference}"></td>
+                  <td class="num texte-ocre" th:text="${#numbers.formatDecimal(frais.montant, 1, 'DEFAULT', 2, 'DEFAULT')} + ' Ar'"></td>
+                  <td>
+                    <div class="cellule-actions">
+                      <a th:href="@{|/frais/form/edit/${frais.id}|}" class="btn btn-sm btn-doux">Modifier</a>
+                      <a th:href="@{|/frais/delete/${frais.id}|}" class="btn btn-sm btn-doux-rouge">Supprimer</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(fraisLivraisonList)}">
+                  <td colspan="5">
+                    <div class="vide">
+                      <i class="fas fa-truck"></i>
+                      <p>Aucun frais de livraison ne correspond à ces filtres.</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
             </table>
-        </div>
+          </div>
 
-        <div class="section-pagination">
+          <div class="section-pagination">
             <label for="line-number">Nombre de lignes</label>
             <input type="number" th:field="*{lineNumber}" id="line-number">
             <input type="hidden" th:field="*{pageNumber}" id="pageParam">
-            <button type="submit">Appliquer</button>
-            
+            <button type="submit" class="btn btn-ligne btn-sm">Appliquer</button>
+
             <div class="pagination">
-                <button type="button" th:if="${hasPrevious}"
-                    th:onclick="'changePage(' + (${fraisFilterDto.pageNumber - 1}) + ')'" class="btn-pagination">
-                    « Précédent
-                </button>
+              <button type="button" th:if="${hasPrevious}"
+                th:onclick="'changePage(' + (${fraisFilterDto.pageNumber - 1}) + ')'" class="btn-pagination">
+                « Précédent
+              </button>
 
-                <span>Page <strong th:text="${fraisFilterDto.pageNumber}">1</strong> sur <strong th:text="${totalPages}">1</strong></span>
+              <span>Page <strong th:text="${fraisFilterDto.pageNumber}">1</strong> sur <strong th:text="${totalPages}">1</strong></span>
 
-                <button type="button" th:if="${hasNext}"
-                    th:onclick="'changePage(' + (${fraisFilterDto.pageNumber + 1}) + ')'" class="btn-pagination">
-                    Suivant »
-                </button>
+              <button type="button" th:if="${hasNext}"
+                th:onclick="'changePage(' + (${fraisFilterDto.pageNumber + 1}) + ')'" class="btn-pagination">
+                Suivant »
+              </button>
             </div>
-        </div>
-    </form>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
 
     <script>
         // Changement de page
@@ -146,7 +160,7 @@
             if (!val) return;
 
             const container = document.getElementById('activeFiltresDiv');
-            
+
             // Éviter les doublons de province
             const existing = container.querySelector(`input[name="idProvince"][value="${val}"]`);
             if (existing) return;
@@ -185,5 +199,5 @@
             document.getElementById('nombre-value-input').value = ''; // Reset du champ
         });
     </script>
-</body>
+  </body>
 </html>

@@ -1,0 +1,469 @@
+/* =====================================================================
+   greenField — Back office (administration)
+   Coquille : sidebar sapin + topbar + zone de contenu.
+   Dépend de greenfield.css (tokens & composants partagés).
+   ===================================================================== */
+
+body.bo {
+  display: flex;
+  min-height: 100vh;
+  background: var(--gf-fond);
+}
+
+/* =====================================================================
+   SIDEBAR
+   ===================================================================== */
+.bo-sidebar {
+  width: 258px;
+  flex-shrink: 0;
+  background: var(--gf-sapin);
+  color: #d7e5da;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(147, 216, 136, 0.35) transparent;
+}
+
+.bo-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 20px 20px 16px;
+  color: #fff;
+  text-decoration: none;
+}
+.bo-brand:hover { color: #fff; }
+.bo-brand-icone {
+  width: 38px; height: 38px;
+  border-radius: 11px;
+  background: var(--gf-vert);
+  display: grid;
+  place-items: center;
+  font-size: 17px;
+  color: #fff;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+.bo-brand-nom {
+  font-family: var(--police-titre);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.bo-brand-nom span { color: var(--gf-feuille); }
+.bo-brand-sous {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(215, 229, 218, 0.55);
+}
+
+.bo-sidebar .sillons { margin: 0 20px 10px; border-radius: 3px; }
+
+.bo-nav {
+  flex: 1;
+  padding: 6px 12px 20px;
+}
+.bo-nav-groupe {
+  margin: 16px 8px 7px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: rgba(215, 229, 218, 0.45);
+}
+.bo-nav-lien {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 12px;
+  margin-bottom: 2px;
+  border-radius: 9px;
+  color: #c3d4c7;
+  font-size: 13.8px;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  transition: background var(--transition), color var(--transition);
+}
+.bo-nav-lien i {
+  width: 18px;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(195, 212, 199, 0.75);
+  transition: color var(--transition);
+}
+.bo-nav-lien:hover {
+  background: rgba(147, 216, 136, 0.08);
+  color: #fff;
+}
+.bo-nav-lien:hover i { color: var(--gf-feuille); }
+
+/* Élément actif : sillon feuille à gauche */
+.bo-nav-lien.actif {
+  background: rgba(0, 153, 81, 0.22);
+  color: #fff;
+  font-weight: 600;
+}
+.bo-nav-lien.actif i { color: var(--gf-feuille); }
+.bo-nav-lien.actif::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 7px;
+  bottom: 7px;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: var(--gf-feuille);
+}
+
+.bo-sidebar-pied {
+  padding: 14px 20px 18px;
+  border-top: 1px solid rgba(215, 229, 218, 0.12);
+  font-size: 12px;
+  color: rgba(215, 229, 218, 0.5);
+}
+.bo-sidebar-pied a {
+  color: var(--gf-feuille);
+  font-weight: 600;
+}
+.bo-sidebar-pied a:hover { color: #fff; }
+
+/* =====================================================================
+   ZONE PRINCIPALE
+   ===================================================================== */
+.bo-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bo-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 28px;
+  height: 62px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--gf-ligne);
+}
+.bo-topbar-titre {
+  font-family: var(--police-titre);
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+}
+.bo-topbar-espace { flex: 1; }
+.bo-topbar-lien {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gf-gris);
+  padding: 7px 13px;
+  border-radius: var(--rayon-sm);
+  border: 1px solid var(--gf-ligne);
+  transition: all var(--transition);
+}
+.bo-topbar-lien:hover {
+  color: var(--gf-vert);
+  border-color: var(--gf-vert);
+}
+.bo-topbar-profil {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bo-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--gf-mousse);
+  color: var(--gf-vert-fonce);
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  border: 1.5px solid var(--gf-feuille);
+}
+
+.bo-contenu {
+  flex: 1;
+  padding: 26px 28px 40px;
+  max-width: 1440px;
+  width: 100%;
+}
+.bo-contenu-etroit { max-width: 880px; }
+
+.bo-pied {
+  padding: 16px 28px;
+  border-top: 1px solid var(--gf-ligne);
+  font-size: 12.5px;
+  color: var(--gf-gris-2);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: var(--gf-papier);
+}
+
+/* =====================================================================
+   EN-TÊTE DE PAGE
+   ===================================================================== */
+.page-tete {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.page-tete h1 { margin: 0; font-size: 23px; }
+.page-tete .sous-titre {
+  margin: 4px 0 0;
+  color: var(--gf-gris);
+  font-size: 13.5px;
+}
+.page-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Fil d'ariane discret */
+.fil {
+  font-size: 12px;
+  color: var(--gf-gris-2);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.fil a { color: var(--gf-gris-2); }
+.fil a:hover { color: var(--gf-vert); }
+.fil i { font-size: 9px; }
+
+/* =====================================================================
+   KPI
+   ===================================================================== */
+.kpi-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.kpi {
+  background: var(--gf-papier);
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-lg);
+  padding: 18px 20px;
+  box-shadow: var(--ombre-1);
+  position: relative;
+  overflow: hidden;
+}
+.kpi::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--gf-vert);
+}
+.kpi.kpi-ocre::after { background: var(--gf-ocre); }
+.kpi.kpi-feuille::after { background: var(--gf-feuille); }
+.kpi.kpi-rouge::after { background: var(--gf-rouge); }
+.kpi-libelle {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gf-gris);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.kpi-valeur {
+  font-family: var(--police-titre);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--gf-encre);
+  line-height: 1.1;
+}
+.kpi-valeur small {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gf-gris);
+}
+
+/* =====================================================================
+   TUILES D'ACTION (dashboard livreur, détail PDV…)
+   ===================================================================== */
+.tuiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+.tuile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: var(--gf-papier);
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-lg);
+  color: var(--gf-encre);
+  box-shadow: var(--ombre-1);
+  transition: transform var(--transition), box-shadow var(--transition),
+    border-color var(--transition);
+}
+.tuile:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ombre-2);
+  border-color: var(--gf-feuille);
+  color: var(--gf-encre);
+}
+.tuile-icone {
+  width: 44px; height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  background: var(--gf-mousse);
+  color: var(--gf-vert-fonce);
+}
+.tuile.tuile-ocre .tuile-icone { background: var(--gf-sable); color: var(--gf-brun); }
+.tuile.tuile-rouge .tuile-icone { background: var(--gf-rouge-pale); color: var(--gf-rouge-fonce); }
+.tuile h3 { margin: 0 0 2px; font-size: 15px; }
+.tuile p { margin: 0; font-size: 12.5px; color: var(--gf-gris); }
+
+/* =====================================================================
+   AUTH (connexion employés)
+   ===================================================================== */
+.bo-auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(1000px 500px at 85% -10%, rgba(147, 216, 136, 0.16), transparent 60%),
+    radial-gradient(800px 500px at -10% 110%, rgba(164, 109, 44, 0.1), transparent 55%),
+    var(--gf-sapin);
+  padding: 24px;
+}
+.bo-auth-carte {
+  width: 100%;
+  max-width: 420px;
+  background: var(--gf-papier);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.bo-auth-corps { padding: 30px 32px 32px; }
+.bo-auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  font-family: var(--police-titre);
+  font-weight: 700;
+  font-size: 20px;
+}
+.bo-auth-logo i { color: var(--gf-vert); font-size: 22px; }
+.bo-auth-logo span span { color: var(--gf-vert); }
+
+/* =====================================================================
+   MODALE LÉGÈRE (remplace Bootstrap sur le détail livraison)
+   ===================================================================== */
+.gf-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(10, 46, 28, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 200;
+  padding: 20px;
+}
+.gf-modal.ouverte { display: grid; }
+.gf-modal-boite {
+  width: 100%;
+  max-width: 480px;
+  background: var(--gf-papier);
+  border-radius: var(--rayon-lg);
+  box-shadow: var(--ombre-2);
+  overflow: hidden;
+  animation: gfModalIn 0.18s ease;
+}
+@keyframes gfModalIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.gf-modal-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--gf-ligne);
+}
+.gf-modal-tete h3 { margin: 0; font-size: 15.5px; }
+.gf-modal-fermer {
+  border: none;
+  background: var(--gf-fond);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--gf-gris);
+  font-size: 13px;
+  transition: all var(--transition);
+}
+.gf-modal-fermer:hover { background: var(--gf-rouge-pale); color: var(--gf-rouge-fonce); }
+.gf-modal-corps { padding: 20px; }
+.gf-modal-pied {
+  padding: 14px 20px;
+  border-top: 1px solid var(--gf-ligne);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background: #fbfcfa;
+}
+
+/* =====================================================================
+   RESPONSIVE
+   ===================================================================== */
+@media (max-width: 980px) {
+  body.bo { flex-direction: column; }
+  .bo-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .bo-brand { padding: 14px 18px; }
+  .bo-sidebar .sillons { display: none; }
+  .bo-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    padding: 0 12px 12px;
+  }
+  .bo-nav-groupe { display: none; }
+  .bo-nav-lien { padding: 7px 11px; font-size: 13px; }
+  .bo-nav-lien.actif::before { display: none; }
+  .bo-sidebar-pied { display: none; }
+  .bo-topbar { padding: 0 16px; }
+  .bo-contenu { padding: 20px 16px 32px; }
+}

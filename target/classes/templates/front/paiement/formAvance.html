@@ -1,46 +1,76 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formulaire avance</title>
-</head>
+<head th:replace="~{back/fragments/layout :: head('Paiement avance')}"></head>
 
-<body>
-    <h1>Formulaire avance</h1>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
 
-    <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
-    <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
 
-    <form th:action="@{|/paiements/avance/${commande.id}|}" method="POST">
-        <p>Commande #<span th:text="${commande.id}"></span></p>
-        <p>Montant total a payer : <strong th:text="${montantTotal}"></strong></p>
-        <p>Frais de livraison : <span th:text="${commande.fraisLivraison}"></span></p>
-        <p>Avance a payer : <strong th:text="${avanceAPayer}"></strong></p>
+        <div class="bo-contenu bo-contenu-etroit">
 
-        <p>Mode de paiement :</p>
-        <div>
-            <div th:each="t : ${typesPaiement}">
-                <label>
-                    <input type="radio" name="typePayement" th:value="${t}" checked>
-                    <span th:text="${t}"></span>
-                </label>
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/paiements/list}">Paiements</a> / Avance</p>
+                    <h1>Paiement de l'avance</h1>
+                </div>
             </div>
+
+            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
+            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
+
+            <form th:action="@{|/paiements/avance/${commande.id}|}" method="POST">
+                <div class="carte">
+                    <div class="carte-tete">
+                        <h2><i class="fa-solid fa-money-bill-wave"></i> Commande #<span th:text="${commande.id}"></span></h2>
+                    </div>
+                    <div class="carte-corps">
+                        <dl class="fiche">
+                            <dt>Montant total à payer</dt>
+                            <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
+
+                            <dt>Frais de livraison</dt>
+                            <dd class="mono" th:text="${commande.fraisLivraison}"></dd>
+
+                            <dt>Avance à payer</dt>
+                            <dd class="mono texte-ocre" th:text="${avanceAPayer}"></dd>
+                        </dl>
+
+                        <div class="champ">
+                            <label>Mode de paiement</label>
+                            <div class="choix-ligne">
+                                <div th:each="t : ${typesPaiement}" class="choix-pastille">
+                                    <input type="radio" th:id="${'type-' + t}" name="typePayement" th:value="${t}" checked>
+                                    <label th:for="${'type-' + t}" th:text="${t}"></label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="champ">
+                            <label for="montant">Montant de l'avance</label>
+                            <input type="number" id="montant" name="montant" step="0.01" th:value="${avanceAPayer}" required>
+                        </div>
+
+                        <div class="champ">
+                            <label>Numéros de transfert</label>
+                            <div class="liste-coche" style="max-height: none;">
+                                <p th:each="numero : ${numerosTransfert}" th:text="${numero}" style="margin: 0; padding: 4px 0;"></p>
+                            </div>
+                        </div>
+
+                        <div class="barre-form">
+                            <button type="submit" class="btn btn-vert"><i class="fa-solid fa-check"></i> Payer</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
         </div>
 
-        <label for="montant">Montant de l'avance :</label>
-        <input type="number" id="montant" name="montant" step="0.01" th:value="${avanceAPayer}" required>
-
-        <div>
-            <p>Numeros de transfert :</p>
-            <ul>
-                <li th:each="numero : ${numerosTransfert}" th:text="${numero}"></li>
-            </ul>
-        </div>
-
-        <button type="submit">Payer</button>
-    </form>
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
 </body>
 
 </html>

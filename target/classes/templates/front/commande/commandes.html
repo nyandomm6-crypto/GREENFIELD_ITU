@@ -16,21 +16,21 @@
         ====================================================== */
       :root {
         /* Couleurs principales */
-        --gf-forest: #0f2a1c;
-        --gf-forest-2: #173b26;
-        --gf-green: #2d6a4f;
-        --gf-green-light: #4c9a6f;
-        --gf-leaf: #8fd4a8;
-        --gf-gold: #d4a373;
-        --gf-cream: #f6f4ee;
-        --gf-line: #e2e8e0;
-        --gf-text: #1c2b21;
-        --gf-muted: #5f6f64;
+        --gf-forest: #0A2E1C;
+        --gf-forest-2: #123D27;
+        --gf-green: #009951;
+        --gf-green-light: #5EB453;
+        --gf-leaf: #93D888;
+        --gf-gold: #A46D2C;
+        --gf-cream: #F7F4EC;
+        --gf-line: #E3E9E1;
+        --gf-text: #14261B;
+        --gf-muted: #62705F;
 
         /* Couleurs d'accent */
-        --ali-orange: #ff6a00;
-        --ali-orange-light: #ff9000;
-        --ali-orange-dark: #e65c00;
+        --ali-orange: #A46D2C;
+        --ali-orange-light: #B98136;
+        --ali-orange-dark: #7E5C15;
         --danger: #d32f2f;
         --success: #2e7d32;
 
@@ -652,7 +652,7 @@
       }
       .nl-form button {
         background: var(--gf-gold);
-        color: #2a1c0e;
+        color: #3D2A0F;
         border: none;
         padding: 0 var(--sp-28);
         border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
@@ -667,7 +667,7 @@
         gap: var(--sp-8);
       }
       .nl-form button:hover {
-        background: #e3b587;
+        background: #C9924D;
       }
 
       .footer-grid {
@@ -1048,66 +1048,25 @@
         }
       }
     </style>
-  </head>
+  
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+      body, input, button, select, textarea {
+        font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+      h1, h2, h3, h4, h5, .mh-logo-text {
+        font-family: "Bricolage Grotesque", "Instrument Sans", "Segoe UI", sans-serif;
+      }
+    </style>
+</head>
 
   <body>
     <!-- =====================================================
          HEADER
     ====================================================== -->
-    <header class="market-header">
-      <div class="conteneur">
-        <a href="/" class="mh-logo">
-          <span class="mh-logo-text"
-            ><i class="fas fa-seedling"></i> green<span>Field</span></span
-          >
-        </a>
-
-        <div class="mh-search">
-          <form action="/produits" method="get">
-            <input
-              type="text"
-              name="motCle"
-              placeholder="Rechercher un produit, un producteur..."
-              th:value="${motCle}"
-            />
-            <div class="search-icons">
-              <i class="fas fa-camera"></i>
-            </div>
-            <button type="submit">
-              <i class="fas fa-search"></i> <span>Rechercher</span>
-            </button>
-          </form>
-        </div>
-
-        <div class="mh-actions">
-          <a href="/commandes" class="mh-action">
-            <i class="fas fa-receipt"></i>
-            <span>Commandes</span>
-          </a>
-          <a href="/panier" class="mh-action">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count" th:text="${session.cartCount} ?: 0"
-              >0</span
-            >
-            <span>Panier</span>
-          </a>
-          <a th:if="${session.client == null}" href="/login" class="mh-action">
-            <i class="fas fa-user"></i>
-            <span>Connexion</span>
-          </a>
-          <a th:if="${session.client != null}" href="/profil" class="mh-action">
-            <i class="fas fa-user-circle"></i>
-            <span>Mon compte</span>
-          </a>
-          <a
-            th:if="${session.client == null}"
-            href="/signup"
-            class="btn btn-orange btn-sm"
-            >Créer un compte</a
-          >
-        </div>
-      </div>
-    </header>
+    <div th:replace="~{front/fragments/layout :: mainHeader}"></div>
 
     <!-- =====================================================
          CONTENU PRINCIPAL
@@ -1226,95 +1185,6 @@
     <!-- =====================================================
          FOOTER
     ====================================================== -->
-    <footer class="footer">
-      <div class="footer-newsletter">
-        <div class="conteneur">
-          <div class="nl-text">
-            <h3>Restez informé de nos récoltes</h3>
-            <p>Recevez nos offres et arrivages en avant-première.</p>
-          </div>
-          <form
-            class="nl-form"
-            th:action="@{/newsletter/subscribe}"
-            method="post"
-          >
-            <input
-              type="email"
-              name="email"
-              placeholder="Votre adresse email"
-              required
-            />
-            <button type="submit">
-              <i class="fas fa-paper-plane"></i> S'abonner
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <div class="conteneur">
-        <div class="footer-grid">
-          <div>
-            <a href="/" class="logo"><i class="fas fa-leaf"></i> greenField</a>
-            <p class="footer-description">
-              Votre marché en ligne pour l'achat de produits agricoles locaux,
-              frais et de qualité, directement auprès des producteurs.
-            </p>
-          </div>
-          <div>
-            <h4>Boutique</h4>
-            <ul>
-              <li><a href="/produits">Tous les produits</a></li>
-              <li><a href="#">Best-sellers</a></li>
-              <li><a href="#">Nouveautés</a></li>
-              <li><a href="#">Promotions</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Mon compte</h4>
-            <ul>
-              <li><a href="/login">Connexion</a></li>
-              <li><a href="/signup">Inscription</a></li>
-              <li><a href="/panier">Panier</a></li>
-              <li><a href="/commandes">Mes commandes</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Producteurs</h4>
-            <ul>
-              <li><a href="#">Devenir partenaire</a></li>
-              <li><a href="#">Nos engagements</a></li>
-              <li><a href="#">FAQ</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4>Contact</h4>
-            <ul>
-              <li><i class="fas fa-envelope"></i> contact@greenfield.com</li>
-              <li><i class="fas fa-phone"></i> +261 34 12 345 67</li>
-              <li>
-                <i class="fas fa-map-marker-alt"></i> Antananarivo, Madagascar
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <span>&copy; 2026 greenField. Tous droits réservés.</span>
-          <div class="footer-socials">
-            <a href="#" aria-label="Facebook"
-              ><i class="fab fa-facebook-f"></i
-            ></a>
-            <a href="#" aria-label="Instagram"
-              ><i class="fab fa-instagram"></i
-            ></a>
-            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="#" aria-label="LinkedIn"
-              ><i class="fab fa-linkedin-in"></i
-            ></a>
-            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <div th:replace="~{front/fragments/layout :: footer}"></div>
   </body>
 </html>

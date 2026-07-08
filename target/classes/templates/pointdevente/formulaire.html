@@ -1,44 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${pointDeVente.id} ? 'Modifier Point de Vente' : 'Ajouter Point de Vente'"></title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-  </head>
-  <body>
-    <div class="container-small">
-      <h1 th:text="${pointDeVente.id} ? 'Modifier Point de Vente' : 'Ajouter Point de Vente'"></h1>
 
-      <form
-        th:action="${pointDeVente.id} ? @{/pointdevente/} + ${pointDeVente.id} + '/modifier' : @{/pointdevente/ajouter}"
-        method="post"
-        th:object="${pointDeVente}"
-      >
-        <div class="form-group">
-          <label for="nom">Nom</label>
-          <input type="text" id="nom" th:field="*{nom}" required placeholder="Entrez le nom du point de vente" />
+<head th:replace="~{back/fragments/layout :: head(${pointDeVente.id} ? 'Modifier point de vente' : 'Ajouter point de vente')}"></head>
+
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('pdv')}"></aside>
+
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Points de vente')}"></header>
+
+        <div class="bo-contenu bo-contenu-etroit">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/pointdevente}">Points de vente</a> / Formulaire</p>
+                    <h1 th:text="${pointDeVente.id} ? 'Modifier le point de vente' : 'Ajouter un point de vente'"></h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/pointdevente}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Voir la liste</a>
+                </div>
+            </div>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-shop"></i> Informations du point de vente</h2>
+                </div>
+                <div class="carte-corps">
+                    <form th:action="${pointDeVente.id} ? @{/pointdevente/} + ${pointDeVente.id} + '/modifier' : @{/pointdevente/ajouter}"
+                        method="post" th:object="${pointDeVente}">
+
+                        <div class="grille-form">
+                            <div class="champ">
+                                <label for="nom">Nom</label>
+                                <input type="text" id="nom" th:field="*{nom}" required placeholder="Entrez le nom du point de vente" />
+                            </div>
+
+                            <div class="champ">
+                                <label for="code">Code</label>
+                                <input type="text" id="code" th:field="*{code}" required placeholder="Entrez le code du point de vente" />
+                            </div>
+
+                            <div class="champ">
+                                <label for="adresse">Adresse</label>
+                                <input type="text" id="adresse" th:field="*{adresse}" required placeholder="Entrez l'adresse" />
+                            </div>
+
+                            <div class="champ">
+                                <label for="contact">Contact</label>
+                                <input type="text" id="contact" th:field="*{contact}" required placeholder="Entrez le contact" />
+                            </div>
+                        </div>
+
+                        <div class="btn-list barre-form">
+                            <a th:href="@{/pointdevente}" class="btn btn-ligne">Annuler</a>
+                            <button type="submit" class="btn btn-vert" th:text="${pointDeVente.id} ? 'Modifier' : 'Ajouter'"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </div>
 
-        <div class="form-group">
-          <label for="code">Code</label>
-          <input type="text" id="code" th:field="*{code}" required placeholder="Entrez le code du point de vente" />
-        </div>
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
 
-        <div class="form-group">
-          <label for="adresse">Adresse</label>
-          <input type="text" id="adresse" th:field="*{adresse}" required placeholder="Entrez l'adresse" />
-        </div>
-
-        <div class="form-group">
-          <label for="contact">Contact</label>
-          <input type="text" id="contact" th:field="*{contact}" required placeholder="Entrez le contact" />
-        </div>
-
-        <button type="submit" class="btn-submit" th:text="${pointDeVente.id} ? 'Modifier' : 'Ajouter'"></button>
-      </form>
-
-      <a th:href="@{/pointdevente}" class="btn-back-link">← Retour à la liste</a>
-    </div>
-  </body>
 </html>

@@ -1,0 +1,795 @@
+/* =====================================================================
+   greenField — Système de design partagé (front & back office)
+   Palette officielle du projet :
+     Vert principal  #009951   (Frame 45)
+     Vert moyen      #5EB453   (Frame 47)
+     Ocre / terre    #A46D2C   (Frame 46)
+     Brun foncé      #7E5C15   (Frame 48)
+     Vert feuille    #93D888   (Frame 49)
+     Rouge           #E6383A   (Frame 50)
+   ===================================================================== */
+
+:root {
+  /* --- Palette imposée --- */
+  --gf-vert: #009951;
+  --gf-vert-2: #5eb453;
+  --gf-feuille: #93d888;
+  --gf-ocre: #a46d2c;
+  --gf-brun: #7e5c15;
+  --gf-rouge: #e6383a;
+
+  /* --- Déclinaisons dérivées --- */
+  --gf-vert-fonce: #007a41;
+  --gf-sapin: #0a2e1c;        /* vert très sombre : sidebar, footer */
+  --gf-sapin-2: #123d27;
+  --gf-mousse: #eaf5ec;       /* fond doux vert */
+  --gf-feuille-pale: #dff3dc;
+  --gf-ocre-2: #b98136;
+  --gf-sable: #f3e9d8;        /* fond doux ocre */
+  --gf-rouge-pale: #fdeaea;
+  --gf-rouge-fonce: #c22a2c;
+
+  /* --- Neutres --- */
+  --gf-encre: #14261b;
+  --gf-gris: #62705f;
+  --gf-gris-2: #8a967f;
+  --gf-ligne: #e3e9e1;
+  --gf-fond: #f4f7f3;
+  --gf-papier: #ffffff;
+
+  /* --- Typo --- */
+  --police-titre: "Bricolage Grotesque", "Instrument Sans", "Segoe UI", sans-serif;
+  --police-texte: "Instrument Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --police-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+
+  /* --- Rayons / ombres / transitions --- */
+  --rayon-sm: 8px;
+  --rayon-md: 12px;
+  --rayon-lg: 16px;
+  --rayon-pill: 999px;
+  --ombre-1: 0 1px 2px rgba(20, 38, 27, 0.05), 0 2px 8px rgba(20, 38, 27, 0.05);
+  --ombre-2: 0 8px 24px rgba(20, 38, 27, 0.1);
+  --transition: 0.18s ease;
+
+  /* --- Alias hérités (compatibilité avec les anciennes vues) --- */
+  --vert-fonce: var(--gf-vert-fonce);
+  --vert-clair: var(--gf-mousse);
+  --bordure: var(--gf-ligne);
+  --texte: var(--gf-encre);
+  --gris: var(--gf-gris);
+}
+
+/* =====================================================================
+   BASE
+   ===================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--police-texte);
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--gf-encre);
+  background: var(--gf-fond);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--police-titre);
+  color: var(--gf-encre);
+  line-height: 1.2;
+  margin: 0 0 0.5em;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: 26px; font-weight: 700; }
+h2 { font-size: 19px; font-weight: 700; }
+h3 { font-size: 16px; font-weight: 600; }
+
+p { margin: 0 0 0.8em; }
+
+a {
+  color: var(--gf-vert);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+a:hover { color: var(--gf-vert-fonce); }
+
+:focus-visible {
+  outline: 2px solid var(--gf-vert);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.mono {
+  font-family: var(--police-mono);
+  font-size: 0.92em;
+  letter-spacing: -0.02em;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+/* =====================================================================
+   SIGNATURE — « Les sillons » : bande aux 6 couleurs de la palette,
+   comme des rangs de culture vus du ciel.
+   ===================================================================== */
+.sillons {
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--gf-vert)    0 16.66%,
+    var(--gf-vert-2)  0 33.33%,
+    var(--gf-ocre)    0 50%,
+    var(--gf-brun)    0 66.66%,
+    var(--gf-feuille) 0 83.33%,
+    var(--gf-rouge)   0 100%
+  );
+}
+.sillons-fine { height: 3px; }
+
+/* =====================================================================
+   BOUTONS
+   ===================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--rayon-sm);
+  font-family: var(--police-texte);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--transition), color var(--transition),
+    border-color var(--transition), transform var(--transition),
+    box-shadow var(--transition);
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn i { font-size: 0.95em; }
+
+.btn-vert {
+  background: var(--gf-vert);
+  color: #fff;
+}
+.btn-vert:hover { background: var(--gf-vert-fonce); color: #fff; }
+
+.btn-ocre {
+  background: var(--gf-ocre);
+  color: #fff;
+}
+.btn-ocre:hover { background: var(--gf-brun); color: #fff; }
+
+.btn-rouge {
+  background: var(--gf-rouge);
+  color: #fff;
+}
+.btn-rouge:hover { background: var(--gf-rouge-fonce); color: #fff; }
+
+.btn-ligne {
+  background: var(--gf-papier);
+  border-color: var(--gf-ligne);
+  color: var(--gf-encre);
+}
+.btn-ligne:hover {
+  border-color: var(--gf-vert);
+  color: var(--gf-vert);
+}
+
+.btn-doux {
+  background: var(--gf-mousse);
+  color: var(--gf-vert-fonce);
+}
+.btn-doux:hover { background: var(--gf-feuille-pale); }
+
+.btn-doux-rouge {
+  background: var(--gf-rouge-pale);
+  color: var(--gf-rouge-fonce);
+}
+.btn-doux-rouge:hover { background: #fbd9d9; }
+
+.btn-sm { padding: 6px 12px; font-size: 13px; border-radius: 7px; }
+.btn-lg { padding: 12px 24px; font-size: 15px; }
+.btn-bloc { width: 100%; }
+
+/* =====================================================================
+   BADGES / STATUTS
+   ===================================================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--rayon-pill);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.badge::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge-vert   { background: var(--gf-mousse); color: var(--gf-vert-fonce); }
+.badge-feuille{ background: var(--gf-feuille-pale); color: #2f7a33; }
+.badge-ocre   { background: var(--gf-sable); color: var(--gf-brun); }
+.badge-rouge  { background: var(--gf-rouge-pale); color: var(--gf-rouge-fonce); }
+.badge-gris   { background: #eef1ec; color: var(--gf-gris); }
+.badge-sans-point::before { display: none; }
+
+/* Statuts hérités (pointdevente/employes) */
+.status-active {
+  color: var(--gf-vert-fonce);
+  background: var(--gf-mousse);
+  padding: 3px 10px;
+  border-radius: var(--rayon-pill);
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-inactive {
+  color: var(--gf-rouge-fonce);
+  background: var(--gf-rouge-pale);
+  padding: 3px 10px;
+  border-radius: var(--rayon-pill);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =====================================================================
+   ALERTES
+   ===================================================================== */
+.alerte,
+.alert-danger,
+.alert-success,
+.alert-info,
+.message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--rayon-md);
+  border: 1px solid transparent;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.alerte-succes,
+.alert-success,
+.message.success {
+  background: var(--gf-mousse);
+  border-color: #c8e6cd;
+  color: var(--gf-vert-fonce);
+}
+.alerte-erreur,
+.alert-danger,
+.message.error {
+  background: var(--gf-rouge-pale);
+  border-color: #f6c2c3;
+  color: var(--gf-rouge-fonce);
+}
+.alerte-info,
+.alert-info {
+  background: var(--gf-sable);
+  border-color: #e6d3ae;
+  color: var(--gf-brun);
+}
+.alerte:empty,
+.alert-danger:empty,
+.alert-success:empty { display: none; }
+
+/* =====================================================================
+   CARTES
+   ===================================================================== */
+.carte {
+  background: var(--gf-papier);
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-lg);
+  box-shadow: var(--ombre-1);
+}
+.carte-corps { padding: 22px; }
+.carte-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--gf-ligne);
+}
+.carte-tete h2, .carte-tete h3 { margin: 0; }
+.carte-pied {
+  padding: 14px 22px;
+  border-top: 1px solid var(--gf-ligne);
+  background: #fbfcfa;
+  border-radius: 0 0 var(--rayon-lg) var(--rayon-lg);
+}
+
+/* =====================================================================
+   FORMULAIRES
+   ===================================================================== */
+label {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--gf-encre);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="file"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid var(--gf-ligne);
+  border-radius: var(--rayon-sm);
+  background: var(--gf-papier);
+  font-family: var(--police-texte);
+  font-size: 14px;
+  color: var(--gf-encre);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+input:hover, select:hover, textarea:hover { border-color: #cbd6c9; }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--gf-vert);
+  box-shadow: 0 0 0 3px rgba(0, 153, 81, 0.13);
+}
+input::placeholder, textarea::placeholder { color: var(--gf-gris-2); }
+input[readonly], select:disabled {
+  background: var(--gf-fond);
+  color: var(--gf-gris);
+  cursor: not-allowed;
+}
+input[type="radio"],
+input[type="checkbox"] {
+  width: auto;
+  accent-color: var(--gf-vert);
+  transform: scale(1.1);
+  margin-right: 6px;
+}
+
+.champ { margin-bottom: 16px; }
+.champ label { display: block; margin-bottom: 6px; }
+.champ .aide {
+  display: block;
+  margin-top: 5px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--gf-gris);
+}
+
+.grille-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 4px 20px;
+}
+
+.sous-titre-form {
+  font-family: var(--police-titre);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gf-encre);
+  margin: 4px 0 10px;
+}
+
+.liste-coche {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-md);
+  padding: 10px 14px;
+  background: var(--gf-fond);
+}
+.liste-coche label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.resume-paiement {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  background: var(--gf-mousse);
+  border: 1px solid var(--gf-feuille-pale);
+  border-radius: var(--rayon-md);
+  padding: 12px 18px;
+  margin-top: 14px;
+  font-weight: 600;
+  color: var(--gf-vert-fonce);
+}
+input.montant { max-width: 160px; }
+
+.liste-livraisons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.livraison-carte {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  background: var(--gf-papier);
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-lg);
+  box-shadow: var(--ombre-1);
+}
+.livraison-carte .livraison-num {
+  font-family: var(--police-mono);
+  font-weight: 700;
+  color: var(--gf-encre);
+}
+.livraison-carte .livraison-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.choix-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin-bottom: 6px;
+}
+.choix-pastille {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.choix-pastille input[type="radio"] {
+  accent-color: var(--gf-vert);
+  width: 16px;
+  height: 16px;
+}
+.choix-pastille label {
+  font-size: 14px;
+  color: var(--gf-encre);
+  cursor: pointer;
+}
+
+.barre-form {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+fieldset {
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-md);
+  padding: 18px 20px 8px;
+  margin: 0 0 20px;
+  background: var(--gf-papier);
+}
+legend {
+  font-family: var(--police-titre);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--gf-vert-fonce);
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Erreurs de validation (noms hérités conservés) */
+.text-danger,
+.error {
+  color: var(--gf-rouge-fonce);
+  font-size: 12.5px;
+  font-weight: 500;
+  margin: 4px 0 0;
+}
+.is-invalid,
+input.error-border,
+select.error-border {
+  border-color: var(--gf-rouge) !important;
+  box-shadow: 0 0 0 3px rgba(230, 56, 58, 0.12) !important;
+}
+
+/* =====================================================================
+   TABLEAUX
+   ===================================================================== */
+.tableau-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-md);
+  background: var(--gf-papier);
+}
+table.tableau,
+.tableau-scroll table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  background: var(--gf-papier);
+}
+.tableau th,
+.tableau-scroll th {
+  text-align: left;
+  padding: 11px 14px;
+  background: #f7faf6;
+  color: var(--gf-gris);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--gf-ligne);
+  white-space: nowrap;
+}
+.tableau td,
+.tableau-scroll td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--gf-ligne);
+  vertical-align: middle;
+}
+.tableau tbody tr:last-child td,
+.tableau-scroll tbody tr:last-child td { border-bottom: none; }
+.tableau tbody tr:hover td,
+.tableau-scroll tbody tr:hover td { background: #fafcf9; }
+.tableau td.num, .tableau th.num,
+.tableau-scroll td.num, .tableau-scroll th.num {
+  text-align: right;
+  font-family: var(--police-mono);
+  font-size: 12.8px;
+}
+.cellule-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.cellule-actions form { display: inline; margin: 0; }
+tr.ligne-total td {
+  background: var(--gf-mousse);
+  font-weight: 700;
+  border-top: 2px solid var(--gf-vert);
+}
+tr.ligne-frais td {
+  color: var(--gf-gris);
+  font-style: italic;
+}
+
+/* =====================================================================
+   FILTRES
+   ===================================================================== */
+.barre-filtres {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  padding: 16px 20px;
+  background: var(--gf-papier);
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-md);
+  margin-bottom: 18px;
+}
+.barre-filtres .champ,
+.barre-filtres .filtre {
+  margin: 0;
+  min-width: 170px;
+  flex: 1 1 170px;
+}
+.barre-filtres .filtre label,
+.barre-filtres .champ label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gf-gris);
+}
+.barre-filtres .filtre-large { flex: 2 1 300px; }
+.barre-filtres .filtre-actions {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+/* Puces de filtres actifs (nom hérité conservé) */
+.filtre-actif {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gf-mousse);
+  border: 1px solid #c8e6cd;
+  color: var(--gf-vert-fonce);
+  padding: 5px 6px 5px 12px;
+  border-radius: var(--rayon-pill);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.filtre-actif button {
+  border: none;
+  background: rgba(0, 153, 81, 0.14);
+  color: var(--gf-vert-fonce);
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.filtre-actif button:hover {
+  background: var(--gf-rouge);
+  color: #fff;
+}
+.active-filtres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+.active-filtres:empty { display: none; }
+
+/* =====================================================================
+   PAGINATION
+   ===================================================================== */
+.section-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0 0;
+  font-size: 13.5px;
+  color: var(--gf-gris);
+}
+.section-pagination input[type="number"] { width: 90px; }
+.section-pagination label { font-size: 12.5px; color: var(--gf-gris); }
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.btn-pagination {
+  padding: 7px 14px;
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-sm);
+  background: var(--gf-papier);
+  color: var(--gf-encre);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-pagination:hover {
+  border-color: var(--gf-vert);
+  color: var(--gf-vert);
+}
+
+/* =====================================================================
+   FICHES DÉTAIL (dl)
+   ===================================================================== */
+.fiche {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 0;
+  margin: 0;
+}
+.fiche dt {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gf-gris);
+  padding: 11px 0;
+  border-bottom: 1px solid var(--gf-ligne);
+}
+.fiche dd {
+  margin: 0;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--gf-ligne);
+  font-weight: 500;
+}
+.fiche dt:last-of-type,
+.fiche dd:last-of-type { border-bottom: none; }
+@media (max-width: 560px) {
+  .fiche { grid-template-columns: 1fr; }
+  .fiche dt { padding-bottom: 2px; border: none; }
+  .fiche dd { padding-top: 0; }
+}
+
+/* =====================================================================
+   ÉTATS VIDES
+   ===================================================================== */
+.vide {
+  text-align: center;
+  padding: 44px 20px;
+  color: var(--gf-gris);
+}
+.vide i {
+  font-size: 34px;
+  color: var(--gf-feuille);
+  display: block;
+  margin-bottom: 12px;
+}
+.vide p { margin: 0; }
+
+/* =====================================================================
+   UTILITAIRES (noms hérités inclus)
+   ===================================================================== */
+.d-none { display: none !important; }
+.inline { display: inline; }
+.texte-centre { text-align: center; }
+.texte-droite { text-align: right; }
+.texte-gris { color: var(--gf-gris); }
+.texte-vert { color: var(--gf-vert-fonce); }
+.texte-ocre { color: var(--gf-brun); }
+.texte-rouge { color: var(--gf-rouge-fonce); }
+.mt-8 { margin-top: 8px; } .mt-16 { margin-top: 16px; } .mt-24 { margin-top: 24px; }
+.mb-8 { margin-bottom: 8px; } .mb-16 { margin-bottom: 16px; } .mb-24 { margin-bottom: 24px; }
+.flex { display: flex; } .flex-wrap { flex-wrap: wrap; }
+.gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .gap-2 { gap: 8px; }
+.aligne-centre { align-items: center; }
+.entre { justify-content: space-between; }
+.mb-3 { margin-bottom: 12px; }
+.d-flex { display: flex; }
+
+/* Autocomplete client (listes de suggestions) */
+#liste-clients,
+.liste-suggestions {
+  position: relative;
+  background: var(--gf-papier);
+  border: 1px solid var(--gf-ligne);
+  border-radius: var(--rayon-sm);
+  box-shadow: var(--ombre-2);
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 4px;
+  z-index: 30;
+}
+.children-list {
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--gf-fond);
+  transition: background var(--transition);
+}
+.children-list:hover {
+  background: var(--gf-mousse);
+  color: var(--gf-vert-fonce);
+}
+#liste-clients p { padding: 9px 14px; margin: 0; color: var(--gf-gris); font-size: 13px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

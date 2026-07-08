@@ -1,16 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Envoyer un email</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+      * { box-sizing: border-box; }
       body {
         margin: 0;
         min-height: 100vh;
-        font-family: Arial, sans-serif;
-        background: #f4f7f2;
-        color: #182018;
+        font-family: "Instrument Sans", Arial, sans-serif;
+        background: #F4F7F3;
+        color: #14261B;
       }
 
       main {
@@ -21,16 +25,20 @@
 
       h1 {
         margin: 0 0 24px;
+        font-family: "Bricolage Grotesque", "Instrument Sans", sans-serif;
+        font-weight: 700;
         font-size: 28px;
+        color: #0A2E1C;
       }
 
       form {
         display: grid;
         gap: 16px;
         background: #ffffff;
-        border: 1px solid #d9e2d3;
-        border-radius: 8px;
+        border: 1px solid #E3E9E1;
+        border-radius: 12px;
         padding: 24px;
+        box-shadow: 0 4px 14px rgba(10, 46, 28, 0.06);
       }
 
       label {
@@ -43,10 +51,14 @@
       textarea {
         width: 100%;
         box-sizing: border-box;
-        border: 1px solid #b9c7b0;
-        border-radius: 6px;
+        border: 1px solid #E3E9E1;
+        border-radius: 8px;
         padding: 10px 12px;
         font: inherit;
+      }
+      input:focus, textarea:focus {
+        outline: 2px solid #009951;
+        border-color: #009951;
       }
 
       textarea {
@@ -57,34 +69,36 @@
       button {
         justify-self: start;
         border: 0;
-        border-radius: 6px;
-        background: #2f6b3f;
+        border-radius: 8px;
+        background: #009951;
         color: #ffffff;
-        padding: 11px 18px;
+        padding: 11px 20px;
         font-weight: 700;
         cursor: pointer;
+        transition: background 0.15s ease;
       }
+      button:hover { background: #007A41; }
 
       .message {
         margin-bottom: 16px;
-        border-radius: 6px;
+        border-radius: 8px;
         padding: 12px 14px;
       }
 
       .success {
-        background: #e2f4e7;
-        color: #155724;
+        background: #EAF5EC;
+        color: #007A41;
       }
 
       .error {
-        background: #fde8e8;
-        color: #8a1c1c;
+        background: #FDEAEA;
+        color: #C22A2C;
       }
     </style>
   </head>
   <body>
     <main>
-      <h1>Envoyer remarque</h1>
+      <h1><i class="fa-solid fa-envelope"></i> Envoyer une remarque</h1>
 
       <div
         class="message success"

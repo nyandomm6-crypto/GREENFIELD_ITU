@@ -1,80 +1,87 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>GreenField - Entrée de Stock</title>
-    <style>
-      .error {
-        color: red;
-        font-size: 12px;
-      }
-      input.error-border {
-        border: 2px solid red;
-      }
-    </style>
-  </head>
-  <body>
-    <nav>
-      <a th:href="@{/back/produits}">Catalogue</a> |
-      <a th:href="@{/back/produits/nouveau}">Ajouter Produit</a> |
-      <a th:href="@{/back/stocks}">Stocks</a> |
-      <a th:href="@{/back/stocks/entree}"><b>Entrée de Stock</b></a>
-    </nav>
-    <hr />
+  <head th:replace="~{back/fragments/layout :: head('Entrée de stock')}"></head>
 
-    <h1>Nouvelle Entrée de Stock</h1>
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('stock-entree')}"></aside>
 
-    <div th:if="${error}" style="color: red" th:text="${error}"></div>
+    <main class="bo-main">
+      <header th:replace="~{back/fragments/layout :: topbar('Entrée de stock')}"></header>
 
-    <form
-      id="stockEntryForm"
-      method="post"
-      th:action="@{/back/stocks/entree}"
-      onsubmit="return validateQty();"
-    >
-      <label>
-        Produit :<br />
-        <select name="idProduit" required>
-          <option value="">-- Choisir --</option>
-          <option
-            th:each="p : ${produits}"
-            th:value="${p.id}"
-            th:text="${p.matricule + ' - ' + p.nom}"
-          ></option>
-        </select> </label
-      ><br /><br />
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">Catalogue <i class="fas fa-chevron-right"></i> Entrée de stock</p>
+            <h1>Nouvelle entrée de stock</h1>
+            <p class="sous-titre">Enregistrez un mouvement d'approvisionnement pour un produit.</p>
+          </div>
+        </div>
 
-      <label>
-        Point de vente :<br />
-        <select name="ptDeVenteCode">
-          <option value="">Aucun (Global/Non assigné)</option>
-          <option
-            th:each="pdv : ${pointsDeVente}"
-            th:value="${pdv.code}"
-            th:text="${pdv.nom}"
-          ></option>
-        </select> </label
-      ><br /><br />
+        <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
 
-      <label>
-        Type de Mouvement :<br />
-        <select name="typeMouvement" required>
-          <option
-            th:each="t : ${entryTypes}"
-            th:value="${t}"
-            th:text="${t}"
-          ></option>
-        </select> </label
-      ><br /><br />
+        <form
+          id="stockEntryForm"
+          method="post"
+          th:action="@{/back/stocks/entree}"
+          onsubmit="return validateQty();"
+          class="carte"
+        >
+          <div class="carte-corps">
+            <div class="champ">
+              <label for="idProduit">Produit</label>
+              <select name="idProduit" id="idProduit" required>
+                <option value="">-- Choisir --</option>
+                <option
+                  th:each="p : ${produits}"
+                  th:value="${p.id}"
+                  th:text="${p.matricule + ' - ' + p.nom}"
+                ></option>
+              </select>
+            </div>
 
-      <label>
-        Quantité :<br />
-        <input type="number" id="quantite" name="quantite" required /> </label
-      ><br />
-      <span class="error" id="err-quantite"></span><br /><br />
+            <div class="champ">
+              <label for="ptDeVenteCode">Point de vente</label>
+              <select name="ptDeVenteCode" id="ptDeVenteCode">
+                <option value="">Aucun (Global/Non assigné)</option>
+                <option
+                  th:each="pdv : ${pointsDeVente}"
+                  th:value="${pdv.code}"
+                  th:text="${pdv.nom}"
+                ></option>
+              </select>
+            </div>
 
-      <button type="submit">Enregistrer l'Entrée</button>
-    </form>
+            <div class="grille-form">
+              <div class="champ">
+                <label for="typeMouvement">Type de mouvement</label>
+                <select name="typeMouvement" id="typeMouvement" required>
+                  <option
+                    th:each="t : ${entryTypes}"
+                    th:value="${t}"
+                    th:text="${t}"
+                  ></option>
+                </select>
+              </div>
+
+              <div class="champ">
+                <label for="quantite">Quantité</label>
+                <input type="number" id="quantite" name="quantite" placeholder="0" required />
+                <span class="error" id="err-quantite"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="carte-pied flex gap-12 aligne-centre">
+            <button type="submit" class="btn btn-vert">
+              <i class="fas fa-dolly"></i> Enregistrer l'entrée
+            </button>
+            <a th:href="@{/back/stocks}" class="btn btn-ligne">Voir les stocks</a>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
 
     <script>
       function validateQty() {

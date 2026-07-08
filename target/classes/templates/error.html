@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Erreur</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/greenfield.css}">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--gf-fond);
+            text-align: center;
+            padding: 24px;
+        }
+        .err-sillon {
+            width: 100%;
+            max-width: 420px;
+            height: 8px;
+            border-radius: 6px;
+            overflow: hidden;
+            display: flex;
+            margin-bottom: 32px;
+        }
+        .err-sillon span { flex: 1; }
+        .err-code {
+            font-family: var(--police-titre);
+            font-weight: 800;
+            font-size: 72px;
+            color: var(--gf-vert-fonce);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+        .err-titre {
+            font-family: var(--police-titre);
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--gf-encre);
+            margin-bottom: 10px;
+        }
+        .err-message {
+            color: var(--gf-gris);
+            max-width: 440px;
+            margin-bottom: 28px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="err-sillon">
+        <span style="background:#009951"></span>
+        <span style="background:#5EB453"></span>
+        <span style="background:#93D888"></span>
+        <span style="background:#A46D2C"></span>
+        <span style="background:#7E5C15"></span>
+        <span style="background:#E6383A"></span>
+    </div>
+
+    <div class="err-code">Oups</div>
+    <p class="err-titre">Une erreur est survenue</p>
+    <p class="err-message">
+        <span th:if="${message != null}" th:text="${message}"></span>
+        <span th:unless="${message != null}">Cette page n'est pas accessible ou la ressource demandée n'existe pas.</span>
+    </p>
+
+    <a th:href="@{/}" class="btn btn-vert"><i class="fa-solid fa-house"></i> Retour à l'accueil</a>
+</body>
+
+</html>

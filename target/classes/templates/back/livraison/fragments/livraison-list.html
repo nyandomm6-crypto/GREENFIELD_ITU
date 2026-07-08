@@ -1,23 +1,24 @@
 <div th:fragment="liste">
-  <div th:each="livraison : ${livraisons}">
-    <p>
-      Livraison N°
-      <span th:text="${livraison.id}"></span>
+  <div class="liste-livraisons">
+    <div th:each="livraison : ${livraisons}" class="livraison-carte">
+      <div>
+        <span class="livraison-num">Livraison N° <span th:text="${livraison.id}"></span></span>
+        <span class="badge badge-vert" th:text="${livraison.statutLivraison}"></span>
+      </div>
+      <div class="livraison-actions">
+        <button th:if="${livraison.statutLivraison.name() == 'En_attente'}"
+          th:onclick="'validerLivraison(' + ${livraison.id} + ')'" class="btn btn-sm btn-doux">
+          Valider
+        </button>
+        <button th:onclick="'detail(' + ${livraison.id} + ')'" class="btn btn-sm btn-ligne">
+          Voir détails
+        </button>
+      </div>
+    </div>
 
-      <span th:text="${livraison.statutLivraison}"></span>
-
-      <button
-        th:if="${livraison.statutLivraison.name() == 'En_attente'}"
-        th:onclick="'validerLivraison(' + ${livraison.id} + ')'"
-      >
-        Valider
-      </button>
-      <button
-        th:onclick="'detail(' + ${livraison.id} + ')'"
-        class="btn btn-info btn-sm"
-      >
-        voir détails
-      </button>
-    </p>
+    <div th:if="${#lists.isEmpty(livraisons)}" class="vide">
+      <i class="fa-solid fa-truck"></i>
+      <p>Aucune livraison ne correspond à ces filtres.</p>
+    </div>
   </div>
 </div>

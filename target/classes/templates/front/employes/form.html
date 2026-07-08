@@ -1,144 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${titre}">Formulaire employe</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 24px;
-        color: #1f2933;
-      }
 
-      form {
-        max-width: 720px;
-        display: grid;
-        gap: 14px;
-      }
+<head th:replace="~{back/fragments/layout :: head(${titre})}"></head>
 
-      label {
-        display: grid;
-        gap: 6px;
-      }
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('employes')}"></aside>
 
-      input,
-      select {
-        padding: 9px;
-        border: 1px solid #cbd5e1;
-        border-radius: 4px;
-      }
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Employés')}"></header>
 
-      .actions {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-      }
+        <div class="bo-contenu bo-contenu-etroit">
 
-      a,
-      button {
-        border: 1px solid #2f80ed;
-        background: #2f80ed;
-        color: white;
-        padding: 9px 14px;
-        border-radius: 4px;
-        text-decoration: none;
-        cursor: pointer;
-      }
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/employes}">Employés</a> / Formulaire</p>
+                    <h1 th:text="${titre}">Formulaire employé</h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/employes}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Voir la liste</a>
+                </div>
+            </div>
 
-      a.secondary {
-        background: white;
-        color: #2f80ed;
-      }
+            <div class="alerte alerte-erreur" th:if="${error}" th:text="${error}"></div>
 
-      .error {
-        padding: 10px;
-        border-radius: 4px;
-        background: #fee2e2;
-        color: #991b1b;
-        margin-bottom: 12px;
-      }
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-id-badge"></i> Informations de l'employé</h2>
+                </div>
+                <div class="carte-corps">
+                    <form th:action="${action}" method="post" th:object="${employe}">
 
-      .hint {
-        color: #64748b;
-        font-size: 13px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1 th:text="${titre}">Formulaire employe</h1>
+                        <div class="grille-form">
+                            <div class="champ">
+                                <label>Nom</label>
+                                <input type="text" th:field="*{nom}" required />
+                            </div>
 
-    <div class="error" th:if="${error}" th:text="${error}"></div>
+                            <div class="champ">
+                                <label>Prénom</label>
+                                <input type="text" th:field="*{prenom}" required />
+                            </div>
 
-    <form th:action="${action}" method="post" th:object="${employe}">
-      <label>
-        Nom
-        <input type="text" th:field="*{nom}" required />
-      </label>
+                            <div class="champ">
+                                <label>Adresse</label>
+                                <input type="text" th:field="*{adresse}" />
+                            </div>
 
-      <label>
-        Prenom
-        <input type="text" th:field="*{prenom}" required />
-      </label>
+                            <div class="champ">
+                                <label>Contact</label>
+                                <input type="text" th:field="*{contact}" />
+                            </div>
 
-      <label>
-        Adresse
-        <input type="text" th:field="*{adresse}" />
-      </label>
+                            <div class="champ">
+                                <label>Mail</label>
+                                <input type="email" th:field="*{mail}" required />
+                            </div>
 
-      <label>
-        Contact
-        <input type="text" th:field="*{contact}" />
-      </label>
+                            <div class="champ">
+                                <label>Mot de passe</label>
+                                <input type="password" th:field="*{motdepasse}" th:required="${creation}" autocomplete="new-password" />
+                                <span class="aide" th:if="${!creation}">
+                                    Laisser vide pour garder le mot de passe actuel.
+                                </span>
+                            </div>
 
-      <label>
-        Mail
-        <input type="email" th:field="*{mail}" required />
-      </label>
+                            <div class="champ">
+                                <label>Rôle</label>
+                                <select th:field="*{role}" required>
+                                    <option value="">Choisir rôle</option>
+                                    <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
+                                </select>
+                            </div>
 
-      <label>
-        Mot de passe
-        <input
-          type="password"
-          th:field="*{motdepasse}"
-          th:required="${creation}"
-          autocomplete="new-password"
-        />
-        <span class="hint" th:if="${!creation}">
-          Laisser vide pour garder le mot de passe actuel.
-        </span>
-      </label>
+                            <div class="champ">
+                                <label>Point de vente</label>
+                                <select name="codePointDeVente">
+                                    <option value="">Aucun</option>
+                                    <option th:each="point : ${pointsDeVente}" th:value="${point.code}"
+                                        th:text="${point.nom + ' (' + point.code + ')'}"
+                                        th:selected="${codePointDeVente != null and codePointDeVente == point.code}"></option>
+                                </select>
+                            </div>
 
-      <label>
-        Role
-        <select th:field="*{role}" required>
-          <option value="">Choisir role</option>
-          <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
-        </select>
-      </label>
+                            <div class="champ">
+                                <label>Date</label>
+                                <input type="date" th:field="*{date}" />
+                            </div>
+                        </div>
 
-      <label>
-        Point de vente
-        <select name="codePointDeVente">
-          <option value="">Aucun</option>
-          <option
-            th:each="point : ${pointsDeVente}"
-            th:value="${point.code}"
-            th:text="${point.nom + ' (' + point.code + ')'}"
-            th:selected="${codePointDeVente != null and codePointDeVente == point.code}"
-          ></option>
-        </select>
-      </label>
+                        <div class="btn-list barre-form">
+                            <a th:href="@{/employes}" class="btn btn-ligne">Annuler</a>
+                            <button type="submit" class="btn btn-vert"><i class="fa-solid fa-check"></i> Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-      <label>
-        Date
-        <input type="date" th:field="*{date}" />
-      </label>
+        </div>
 
-      <div class="actions">
-        <button type="submit">Enregistrer</button>
-        <a class="secondary" th:href="@{/employes}">Annuler</a>
-      </div>
-    </form>
-  </body>
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
 </html>

@@ -1,238 +1,146 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Paiement commande</title>
 
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background: #f4f6f8;
-        margin: 0;
-        padding: 20px;
-      }
+<head th:replace="~{back/fragments/layout :: head('Paiement commande')}"></head>
 
-      h2,
-      h3 {
-        margin-bottom: 10px;
-      }
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('livreur')}"></aside>
 
-      .container {
-        max-width: 900px;
-        margin: auto;
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      }
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Paiement')}"></header>
 
-      .section {
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-      }
+        <div class="bo-contenu bo-contenu-etroit">
 
-      .info p {
-        margin: 6px 0;
-      }
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/livreurs/livraisons}">Mes livraisons</a> / Paiement</p>
+                    <h1><i class="fa-solid fa-money-bill-wave"></i> Paiement de la commande</h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/livreurs/livraisons}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+                </div>
+            </div>
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        background: white;
-      }
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-file-lines"></i> Commande</h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>ID</dt>
+                        <dd class="mono" th:text="${commande.id}"></dd>
 
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 10px;
-        text-align: left;
-      }
+                        <dt>Client</dt>
+                        <dd th:text="${commande.client.nom + ' ' + commande.client.prenom}"></dd>
 
-      th {
-        background: #f0f0f0;
-      }
+                        <dt>Total</dt>
+                        <dd class="mono" id="total" th:text="${commande.totalGeneral}"></dd>
 
-      select,
-      input {
-        width: 100%;
-        padding: 6px;
-      }
+                        <dt>Reste</dt>
+                        <dd class="mono texte-ocre" id="reste" th:text="${reste}"></dd>
+                    </dl>
+                </div>
+            </div>
 
-      .btn {
-        padding: 10px 15px;
-        border: none;
-        cursor: pointer;
-        border-radius: 6px;
-      }
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-receipt"></i> Paiements existants</h2>
+                </div>
+                <div class="carte-corps">
+                    <div class="tableau-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Type</th>
+                                    <th class="num">Montant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:if="${#lists.isEmpty(paiement.filles)}">
+                                    <td colspan="3">
+                                        <div class="vide">
+                                            <i class="fa-solid fa-receipt"></i>
+                                            <p>Aucun paiement.</p>
+                                        </div>
+                                    </td>
+                                </tr>
 
-      .btn-add {
-        background: #007bff;
-        color: white;
-      }
+                                <tr th:each="pf, i : ${paiement.filles}">
+                                    <td th:text="${i.index + 1}"></td>
+                                    <td th:text="${pf.typePayement}"></td>
+                                    <td class="num mono" th:text="${pf.valeur}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-      .btn-delete {
-        background: #dc3545;
-        color: white;
-      }
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-plus"></i> Nouveau paiement</h2>
+                </div>
+                <div class="carte-corps">
+                    <form id="formPaiement" th:action="@{/livreurs/paiements/ajouter-multiple}" method="post">
+                        <input type="hidden" name="idCommande" th:value="${commande.id}" />
 
-      .btn-submit {
-        background: #28a745;
-        color: white;
-        width: 100%;
-        font-size: 16px;
-      }
+                        <div class="tableau-scroll">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th class="num">Montant</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
 
-      .summary {
-        display: flex;
-        justify-content: space-between;
-        background: #fafafa;
-        padding: 10px;
-        border-radius: 6px;
-        margin-top: 10px;
-      }
+                                <tbody id="lines">
+                                    <tr>
+                                        <td>
+                                            <select name="typePayement">
+                                                <option th:each="t : ${typesPaiement}" th:value="${t}" th:text="${t}"></option>
+                                            </select>
+                                        </td>
 
-      .error {
-        color: red;
-        margin-top: 10px;
-      }
+                                        <td>
+                                            <input type="number" step="0.01" min="0" name="valeur" class="montant" required />
+                                        </td>
 
-      .top-link {
-        margin-bottom: 15px;
-        display: block;
-      }
-    </style>
-  </head>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-doux-rouge" onclick="removeLine(this)">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-  <body>
-    <div class="container">
-      <h2>💳 Paiement de la commande</h2>
+                        <div class="barre-form" style="justify-content: flex-start; margin-top: 10px;">
+                            <button type="button" class="btn btn-doux btn-sm" onclick="addLine()">
+                                <i class="fa-solid fa-plus"></i> Ajouter ligne
+                            </button>
+                        </div>
 
-      <a class="top-link" th:href="@{/livreurs/livraisons}">← Retour</a>
+                        <div class="resume-paiement">
+                            <div>Total saisi : <span id="totalSaisi">0</span></div>
+                            <div>Reste : <span id="resteCalc">0</span></div>
+                        </div>
 
-      <!-- ================= COMMANDE ================= -->
-      <div class="section info">
-        <h3>📄 Commande</h3>
+                        <p class="text-danger" id="error"></p>
 
-        <p><strong>ID :</strong> <span th:text="${commande.id}"></span></p>
+                        <div class="barre-form">
+                            <button class="btn btn-vert" type="submit"><i class="fa-solid fa-check"></i> Valider paiement</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-        <p>
-          <strong>Client :</strong>
-          <span
-            th:text="${commande.client.nom + ' ' + commande.client.prenom}"
-          ></span>
-        </p>
+        </div>
 
-        <p>
-          <strong>Total :</strong>
-          <span id="total" th:text="${commande.totalGeneral}"></span>
-        </p>
-
-        <p>
-          <strong>Reste :</strong>
-          <span id="reste" th:text="${reste}"></span>
-        </p>
-      </div>
-
-      <!-- ================= HISTORIQUE ================= -->
-      <div class="section">
-        <h3>🧾 Paiements existants</h3>
-
-        <table>
-          <tr>
-            <th>#</th>
-            <th>Type</th>
-            <th>Montant</th>
-          </tr>
-
-          <tr th:if="${#lists.isEmpty(paiement.filles)}">
-            <td colspan="3">Aucun paiement</td>
-          </tr>
-
-          <tr th:each="pf, i : ${paiement.filles}">
-            <td th:text="${i.index + 1}"></td>
-            <td th:text="${pf.typePayement}"></td>
-            <td th:text="${pf.valeur}"></td>
-          </tr>
-        </table>
-      </div>
-
-      <!-- ================= FORM ================= -->
-      <div class="section">
-        <h3>➕ Nouveau paiement</h3>
-
-        <form
-          id="formPaiement"
-          th:action="@{/livreurs/paiements/ajouter-multiple}"
-          method="post"
-        >
-          <input type="hidden" name="idCommande" th:value="${commande.id}" />
-
-          <table>
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Montant</th>
-                <th></th>
-              </tr>
-            </thead>
-
-            <tbody id="lines">
-              <tr>
-                <td>
-                  <select name="typePayement">
-                    <option
-                      th:each="t : ${typesPaiement}"
-                      th:value="${t}"
-                      th:text="${t}"
-                    ></option>
-                  </select>
-                </td>
-
-                <td>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    name="valeur"
-                    class="montant"
-                    required
-                  />
-                </td>
-
-                <td>
-                  <button
-                    type="button"
-                    class="btn btn-delete"
-                    onclick="removeLine(this)"
-                  >
-                    X
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <br />
-
-          <button type="button" class="btn btn-add" onclick="addLine()">
-            + Ajouter ligne
-          </button>
-
-          <div class="summary">
-            <div>Total saisi : <span id="totalSaisi">0</span></div>
-            <div>Reste : <span id="resteCalc">0</span></div>
-          </div>
-
-          <div class="error" id="error"></div>
-
-          <br />
-
-          <button class="btn btn-submit" type="submit">Valider paiement</button>
-        </form>
-      </div>
-    </div>
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
 
     <script th:inline="javascript">
       const resteInitial = parseFloat(
@@ -295,9 +203,9 @@
         <td>
             <button
                 type="button"
-                class="btn btn-delete"
+                class="btn btn-sm btn-doux-rouge"
                 onclick="removeLine(this)">
-                X
+                <i class="fa-solid fa-xmark"></i>
             </button>
         </td>
 
@@ -358,5 +266,6 @@
 
       calculer();
     </script>
-  </body>
+</body>
+
 </html>

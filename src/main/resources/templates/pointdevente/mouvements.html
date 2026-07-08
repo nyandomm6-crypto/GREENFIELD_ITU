@@ -1,73 +1,89 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mouvements - Point de Vente</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Mouvements de Stock - <span th:text="${pointDeVente.nom}"></span></h1>
 
-      <div class="filter-section">
-        <h3>Filtres</h3>
-        <form th:action="@{/pointdevente/} + ${pointDeVente.id} + '/mouvements'" method="get" class="filter-form">
-          <label>
-            Type Mouvement
-            <select name="typeMvt">
-              <option value="">Tous</option>
-              <option
-                th:each="type : ${T(itu.greenField.model.TypeMvt).values()}"
-                t@JoinColumn(name = "idptdevente", nullable = true, referencedColumnName = "code")h:value="${type}"
-                th:text="${type}"
-                th:selected="${type == typeMvt}"
-              ></option>
-            </select>
-          </label>
-          <label>
-            Date Début
-            <input type="datetime-local" name="dateDebut" th:value="${dateDebut}" />
-          </label>
-          <label>
-            Date Fin
-            <input type="datetime-local" name="dateFin" th:value="${dateFin}" />
-          </label>
-          <label>
-            Produit
-            <input type="text" name="produit" th:value="${produit}" placeholder="Filtrer par produit" />
-          </label>
-          <button type="submit" class="btn-filter">Filtrer</button>
-        </form>
-      </div>
+<head th:replace="~{back/fragments/layout :: head('Mouvements de stock')}"></head>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Type Mouvement</th>
-            <th>Date</th>
-            <th>Produits</th>
-            <th>Quantités</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr th:each="mvt : ${mouvements}">
-            <td th:text="${mvt.typeMouvement}"></td>
-            <td th:text="${mvt.dateMvt != null ? #temporals.format(mvt.dateMvt, 'yyyy-MM-dd HH:mm') : ''}"></td>
-            <td>
-              <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.produit.nom} + ', '"></span>
-            </td>
-            <td>
-              <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.quantite} + ', '"></span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('pdv')}"></aside>
 
-      <div class="back-links">
-        <a th:href="@{/pointdevente/} + ${pointDeVente.id}">← Retour au détail</a>
-        <a th:href="@{/pointdevente}">Retour à la liste</a>
-      </div>
-    </div>
-  </body>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Points de vente')}"></header>
+
+        <div class="bo-contenu">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/pointdevente}">Points de vente</a> / <a th:href="@{/pointdevente/} + ${pointDeVente.id}" th:text="${pointDeVente.nom}"></a> / Mouvements</p>
+                    <h1>Mouvements de stock — <span th:text="${pointDeVente.nom}"></span></h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/pointdevente/} + ${pointDeVente.id}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour au détail</a>
+                </div>
+            </div>
+
+            <form th:action="@{/pointdevente/} + ${pointDeVente.id} + '/mouvements'" method="get" class="section-filtre barre-filtres">
+                <div class="filtre">
+                    <label>Type de mouvement</label>
+                    <select name="typeMvt">
+                        <option value="">Tous</option>
+                        <option th:each="type : ${T(itu.greenField.model.TypeMvt).values()}" th:value="${type}"
+                            th:text="${type}" th:selected="${type == typeMvt}"></option>
+                    </select>
+                </div>
+                <div class="filtre">
+                    <label>Date début</label>
+                    <input type="datetime-local" name="dateDebut" th:value="${dateDebut}" />
+                </div>
+                <div class="filtre">
+                    <label>Date fin</label>
+                    <input type="datetime-local" name="dateFin" th:value="${dateFin}" />
+                </div>
+                <div class="filtre filtre-large">
+                    <label>Produit</label>
+                    <input type="text" name="produit" th:value="${produit}" placeholder="Filtrer par produit" />
+                </div>
+                <div class="barre-form" style="justify-content: flex-start;">
+                    <button type="submit" class="btn btn-vert btn-sm">Filtrer</button>
+                </div>
+            </form>
+
+            <div class="tableau-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type de mouvement</th>
+                            <th>Date</th>
+                            <th>Produits</th>
+                            <th>Quantités</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="mvt : ${mouvements}">
+                            <td><span class="badge badge-vert" th:text="${mvt.typeMouvement}"></span></td>
+                            <td th:text="${mvt.dateMvt != null ? #temporals.format(mvt.dateMvt, 'yyyy-MM-dd HH:mm') : ''}"></td>
+                            <td>
+                                <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.produit.nom} + ', '"></span>
+                            </td>
+                            <td class="mono">
+                                <span th:each="fille : ${mvt.mvtStockFilles}" th:text="${fille.quantite} + ', '"></span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(mouvements)}">
+                            <td colspan="4">
+                                <div class="vide">
+                                    <i class="fa-solid fa-right-left"></i>
+                                    <p>Aucun mouvement trouvé pour ces filtres.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
 </html>

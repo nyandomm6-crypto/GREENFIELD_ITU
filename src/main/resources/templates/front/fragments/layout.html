@@ -12,7 +12,21 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/greenfield.css}">
+
     <th:block th:replace="~{front/fragments/layout :: styles}"></th:block>
+
+    <style>
+      body, .mh-search input, .mh-search button, .nl-form input, .nl-form button {
+        font-family: var(--police-texte);
+      }
+      .mh-logo-text, h1, h2, h3, h4 {
+        font-family: var(--police-titre);
+      }
+    </style>
   </head>
 
   <!-- =====================================================
@@ -24,22 +38,29 @@
            TOKENS LOCAUX
         ====================================================== */
       :root {
-        --gf-forest: #0f2a1c;
-        --gf-forest-2: #173b26;
-        --gf-green: #2d6a4f;
-        --gf-green-light: #4c9a6f;
-        --gf-leaf: #8fd4a8;
-        --gf-gold: #d4a373;
-        --gf-cream: #f6f4ee;
-        --gf-line: #e2e8e0;
-        --gf-text: #1c2b21;
-        --gf-muted: #5f6f64;
+        --gf-forest: #0A2E1C;
+        --gf-forest-2: #123D27;
+        --gf-green: #009951;
+        --gf-green-light: #5EB453;
+        --gf-leaf: #93D888;
+        --gf-gold: #A46D2C;
+        --gf-cream: #F7F4EC;
+        --gf-line: #E3E9E1;
+        --gf-text: #14261B;
+        --gf-muted: #62705F;
         --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
         --ombre-forte: 0 8px 20px rgba(0, 0, 0, 0.1);
         --rayon-pill: 50px;
-        --ali-orange: #ff6a00;
-        --ali-orange-light: #ff9000;
-        --ali-orange-dark: #e65c00;
+        --ali-orange: #A46D2C;
+        --ali-orange-light: #B98136;
+        --ali-orange-dark: #7E5C15;
+
+        /* Alias hérités (utilisés par faq.html et autres vues plus anciennes) */
+        --bordure: #E3E9E1;
+        --vert-clair: #93D888;
+        --vert-fonce: #007A41;
+        --gris: #62705F;
+        --texte: #14261B;
       }
 
       * {
@@ -441,7 +462,7 @@
       }
       .nl-form button {
         background: var(--gf-gold);
-        color: #2a1c0e;
+        color: #3D2A0F;
         border: none;
         padding: 0 20px;
         border-radius: 0 8px 8px 0;
@@ -450,7 +471,7 @@
         transition: all 0.2s ease-in-out;
       }
       .nl-form button:hover {
-        background: #e3b587;
+        background: #C9924D;
       }
       .footer-grid {
         display: grid;
@@ -638,6 +659,15 @@
   <!-- =====================================================
      FRAGMENT: UTILITY BAR
 ====================================================== -->
+  <!-- =====================================================
+     FRAGMENT: NAV (alias regroupant utilBar + mainHeader + categoryStrip)
+====================================================== -->
+  <div th:fragment="nav">
+    <div th:replace="~{front/fragments/layout :: utilBar}"></div>
+    <div th:replace="~{front/fragments/layout :: mainHeader}"></div>
+    <div th:replace="~{front/fragments/layout :: categoryStrip}"></div>
+  </div>
+
   <div th:fragment="utilBar">
     <div class="util-bar">
       <div class="conteneur">
@@ -698,7 +728,7 @@
 
           <a href="/panier" class="mh-action" style="font-size: 14px">
             <i class="fas fa-shopping-cart" style="font-size: 20px"></i>
-            <span class="cart-count" th:text="${session.cartCount} ?: 0"
+            <span class="cart-count" th:text="${nombreArticlesPanier} ?: 0"
               >0</span
             >
             <span>Panier</span>

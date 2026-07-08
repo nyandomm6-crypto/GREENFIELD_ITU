@@ -1,49 +1,70 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Détails du véhicule</title>
-  </head>
-  <body>
-    <main>
-      <h1>Détails du véhicule</h1>
 
-      <section>
-        <dl>
-          <dt>ID</dt>
-          <dd th:text="${vehicule.id}"></dd>
+<head th:replace="~{back/fragments/layout :: head('Détails du véhicule')}"></head>
 
-          <dt>Matricule</dt>
-          <dd th:text="${vehicule.matricule}"></dd>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('vehicules')}"></aside>
 
-          <dt>Marque</dt>
-          <dd th:text="${vehicule.marque}"></dd>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Véhicules')}"></header>
 
-          <dt>Modèle</dt>
-          <dd th:text="${vehicule.modele}"></dd>
+        <div class="bo-contenu bo-contenu-etroit">
 
-          <dt>Année</dt>
-          <dd th:text="${vehicule.annee}"></dd>
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/vehicules}">Véhicules</a> / Détail</p>
+                    <h1 th:text="${vehicule.matricule}">Détails du véhicule</h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/vehicules}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour à la liste</a>
+                    <a th:href="@{/vehicules/{id}/modifier(id=${vehicule.id})}" class="btn btn-vert"><i class="fa-solid fa-pen"></i> Modifier</a>
+                </div>
+            </div>
 
-          <dt>Capacité</dt>
-          <dd th:text="${vehicule.capacite}"></dd>
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-truck"></i> Informations</h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>ID</dt>
+                        <dd class="mono" th:text="${vehicule.id}"></dd>
 
-          <dt>Statut</dt>
-          <dd th:text="${vehicule.statut}"></dd>
+                        <dt>Matricule</dt>
+                        <dd class="mono" th:text="${vehicule.matricule}"></dd>
 
-          <dt>Date</dt>
-          <dd th:text="${vehicule.date}"></dd>
-        </dl>
-      </section>
+                        <dt>Marque</dt>
+                        <dd th:text="${vehicule.marque}"></dd>
 
-      <section>
-        <a th:href="@{/vehicules}">Retour à la liste</a>
-        <a th:href="@{/vehicules/{id}/modifier(id=${vehicule.id})}">Modifier</a>
-        <form th:action="@{/vehicules/{id}/supprimer(id=${vehicule.id})}" method="post" style="display:inline;">
-          <button type="submit">Supprimer</button>
-        </form>
-      </section>
+                        <dt>Modèle</dt>
+                        <dd th:text="${vehicule.modele}"></dd>
+
+                        <dt>Année</dt>
+                        <dd th:text="${vehicule.annee}"></dd>
+
+                        <dt>Capacité</dt>
+                        <dd th:text="${vehicule.capacite}"></dd>
+
+                        <dt>Statut</dt>
+                        <dd><span class="badge badge-vert" th:text="${vehicule.statut}"></span></dd>
+
+                        <dt>Date</dt>
+                        <dd th:text="${vehicule.date}"></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="barre-form">
+                <form th:action="@{/vehicules/{id}/supprimer(id=${vehicule.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-doux-rouge"><i class="fa-solid fa-trash-can"></i> Supprimer</button>
+                </form>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
     </main>
-  </body>
+</body>
+
 </html>

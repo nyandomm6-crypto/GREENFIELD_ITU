@@ -1,90 +1,123 @@
-<form id="filterForm">
-  <select name="statut">
-    <option value="">Filtrer par statut</option>
-    <option
-      th:each="statut : ${status}"
-      th:value="${statut}"
-      th:text="${statut}"
-    ></option>
-  </select>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
-  <select name="idVehicule">
-    <option value="">Filtrer par véhicule</option>
-    <option
-      th:each="vehicule : ${vehicules}"
-      th:value="${vehicule.id}"
-      th:text="${vehicule.matricule}"
-    ></option>
-  </select>
+<head th:replace="~{back/fragments/layout :: head('Livraisons')}"></head>
 
-  <select name="idLivreur">
-    <option value="">Filtrer par livreur</option>
-    <option
-      th:each="livreur : ${livreurs}"
-      th:value="${livreur.id}"
-      th:text="${livreur.nom}"
-    ></option>
-  </select>
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('livraisons')}"></aside>
 
-  <label>
-    Date Début
-    <input type="date" name="dateDebut" />
-  </label>
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Livraisons')}"></header>
 
-  <label>
-    Date Fin
-    <input type="date" name="dateFin" />
-  </label>
+        <div class="bo-contenu">
 
-  <button type="reset">Reset</button>
-</form>
+            <div class="page-tete">
+                <div>
+                    <p class="fil">Logistique <i class="fas fa-chevron-right"></i> Livraisons</p>
+                    <h1>Livraisons</h1>
+                    <p class="sous-titre">Suivez et filtrez toutes les livraisons.</p>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/livraison/create}" class="btn btn-vert"><i class="fas fa-plus"></i> Nouvelle livraison</a>
+                </div>
+            </div>
 
-<div id="resultat">
-  <div th:each="livraison : ${livraisons}">
-    <p>
-      Livraison N°
-      <span th:text="${livraison.id}"></span>
+            <form id="filterForm" class="section-filtre barre-filtres">
+                <div class="filtre">
+                    <label>Statut</label>
+                    <select name="statut">
+                        <option value="">Filtrer par statut</option>
+                        <option th:each="statut : ${status}" th:value="${statut}" th:text="${statut}"></option>
+                    </select>
+                </div>
 
-      <span th:text="${livraison.statutLivraison}"></span>
+                <div class="filtre">
+                    <label>Véhicule</label>
+                    <select name="idVehicule">
+                        <option value="">Filtrer par véhicule</option>
+                        <option th:each="vehicule : ${vehicules}" th:value="${vehicule.id}" th:text="${vehicule.matricule}"></option>
+                    </select>
+                </div>
 
-      <button
-        th:if="${livraison.statutLivraison.name() == 'En_attente'}"
-        th:onclick="'validerLivraison(' + ${livraison.id} + ')'"
-      >
-        Valider
-      </button>
-      <button
-        th:onclick="'detail(' + ${livraison.id} + ')'"
-        class="btn btn-info btn-sm"
-      >
-        voir détails
-      </button>
-    </p>
-  </div>
-</div>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("filterForm");
+                <div class="filtre">
+                    <label>Livreur</label>
+                    <select name="idLivreur">
+                        <option value="">Filtrer par livreur</option>
+                        <option th:each="livreur : ${livreurs}" th:value="${livreur.id}" th:text="${livreur.nom}"></option>
+                    </select>
+                </div>
 
-    function chargerLivraisons() {
-      const params = new URLSearchParams(new FormData(form));
+                <div class="filtre">
+                    <label>Date début</label>
+                    <input type="date" name="dateDebut" />
+                </div>
 
-      fetch("/livraisons/filter?" + params.toString())
-        .then((response) => response.text())
-        .then((html) => {
-          document.getElementById("resultat").innerHTML = html;
+                <div class="filtre">
+                    <label>Date fin</label>
+                    <input type="date" name="dateFin" />
+                </div>
+
+                <div class="barre-form" style="justify-content: flex-start;">
+                    <button type="reset" class="btn btn-ligne btn-sm">Réinitialiser</button>
+                </div>
+            </form>
+
+            <div id="resultat">
+                <div class="liste-livraisons">
+                    <div th:each="livraison : ${livraisons}" class="livraison-carte">
+                        <div>
+                            <span class="livraison-num">Livraison N° <span th:text="${livraison.id}"></span></span>
+                            <span class="badge badge-vert" th:text="${livraison.statutLivraison}"></span>
+                        </div>
+                        <div class="livraison-actions">
+                            <button th:if="${livraison.statutLivraison.name() == 'En_attente'}"
+                                th:onclick="'validerLivraison(' + ${livraison.id} + ')'" class="btn btn-sm btn-doux">
+                                Valider
+                            </button>
+                            <button th:onclick="'detail(' + ${livraison.id} + ')'" class="btn btn-sm btn-ligne">
+                                Voir détails
+                            </button>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(livraisons)}" class="vide">
+                        <i class="fa-solid fa-truck"></i>
+                        <p>Aucune livraison ne correspond à ces filtres.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("filterForm");
+
+            function chargerLivraisons() {
+                const params = new URLSearchParams(new FormData(form));
+
+                fetch("/livraisons/filter?" + params.toString())
+                    .then((response) => response.text())
+                    .then((html) => {
+                        document.getElementById("resultat").innerHTML = html;
+                    });
+            }
+
+            form.querySelectorAll("select,input").forEach((element) => {
+                element.addEventListener("change", chargerLivraisons);
+            });
+
+            form.addEventListener("reset", () => {
+                setTimeout(chargerLivraisons, 10);
+            });
         });
-    }
+        function detail(id) {
+            window.location.href = "/livraison/" + id;
+        }
+    </script>
+</body>
 
-    form.querySelectorAll("select,input").forEach((element) => {
-      element.addEventListener("change", chargerLivraisons);
-    });
-
-    form.addEventListener("reset", () => {
-      setTimeout(chargerLivraisons, 10);
-    });
-  });
-  function detail(id) {
-    window.location.href = "/livraison/" + id;
-  }
-</script>
+</html>
