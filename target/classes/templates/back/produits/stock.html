@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GreenField - Suivi des Stocks</title>
+  </head>
+  <body>
+    <nav>
+      <a th:href="@{/back/produits}">Catalogue</a> |
+      <a th:href="@{/back/produits/nouveau}">Ajouter Produit</a> |
+      <a th:href="@{/back/stocks}"><b>Stocks</b></a> |
+      <a th:href="@{/back/stocks/entree}">Entrée de Stock</a>
+    </nav>
+    <hr />
+
+    <h1>Suivi de l'état des Stocks</h1>
+
+    <div th:if="${success}" style="color: green" th:text="${success}"></div>
+
+    <form th:action="@{/back/stocks}" method="get">
+      <label>
+        Point de vente :
+        <select name="ptDeVenteCode">
+          <option value="">Tous les points de vente</option>
+          <option
+            th:each="pdv : ${pointsDeVente}"
+            th:value="${pdv.code}"
+            th:text="${pdv.nom}"
+            th:selected="${pdv.code == selectedPdv}"
+          ></option>
+        </select>
+      </label>
+
+      <label>
+        Catégorie :
+        <select name="idCategorie">
+          <option value="">Toutes les catégories</option>
+          <option
+            th:each="cat : ${categories}"
+            th:value="${cat.id}"
+            th:text="${cat.libelle}"
+            th:selected="${cat.id == selectedCategorie}"
+          ></option>
+        </select>
+      </label>
+
+      <label>
+        Mot clé :
+        <input
+          type="text"
+          name="motCle"
+          th:value="${motCle}"
+          placeholder="Nom ou matricule"
+        />
+      </label>
+
+      <button type="submit">Rechercher</button>
+    </form>
+
+    <br />
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Matricule</th>
+          <th>Nom Produit</th>
+          <th>Catégorie</th>
+          <th>Point de Vente</th>
+          <th>Quantité en Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="s : ${stocks}">
+          <td th:text="${s.produit.matricule}"></td>
+          <td th:text="${s.produit.nom}"></td>
+          <td
+            th:text="${s.produit.categorie != null ? s.produit.categorie.libelle : 'Non spécifié'}"
+          ></td>
+          <td th:text="${s.pointDeVenteNom}"></td>
+          <td th:text="${s.stock}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

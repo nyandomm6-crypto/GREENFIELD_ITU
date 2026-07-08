@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail commande</title>
+</head>
+
+<body>
+    <h1 th:text="|Détail de la commande #${commande.id}|"></h1>
+    <div class="section-alert">
+        <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+        <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+    </div>
+    <div class="btn-group">
+        <a th:href="@{/commandes}">Retour</a>
+        <a th:href="@{|/commandes/annuler/${commande.id}|}">Anuler</a>
+        <a th:href="@{|/commandes/form/edit/${commande.id}|}">Modifier</a>
+        <a th:href="@{|/paiements/choix/${commande.id}|}">Choix de paiement</a>
+
+    </div>
+    <div class="info-general">
+        <p><strong>Date : </strong><span
+                th:text="${commande.datecommande != null ? #dates.format(commande.datecommande, 'yyyy-MM-dd HH:mm') : ''}"></span>
+        </p>
+        <p><strong>Client : </strong><span th:text="|${commande.client?.nom} ${commande.client?.prenom}|"></span></p>
+        <p><strong>Mode de récupération : </strong><span
+                th:text="${commande.modeReception == 'Retrait_Boutique' ? 'Retrait en boutique' : 'Livraison à domicile'}"></span>
+        </p>
+        <p><strong>Point de récupération : </strong><span
+                th:text="${commande.pointDeVenteRetrait?.code != null ? commande.pointDeVenteRetrait?.code : commande.adresseLivraison}"></span>
+        </p>
+        <p><strong>Statut actuel : </strong><span th:text="${commande.statutActuel?.nom}"></span></p>
+        <p><strong>Plage temporelle de récupération</strong></p>
+        <p><strong>Debut : </strong><span
+                th:text="${commande.heureReceptionDebut != null ? #dates.format(commande.heureReceptionDebut, 'yyyy-MM-dd HH:mm') : ''}"></span>
+        </p>
+        <p><strong>Fin : </strong><span
+                th:text="${commande.heureReceptionFin != null ? #dates.format(commande.heureReceptionFin, 'yyyy-MM-dd HH:mm') : ''}"></span>
+        </p>
+    </div>
+    <div th:if="${commande.details != null}" class="detail">
+        <h2>Détails de la commande</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Libelle</th>
+                    <th>Poids unitaire</th>
+                    <th>Prix unitaire</th>
+                    <th>Quantité</th>
+                    <th>Poids total</th>
+                    <th>Prix total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="detail : ${commande.details}">
+                    <td th:text="${detail.produit.nom}"></td>
+                    <td th:text="${detail.produit.poids}"></td>
+                    <td th:text="${detail.puAuMomentAchat}"></td>
+                    <td th:text="${detail.quantite}"></td>
+                    <td th:text="${detail.quantite * detail.produit.poids}"></td>
+                    <td th:text="${detail.quantite * detail.puAuMomentAchat}"></td>
+                </tr>
+                <tr>
+                    <td>Frais de livraison</td>
+                    <td>0.00</td>
+                    <td th:text="${commande.fraisLivraison} "></td>
+                    <td>1</td>
+                    <td>0.00</td>
+                    <td th:text="${commande.fraisLivraison} "></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>Total</th>
+                    <th th:text="${commande.totalProduits + 1}"></th>
+                    <th th:text="${commande.poidsTotal}"></th>
+                    <th th:text="${commande.totalGeneral + commande.fraisLivraison}"></th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="commande.historiqueStatut != null" class="historique">
+        <h2>Historique des statuts</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Statut</th>
+                    <th>Date de changement</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="historique : ${commande.historiqueStatut}">
+                    <td th:text="${historique.statutCommande.nom}"></td>
+                    <td
+                        th:text="${historique.datechangement != null ? #dates.format(historique.datechangement, 'yyyy-MM-dd HH:mm') : ''}">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

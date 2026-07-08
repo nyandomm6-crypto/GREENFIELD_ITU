@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GreenField - Catalogue des Produits</title>
+  </head>
+  <body>
+    <nav>
+      <a th:href="@{/back/produits}"><b>Catalogue</b></a> |
+      <a th:href="@{/back/produits/nouveau}">Ajouter Produit</a> |
+      <a th:href="@{/back/stocks}">Stocks</a> |
+      <a th:href="@{/back/stocks/entree}">Entrée de Stock</a>
+    </nav>
+
+    <hr />
+
+    <h1>Catalogue des Produits</h1>
+
+    <div th:if="${success}" style="color: green" th:text="${success}"></div>
+    <div th:if="${error}" style="color: red" th:text="${error}"></div>
+
+    <form th:action="@{/back/produits}" method="get">
+      <label>
+        Catégorie :
+        <select name="idCategorie">
+          <option value="">Toutes les catégories</option>
+          <option
+            th:each="cat : ${categories}"
+            th:value="${cat.id}"
+            th:text="${cat.libelle}"
+            th:selected="${cat.id == selectedCategorie}"
+          ></option>
+        </select>
+      </label>
+
+      <label>
+        Mot clé :
+        <input
+          type="text"
+          name="motCle"
+          th:value="${motCle}"
+          placeholder="Nom ou matricule"
+        />
+      </label>
+
+      <button type="submit">Rechercher</button>
+    </form>
+
+    <br />
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Matricule</th>
+          <th>Nom</th>
+          <th>Catégorie</th>
+          <th>Prix Unitaire</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="p : ${produits}">
+          <td th:text="${p.matricule}"></td>
+          <td th:text="${p.nom}"></td>
+          <td
+            th:text="${p.categorie != null ? p.categorie.libelle : 'Non spécifié'}"
+          ></td>
+          <td th:text="${p.pu + ' Ar'}"></td>
+          <td>
+            <a th:href="@{/back/produits/detail/{id}(id=${p.id})}"
+              >Voir Détail</a
+            >
+            |
+            <a th:href="@{/back/produits/modifier/{id}(id=${p.id})}"
+              >Modifier</a
+            >
+            |
+            <a
+              th:href="@{/back/produits/supprimer/{id}(id=${p.id})}"
+              onclick="return confirm('Supprimer ce produit ?');"
+              >Supprimer</a
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

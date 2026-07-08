@@ -1,0 +1,112 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Détail de la livraison</title>
+  </head>
+  <body>
+    <h1>Détail de la livraison</h1>
+
+    <p>
+      <a th:href="@{/livreurs/livraisons}">← Retour</a>
+    </p>
+
+    <h2>Informations générales</h2>
+
+    <p><strong>ID :</strong> <span th:text="${livraison.id}"></span></p>
+
+    <p>
+      <strong>Date :</strong>
+      <span
+        th:text="${#temporals.format(livraison.dateLivraison,'dd/MM/yyyy HH:mm')}"
+      ></span>
+    </p>
+
+    <p>
+      <strong>Statut :</strong>
+      <span th:text="${livraison.statutLivraison}"></span>
+    </p>
+
+    <p>
+      <strong>Véhicule :</strong>
+      <span th:text="${livraison.vehicule.marque}"></span>
+      <span th:text="${livraison.vehicule.modele}"></span>
+    </p>
+
+    <p>
+      <strong>Matricule :</strong>
+      <span th:text="${livraison.vehicule.matricule}"></span>
+    </p>
+
+    <hr />
+
+    <h2>Commandes à livrer</h2>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Commande</th>
+          <th>Client</th>
+          <th>Adresse</th>
+          <th>Montant</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr th:if="${#lists.isEmpty(livraison.filles)}">
+          <td colspan="6">Aucune commande.</td>
+        </tr>
+
+        <tr th:each="lf : ${livraison.filles}">
+          <td th:text="${lf.commande.id}"></td>
+
+          <td
+            th:text="${lf.commande.client.nom + ' ' + lf.commande.client.prenom}"
+          ></td>
+
+          <td th:text="${lf.commande.adresseLivraison}"></td>
+
+          <td th:text="${lf.commande.totalGeneral}"></td>
+
+          <td th:text="${lf.commande.statutActuel.nom}"></td>
+
+          <td>
+            <form
+              th:action="@{/livreurs/livraisonFille/valider}"
+              method="post"
+              style="display: inline"
+            >
+              <input
+                type="hidden"
+                name="idLivraisonFille"
+                th:value="${lf.id}"
+              />
+
+              <input
+                type="hidden"
+                name="idCommandes"
+                th:value="${lf.commande.id}"
+              />
+              <button type="submit">Valider</button>
+            </form>
+
+            <form
+              th:action="@{/livreurs/livraisonFille/annuler}"
+              method="post"
+              style="display: inline"
+            >
+              <input
+                type="hidden"
+                name="idLivraisonFille"
+                th:value="${lf.id}"
+              />
+              <button type="submit">Annuler</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
