@@ -1,5 +1,6 @@
 package itu.greenField.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -32,11 +33,13 @@ import itu.greenField.repository.DetailsCommandeRepository;
 import org.springframework.data.domain.Pageable;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -50,9 +53,11 @@ import org.springframework.data.domain.PageImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import jakarta.persistence.Query;
 
 @Service
+@RequiredArgsConstructor
 public class CommandesService {
     @PersistenceContext
     private EntityManager em;
@@ -65,24 +70,7 @@ public class CommandesService {
     private final HistoriqueStatutCommandeService historiqueStatutCommandeService;
     private final ProvinceLivraisonService provinceLivraisonService;
     private final FraisLivraisonService fraisLivraisonService;
-
-    public CommandesService(ProduitService produitService, CommandesRepository commandesRepository,
-            ClientService clientService, PointDeVenteService pointDeVenteService,
-            DetailsCommandeRepository detailsCommandeRepository,
-            StatutCommandeService statutCommandeService,
-            HistoriqueStatutCommandeService historiqueStatutCommandeService,
-            ProvinceLivraisonService provinceLivraisonService,
-            FraisLivraisonService fraisLivraisonService) {
-        this.produitService = produitService;
-        this.commandesRepository = commandesRepository;
-        this.clientService = clientService;
-        this.pointDeVenteService = pointDeVenteService;
-        this.detailsCommandeRepository = detailsCommandeRepository;
-        this.statutCommandeService = statutCommandeService;
-        this.historiqueStatutCommandeService = historiqueStatutCommandeService;
-        this.provinceLivraisonService = provinceLivraisonService;
-        this.fraisLivraisonService = fraisLivraisonService;
-    }
+    private final ImportCommandeExelService importCommandeExelService;
 
     public List<Commandes> getCommandesDispo() {
         return commandesRepository.findDispoCommandes();
@@ -326,8 +314,7 @@ public class CommandesService {
         return new PageImpl<Commandes>(resultList, pageable, total);
     }
 
-
-     public byte[] generateTemplateExcelFile(List<Produit> produits) throws Exception {
+    public byte[] generateTemplateExcelFile(List<Produit> produits) throws Exception {
         try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             generateCommandeSheet(new ArrayList<>(), produits.size(), workbook);
             generateProduitSheet(produits, workbook);
@@ -872,7 +859,5 @@ public class CommandesService {
 
         historiqueStatutCommandeService.save(hist);
     }
-
-    
 
 }
