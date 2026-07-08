@@ -4,9 +4,14 @@ import itu.greenField.model.*;
 import itu.greenField.service.ProduitBackService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -22,13 +27,63 @@ public class ProduitBackController {
     @GetMapping({ "/produits", "/produits/list" })
     public String listProduits(@RequestParam(required = false) Integer idCategorie,
             @RequestParam(required = false) String motCle,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
-        List<Produit> produits = produitService.search(idCategorie, motCle);
-        model.addAttribute("produits", produits);
+        Page<Produit> produitsPage = produitService.searchPage(idCategorie, motCle, page, size);
+        model.addAttribute("produits", produitsPage.getContent());
+        model.addAttribute("page", produitsPage.getNumber());
+        model.addAttribute("totalPages", produitsPage.getTotalPages());
+        model.addAttribute("totalElements", produitsPage.getTotalElements());
+        model.addAttribute("size", size);
         model.addAttribute("categories", produitService.findAllCategories());
         model.addAttribute("selectedCategorie", idCategorie);
         model.addAttribute("motCle", motCle);
         return "back/produits/list";
+    }
+
+    // ==================== EXCEL ====================
+
+    @GetMapping("/produits/export")
+    public ResponseEntity<byte[]> exportProduits() throws Exception {
+        byte[] content = produitService.exportExcel();
+        return excelResponse(content, "produits.xlsx");
+    }
+
+    @GetMapping("/produits/template")
+    public ResponseEntity<byte[]> templateProduits() throws Exception {
+        byte[] content = produitService.templateExcel();
+        return excelResponse(content, "modele_produits.xlsx");
+    }
+
+    @GetMapping("/produits/import")
+    public String showImportForm() {
+        return "back/produits/importExcel";
+    }
+
+    @PostMapping("/produits/import")
+    public String importProduits(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+        if (file.isEmpty() || file.getOriginalFilename() == null || !file.getOriginalFilename().endsWith(".xlsx")) {
+            redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un fichier Excel valide (.xlsx).");
+            return "redirect:/back/produits/import";
+        }
+        try {
+            int count = produitService.importExcel(file.getInputStream());
+            redirectAttributes.addFlashAttribute("success", count + " produit(s) importé(s) avec succès.");
+            return "redirect:/back/produits";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de l'importation : " + e.getMessage());
+            return "redirect:/back/produits/import";
+        }
+    }
+
+    private ResponseEntity<byte[]> excelResponse(byte[] content, String filename) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(
+                MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", filename);
+        return ResponseEntity.ok().headers(headers).body(content);
     }
 
     @GetMapping("/produits/detail/{id}")
@@ -54,6 +109,7 @@ public class ProduitBackController {
 
     @PostMapping("/produits/nouveau")
     public String processCreateForm(@ModelAttribute Produit produit,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             RedirectAttributes redirectAttributes,
             Model model) {
         Map<String, String> errors = produitService.validateProduit(produit);
@@ -63,9 +119,9 @@ public class ProduitBackController {
             model.addAttribute("isEdit", false);
             return "back/produits/form";
         }
-        produitService.save(produit);
+        produitService.saveWithImage(produit, image);
         redirectAttributes.addFlashAttribute("success", "Produit créé avec succès.");
-        return "redirect:back/produits";
+        return "redirect:/back/produits";
     }
 
     @GetMapping("/produits/modifier/{id}")
@@ -81,6 +137,7 @@ public class ProduitBackController {
     @PostMapping("/produits/modifier/{id}")
     public String processEditForm(@PathVariable Integer id,
             @ModelAttribute Produit produit,
+            @RequestParam(value = "image", required = false) MultipartFile image,
             RedirectAttributes redirectAttributes,
             Model model) {
         produit.setId(id);
@@ -91,7 +148,7 @@ public class ProduitBackController {
             model.addAttribute("isEdit", true);
             return "back/produits/form";
         }
-        produitService.save(produit);
+        produitService.saveWithImage(produit, image);
         redirectAttributes.addFlashAttribute("success", "Produit modifié avec succès.");
         return "redirect:/back/produits";
     }

@@ -108,7 +108,7 @@
                     th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST">
                     <button type="submit" class="btn btn-doux"><i class="fa-solid fa-check"></i> Confirmer paiement en espèce</button>
                 </form>
-                <button type="button" class="btn btn-vert"><i class="fa-solid fa-file-invoice"></i> Exporter la facture</button>
+                <a th:href="@{|/facture/${paiement.commande.id}|(print=1)}" target="_blank" class="btn btn-vert"><i class="fa-solid fa-file-invoice"></i> Exporter la facture</a>
             </div>
 
         </div>

@@ -1722,8 +1722,8 @@
               <div class="image">
                 <span class="badge bestseller">⭐ Top vente</span>
                 <img
-                  src="https://images.unsplash.com/photo-1562690868-60bbe7293e94?auto=format&fit=crop&w=400&h=400&q=80"
-                  alt="Plante verte"
+                  th:src="${produit.imagePath != null} ? @{${produit.imagePath}} : 'https://images.unsplash.com/photo-1562690868-60bbe7293e94?auto=format&fit=crop&w=400&h=400&q=80'"
+                  th:alt="${produit.nom}"
                 />
               </div>
               <div class="infos">
@@ -1798,8 +1798,8 @@
               <div class="image">
                 <span class="badge nouveau">✨ Nouveau</span>
                 <img
-                  src="https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=400&h=400&q=80"
-                  alt="Plante verte"
+                  th:src="${produit.imagePath != null} ? @{${produit.imagePath}} : 'https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=400&h=400&q=80'"
+                  th:alt="${produit.nom}"
                 />
               </div>
               <div class="infos">

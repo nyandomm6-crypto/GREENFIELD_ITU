@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head th:replace="~{back/fragments/layout :: head('Importation de véhicules')}"></head>
+
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('vehicules')}"></aside>
+
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Véhicules')}"></header>
+
+        <div class="bo-contenu bo-contenu-etroit">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/vehicules}">Véhicules</a> / Importation</p>
+                    <h1>Importation de véhicules</h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/vehicules}" class="btn btn-ligne">Voir la liste</a>
+                    <a th:href="@{/vehicules/template}" class="btn btn-doux"><i class="fa-solid fa-download"></i> Télécharger le modèle</a>
+                </div>
+            </div>
+
+            <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-file-excel"></i> Importer un fichier Excel</h2>
+                </div>
+                <div class="carte-corps">
+                    <form th:action="@{/vehicules/import}" method="post" enctype="multipart/form-data">
+                        <div class="champ">
+                            <label for="file">Sélectionnez un fichier Excel</label>
+                            <input type="file" id="file" name="file" accept=".xlsx" required />
+                            <span class="aide">Format .xlsx uniquement. Colonnes attendues : Matricule, Marque, Modele, Annee, Capacite, Statut, Date. Les véhicules existants (même matricule) seront mis à jour.</span>
+                        </div>
+                        <div class="barre-form">
+                            <button type="submit" class="btn btn-vert"><i class="fa-solid fa-upload"></i> Importer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
+</html>

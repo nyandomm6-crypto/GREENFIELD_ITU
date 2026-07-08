@@ -16,8 +16,14 @@
             <p class="sous-titre">Gérez les produits proposés sur la boutique et leurs prix.</p>
           </div>
           <div class="page-actions">
-            <a th:href="@{/back/stocks}" class="btn btn-ligne">
-              <i class="fas fa-boxes-stacked"></i> Suivi des stocks
+            <a th:href="@{/back/produits/export}" class="btn btn-ligne">
+              <i class="fas fa-file-export"></i> Exporter Excel
+            </a>
+            <a th:href="@{/back/produits/template}" class="btn btn-ligne">
+              <i class="fas fa-download"></i> Modèle
+            </a>
+            <a th:href="@{/back/produits/import}" class="btn btn-doux">
+              <i class="fas fa-file-import"></i> Importer
             </a>
             <a th:href="@{/back/produits/nouveau}" class="btn btn-vert">
               <i class="fas fa-plus"></i> Ajouter un produit
@@ -63,6 +69,7 @@
           <table>
             <thead>
               <tr>
+                <th>Image</th>
                 <th>Matricule</th>
                 <th>Nom</th>
                 <th>Catégorie</th>
@@ -72,6 +79,14 @@
             </thead>
             <tbody>
               <tr th:each="p : ${produits}">
+                <td>
+                  <img th:if="${p.imagePath != null}" th:src="@{${p.imagePath}}" alt=""
+                       style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e5e5;" />
+                  <span th:unless="${p.imagePath != null}"
+                        style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:8px; background:#f0f2f0; color:#9aa59a;">
+                    <i class="fas fa-image"></i>
+                  </span>
+                </td>
                 <td class="mono" th:text="${p.matricule}"></td>
                 <td><strong th:text="${p.nom}"></strong></td>
                 <td>
@@ -100,7 +115,7 @@
                 </td>
               </tr>
               <tr th:if="${#lists.isEmpty(produits)}">
-                <td colspan="5">
+                <td colspan="6">
                   <div class="vide">
                     <i class="fas fa-seedling"></i>
                     <p>Aucun produit ne correspond à cette recherche.</p>
@@ -109,6 +124,17 @@
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div class="section-pagination" th:if="${totalPages > 0}">
+          <span>Total : <strong th:text="${totalElements}">0</strong> produit(s)</span>
+          <div class="pagination">
+            <a class="btn-pagination" th:if="${page > 0}"
+               th:href="@{/back/produits(idCategorie=${selectedCategorie},motCle=${motCle},page=${page - 1},size=${size})}">« Précédent</a>
+            <span>Page <strong th:text="${page + 1}">1</strong> sur <strong th:text="${totalPages}">1</strong></span>
+            <a class="btn-pagination" th:if="${page + 1 < totalPages}"
+               th:href="@{/back/produits(idCategorie=${selectedCategorie},motCle=${motCle},page=${page + 1},size=${size})}">Suivant »</a>
+          </div>
         </div>
       </div>
 

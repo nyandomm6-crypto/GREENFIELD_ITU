@@ -50,11 +50,11 @@ public class ProduitService {
     }
 
     public List<Produit> bestSeller() {
-        return produitRepository.findAll();
+        return produitRepository.findBestSellers(org.springframework.data.domain.PageRequest.of(0, 5));
     }
 
     public List<Produit> newProduit() {
-        return produitRepository.findAll();
+        return produitRepository.findTop10ByOrderByIdDesc();
     }
 
     public int satisfaits() {

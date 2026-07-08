@@ -22,4 +22,13 @@ comme dans la photo comme modele que je vais t'envoye ,plus moderne meme , ne pa
 
 - changer le logo par l'image envoye : n'ajoute pas de fond pour le logo
 
+--------------------------------------------------------------------------------------------------------------------
 
+
+README.txt
+pour le faq dans le front c'est ancore trop statitque je voudrais que lorsqu'on clique sur la question c'est js qui fais que la response s'affiche pas tout de suite afficher question et reponse
+
+
+et aussi commande n'a pas encore d'export excel
+
+fini ce travail s'il te plait

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head th:replace="~{back/fragments/layout :: head('Importation de catégories')}"></head>
+
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('categories')}"></aside>
+
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Catégories')}"></header>
+
+        <div class="bo-contenu bo-contenu-etroit">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/back/categories}">Catégories</a> / Importation</p>
+                    <h1>Importation de catégories</h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/back/categories}" class="btn btn-ligne">Voir la liste</a>
+                    <a th:href="@{/back/categories/template}" class="btn btn-doux"><i class="fa-solid fa-download"></i> Télécharger le modèle</a>
+                </div>
+            </div>
+
+            <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-file-excel"></i> Importer un fichier Excel</h2>
+                </div>
+                <div class="carte-corps">
+                    <form th:action="@{/back/categories/import}" method="post" enctype="multipart/form-data">
+                        <div class="champ">
+                            <label for="file">Sélectionnez un fichier Excel</label>
+                            <input type="file" id="file" name="file" accept=".xlsx" required />
+                            <span class="aide">Format .xlsx uniquement. Colonne attendue : Libelle. Les catégories existantes (même libellé) seront conservées.</span>
+                        </div>
+                        <div class="barre-form">
+                            <button type="submit" class="btn btn-vert"><i class="fa-solid fa-upload"></i> Importer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
+</html>

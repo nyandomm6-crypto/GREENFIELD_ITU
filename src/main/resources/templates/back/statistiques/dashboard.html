@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{back/fragments/layout :: head('Statistiques')}"></head>
+
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('statistiques')}"></aside>
+
+    <main class="bo-main">
+      <header th:replace="~{back/fragments/layout :: topbar('Statistiques')}"></header>
+
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">Finance <i class="fas fa-chevron-right"></i> Statistiques</p>
+            <h1>Tableau de bord statistique</h1>
+            <p class="sous-titre">Chiffre d'affaires, évolution des ventes et meilleurs produits.</p>
+          </div>
+        </div>
+
+        <!-- ===== Camembert recettes / dépenses ===== -->
+        <div class="carte" style="margin-bottom: 24px;">
+          <div class="carte-tete">
+            <h2><i class="fa-solid fa-chart-pie"></i> Chiffre d'affaires (recettes vs dépenses)</h2>
+          </div>
+          <div class="carte-corps">
+            <div class="barre-filtres">
+              <div class="filtre">
+                <label for="ca-debut">Date début</label>
+                <input type="date" id="ca-debut" />
+              </div>
+              <div class="filtre">
+                <label for="ca-fin">Date fin</label>
+                <input type="date" id="ca-fin" />
+              </div>
+              <div class="filtre-actions">
+                <button type="button" class="btn btn-vert" onclick="chargerTresorerie()">
+                  <i class="fas fa-filter"></i> Appliquer
+                </button>
+              </div>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:24px; align-items:center; justify-content:center; margin-top:16px;">
+              <div style="max-width:320px; flex:1 1 260px;"><canvas id="chartTresorerie"></canvas></div>
+              <div style="min-width:200px;">
+                <p style="margin:6px 0;">Recettes : <strong id="val-recettes" style="color:#0b7a43;">0</strong> Ar</p>
+                <p style="margin:6px 0;">Dépenses : <strong id="val-depenses" style="color:#c2410c;">0</strong> Ar</p>
+                <p style="margin:6px 0; border-top:1px solid #e2e2e2; padding-top:8px;">Bénéfice : <strong id="val-benefice">0</strong> Ar</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== Courbe évolution ventes d'un produit ===== -->
+        <div class="carte" style="margin-bottom: 24px;">
+          <div class="carte-tete">
+            <h2><i class="fa-solid fa-chart-line"></i> Évolution des ventes (par produit)</h2>
+          </div>
+          <div class="carte-corps">
+            <div class="barre-filtres">
+              <div class="filtre filtre-large">
+                <label for="ev-produit">Produit</label>
+                <select id="ev-produit">
+                  <option th:each="p : ${produits}" th:value="${p.id}" th:text="${p.nom}"></option>
+                </select>
+              </div>
+              <div class="filtre">
+                <label for="ev-annee">Année</label>
+                <select id="ev-annee">
+                  <option th:each="a : ${annees}" th:value="${a}" th:text="${a}"></option>
+                </select>
+              </div>
+              <div class="filtre-actions">
+                <button type="button" class="btn btn-vert" onclick="chargerEvolution()">
+                  <i class="fas fa-filter"></i> Appliquer
+                </button>
+              </div>
+            </div>
+            <div style="margin-top:16px;"><canvas id="chartEvolution" height="110"></canvas></div>
+          </div>
+        </div>
+
+        <!-- ===== Histogramme top 5 ===== -->
+        <div class="carte">
+          <div class="carte-tete">
+            <h2><i class="fa-solid fa-chart-column"></i> Top 5 des produits les plus vendus</h2>
+          </div>
+          <div class="carte-corps">
+            <div class="barre-filtres">
+              <div class="filtre">
+                <label for="top-annee">Année</label>
+                <select id="top-annee">
+                  <option th:each="a : ${annees}" th:value="${a}" th:text="${a}"></option>
+                </select>
+              </div>
+              <div class="filtre filtre-large">
+                <label for="top-categorie">Catégorie</label>
+                <select id="top-categorie">
+                  <option value="">Toutes les catégories</option>
+                  <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.libelle}"></option>
+                </select>
+              </div>
+              <div class="filtre-actions">
+                <button type="button" class="btn btn-vert" onclick="chargerTop5()">
+                  <i class="fas fa-filter"></i> Appliquer
+                </button>
+              </div>
+            </div>
+            <div style="margin-top:16px;"><canvas id="chartTop5" height="110"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script>
+      const VERT = "#0b7a43";
+      const OCRE = "#c2410c";
+      const fmt = (n) => new Intl.NumberFormat("fr-FR").format(n);
+      let pieChart, lineChart, barChart;
+
+      async function chargerTresorerie() {
+        const debut = document.getElementById("ca-debut").value;
+        const fin = document.getElementById("ca-fin").value;
+        const params = new URLSearchParams();
+        if (debut) params.append("debut", debut);
+        if (fin) params.append("fin", fin);
+        const res = await fetch("/back/statistiques/api/tresorerie?" + params.toString());
+        const d = await res.json();
+        document.getElementById("val-recettes").textContent = fmt(d.recettes);
+        document.getElementById("val-depenses").textContent = fmt(d.depenses);
+        document.getElementById("val-benefice").textContent = fmt(d.benefice);
+
+        const data = {
+          labels: ["Recettes (ventes)", "Dépenses"],
+          datasets: [{ data: [d.recettes, d.depenses], backgroundColor: [VERT, OCRE], borderWidth: 0 }],
+        };
+        if (pieChart) { pieChart.data = data; pieChart.update(); }
+        else {
+          pieChart = new Chart(document.getElementById("chartTresorerie"), {
+            type: "doughnut",
+            data,
+            options: { plugins: { legend: { position: "bottom" } } },
+          });
+        }
+      }
+
+      async function chargerEvolution() {
+        const idProduit = document.getElementById("ev-produit").value;
+        const annee = document.getElementById("ev-annee").value;
+        if (!idProduit || !annee) return;
+        const res = await fetch(`/back/statistiques/api/evolution?idProduit=${idProduit}&annee=${annee}`);
+        const d = await res.json();
+        const data = {
+          labels: d.labels,
+          datasets: [{
+            label: "Quantité vendue",
+            data: d.data,
+            borderColor: VERT,
+            backgroundColor: "rgba(11,122,67,.12)",
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: VERT,
+          }],
+        };
+        if (lineChart) { lineChart.data = data; lineChart.update(); }
+        else {
+          lineChart = new Chart(document.getElementById("chartEvolution"), {
+            type: "line",
+            data,
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } },
+          });
+        }
+      }
+
+      async function chargerTop5() {
+        const annee = document.getElementById("top-annee").value;
+        const idCategorie = document.getElementById("top-categorie").value;
+        if (!annee) return;
+        const params = new URLSearchParams({ annee });
+        if (idCategorie) params.append("idCategorie", idCategorie);
+        const res = await fetch("/back/statistiques/api/top5?" + params.toString());
+        const d = await res.json();
+        const data = {
+          labels: d.labels,
+          datasets: [{
+            label: "Quantité vendue",
+            data: d.data,
+            backgroundColor: VERT,
+            borderRadius: 6,
+          }],
+        };
+        if (barChart) { barChart.data = data; barChart.update(); }
+        else {
+          barChart = new Chart(document.getElementById("chartTop5"), {
+            type: "bar",
+            data,
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } },
+          });
+        }
+      }
+
+      // Chargement initial
+      window.addEventListener("load", () => {
+        chargerTresorerie();
+        if (document.getElementById("ev-produit").value) chargerEvolution();
+        if (document.getElementById("top-annee").value) chargerTop5();
+      });
+    </script>
+  </body>
+</html>

@@ -41,7 +41,11 @@
     ================================================================== -->
     <aside class="bo-sidebar" th:fragment="sidebar(actif)">
       <a th:href="@{/commandes/list}" class="bo-brand">
-        <span class="bo-brand-icone"><i class="fas fa-seedling"></i></span>
+        <span class="bo-brand-icone" style="background: transparent; overflow: hidden;">
+          <img th:src="@{/img/logo.png}" alt="greenField"
+               style="width: 100%; height: 100%; object-fit: contain;"
+               onerror="this.onerror=null; this.outerHTML='&lt;i class=\'fas fa-seedling\'&gt;&lt;/i&gt;';" />
+        </span>
         <span>
           <span class="bo-brand-nom">green<span>Field</span></span>
           <span class="bo-brand-sous">Administration</span>
@@ -57,6 +61,13 @@
           th:classappend="${actif == 'produits'} ? 'actif'"
         >
           <i class="fas fa-carrot"></i> Produits
+        </a>
+        <a
+          th:href="@{/back/categories}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'categories'} ? 'actif'"
+        >
+          <i class="fas fa-tags"></i> Catégories
         </a>
         <a
           th:href="@{/back/stocks}"
@@ -94,6 +105,20 @@
           th:classappend="${actif == 'frais'} ? 'actif'"
         >
           <i class="fas fa-truck-ramp-box"></i> Frais de livraison
+        </a>
+        <a
+          th:href="@{/back/tresorerie}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'tresorerie'} ? 'actif'"
+        >
+          <i class="fas fa-wallet"></i> Trésorerie
+        </a>
+        <a
+          th:href="@{/back/statistiques}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'statistiques'} ? 'actif'"
+        >
+          <i class="fas fa-chart-pie"></i> Statistiques
         </a>
 
         <p class="bo-nav-groupe">Logistique</p>

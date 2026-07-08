@@ -3,6 +3,8 @@ package itu.greenField.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,8 +30,25 @@ public interface ProduitRepository extends JpaRepository<Produit, Integer> {
             @Param("motCle") String motCle,
             @Param("motClePattern") String motClePattern);
 
+    @Query("SELECT p FROM Produit p WHERE " +
+            "(:idCategorie IS NULL OR p.categorie.id = :idCategorie) AND " +
+            "(:motCle IS NULL OR LOWER(p.nom) LIKE :motClePattern " +
+            "OR LOWER(p.matricule) LIKE :motClePattern)")
+    Page<Produit> searchProduits(@Param("idCategorie") Integer idCategorie,
+            @Param("motCle") String motCle,
+            @Param("motClePattern") String motClePattern,
+            Pageable pageable);
+
     boolean existsByMatricule(String matricule);
 
     boolean existsByMatriculeAndIdNot(String matricule, Integer id);
+
+    // 5 produits les plus vendus (somme des quantités commandées décroissante)
+    @Query("SELECT p FROM Produit p JOIN p.detailsCommande dc " +
+            "GROUP BY p ORDER BY SUM(dc.quantite) DESC")
+    List<Produit> findBestSellers(Pageable pageable);
+
+    // Nouveaux produits (les plus récents par id décroissant)
+    List<Produit> findTop10ByOrderByIdDesc();
 
 }

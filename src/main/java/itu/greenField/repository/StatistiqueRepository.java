@@ -26,8 +26,32 @@ public interface StatistiqueRepository extends JpaRepository<Commandes, Integer>
     List<ProduitStatDto> findTop5ProduitsPlusVendus();
 
     // Nouveaux produits (basé sur l'ID décroissant)
-    @Query(value = "SELECT p FROM Produit p ORDER BY p.id DESC LIMIT 5")
+    @Query(value = "SELECT p FROM Produit p ORDER BY p.id DESC LIMIT 10")
     List<Produit> findNouveauxProduits();
+
+    // --- BACK-OFFICE : graphiques ---
+
+    // Années disponibles (pour les filtres)
+    @Query(value = "SELECT DISTINCT EXTRACT(YEAR FROM datecommande)::int AS annee " +
+            "FROM commandes WHERE datecommande IS NOT NULL ORDER BY annee DESC", nativeQuery = true)
+    List<Integer> anneesDisponibles();
+
+    // Ventes mensuelles (quantités) d'un produit sur une année → [mois, quantite]
+    @Query(value = "SELECT EXTRACT(MONTH FROM c.datecommande)::int AS mois, " +
+            "COALESCE(SUM(dc.quantite), 0) AS qte " +
+            "FROM detailscommande dc JOIN commandes c ON c.id = dc.idcommande " +
+            "WHERE dc.idproduit = :idProduit AND EXTRACT(YEAR FROM c.datecommande) = :annee " +
+            "GROUP BY mois ORDER BY mois", nativeQuery = true)
+    List<Object[]> ventesMensuellesParProduit(@Param("idProduit") Integer idProduit, @Param("annee") Integer annee);
+
+    // Top 5 produits les plus vendus sur une année (option : catégorie) → [nom, quantite]
+    @Query(value = "SELECT p.nom AS nom, COALESCE(SUM(dc.quantite), 0) AS qte " +
+            "FROM detailscommande dc JOIN commandes c ON c.id = dc.idcommande " +
+            "JOIN produit p ON p.id = dc.idproduit " +
+            "WHERE EXTRACT(YEAR FROM c.datecommande) = :annee " +
+            "AND (:idCategorie IS NULL OR p.idcategorie = :idCategorie) " +
+            "GROUP BY p.id, p.nom ORDER BY qte DESC LIMIT 5", nativeQuery = true)
+    List<Object[]> top5ParAnneeEtCategorie(@Param("annee") Integer annee, @Param("idCategorie") Integer idCategorie);
 
     // --- BACK-OFFICE ---
 

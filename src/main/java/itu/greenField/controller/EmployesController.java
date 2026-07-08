@@ -2,7 +2,11 @@ package itu.greenField.controller;
 
 import java.time.LocalDate;
 
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import itu.greenField.model.Employes;
@@ -36,8 +41,10 @@ public class EmployesController {
             @RequestParam(required = false) String motCle,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) FRole role,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
-        remplirListe(model, true, motCle, date, role);
+        remplirListe(model, true, motCle, date, role, page, size);
         return "front/employes/list";
     }
 
@@ -46,9 +53,53 @@ public class EmployesController {
             @RequestParam(required = false) String motCle,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) FRole role,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
             Model model) {
-        remplirListe(model, false, motCle, date, role);
+        remplirListe(model, false, motCle, date, role, page, size);
         return "front/employes/list";
+    }
+
+    // ==================== EXCEL ====================
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportEmployes() throws Exception {
+        return excelResponse(employesService.exportExcel(), "employes.xlsx");
+    }
+
+    @GetMapping("/template")
+    public ResponseEntity<byte[]> templateEmployes() throws Exception {
+        return excelResponse(employesService.templateExcel(), "modele_employes.xlsx");
+    }
+
+    @GetMapping("/import")
+    public String showImportForm() {
+        return "front/employes/importExcel";
+    }
+
+    @PostMapping("/import")
+    public String importEmployes(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+        if (file.isEmpty() || file.getOriginalFilename() == null || !file.getOriginalFilename().endsWith(".xlsx")) {
+            redirectAttributes.addFlashAttribute("error", "Veuillez sélectionner un fichier Excel valide (.xlsx).");
+            return "redirect:/employes/import";
+        }
+        try {
+            int count = employesService.importExcel(file.getInputStream());
+            redirectAttributes.addFlashAttribute("success", count + " employé(s) importé(s) avec succès.");
+            return "redirect:/employes";
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "Erreur lors de l'importation : " + e.getMessage());
+            return "redirect:/employes/import";
+        }
+    }
+
+    private ResponseEntity<byte[]> excelResponse(byte[] content, String filename) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(
+                MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", filename);
+        return ResponseEntity.ok().headers(headers).body(content);
     }
 
     @GetMapping("/new")
@@ -121,8 +172,15 @@ public class EmployesController {
             Boolean estActif,
             String motCle,
             LocalDate date,
-            FRole role) {
-        model.addAttribute("employes", employesService.filtrer(estActif, motCle, date, role));
+            FRole role,
+            int page,
+            int size) {
+        Page<Employes> employesPage = employesService.filtrerPage(estActif, motCle, date, role, page, size);
+        model.addAttribute("employes", employesPage.getContent());
+        model.addAttribute("page", employesPage.getNumber());
+        model.addAttribute("totalPages", employesPage.getTotalPages());
+        model.addAttribute("totalElements", employesPage.getTotalElements());
+        model.addAttribute("size", size);
         model.addAttribute("roles", FRole.values());
         model.addAttribute("motCle", motCle);
         model.addAttribute("date", date);

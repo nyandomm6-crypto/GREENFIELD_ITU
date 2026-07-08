@@ -52,6 +52,27 @@ public class Produit {
     @OneToMany(mappedBy = "produit")
     private List<TransfertsFille> transfertsFille;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "produit", fetch = FetchType.LAZY)
+    @jakarta.persistence.OrderBy("id ASC")
+    private List<Photo> photos;
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
+
+    /** Chemin web de la première image du produit, ou null si aucune. */
+    public String getImagePath() {
+        if (photos != null && !photos.isEmpty()) {
+            return photos.get(0).getPath();
+        }
+        return null;
+    }
+
     public Integer getId() {
         return id;
     }

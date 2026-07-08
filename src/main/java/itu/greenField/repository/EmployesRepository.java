@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -46,6 +48,49 @@ public interface EmployesRepository extends JpaRepository<Employes, Integer> {
                         @Param("motCle") String motCle,
                         @Param("date") LocalDate date,
                         @Param("role") String role);
+
+        @Query(value = """
+                        SELECT e.*
+                        FROM employes e
+                        LEFT JOIN pointdevente p ON p.code = e.idptdevente
+                        WHERE COALESCE(e.est_actif, true) = :estActif
+                          AND (:date IS NULL OR e.date = :date)
+                          AND (:role IS NULL OR e.role = :role)
+                          AND (
+                                :motCle IS NULL
+                                OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
+                          )
+                        ORDER BY e.nom, e.prenom
+                        """,
+                        countQuery = """
+                        SELECT count(*)
+                        FROM employes e
+                        LEFT JOIN pointdevente p ON p.code = e.idptdevente
+                        WHERE COALESCE(e.est_actif, true) = :estActif
+                          AND (:date IS NULL OR e.date = :date)
+                          AND (:role IS NULL OR e.role = :role)
+                          AND (
+                                :motCle IS NULL
+                                OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
+                                OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
+                          )
+                        """,
+                        nativeQuery = true)
+        Page<Employes> filtrer(
+                        @Param("estActif") Boolean estActif,
+                        @Param("motCle") String motCle,
+                        @Param("date") LocalDate date,
+                        @Param("role") String role,
+                        Pageable pageable);
 
         public Employes getById(Integer id);
 

@@ -387,3 +387,9 @@ ALTER COLUMN typepayement TYPE VARCHAR(50) USING typepayement::text;
 
 ALTER TABLE paiement
 ALTER COLUMN statut TYPE VARCHAR(50) USING statut::text;
+-- PHOTOS DE PRODUIT
+CREATE TABLE IF NOT EXISTS photo (
+    id SERIAL PRIMARY KEY,
+    idproduit INT NOT NULL REFERENCES Produit (id) ON DELETE CASCADE,
+    path VARCHAR(255) NOT NULL
+);

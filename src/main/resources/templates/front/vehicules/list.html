@@ -17,9 +17,14 @@
                     <h1>Liste des véhicules</h1>
                 </div>
                 <div class="page-actions">
+                    <a th:href="@{/vehicules/export}" class="btn btn-ligne"><i class="fas fa-file-export"></i> Exporter Excel</a>
+                    <a th:href="@{/vehicules/template}" class="btn btn-ligne"><i class="fas fa-download"></i> Modèle</a>
+                    <a th:href="@{/vehicules/import}" class="btn btn-doux"><i class="fas fa-file-import"></i> Importer</a>
                     <a th:href="@{/vehicules/ajouter}" class="btn btn-vert"><i class="fas fa-plus"></i> Ajouter un véhicule</a>
                 </div>
             </div>
+
+            <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
 
             <form th:action="@{/vehicules}" method="get" class="section-filtre barre-filtres">
                 <div class="filtre filtre-large">
@@ -91,6 +96,17 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="section-pagination" th:if="${totalPages > 0}">
+                <span>Total : <strong th:text="${totalElements}">0</strong> véhicule(s)</span>
+                <div class="pagination">
+                    <a class="btn-pagination" th:if="${page > 0}"
+                       th:href="@{/vehicules(motCle=${motCle},date=${date},statut=${statut},page=${page - 1},size=${size})}">« Précédent</a>
+                    <span>Page <strong th:text="${page + 1}">1</strong> sur <strong th:text="${totalPages}">1</strong></span>
+                    <a class="btn-pagination" th:if="${page + 1 < totalPages}"
+                       th:href="@{/vehicules(motCle=${motCle},date=${date},statut=${statut},page=${page + 1},size=${size})}">Suivant »</a>
+                </div>
             </div>
 
         </div>
