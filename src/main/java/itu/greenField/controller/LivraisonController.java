@@ -1,4 +1,4 @@
-package itu.greenField.controller;
+package itu.greenfield.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import itu.greenField.service.CommandesService;
-import itu.greenField.service.EmployesService;
-import itu.greenField.service.LivraisonService;
-import itu.greenField.service.VehiculeService;
+import itu.greenfield.service.CommandesService;
+import itu.greenfield.service.EmployesService;
+import itu.greenfield.service.LivraisonService;
+import itu.greenfield.service.VehiculeService;
 
 @Controller
 public class LivraisonController {

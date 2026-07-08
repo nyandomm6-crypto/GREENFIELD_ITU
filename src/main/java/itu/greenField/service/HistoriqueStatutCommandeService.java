@@ -1,11 +1,11 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
 import org.springframework.stereotype.Service;
 
-import itu.greenField.model.Commandes;
-import itu.greenField.model.HistoriqueStatutCommande;
-import itu.greenField.model.StatutCommande;
-import itu.greenField.repository.HistoriqueStatutCommandeRepository;
+import itu.greenfield.model.Commandes;
+import itu.greenfield.model.HistoriqueStatutCommande;
+import itu.greenfield.model.StatutCommande;
+import itu.greenfield.repository.HistoriqueStatutCommandeRepository;
 
 @Service
 public class HistoriqueStatutCommandeService {

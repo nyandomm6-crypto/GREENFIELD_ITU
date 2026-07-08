@@ -1,8 +1,9 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
 import org.springframework.stereotype.Service;
-import itu.greenField.model.Client;
-import itu.greenField.repository.ClientRepository;
+
+import itu.greenfield.model.Client;
+import itu.greenfield.repository.ClientRepository;
 
 import java.util.List;
 

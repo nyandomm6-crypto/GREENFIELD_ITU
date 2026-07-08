@@ -1,12 +1,12 @@
-package itu.greenField.service;
-
-import itu.greenField.dto.ClientStatDto;
-import itu.greenField.dto.EvolutionVenteDto;
-import itu.greenField.dto.ProduitStatDto;
-import itu.greenField.model.Produit;
+package itu.greenfield.service;
 
 import java.util.List;
 import java.util.Map;
+
+import itu.greenfield.dto.ClientStatDto;
+import itu.greenfield.dto.EvolutionVenteDto;
+import itu.greenfield.dto.ProduitStatDto;
+import itu.greenfield.model.Produit;
 
 public interface StatistiqueService {
     List<ProduitStatDto> getTop5Produits(Integer year);

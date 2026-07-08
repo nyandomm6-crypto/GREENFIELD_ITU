@@ -1,4 +1,4 @@
-package itu.greenField.model;
+package itu.greenfield.model;
 
 public enum StatutPaiement {
     Cree,

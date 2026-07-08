@@ -1,11 +1,11 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import itu.greenField.model.Employes;
-import itu.greenField.repository.EmployesRepository;
+import itu.greenfield.model.Employes;
+import itu.greenfield.repository.EmployesRepository;
 
 @Service
 public class EmployesService {

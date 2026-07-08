@@ -1,8 +1,8 @@
-package itu.greenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.FraisLivraison;
+import itu.greenfield.model.FraisLivraison;
 
 import java.util.Optional;
 

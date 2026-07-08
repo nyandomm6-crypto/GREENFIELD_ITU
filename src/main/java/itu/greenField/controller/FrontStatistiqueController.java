@@ -1,8 +1,5 @@
-package itu.greenField.controller;
+package itu.greenfield.controller;
 
-import itu.greenField.dto.ProduitStatDto;
-import itu.greenField.model.Produit;
-import itu.greenField.service.StatistiqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,6 +7,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import itu.greenfield.dto.ProduitStatDto;
+import itu.greenfield.model.Produit;
+import itu.greenfield.service.StatistiqueService;
 
 import java.util.List;
 

@@ -1,9 +1,9 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
 import org.springframework.stereotype.Service;
 
-import itu.greenField.model.StatutCommande;
-import itu.greenField.repository.StatutCommandeRepository;
+import itu.greenfield.model.StatutCommande;
+import itu.greenfield.repository.StatutCommandeRepository;
 
 import java.util.*;
 

@@ -1,9 +1,10 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
 import org.springframework.stereotype.Service;
 
-import itu.greenField.repository.ProduitRepository;
-import itu.greenField.model.Produit;
+import itu.greenfield.model.Produit;
+import itu.greenfield.repository.ProduitRepository;
+
 import java.util.List;
 
 @Service

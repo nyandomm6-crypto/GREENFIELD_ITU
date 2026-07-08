@@ -1,8 +1,8 @@
-package itu.greenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.DemandeStock;
+import itu.greenfield.model.DemandeStock;
 
 public interface DemandeStockRepository extends JpaRepository<DemandeStock, Integer> {
 }

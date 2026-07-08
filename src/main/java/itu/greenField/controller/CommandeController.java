@@ -1,4 +1,4 @@
-package itu.greenField.controller;
+package itu.greenfield.controller;
 
 import jakarta.validation.Valid;
 

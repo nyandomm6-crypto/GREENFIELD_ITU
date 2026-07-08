@@ -1,8 +1,8 @@
-package itu.greenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.Transferts;
+import itu.greenfield.model.Transferts;
 
 public interface TransfertsRepository extends JpaRepository<Transferts, Integer> {
 }

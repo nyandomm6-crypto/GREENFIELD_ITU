@@ -1,9 +1,9 @@
-package itu.greenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.Commandes;
-import itu.greenField.model.HistoriqueStatutCommande;
+import itu.greenfield.model.Commandes;
+import itu.greenfield.model.HistoriqueStatutCommande;
 
 import java.util.Optional;
 

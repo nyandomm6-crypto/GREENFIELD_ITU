@@ -1,11 +1,11 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import itu.greenField.model.Vehicule;
-import itu.greenField.repository.VehiculeRepository;
+import itu.greenfield.model.Vehicule;
+import itu.greenfield.repository.VehiculeRepository;
 
 @Service
 public class VehiculeService {

@@ -1,8 +1,8 @@
-package itu.greenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.Paiement;
+import itu.greenfield.model.Paiement;
 
 public interface PaiementRepository extends JpaRepository<Paiement, Integer> {
 }

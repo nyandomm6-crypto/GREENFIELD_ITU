@@ -1,11 +1,12 @@
-package itu.greenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 
-import itu.greenField.model.Commandes;
+import itu.greenfield.model.Commandes;
+
 import java.util.List;
 
 public interface CommandesRepository extends JpaRepository<Commandes, Integer> {

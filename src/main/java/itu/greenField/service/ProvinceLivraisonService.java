@@ -1,11 +1,11 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import itu.greenField.model.ProvinceLivraison;
-import itu.greenField.repository.ProvinceLivraisonRepository;
+import itu.greenfield.model.ProvinceLivraison;
+import itu.greenfield.repository.ProvinceLivraisonRepository;
 
 @Service
 public class ProvinceLivraisonService {

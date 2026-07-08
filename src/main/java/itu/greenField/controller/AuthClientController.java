@@ -1,9 +1,4 @@
-package itu.greenField.controller;
-
-import itu.greenField.model.Client;
-import itu.greenField.repository.ClientRepository;
-import itu.greenField.service.ValidationMailService;
-import itu.greenField.service.ValidationService;
+package itu.greenfield.controller;
 
 import java.util.Map;
 
@@ -11,6 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import itu.greenfield.model.Client;
+import itu.greenfield.repository.ClientRepository;
+import itu.greenfield.service.ValidationMailService;
+import itu.greenfield.service.ValidationService;
 
 @Controller
 public class AuthClientController {

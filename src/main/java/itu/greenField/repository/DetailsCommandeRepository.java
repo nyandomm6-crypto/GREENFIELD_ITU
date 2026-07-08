@@ -1,8 +1,8 @@
-package itu.greenField.repository;
+package itu.greenfield.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import itu.greenField.model.DetailsCommande;
+import itu.greenfield.model.DetailsCommande;
 
 public interface DetailsCommandeRepository extends JpaRepository<DetailsCommande, Integer> {
 }

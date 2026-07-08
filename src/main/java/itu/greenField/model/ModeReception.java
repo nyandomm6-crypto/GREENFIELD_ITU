@@ -1,4 +1,4 @@
-package itu.greenField.model;
+package itu.greenfield.model;
 
 import java.util.ArrayList;
 import java.util.List;

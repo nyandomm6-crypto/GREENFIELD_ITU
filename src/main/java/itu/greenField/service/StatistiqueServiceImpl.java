@@ -1,12 +1,13 @@
-package itu.greenField.service;
+package itu.greenfield.service;
 
-import itu.greenField.dto.ClientStatDto;
-import itu.greenField.dto.EvolutionVenteDto;
-import itu.greenField.dto.ProduitStatDto;
-import itu.greenField.model.Produit;
-import itu.greenField.repository.StatistiqueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import itu.greenfield.dto.ClientStatDto;
+import itu.greenfield.dto.EvolutionVenteDto;
+import itu.greenfield.dto.ProduitStatDto;
+import itu.greenfield.model.Produit;
+import itu.greenfield.repository.StatistiqueRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
