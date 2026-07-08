@@ -17,6 +17,7 @@ import itu.greenField.filtre.FiltreDateBackCommandeOption;
 import itu.greenField.filtre.FiltreNombreBackCommandeOption;
 import itu.greenField.model.Commandes;
 import itu.greenField.model.ModeReception;
+import itu.greenField.model.Produit;
 import itu.greenField.model.TypeCommande;
 import itu.greenField.service.ClientService;
 import itu.greenField.service.CommandesService;
@@ -27,6 +28,9 @@ import itu.greenField.service.ProvinceLivraisonService;
 import itu.greenField.service.StatutCommandeService;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,6 +40,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 
 @Controller
 @RequestMapping("/commandes")
@@ -361,4 +368,50 @@ public class CommandeController {
             model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
         }
     }
+
+    @GetMapping("/api/download-template")
+    @ResponseBody
+    public ResponseEntity<byte[]> downloadTemplateFile() throws Exception {
+        List<Produit> produits = produitService.getAllProduits();
+
+        byte[] excelContent = commandeService.generateTemplateExcelFile(produits);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(
+                MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", "template_commande.xlsx");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(excelContent);
+    }
+
+    @GetMapping("/importExcel")
+    public ModelAndView getImportExcelForm() {
+        ModelAndView mv = new ModelAndView("back/commande/commandeImportExcel");
+        return mv;
+    }
+
+    @PostMapping("/importExcel")
+    public ModelAndView importExcel(@RequestParam("file") MultipartFile file) {
+        ModelAndView mv = new ModelAndView("back/commande/commandeImportExcel");
+        // Vérification du type de fichier
+        if (file.isEmpty() || !file.getOriginalFilename().endsWith(".xlsx")) {
+            mv.addObject("error", "Veuillez sélectionner un fichier Excel valide (.xlsx) pour l'importation.");
+            return mv;
+        }
+
+        try {
+            commandeService.saveDataFromExcelUpload(file.getInputStream());
+            mv.addObject("succes", "Les commandes ont été importées avec succès depuis le fichier Excel.");
+        } catch (Exception e) {
+            mv.addObject("alert",
+                    "Une erreur est survenue lors de l'importation des commandes depuis le fichier Excel : "
+                            + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return mv;
+    }
+
 }
