@@ -30,22 +30,40 @@
 
         <form
           method="post"
+          th:object="${feature}"
           th:action="${isEdit ? '/back/homepage/' + ((statMode == true) ? 'stats/modifier/' : 'features/modifier/') + feature.id : ((statMode == true) ? '/back/homepage/stats/nouveau' : '/back/homepage/features/nouveau')}"
           class="carte"
         >
           <div class="carte-corps">
-            <input type="hidden" name="id" th:value="${feature.id}" />
+            <input type="hidden" th:field="*{id}" />
             <div class="grille-form">
               <div class="champ">
-                <label for="icon">Icône CSS</label>
-                <input
-                  type="text"
-                  id="icon"
-                  name="icon"
-                  th:value="${feature.icon}"
-                  placeholder="Ex : fas fa-star"
-                  required
-                />
+                <label for="icon">Icône Bootstrap</label>
+                <div class="flex align-center gap-12">
+                  <select
+                    id="icon"
+                    th:field="*{icon}"
+                    class="width-full"
+                    required
+                  >
+                    <option value="" th:text="'Sélectionner une icône'" disabled></option>
+                    <option value="bi bi-alarm">Alarm</option>
+                    <option value="bi bi-bag">Bag</option>
+                    <option value="bi bi-cart-check">Cart check</option>
+                    <option value="bi bi-check2-circle">Check circle</option>
+                    <option value="bi bi-emoji-smile">Emoji smile</option>
+                    <option value="bi bi-heart">Heart</option>
+                    <option value="bi bi-lightning">Lightning</option>
+                    <option value="bi bi-star">Star</option>
+                    <option value="bi bi-truck">Truck</option>
+                    <option value="bi bi-wallet2">Wallet</option>
+                  </select>
+                  <span
+                    id="iconPreview"
+                    class="fs-4 ms-3"
+                    th:classappend="${feature.icon} != null ? ' ' + feature.icon : ''"
+                  ></span>
+                </div>
                 <span
                   class="error"
                   th:if="${errors?.containsKey('icon')}"
