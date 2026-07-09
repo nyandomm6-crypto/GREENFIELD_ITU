@@ -822,6 +822,34 @@ a:hover {
 .footer .footer-item p.mb-4 {
   line-height: 35px;
 }
+.footer .testimonial-card {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+.footer .testimonial-card textarea {
+  background: transparent !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+.footer .newsletter-input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+.footer .rating-options .btn {
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #f8f9fa;
+  cursor: pointer;
+}
+.footer .rating-options .btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.footer .rating-options .btn-check:focus + .btn,
+.footer .rating-options .btn-check:checked + .btn {
+  background: #009951 !important;
+  color: #fff !important;
+  border-color: #009951 !important;
+}
+.footer .rating-options .btn-check:focus + .btn {
+  box-shadow: 0 0 0 0.25rem rgba(0, 153, 81, 0.25) !important;
+}
 
 /* ============================================================
    FRUITE ITEM

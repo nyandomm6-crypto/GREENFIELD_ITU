@@ -30,7 +30,12 @@
                 <button
                   type="submit"
                   class="btn btn-primary position-absolute rounded-pill text-white"
-                  style="top: 0; right: 0"
+                  style="
+                    top: 50%;
+                    right: 5px;
+                    transform: translateY(-50%);
+                    padding: 8px 20px;
+                  "
                 >
                   <i class="fas fa-paper-plane me-2"></i> S'abonner
                 </button>
@@ -228,6 +233,13 @@
                     <button
                       type="submit"
                       class="btn btn-primary rounded-pill px-4 w-100"
+                      style="
+                        background: #009951;
+                        border: none;
+                        padding: 12px 20px;
+                      "
+                      onmouseover="this.style.backgroundColor = '#007a41'"
+                      onmouseout="this.style.backgroundColor = '#009951'"
                     >
                       <i class="fas fa-paper-plane me-2"></i>Envoyer mon avis
                     </button>
