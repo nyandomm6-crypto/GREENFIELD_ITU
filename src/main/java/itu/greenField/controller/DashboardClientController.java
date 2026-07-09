@@ -10,6 +10,7 @@ import itu.greenField.service.FaqService;
 import itu.greenField.service.FeatureService;
 import itu.greenField.service.ProduitService;
 import itu.greenField.service.PubliciteService;
+import itu.greenField.service.TemoignageService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -21,16 +22,18 @@ public class DashboardClientController {
     private final PubliciteService publiciteService;
     private final BanniereService banniereService;
     private final FaqService faqService;
+    private final TemoignageService temoignageService;
 
     public DashboardClientController(ProduitService produitService, CategorieProduitService categorieService,
             FeatureService featureService, PubliciteService publiciteService, BanniereService banniereService,
-            FaqService faqService) {
+            FaqService faqService, TemoignageService temoignageService) {
         this.produitService = produitService;
         this.categorieService = categorieService;
         this.featureService = featureService;
         this.publiciteService = publiciteService;
         this.banniereService = banniereService;
         this.faqService = faqService;
+        this.temoignageService = temoignageService;
     }
 
     @GetMapping("/")
@@ -49,6 +52,7 @@ public class DashboardClientController {
         model.addAttribute("publicites", publiciteService.findAll());
         model.addAttribute("bannieres", banniereService.findAll());
         model.addAttribute("faqList", faqService.findAll());
+        model.addAttribute("temoignages", temoignageService.findAllActifs());
 
         return "front/accueil/acc2";
     }
