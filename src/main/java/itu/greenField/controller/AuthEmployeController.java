@@ -24,8 +24,10 @@ public class AuthEmployeController {
     private final EmployesService employesService;
 
     @GetMapping("/login")
-    public String accueil(HttpSession session, Model model) {
-
+    public String accueil(@RequestParam(required = false) String redirect,
+            HttpSession session,
+            Model model) {
+        model.addAttribute("redirect", redirect);
         return "back/auth/login";
     }
 
@@ -51,9 +53,24 @@ public class AuthEmployeController {
         }
 
         if (employe.getRole().equals(FRole.Livreur)) {
-            session.setAttribute("employe", employe);
+            session.setAttribute("employe", employesService.getById(employe.getId()));
             return "redirect:/livreurs/dashboard";
         }
+
+        if (employe.getRole().equals(FRole.Caissier)) {
+            session.setAttribute("employe", employesService.getById(employe.getId()));
+            if (redirect != null && !redirect.isBlank() && redirect.startsWith("/caissier")) {
+                return "redirect:" + redirect;
+            }
+            return "redirect:/caissier/dashboard";
+        }
+
+        if (employe.getRole().equals(FRole.Administrateur)) {
+            session.setAttribute("employe", employesService.getById(employe.getId()));
+            return "redirect:/commandes/list";
+        }
+
+        session.setAttribute("employe", employesService.getById(employe.getId()));
         return "redirect:/emp/login";
     }
 }
