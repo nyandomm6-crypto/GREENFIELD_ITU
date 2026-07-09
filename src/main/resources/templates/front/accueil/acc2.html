@@ -111,6 +111,32 @@
       </div>
       <!-- Featurs Section End -->
 
+      <!-- FAQ Start -->
+      <div class="container-fluid py-5">
+        <div class="container py-5">
+          <div class="text-center mx-auto mb-5" style="max-width: 700px">
+            <h1 class="display-4">FAQ</h1>
+            <p>Les réponses aux questions les plus fréquentes.</p>
+          </div>
+          <div class="row g-4">
+            <div class="col-lg-6" th:each="faq : ${faqList}">
+              <div class="bg-light rounded p-4 h-100">
+                <h5 class="fw-bold text-primary mb-2" th:text="${faq.question}">
+                  Question
+                </h5>
+                <p class="mb-0 text-muted" th:text="${faq.reponse}">Réponse</p>
+              </div>
+            </div>
+            <div class="col-12" th:if="${faqList == null or faqList.isEmpty()}">
+              <div class="text-center py-4 text-muted">
+                Aucune question fréquente n'est disponible pour le moment.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- FAQ End -->
+
       <!-- Fruits Shop Start-->
       <div class="container-fluid fruite py-5">
         <div class="container py-5">

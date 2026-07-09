@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import itu.greenField.service.BanniereService;
 import itu.greenField.service.CategorieProduitService;
+import itu.greenField.service.FaqService;
 import itu.greenField.service.FeatureService;
 import itu.greenField.service.ProduitService;
 import itu.greenField.service.PubliciteService;
@@ -19,14 +20,17 @@ public class DashboardClientController {
     private final FeatureService featureService;
     private final PubliciteService publiciteService;
     private final BanniereService banniereService;
+    private final FaqService faqService;
 
     public DashboardClientController(ProduitService produitService, CategorieProduitService categorieService,
-            FeatureService featureService, PubliciteService publiciteService, BanniereService banniereService) {
+            FeatureService featureService, PubliciteService publiciteService, BanniereService banniereService,
+            FaqService faqService) {
         this.produitService = produitService;
         this.categorieService = categorieService;
         this.featureService = featureService;
         this.publiciteService = publiciteService;
         this.banniereService = banniereService;
+        this.faqService = faqService;
     }
 
     @GetMapping("/")
@@ -44,6 +48,7 @@ public class DashboardClientController {
         model.addAttribute("stats", featureService.findStats());
         model.addAttribute("publicites", publiciteService.findAll());
         model.addAttribute("bannieres", banniereService.findAll());
+        model.addAttribute("faqList", faqService.findAll());
 
         return "front/accueil/acc2";
     }
