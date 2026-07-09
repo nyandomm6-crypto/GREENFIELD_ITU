@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import itu.greenField.model.Client;
 import itu.greenField.model.Commandes;
@@ -15,6 +16,14 @@ public interface CommandesRepository extends JpaRepository<Commandes, Integer> {
     public Commandes getById(Integer id);
 
     public List<Commandes> findByClient(Client client);
+
+    @Query("SELECT c FROM Commandes c WHERE c.client = :client "
+            + "AND (:statut IS NULL OR :statut = '' OR lower(c.statutActuel.nom) = lower(:statut)) "
+            + "AND (:motCle IS NULL OR :motCle = '' OR str(c.id) LIKE concat('%', :motCle, '%'))")
+    Page<Commandes> findByClientWithFiltre(@Param("client") Client client,
+            @Param("motCle") String motCle,
+            @Param("statut") String statut,
+            Pageable pageable);
 
     List<Commandes> findByStatutActuel(StatutCommande statutActuel);
 

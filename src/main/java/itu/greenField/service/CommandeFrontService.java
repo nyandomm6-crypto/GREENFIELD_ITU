@@ -4,8 +4,11 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,7 +73,10 @@ public class CommandeFrontService {
         }
 
         BigDecimal total = panierService.calculerTotal(panier);
-        int totalProduits = lignes.stream().mapToInt(PanierFille::getQuantite).sum();
+        int totalProduits = lignes.stream()
+                .filter(Objects::nonNull)
+                .mapToInt(ligne -> ligne.getQuantite())
+                .sum();
 
         Commandes commande = new Commandes();
         commande.setClient(client);
@@ -138,6 +144,10 @@ public class CommandeFrontService {
 
         String normalisee = valeurBase.trim().toLowerCase();
         return normalisee.equals(valeurRecherchee) || normalisee.contains(valeurRecherchee);
+    }
+
+    public Page<Commandes> findByClient(Client client, String motCle, String statut, Pageable pageable) {
+        return commandesRepository.findByClientWithFiltre(client, motCle, statut, pageable);
     }
 
     public List<Commandes> findByClient(Client client) {

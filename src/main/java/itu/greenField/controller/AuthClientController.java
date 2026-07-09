@@ -5,6 +5,7 @@ import itu.greenField.model.Commandes;
 import itu.greenField.model.DetailsCommande;
 import itu.greenField.repository.ClientRepository;
 import itu.greenField.repository.CommandesRepository;
+import itu.greenField.repository.StatutCommandeRepository;
 import itu.greenField.service.CommandeFrontService;
 import itu.greenField.service.PanierService;
 import itu.greenField.service.ValidationMailService;
@@ -13,12 +14,17 @@ import itu.greenField.service.ValidationService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,16 +39,19 @@ public class AuthClientController {
     private PanierService panierService;
     private CommandeFrontService commandeService;
     private CommandesRepository commandesRepository;
+    private StatutCommandeRepository statutCommandeRepository;
 
     public AuthClientController(ClientRepository clientRepository, ValidationService validationService,
             ValidationMailService validationMailService, PanierService panierService,
-            CommandeFrontService commandeService, CommandesRepository commandesRepository) {
+            CommandeFrontService commandeService, CommandesRepository commandesRepository,
+            StatutCommandeRepository statutCommandeRepository) {
         this.clientRepository = clientRepository;
         this.validationService = validationService;
         this.validationMailService = validationMailService;
         this.panierService = panierService;
         this.commandeService = commandeService;
         this.commandesRepository = commandesRepository;
+        this.statutCommandeRepository = statutCommandeRepository;
     }
 
     @GetMapping("/login")
@@ -225,13 +234,31 @@ public class AuthClientController {
     }
 
     @GetMapping("/commandes")
-    public String afficherCommandes(HttpSession session, Model model) {
+    public String afficherCommandes(HttpSession session,
+            @RequestParam(required = false) String motCle,
+            @RequestParam(required = false) String statut,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
         Client client = (Client) session.getAttribute("client");
-        List<Commandes> commandes = new ArrayList<>();
         if (client != null) {
-            commandes = commandeService.findByClient(client);
+            page = Math.max(page, 0);
+            size = Math.max(size, 1);
+            Page<Commandes> commandesPage = commandeService.findByClient(client, motCle, statut,
+                    PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "datecommande")));
             model.addAttribute("client", client);
-            model.addAttribute("commandes", commandes);
+            model.addAttribute("commandes", commandesPage.getContent());
+            model.addAttribute("currentPage", commandesPage.getNumber());
+            model.addAttribute("totalPages", commandesPage.getTotalPages());
+            model.addAttribute("size", commandesPage.getSize());
+            model.addAttribute("motCle", motCle);
+            model.addAttribute("statut", statut);
+            model.addAttribute("statutOptions",
+                    statutCommandeRepository.findAll().stream()
+                            .filter(Objects::nonNull)
+                            .map(s -> s.getNom())
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList()));
             return "front/commande/commandes";
         }
         return "redirect:/login";

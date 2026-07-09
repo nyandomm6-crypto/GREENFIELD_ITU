@@ -11,10 +11,6 @@
       <!-- Single Page Header start -->
       <div class="container-fluid page-header py-5">
         <h1 class="text-center text-white display-6">Mes commandes</h1>
-        <ol class="breadcrumb justify-content-center mb-0">
-          <li class="breadcrumb-item"><a th:href="@{/}">Accueil</a></li>
-          <li class="breadcrumb-item active text-white">Mes commandes</li>
-        </ol>
       </div>
       <!-- Single Page Header End -->
 
@@ -48,6 +44,51 @@
                       </a>
                     </div>
                   </div>
+                </div>
+
+                <div class="col-12">
+                  <form
+                    th:action="@{/commandes}"
+                    method="get"
+                    class="row g-3 align-items-end mb-4"
+                  >
+                    <div class="col-md-4">
+                      <label class="form-label">Recherche</label>
+                      <input
+                        type="text"
+                        name="motCle"
+                        class="form-control"
+                        placeholder="Numéro de commande"
+                        th:value="${motCle}"
+                      />
+                    </div>
+                    <div class="col-md-4">
+                      <label class="form-label">Statut</label>
+                      <select class="form-select" name="statut">
+                        <option value="" th:text="'Tous'"></option>
+                        <option
+                          th:each="option : ${statutOptions}"
+                          th:value="${option}"
+                          th:text="${option}"
+                          th:selected="${option == statut}"
+                        ></option>
+                      </select>
+                    </div>
+                    <div class="col-md-4 d-flex flex-wrap gap-2">
+                      <button
+                        type="submit"
+                        class="btn btn-primary rounded-pill px-4"
+                      >
+                        Appliquer
+                      </button>
+                      <a
+                        th:href="@{/commandes}"
+                        class="btn btn-outline-secondary rounded-pill px-4"
+                      >
+                        Réinitialiser
+                      </a>
+                    </div>
+                  </form>
                 </div>
 
                 <!-- Liste des commandes -->
@@ -147,6 +188,65 @@
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  <div
+                    class="col-12"
+                    th:if="${totalPages != null and totalPages > 1}"
+                  >
+                    <nav aria-label="Navigation des pages">
+                      <ul class="pagination justify-content-center">
+                        <li
+                          class="page-item"
+                          th:classappend="${currentPage == 0} ? 'disabled' : ''"
+                        >
+                          <a
+                            class="page-link"
+                            th:if="${currentPage > 0}"
+                            th:href="@{/commandes(page=${currentPage - 1}, size=${size}, motCle=${motCle}, statut=${statut})}"
+                          >
+                            « Précédent
+                          </a>
+                          <span class="page-link" th:unless="${currentPage > 0}"
+                            >« Précédent</span
+                          >
+                        </li>
+                        <li
+                          class="page-item"
+                          th:each="pageIndex : ${#numbers.sequence(0, totalPages - 1)}"
+                          th:classappend="${pageIndex == currentPage} ? 'active' : ''"
+                        >
+                          <a
+                            class="page-link"
+                            th:if="${pageIndex != currentPage}"
+                            th:href="@{/commandes(page=${pageIndex}, size=${size}, motCle=${motCle}, statut=${statut})}"
+                            th:text="${pageIndex + 1}"
+                          ></a>
+                          <span
+                            class="page-link"
+                            th:unless="${pageIndex != currentPage}"
+                            th:text="${pageIndex + 1}"
+                          ></span>
+                        </li>
+                        <li
+                          class="page-item"
+                          th:classappend="${currentPage + 1 >= totalPages} ? 'disabled' : ''"
+                        >
+                          <a
+                            class="page-link"
+                            th:if="${currentPage + 1 < totalPages}"
+                            th:href="@{/commandes(page=${currentPage + 1}, size=${size}, motCle=${motCle}, statut=${statut})}"
+                          >
+                            Suivant »
+                          </a>
+                          <span
+                            class="page-link"
+                            th:unless="${currentPage + 1 < totalPages}"
+                            >Suivant »</span
+                          >
+                        </li>
+                      </ul>
+                    </nav>
                   </div>
                 </div>
 
