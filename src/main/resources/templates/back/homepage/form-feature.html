@@ -39,30 +39,191 @@
             <div class="grille-form">
               <div class="champ">
                 <label for="icon">Icône Bootstrap</label>
-                <div class="flex align-center gap-12">
-                  <select
-                    id="icon"
-                    th:field="*{icon}"
-                    class="width-full"
-                    required
-                  >
-                    <option value="" th:text="'Sélectionner une icône'" disabled></option>
-                    <option value="bi bi-alarm">Alarm</option>
-                    <option value="bi bi-bag">Bag</option>
-                    <option value="bi bi-cart-check">Cart check</option>
-                    <option value="bi bi-check2-circle">Check circle</option>
-                    <option value="bi bi-emoji-smile">Emoji smile</option>
-                    <option value="bi bi-heart">Heart</option>
-                    <option value="bi bi-lightning">Lightning</option>
-                    <option value="bi bi-star">Star</option>
-                    <option value="bi bi-truck">Truck</option>
-                    <option value="bi bi-wallet2">Wallet</option>
-                  </select>
-                  <span
-                    id="iconPreview"
-                    class="fs-4 ms-3"
-                    th:classappend="${feature.icon} != null ? ' ' + feature.icon : ''"
-                  ></span>
+                <div class="icon-picker">
+                  <input type="hidden" id="icon" th:field="*{icon}" />
+                  <div class="icon-picker-current flex align-center gap-12">
+                    <span
+                      id="iconPickerPreview"
+                      class="fs-4"
+                      th:classappend="${feature.icon != null ? ' ' + feature.icon : ''}"
+                    ></span>
+                    <span
+                      id="iconPickerLabel"
+                      class="fw-600"
+                      th:text="${feature.icon != null ? #strings.substringAfter(feature.icon, ' ') : 'Sélectionner une icône'}"
+                      >Sélectionner une icône</span
+                    >
+                  </div>
+                  <div class="icon-picker-options flex flex-wrap gap-8 mt-8">
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-alarm"
+                    >
+                      <i class="bi bi-alarm"></i>
+                      <span>Alarm</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-bag"
+                    >
+                      <i class="bi bi-bag"></i>
+                      <span>Bag</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-cart-check"
+                    >
+                      <i class="bi bi-cart-check"></i>
+                      <span>Cart check</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-check2-circle"
+                    >
+                      <i class="bi bi-check2-circle"></i>
+                      <span>Check circle</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-emoji-smile"
+                    >
+                      <i class="bi bi-emoji-smile"></i>
+                      <span>Emoji smile</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-heart"
+                    >
+                      <i class="bi bi-heart"></i>
+                      <span>Heart</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-lightning"
+                    >
+                      <i class="bi bi-lightning"></i>
+                      <span>Lightning</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-star"
+                    >
+                      <i class="bi bi-star"></i>
+                      <span>Star</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-truck"
+                    >
+                      <i class="bi bi-truck"></i>
+                      <span>Truck</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-wallet2"
+                    >
+                      <i class="bi bi-wallet2"></i>
+                      <span>Wallet</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-people"
+                    >
+                      <i class="bi bi-people"></i>
+                      <span>People</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-globe"
+                    >
+                      <i class="bi bi-globe"></i>
+                      <span>Globe</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-chat-dots"
+                    >
+                      <i class="bi bi-chat-dots"></i>
+                      <span>Chat</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-shield-lock"
+                    >
+                      <i class="bi bi-shield-lock"></i>
+                      <span>Shield</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-clipboard-check"
+                    >
+                      <i class="bi bi-clipboard-check"></i>
+                      <span>Checklist</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-graph-up"
+                    >
+                      <i class="bi bi-graph-up"></i>
+                      <span>Graph</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-clock"
+                    >
+                      <i class="bi bi-clock"></i>
+                      <span>Clock</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-gear"
+                    >
+                      <i class="bi bi-gear"></i>
+                      <span>Gear</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-phone"
+                    >
+                      <i class="bi bi-phone"></i>
+                      <span>Phone</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-bookmark-star"
+                    >
+                      <i class="bi bi-bookmark-star"></i>
+                      <span>Bookmark</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="icon-picker-item flex align-center gap-8"
+                      data-value="bi bi-box-seam"
+                    >
+                      <i class="bi bi-box-seam"></i>
+                      <span>Package</span>
+                    </button>
+                  </div>
                 </div>
                 <span
                   class="error"

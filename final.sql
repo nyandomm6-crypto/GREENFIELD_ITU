@@ -336,3 +336,35 @@ CREATE TABLE IF NOT EXISTS temoignage (
     is_actif BOOLEAN NOT NULL DEFAULT TRUE,
     CONSTRAINT fk_temoignage_client FOREIGN KEY (id_client) REFERENCES client (id)
 );
+
+CREATE TABLE IF NOT EXISTS feature (
+    id BIGSERIAL PRIMARY KEY,
+    icon VARCHAR(100) NOT NULL,
+    titre VARCHAR(150) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    section VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS publicite (
+    id BIGSERIAL PRIMARY KEY,
+    image_path VARCHAR(255),
+    titre VARCHAR(150) NOT NULL,
+    sous_titre VARCHAR(150),
+    lien VARCHAR(255),
+    class_div VARCHAR(255),
+    class_content VARCHAR(255),
+    class_titre VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS banniere (
+    id BIGSERIAL PRIMARY KEY,
+    titre VARCHAR(150) NOT NULL,
+    sous_titre VARCHAR(150),
+    description VARCHAR(500) NOT NULL,
+    image_path VARCHAR(255),
+    lien VARCHAR(255),
+    btn_texte VARCHAR(80),
+    promo_nombre VARCHAR(50),
+    promo_prix VARCHAR(50),
+    promo_unite VARCHAR(50)
+);
