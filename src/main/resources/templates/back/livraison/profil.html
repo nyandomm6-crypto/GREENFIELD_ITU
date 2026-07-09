@@ -1,63 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head
+    th:replace="~{back/fragments/layout-livreur :: head('Mon profil')}"
+  ></head>
 
-<head th:replace="~{back/fragments/layout :: head('Mon profil')}"></head>
-
-<body class="bo">
-    <aside th:replace="~{back/fragments/layout :: sidebar('livreur')}"></aside>
+  <body class="bo">
+    <aside
+      th:replace="~{back/fragments/layout-livreur :: sidebar('livreur')}"
+    ></aside>
 
     <main class="bo-main">
-        <header th:replace="~{back/fragments/layout :: topbar('Mon profil')}"></header>
+      <header
+        th:replace="~{back/fragments/layout-livreur :: topbar('Mon profil')}"
+      ></header>
 
-        <div class="bo-contenu bo-contenu-etroit">
-
-            <div class="page-tete">
-                <div>
-                    <p class="fil"><a th:href="@{/livreurs/dashboard}">Tableau de bord</a> / Mon profil</p>
-                    <h1>Mon profil</h1>
-                </div>
-                <div class="page-actions">
-                    <a th:href="@{/livreurs/dashboard}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Tableau de bord</a>
-                </div>
-            </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-user"></i> Informations personnelles</h2>
-                </div>
-                <div class="carte-corps">
-                    <dl class="fiche">
-                        <dt>Nom</dt>
-                        <dd th:text="${livreur.nom}"></dd>
-
-                        <dt>Prénom</dt>
-                        <dd th:text="${livreur.prenom}"></dd>
-
-                        <dt>Email</dt>
-                        <dd th:text="${livreur.mail}"></dd>
-
-                        <dt>Contact</dt>
-                        <dd th:text="${livreur.contact != null ? livreur.contact : '—'}"></dd>
-
-                        <dt>Adresse</dt>
-                        <dd th:text="${livreur.adresse != null ? livreur.adresse : '—'}"></dd>
-
-                        <dt>Rôle</dt>
-                        <dd><span class="badge badge-vert" th:text="${livreur.role}"></span></dd>
-
-                        <dt>Statut</dt>
-                        <dd>
-                            <span th:if="${livreur.estActif}" class="status-active">Actif</span>
-                            <span th:unless="${livreur.estActif}" class="status-inactive">Inactif</span>
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/livreurs/dashboard}">Tableau de bord</a> / Mon
+              profil
+            </p>
+            <h1>Mon profil</h1>
+          </div>
+          <div class="page-actions">
+            <a th:href="@{/livreurs/dashboard}" class="btn btn-ligne"
+              ><i class="fa-solid fa-arrow-left"></i> Tableau de bord</a
+            >
+          </div>
         </div>
 
-        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
-    </main>
-</body>
+        <div class="carte">
+          <div class="carte-tete">
+            <h2><i class="fa-solid fa-user"></i> Informations personnelles</h2>
+          </div>
+          <div class="carte-corps">
+            <dl class="fiche">
+              <dt>Nom</dt>
+              <dd th:text="${livreur.nom}"></dd>
 
+              <dt>Prénom</dt>
+              <dd th:text="${livreur.prenom}"></dd>
+
+              <dt>Email</dt>
+              <dd th:text="${livreur.mail}"></dd>
+
+              <dt>Contact</dt>
+              <dd
+                th:text="${livreur.contact != null ? livreur.contact : '—'}"
+              ></dd>
+
+              <dt>Adresse</dt>
+              <dd
+                th:text="${livreur.adresse != null ? livreur.adresse : '—'}"
+              ></dd>
+
+              <dt>Rôle</dt>
+              <dd>
+                <span class="badge badge-vert" th:text="${livreur.role}"></span>
+              </dd>
+
+              <dt>Statut</dt>
+              <dd>
+                <span th:if="${livreur.estActif}" class="status-active"
+                  >Actif</span
+                >
+                <span th:unless="${livreur.estActif}" class="status-inactive"
+                  >Inactif</span
+                >
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-livreur :: pied}"></footer>
+    </main>
+  </body>
 </html>
