@@ -22,6 +22,20 @@ public class FaqService {
         return faqRepository.findByActiveTrueOrderByOrdreAsc();
     }
 
+    public Faq findById(Integer id) {
+        return faqRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public Faq save(Faq faq) {
+        return faqRepository.save(faq);
+    }
+
+    @Transactional
+    public void deleteById(Integer id) {
+        faqRepository.deleteById(id);
+    }
+
     @Transactional
     public void seedDefaultFaqsIfEmpty() {
         if (faqRepository.count() > 0) {

@@ -26,6 +26,24 @@ public class TemoignageService {
         return temoignages;
     }
 
+    public List<Temoignage> findAll() {
+        return temoignageRepository.findAll();
+    }
+
+    public Temoignage findById(Integer id) {
+        return temoignageRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public Temoignage save(Temoignage temoignage) {
+        return temoignageRepository.save(temoignage);
+    }
+
+    @Transactional
+    public void deleteById(Integer id) {
+        temoignageRepository.deleteById(id);
+    }
+
     @Transactional
     public Temoignage enregistrer(Temoignage temoignage) {
         return temoignageRepository.save(temoignage);

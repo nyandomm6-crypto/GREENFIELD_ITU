@@ -1,17 +1,65 @@
 package itu.greenField.service;
 
-import itu.greenField.model.Publicite;
-import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import itu.greenField.model.Publicite;
+import itu.greenField.repository.PubliciteRepository;
+import itu.greenField.service.FileStorageService;
 
 @Service
 public class PubliciteService {
 
+        private final PubliciteRepository publiciteRepository;
+        private final FileStorageService fileStorageService;
+
+        public PubliciteService(PubliciteRepository publiciteRepository, FileStorageService fileStorageService) {
+                this.publiciteRepository = publiciteRepository;
+                this.fileStorageService = fileStorageService;
+        }
+
         public List<Publicite> findAll() {
+                seedDefaultPublicitesIfEmpty();
+                return publiciteRepository.findAll();
+        }
+
+        public Publicite findById(Long id) {
+                return publiciteRepository.findById(id).orElse(null);
+        }
+
+        @Transactional
+        public Publicite save(Publicite publicite) {
+                return publiciteRepository.save(publicite);
+        }
+
+        @Transactional
+        public Publicite saveWithImage(Publicite publicite, MultipartFile image) {
+                Publicite saved = publiciteRepository.save(publicite);
+                if (image != null && !image.isEmpty()) {
+                        String path = fileStorageService.store(image, "publicites", "pub" + saved.getId());
+                        saved.setImagePath(path);
+                        saved = publiciteRepository.save(saved);
+                }
+                return saved;
+        }
+
+        @Transactional
+        public void deleteById(Long id) {
+                publiciteRepository.deleteById(id);
+        }
+
+        @Transactional
+        public void seedDefaultPublicitesIfEmpty() {
+                if (publiciteRepository.count() > 0) {
+                        return;
+                }
+
                 List<Publicite> publicites = new ArrayList<>();
 
-                // Publicité 1
                 Publicite pub1 = new Publicite();
                 pub1.setImagePath("img/featur-1.jpg");
                 pub1.setTitre("Fresh Apples");
@@ -22,7 +70,6 @@ public class PubliciteService {
                 pub1.setClassTitre("text-white");
                 publicites.add(pub1);
 
-                // Publicité 2
                 Publicite pub2 = new Publicite();
                 pub2.setImagePath("img/featur-2.jpg");
                 pub2.setTitre("Tasty Fruits");
@@ -33,7 +80,6 @@ public class PubliciteService {
                 pub2.setClassTitre("text-primary");
                 publicites.add(pub2);
 
-                // Publicité 3
                 Publicite pub3 = new Publicite();
                 pub3.setImagePath("img/featur-3.jpg");
                 pub3.setTitre("Exotic Vegetable");
@@ -44,23 +90,6 @@ public class PubliciteService {
                 pub3.setClassTitre("text-white");
                 publicites.add(pub3);
 
-                return publicites;
-        }
-
-        // Méthode pour récupérer une publicité par son ID
-        public Publicite findById(Long id) {
-                // Implémentez la logique pour récupérer une publicité depuis la base de données
-                return null;
-        }
-
-        // Méthode pour sauvegarder une publicité
-        public Publicite save(Publicite publicite) {
-                // Implémentez la logique pour sauvegarder une publicité
-                return publicite;
-        }
-
-        // Méthode pour supprimer une publicité
-        public void deleteById(Long id) {
-                // Implémentez la logique pour supprimer une publicité
+                publiciteRepository.saveAll(publicites);
         }
 }

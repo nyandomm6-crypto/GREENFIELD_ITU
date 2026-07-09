@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout :: head(${isEdit ? 'Modifier une FAQ' : 'Nouvelle FAQ'})}"
+  ></head>
+
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('homepage')}"></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout :: topbar(${isEdit ? 'Modifier une FAQ' : 'Nouvelle FAQ'})}"
+      ></header>
+
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/back/homepage}">Contenu accueil</a>
+              <i class="fas fa-chevron-right"></i>
+              <span th:text="${isEdit ? 'Modification' : 'Création'}"></span>
+            </p>
+            <h1
+              th:text="${isEdit ? 'Modifier la FAQ' : 'Ajouter une nouvelle FAQ'}"
+            ></h1>
+          </div>
+        </div>
+
+        <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
+
+        <form
+          method="post"
+          th:action="${isEdit ? '/back/homepage/faq/modifier/' + faq.id : '/back/homepage/faq/nouveau'}"
+          class="carte"
+        >
+          <div class="carte-corps">
+            <input type="hidden" name="id" th:value="${faq.id}" />
+
+            <div class="grille-form">
+              <div class="champ" style="grid-column: 1 / -1">
+                <label for="question">Question</label>
+                <input
+                  type="text"
+                  id="question"
+                  name="question"
+                  th:value="${faq.question}"
+                  placeholder="Question"
+                  required
+                />
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('question')}"
+                  th:text="${errors['question']}"
+                ></span>
+              </div>
+
+              <div class="champ" style="grid-column: 1 / -1">
+                <label for="reponse">Réponse</label>
+                <textarea
+                  id="reponse"
+                  name="reponse"
+                  rows="5"
+                  placeholder="Réponse"
+                  required
+                  th:text="${faq.reponse}"
+                ></textarea>
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('reponse')}"
+                  th:text="${errors['reponse']}"
+                ></span>
+              </div>
+
+              <div class="champ">
+                <label for="ordre">Ordre</label>
+                <input
+                  type="number"
+                  id="ordre"
+                  name="ordre"
+                  th:value="${faq.ordre}"
+                  min="0"
+                />
+              </div>
+
+              <div class="champ">
+                <label for="active">Active</label>
+                <select id="active" name="active">
+                  <option th:value="true" th:selected="${faq.active}">
+                    Oui
+                  </option>
+                  <option th:value="false" th:selected="${faq.active == false}">
+                    Non
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="carte-pied flex gap-12 aligne-centre">
+            <button type="submit" class="btn btn-vert">
+              <i class="fas fa-floppy-disk"></i> Enregistrer
+            </button>
+            <a th:href="@{/back/homepage}" class="btn btn-ligne">Annuler</a>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+  </body>
+</html>

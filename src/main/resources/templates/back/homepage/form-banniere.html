@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout :: head(${isEdit ? 'Modifier une bannière' : 'Nouvelle bannière'})}"
+  ></head>
+
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('homepage')}"></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout :: topbar(${isEdit ? 'Modifier une bannière' : 'Nouvelle bannière'})}"
+      ></header>
+
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/back/homepage}">Contenu accueil</a>
+              <i class="fas fa-chevron-right"></i>
+              <span th:text="${isEdit ? 'Modification' : 'Création'}"></span>
+            </p>
+            <h1
+              th:text="${isEdit ? 'Modifier la bannière' : 'Ajouter une nouvelle bannière'}"
+            ></h1>
+          </div>
+        </div>
+
+        <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
+
+        <form
+          method="post"
+          enctype="multipart/form-data"
+          th:action="${isEdit ? '/back/homepage/bannieres/modifier/' + banniere.id : '/back/homepage/bannieres/nouveau'}"
+          class="carte"
+        >
+          <div class="carte-corps">
+            <input type="hidden" name="id" th:value="${banniere.id}" />
+
+            <div class="grille-form">
+              <div class="champ">
+                <label for="titre">Titre</label>
+                <input
+                  type="text"
+                  id="titre"
+                  name="titre"
+                  th:value="${banniere.titre}"
+                  placeholder="Titre de la bannière"
+                  required
+                />
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('titre')}"
+                  th:text="${errors['titre']}"
+                ></span>
+              </div>
+
+              <div class="champ">
+                <label for="sousTitre">Sous-titre</label>
+                <input
+                  type="text"
+                  id="sousTitre"
+                  name="sousTitre"
+                  th:value="${banniere.sousTitre}"
+                  placeholder="Sous-titre"
+                />
+              </div>
+
+              <div class="champ" style="grid-column: 1 / -1">
+                <label for="description">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="5"
+                  placeholder="Description de la bannière"
+                  required
+                  th:text="${banniere.description}"
+                ></textarea>
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('description')}"
+                  th:text="${errors['description']}"
+                ></span>
+              </div>
+
+              <div class="champ">
+                <label for="btnTexte">Texte du bouton</label>
+                <input
+                  type="text"
+                  id="btnTexte"
+                  name="btnTexte"
+                  th:value="${banniere.btnTexte}"
+                  placeholder="Texte du bouton"
+                  required
+                />
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('btnTexte')}"
+                  th:text="${errors['btnTexte']}"
+                ></span>
+              </div>
+
+              <div class="champ">
+                <label for="lien">Lien du bouton</label>
+                <input
+                  type="text"
+                  id="lien"
+                  name="lien"
+                  th:value="${banniere.lien}"
+                  placeholder="URL du bouton"
+                />
+              </div>
+
+              <div class="champ">
+                <label for="image">Image</label>
+                <div
+                  th:if="${isEdit && banniere.imagePath != null}"
+                  style="margin-bottom: 10px"
+                >
+                  <img
+                    th:src="@{${banniere.imagePath}}"
+                    alt="Image actuelle"
+                    style="
+                      max-width: 160px;
+                      max-height: 160px;
+                      border-radius: 12px;
+                      object-fit: cover;
+                    "
+                  />
+                </div>
+                <input type="file" id="image" name="image" accept="image/*" />
+                <span class="aide"
+                  >Laissez vide pour conserver l'image actuelle.</span
+                >
+              </div>
+
+              <div class="champ">
+                <label for="promoNombre">Nombre promo</label>
+                <input
+                  type="text"
+                  id="promoNombre"
+                  name="promoNombre"
+                  th:value="${banniere.promoNombre}"
+                  placeholder="Ex : 1"
+                />
+              </div>
+
+              <div class="champ">
+                <label for="promoPrix">Prix promo</label>
+                <input
+                  type="text"
+                  id="promoPrix"
+                  name="promoPrix"
+                  th:value="${banniere.promoPrix}"
+                  placeholder="Ex : 50$"
+                />
+              </div>
+
+              <div class="champ">
+                <label for="promoUnite">Unité promo</label>
+                <input
+                  type="text"
+                  id="promoUnite"
+                  name="promoUnite"
+                  th:value="${banniere.promoUnite}"
+                  placeholder="Ex : kg"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="carte-pied flex gap-12 aligne-centre">
+            <button type="submit" class="btn btn-vert">
+              <i class="fas fa-floppy-disk"></i> Enregistrer
+            </button>
+            <a th:href="@{/back/homepage}" class="btn btn-ligne">Annuler</a>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+  </body>
+</html>

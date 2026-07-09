@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout :: head(${isEdit ? 'Modifier un témoignage' : 'Nouveau témoignage'})}"
+  ></head>
+
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('homepage')}"></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout :: topbar(${isEdit ? 'Modifier un témoignage' : 'Nouveau témoignage'})}"
+      ></header>
+
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/back/homepage}">Contenu accueil</a>
+              <i class="fas fa-chevron-right"></i>
+              <span th:text="${isEdit ? 'Modification' : 'Création'}"></span>
+            </p>
+            <h1
+              th:text="${isEdit ? 'Modifier le témoignage' : 'Ajouter un nouveau témoignage'}"
+            ></h1>
+          </div>
+        </div>
+
+        <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
+
+        <form
+          method="post"
+          th:action="${isEdit ? '/back/homepage/temoignages/modifier/' + temoignage.id : '/back/homepage/temoignages/nouveau'}"
+          class="carte"
+        >
+          <div class="carte-corps">
+            <input type="hidden" name="id" th:value="${temoignage.id}" />
+
+            <div class="grille-form">
+              <div class="champ">
+                <label for="nom">Nom</label>
+                <input
+                  type="text"
+                  id="nom"
+                  name="nom"
+                  th:value="${temoignage.nom}"
+                  placeholder="Nom du client"
+                  required
+                />
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('nom')}"
+                  th:text="${errors['nom']}"
+                ></span>
+              </div>
+
+              <div class="champ">
+                <label for="poste">Poste</label>
+                <input
+                  type="text"
+                  id="poste"
+                  name="poste"
+                  th:value="${temoignage.poste}"
+                  placeholder="Poste ou rôle"
+                />
+              </div>
+
+              <div class="champ" style="grid-column: 1 / -1">
+                <label for="message">Message</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="5"
+                  placeholder="Message du témoignage"
+                  required
+                  th:text="${temoignage.message}"
+                ></textarea>
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('message')}"
+                  th:text="${errors['message']}"
+                ></span>
+              </div>
+
+              <div class="champ">
+                <label for="note">Note</label>
+                <select id="note" name="note">
+                  <option th:value="1" th:selected="${temoignage.note == 1}">
+                    1
+                  </option>
+                  <option th:value="2" th:selected="${temoignage.note == 2}">
+                    2
+                  </option>
+                  <option th:value="3" th:selected="${temoignage.note == 3}">
+                    3
+                  </option>
+                  <option th:value="4" th:selected="${temoignage.note == 4}">
+                    4
+                  </option>
+                  <option th:value="5" th:selected="${temoignage.note == 5}">
+                    5
+                  </option>
+                </select>
+              </div>
+
+              <div class="champ">
+                <label for="isActif">Actif</label>
+                <select id="isActif" name="isActif">
+                  <option th:value="true" th:selected="${temoignage.isActif}">
+                    Oui
+                  </option>
+                  <option
+                    th:value="false"
+                    th:selected="${temoignage.isActif == false}"
+                  >
+                    Non
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="carte-pied flex gap-12 aligne-centre">
+            <button type="submit" class="btn btn-vert">
+              <i class="fas fa-floppy-disk"></i> Enregistrer
+            </button>
+            <a th:href="@{/back/homepage}" class="btn btn-ligne">Annuler</a>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+  </body>
+</html>

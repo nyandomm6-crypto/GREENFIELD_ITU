@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout :: head(${isEdit ? 'Modifier une publicité' : 'Nouvelle publicité'})}"
+  ></head>
+
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('homepage')}"></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout :: topbar(${isEdit ? 'Modifier une publicité' : 'Nouvelle publicité'})}"
+      ></header>
+
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/back/homepage}">Contenu accueil</a>
+              <i class="fas fa-chevron-right"></i>
+              <span th:text="${isEdit ? 'Modification' : 'Création'}"></span>
+            </p>
+            <h1
+              th:text="${isEdit ? 'Modifier la publicité' : 'Ajouter une nouvelle publicité'}"
+            ></h1>
+          </div>
+        </div>
+
+        <th:block th:replace="~{back/fragments/layout :: alertes}"></th:block>
+
+        <form
+          method="post"
+          enctype="multipart/form-data"
+          th:action="${isEdit ? '/back/homepage/publicites/modifier/' + publicite.id : '/back/homepage/publicites/nouveau'}"
+          class="carte"
+        >
+          <div class="carte-corps">
+            <input type="hidden" name="id" th:value="${publicite.id}" />
+
+            <div class="grille-form">
+              <div class="champ">
+                <label for="titre">Titre</label>
+                <input
+                  type="text"
+                  id="titre"
+                  name="titre"
+                  th:value="${publicite.titre}"
+                  placeholder="Titre de la publicité"
+                  required
+                />
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('titre')}"
+                  th:text="${errors['titre']}"
+                ></span>
+              </div>
+
+              <div class="champ">
+                <label for="sousTitre">Sous-titre</label>
+                <input
+                  type="text"
+                  id="sousTitre"
+                  name="sousTitre"
+                  th:value="${publicite.sousTitre}"
+                  placeholder="Sous-titre"
+                  required
+                />
+                <span
+                  class="error"
+                  th:if="${errors?.containsKey('sousTitre')}"
+                  th:text="${errors['sousTitre']}"
+                ></span>
+              </div>
+
+              <div class="champ">
+                <label for="lien">Lien</label>
+                <input
+                  type="text"
+                  id="lien"
+                  name="lien"
+                  th:value="${publicite.lien}"
+                  placeholder="URL de la publicité"
+                />
+              </div>
+
+              <div class="champ">
+                <label for="image">Image</label>
+                <div
+                  th:if="${isEdit && publicite.imagePath != null}"
+                  style="margin-bottom: 10px"
+                >
+                  <img
+                    th:src="@{${publicite.imagePath}}"
+                    alt="Image actuelle"
+                    style="
+                      max-width: 160px;
+                      max-height: 160px;
+                      border-radius: 12px;
+                      object-fit: cover;
+                    "
+                  />
+                </div>
+                <input type="file" id="image" name="image" accept="image/*" />
+                <span class="aide"
+                  >Laissez vide pour conserver l'image actuelle.</span
+                >
+              </div>
+
+              <div class="champ">
+                <label for="classDiv">Classe du conteneur</label>
+                <input
+                  type="text"
+                  id="classDiv"
+                  name="classDiv"
+                  th:value="${publicite.classDiv}"
+                  placeholder="Classe CSS du bloc"
+                />
+              </div>
+
+              <div class="champ">
+                <label for="classContent">Classe du contenu</label>
+                <input
+                  type="text"
+                  id="classContent"
+                  name="classContent"
+                  th:value="${publicite.classContent}"
+                  placeholder="Classe CSS du contenu"
+                />
+              </div>
+
+              <div class="champ">
+                <label for="classTitre">Classe du titre</label>
+                <input
+                  type="text"
+                  id="classTitre"
+                  name="classTitre"
+                  th:value="${publicite.classTitre}"
+                  placeholder="Classe CSS du titre"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="carte-pied flex gap-12 aligne-centre">
+            <button type="submit" class="btn btn-vert">
+              <i class="fas fa-floppy-disk"></i> Enregistrer
+            </button>
+            <a th:href="@{/back/homepage}" class="btn btn-ligne">Annuler</a>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+  </body>
+</html>

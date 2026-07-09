@@ -18,7 +18,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title th:text="${titre} + ' · greenField Admin'">greenField Admin</title>
 
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23009951'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial'%3Eg%3C/text%3E%3C/svg%3E" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23009951'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='Arial'%3Eg%3C/text%3E%3C/svg%3E"
+    />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,10 +44,19 @@
     ================================================================== -->
     <aside class="bo-sidebar" th:fragment="sidebar(actif)">
       <a th:href="@{/commandes/list}" class="bo-brand">
-        <span class="bo-brand-icone" style="background: transparent; overflow: hidden;">
-          <img th:src="@{/img/logo.png}" alt="greenField"
-               style="width: 100%; height: 100%; object-fit: contain;"
-               onerror="this.onerror=null; this.outerHTML='&lt;i class=\'fas fa-seedling\'&gt;&lt;/i&gt;';" />
+        <span
+          class="bo-brand-icone"
+          style="background: transparent; overflow: hidden"
+        >
+          <img
+            th:src="@{/img/logo.png}"
+            alt="greenField"
+            style="width: 100%; height: 100%; object-fit: contain"
+            onerror="
+              this.onerror = null;
+              this.outerHTML = '&lt;i class=\'fas fa-seedling\'&gt;&lt;/i&gt;';
+            "
+          />
         </span>
         <span>
           <span class="bo-brand-nom">green<span>Field</span></span>
@@ -82,6 +94,15 @@
           th:classappend="${actif == 'stock-entree'} ? 'actif'"
         >
           <i class="fas fa-dolly"></i> Entrée de stock
+        </a>
+
+        <p class="bo-nav-groupe">Site</p>
+        <a
+          th:href="@{/back/homepage}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'homepage'} ? 'actif'"
+        >
+          <i class="fas fa-house"></i> Contenu accueil
         </a>
 
         <p class="bo-nav-groupe">Ventes</p>
@@ -162,7 +183,9 @@
       </nav>
 
       <div class="bo-sidebar-pied">
-        <a th:href="@{/}"><i class="fas fa-arrow-up-right-from-square"></i> Voir la boutique</a>
+        <a th:href="@{/}"
+          ><i class="fas fa-arrow-up-right-from-square"></i> Voir la boutique</a
+        >
         <div>&copy; 2026 greenField</div>
       </div>
     </aside>
@@ -215,7 +238,9 @@
        PIED DE PAGE
     ================================================================== -->
     <footer class="bo-pied" th:fragment="pied">
-      <span>greenField · Marché des producteurs — console d'administration</span>
+      <span
+        >greenField · Marché des producteurs — console d'administration</span
+      >
       <span>Antananarivo, Madagascar</span>
     </footer>
   </body>

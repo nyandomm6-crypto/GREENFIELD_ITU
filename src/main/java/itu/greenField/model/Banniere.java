@@ -1,18 +1,47 @@
 package itu.greenField.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "banniere")
 public class Banniere {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, length = 150)
     private String titre;
+
+    @Column(name = "sous_titre", length = 150)
     private String sousTitre;
+
+    @Column(nullable = false, length = 500)
     private String description;
+
+    @Column(name = "image_path", length = 255)
     private String imagePath;
+
+    @Column(length = 255)
     private String lien;
+
+    @Column(name = "btn_texte", length = 80)
     private String btnTexte;
+
+    @Column(name = "promo_nombre", length = 50)
     private String promoNombre;
+
+    @Column(name = "promo_prix", length = 50)
     private String promoPrix;
+
+    @Column(name = "promo_unite", length = 50)
     private String promoUnite;
 
-    // Constructeurs
     public Banniere() {
     }
 
@@ -31,7 +60,6 @@ public class Banniere {
         this.promoUnite = promoUnite;
     }
 
-    // Getters et Setters
     public Long getId() {
         return id;
     }
