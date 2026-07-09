@@ -2,6 +2,8 @@ package itu.greenField.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import itu.greenField.model.Produit;
@@ -21,19 +23,24 @@ public class ProduitService {
     }
 
     public List<Produit> listerProduits(Integer idCategorie, String motCle) {
+        return rechercherProduitsPage(idCategorie, motCle, Pageable.unpaged()).getContent();
+    }
+
+    public Page<Produit> rechercherProduitsPage(Integer idCategorie, String motCle, Pageable pageable) {
         boolean filtreCategorie = idCategorie != null;
         boolean filtreMotCle = motCle != null && !motCle.trim().isEmpty();
+        String motCleNettoye = filtreMotCle ? motCle.trim() : null;
 
         if (filtreCategorie && filtreMotCle) {
-            return produitRepository.findByCategorie_IdAndNomContainingIgnoreCase(idCategorie, motCle.trim());
+            return produitRepository.findByCategorie_IdAndNomContainingIgnoreCase(idCategorie, motCleNettoye, pageable);
         }
         if (filtreCategorie) {
-            return produitRepository.findByCategorie_Id(idCategorie);
+            return produitRepository.findByCategorie_Id(idCategorie, pageable);
         }
         if (filtreMotCle) {
-            return produitRepository.findByNomContainingIgnoreCase(motCle.trim());
+            return produitRepository.findByNomContainingIgnoreCase(motCleNettoye, pageable);
         }
-        return produitRepository.findAll();
+        return produitRepository.findAll(pageable);
     }
 
     public Produit trouverParId(Integer id) {

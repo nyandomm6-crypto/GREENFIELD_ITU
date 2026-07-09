@@ -1,67 +1,130 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head
+    th:replace="~{front/fragments/layout :: head(pageTitle='Mes commandes - GreenField')}"
+  ></head>
 
-<head th:replace="~{front/fragments/layout :: head('Mes commandes')}"></head>
+  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+    <div th:fragment="pageContent">
+      <!-- Single Page Header start -->
+      <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Mes commandes</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+          <li class="breadcrumb-item"><a th:href="@{/}">Accueil</a></li>
+          <li class="breadcrumb-item active text-white">Mes commandes</li>
+        </ol>
+      </div>
+      <!-- Single Page Header End -->
 
-<body>
-    <div th:replace="~{front/fragments/layout :: nav}"></div>
-
-    <main class="conteneur" style="padding: 32px 20px 60px;">
-
-        <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
-            <div>
-                <p style="color: var(--gf-gris); font-size: 13px; margin-bottom: 4px;">Mon compte / Mes commandes</p>
-                <h1 style="margin: 0;">Mes commandes</h1>
-            </div>
-            <div>
-                <a th:href="@{/commandes/fo/form/new}" class="btn btn-vert"><i class="fa-solid fa-plus"></i> Nouvelle commande</a>
-            </div>
-        </div>
-
-        <div class="tableau-scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Date</th>
-                        <th>Mode de réception</th>
-                        <th>Lieu / adresse</th>
-                        <th>Statut</th>
-                        <th class="num">Total</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="cmd : ${commandes}">
-                        <td class="mono" th:text="${cmd.id}"></td>
-                        <td th:text="${cmd.datecommande != null ? #dates.format(cmd.datecommande, 'yyyy-MM-dd HH:mm') : ''}"></td>
-                        <td>
-                            <span class="badge badge-sans-point"
-                                th:classappend="${cmd.modeReception == 'Retrait_Boutique'} ? 'badge-feuille' : 'badge-ocre'"
-                                th:text="${cmd.modeReception == 'Retrait_Boutique' ? 'Retrait' : (cmd.modeReception == 'Livraison_Domicile' ? 'Livraison' : cmd.modeReception)}"></span>
-                        </td>
-                        <td th:text="${cmd.pointDeVenteRetrait?.code != null ? cmd.pointDeVenteRetrait?.code : cmd.adresseLivraison}"></td>
-                        <td><span class="badge badge-vert" th:text="${cmd.statutActuel?.nom}"></span></td>
-                        <td class="num texte-ocre" th:text="${cmd.totalGeneral}"></td>
-                        <td>
-                            <a th:href="@{|/commandes/fo/detail/${cmd.id}|}" class="btn btn-sm btn-ligne">Détail</a>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(commandes)}">
-                        <td colspan="7">
-                            <div class="vide">
-                                <i class="fa-solid fa-receipt"></i>
-                                <p>Vous n'avez pas encore passé de commande.</p>
+      <!-- Commandes Start -->
+      <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+          <div class="row g-4">
+            <div class="col-lg-12">
+              <div class="row g-4">
+                <div class="col-12">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      flex-wrap: wrap;
+                      gap: 14px;
+                      margin-bottom: 20px;
+                    "
+                  >
+                    <div>
+                      <h1 style="margin: 0; font-size: 28px">Mes commandes</h1>
+                    </div>
+                    <div>
+                      <a
+                        th:href="@{/commandes/fo/form/new}"
+                        class="btn border border-secondary rounded-pill px-4 py-2 text-primary"
+                      >
+                        <i class="fa fa-plus me-2 text-primary"></i> Nouvelle
+                        commande
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                      <thead class="bg-light">
+                        <tr>
+                          <th>#</th>
+                          <th>Date</th>
+                          <th>Mode de réception</th>
+                          <th>Lieu / adresse</th>
+                          <th>Statut</th>
+                          <th class="text-end">Total</th>
+                          <th class="text-center">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="cmd : ${commandes}">
+                          <td class="fw-bold" th:text="${cmd.id}"></td>
+                          <td
+                            th:text="${cmd.datecommande != null ? #dates.format(cmd.datecommande, 'yyyy-MM-dd HH:mm') : ''}"
+                          ></td>
+                          <td>
+                            <span
+                              class="badge"
+                              th:classappend="${cmd.modeReception == 'Retrait_Boutique'} ? 'bg-success' : 'bg-warning text-dark'"
+                              th:text="${cmd.modeReception == 'Retrait_Boutique' ? 'Retrait' : (cmd.modeReception == 'Livraison_Domicile' ? 'Livraison' : cmd.modeReception)}"
+                            ></span>
+                          </td>
+                          <td
+                            th:text="${cmd.pointDeVenteRetrait?.code != null ? cmd.pointDeVenteRetrait?.code : cmd.adresseLivraison}"
+                          ></td>
+                          <td>
+                            <span
+                              class="badge bg-primary"
+                              th:text="${cmd.statutActuel?.nom}"
+                            ></span>
+                          </td>
+                          <td
+                            class="text-end fw-bold text-primary"
+                            th:text="${cmd.totalGeneral} + ' Ar'"
+                          ></td>
+                          <td class="text-center">
+                            <a
+                              th:href="@{|/commandes/fo/detail/${cmd.id}|}"
+                              class="btn btn-sm border border-secondary rounded-pill px-3 py-1 text-primary"
+                            >
+                              <i class="fa fa-eye me-1"></i> Détail
+                            </a>
+                          </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(commandes)}">
+                          <td colspan="7">
+                            <div class="text-center py-5">
+                              <i
+                                class="fa fa-receipt fa-3x text-muted mb-3"
+                              ></i>
+                              <p class="text-muted">
+                                Vous n'avez pas encore passé de commande.
+                              </p>
+                              <a
+                                th:href="@{/commandes/fo/form/new}"
+                                class="btn border border-secondary rounded-pill px-4 py-2 text-primary"
+                              >
+                                <i class="fa fa-plus me-2 text-primary"></i>
+                                Passer ma première commande
+                              </a>
                             </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-
-    </main>
-
-    <div th:replace="~{front/fragments/layout :: footer}"></div>
-</body>
-
+      </div>
+      <!-- Commandes End -->
+    </div>
+  </body>
 </html>

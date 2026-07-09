@@ -1,1112 +1,124 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Connexion - greenField</title>
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-
-    <style>
-      /* =====================================================
-           TOKENS - DESIGN SYSTEM UNIFIÉ
-        ====================================================== */
-      :root {
-        /* Couleurs principales */
-        --gf-forest: #0A2E1C;
-        --gf-forest-2: #123D27;
-        --gf-green: #009951;
-        --gf-green-light: #5EB453;
-        --gf-leaf: #93D888;
-        --gf-gold: #A46D2C;
-        --gf-cream: #F7F4EC;
-        --gf-line: #E3E9E1;
-        --gf-text: #14261B;
-        --gf-muted: #62705F;
-
-        /* Couleurs d'accent */
-        --ali-orange: #A46D2C;
-        --ali-orange-light: #B98136;
-        --ali-orange-dark: #7E5C15;
-        --danger: #d32f2f;
-        --success: #2e7d32;
-
-        /* Ombres */
-        --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
-        --ombre-forte: 0 8px 28px rgba(0, 0, 0, 0.1);
-
-        /* Tailles de police - DESIGN SYSTEM */
-        --fs-xs: 11px;
-        --fs-sm: 13px;
-        --fs-base: 14px;
-        --fs-md: 15px;
-        --fs-lg: 18px;
-        --fs-xl: 20px;
-        --fs-2xl: 24px;
-        --fs-3xl: 28px;
-
-        /* Espacements */
-        --sp-2: 2px;
-        --sp-4: 4px;
-        --sp-6: 6px;
-        --sp-8: 8px;
-        --sp-10: 10px;
-        --sp-12: 12px;
-        --sp-14: 14px;
-        --sp-16: 16px;
-        --sp-18: 18px;
-        --sp-20: 20px;
-        --sp-24: 24px;
-        --sp-28: 28px;
-        --sp-30: 30px;
-        --sp-40: 40px;
-        --sp-50: 50px;
-
-        /* Rayons */
-        --radius-sm: 8px;
-        --radius-md: 12px;
-        --radius-lg: 16px;
-        --radius-xl: 20px;
-        --radius-full: 50px;
-
-        /* Transitions */
-        --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-        --bg-panier: #f5f3ef;
-        --blanc: #ffffff;
-      }
-
-      /* =====================================================
-           RESET & BASE
-        ====================================================== */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        background: var(--bg-panier);
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-        font-size: var(--fs-base);
-        color: var(--gf-text);
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        line-height: 1.6;
-      }
-
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-      ul {
-        list-style: none;
-      }
-      .conteneur {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 var(--sp-20);
-      }
-
-      /* =====================================================
-           BOUTONS UNIFORMISÉS
-        ====================================================== */
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--sp-8);
-        padding: var(--sp-10) var(--sp-24);
-        border: none;
-        border-radius: var(--radius-full);
-        font-size: var(--fs-base);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        text-align: center;
-        min-height: 44px;
-        min-width: 120px;
-        font-family: inherit;
-        line-height: 1.2;
-      }
-
-      .btn-primary {
-        background: linear-gradient(
-          135deg,
-          var(--gf-green),
-          var(--gf-forest-2)
-        );
-        color: #fff;
-      }
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
-      }
-
-      .btn-orange {
-        background: linear-gradient(
-          135deg,
-          var(--ali-orange-light),
-          var(--ali-orange-dark)
-        );
-        color: #fff;
-        box-shadow: 0 4px 16px rgba(255, 106, 0, 0.25);
-      }
-      .btn-orange:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(255, 106, 0, 0.35);
-        opacity: 0.95;
-      }
-
-      .btn-outline {
-        background: transparent;
-        color: var(--gf-green);
-        border: 2px solid var(--gf-green);
-      }
-      .btn-outline:hover {
-        background: var(--gf-green);
-        color: #fff;
-      }
-
-      .btn-secondary {
-        background: var(--gf-cream);
-        color: var(--gf-text);
-        border: 1.5px solid var(--gf-line);
-      }
-      .btn-secondary:hover {
-        background: var(--blanc);
-        border-color: var(--gf-green);
-        color: var(--gf-forest);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-      }
-
-      .btn-sm {
-        padding: var(--sp-6) var(--sp-14);
-        font-size: var(--fs-sm);
-        min-height: 36px;
-        min-width: 80px;
-      }
-
-      .btn-block {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-      }
-
-      .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none !important;
-        box-shadow: none !important;
-      }
-
-      .btn-cta-orange {
-        background: var(--ali-orange);
-        color: #fff !important;
-        padding: var(--sp-10) var(--sp-20);
-        border-radius: var(--radius-full);
-        font-weight: 600;
-        font-size: var(--fs-base);
-        transition: background 0.2s;
-        display: inline-block;
-        min-height: 44px;
-        min-width: 120px;
-        text-align: center;
-        line-height: 1.2;
-      }
-      .btn-cta-orange:hover {
-        background: var(--ali-orange-dark);
-        color: #fff;
-      }
-
-      /* =====================================================
-           HEADER - UNIFORMISÉ AVEC LES AUTRES PAGES
-        ====================================================== */
-      .market-header {
-        background: #ffffff;
-        padding: var(--sp-12) 0;
-        position: sticky;
-        top: 0;
-        z-index: 1002;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        border-bottom: 1px solid #e6e6e6;
-      }
-      .market-header .conteneur {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--sp-28);
-      }
-
-      .mh-logo {
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-      }
-      .mh-logo-text {
-        font-size: var(--fs-3xl);
-        font-weight: 700;
-        color: var(--ali-orange);
-        letter-spacing: -1px;
-      }
-      .mh-logo-text span {
-        color: #333;
-      }
-      .mh-logo-text i {
-        color: var(--gf-green);
-        font-size: var(--fs-xl);
-        margin-right: var(--sp-4);
-      }
-
-      .mh-search {
-        flex: 1;
-        max-width: 700px;
-      }
-      .mh-search form {
-        display: flex;
-        height: 44px;
-        border: 2px solid var(--ali-orange);
-        border-radius: var(--radius-full);
-        overflow: hidden;
-        background: #fff;
-      }
-      .mh-search input {
-        flex: 1;
-        border: none;
-        padding: 0 var(--sp-16);
-        font-size: var(--fs-base);
-        outline: none;
-        color: #333;
-      }
-      .mh-search input::placeholder {
-        color: #999;
-      }
-      .mh-search .search-icons {
-        display: flex;
-        align-items: center;
-        padding-right: var(--sp-10);
-        color: #999;
-        gap: var(--sp-8);
-        cursor: pointer;
-      }
-      .mh-search button {
-        background: linear-gradient(
-          135deg,
-          var(--ali-orange-light),
-          var(--ali-orange-dark)
-        );
-        border: none;
-        color: #fff;
-        padding: 0 var(--sp-28);
-        font-weight: 600;
-        font-size: var(--fs-md);
-        cursor: pointer;
-        transition: opacity 0.2s;
-        display: flex;
-        align-items: center;
-        gap: var(--sp-8);
-        min-height: 44px;
-      }
-      .mh-search button:hover {
-        opacity: 0.9;
-      }
-
-      .mh-actions {
-        display: flex;
-        align-items: center;
-        gap: var(--sp-18);
-        flex-shrink: 0;
-      }
-      .mh-action {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: #333;
-        font-size: var(--fs-sm);
-        font-weight: 500;
-        transition: color 0.2s;
-        position: relative;
-      }
-      .mh-action:hover {
-        color: var(--ali-orange);
-      }
-      .mh-action i {
-        font-size: var(--fs-xl);
-        margin-bottom: 0px;
-      }
-      .mh-action .cart-count {
-        position: absolute;
-        top: -4px;
-        right: -8px;
-        background: var(--ali-orange);
-        color: #fff;
-        font-size: var(--fs-xs);
-        font-weight: 700;
-        min-width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      /* =====================================================
-         PAGE CONNEXION
-        ====================================================== */
-      .page-connexion {
-        padding: var(--sp-24) 0 var(--sp-40);
-        flex: 1 0 auto;
-        background: var(--bg-panier);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: calc(100vh - 200px);
-      }
-
-      .breadcrumb {
-        font-size: var(--fs-sm);
-        color: var(--gf-muted);
-        margin-bottom: var(--sp-16);
-        text-align: center;
-      }
-      .breadcrumb a {
-        color: var(--gf-green);
-      }
-      .breadcrumb a:hover {
-        text-decoration: underline;
-      }
-      .breadcrumb span {
-        color: var(--gf-text);
-        font-weight: 600;
-      }
-
-      /* ===== CARTE AUTH ===== */
-      .carte-auth {
-        max-width: 420px;
-        width: 100%;
-        margin: 0 auto;
-        background: var(--blanc);
-        border: 1px solid var(--gf-line);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--ombre-forte);
-        padding: var(--sp-30);
-        transition: var(--transition);
-      }
-
-      .carte-auth:hover {
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-      }
-
-      .carte-auth .auth-header {
-        text-align: center;
-        margin-bottom: var(--sp-24);
-      }
-
-      .carte-auth .auth-header .icon {
-        font-size: 48px;
-        color: var(--ali-orange);
-        margin-bottom: var(--sp-8);
-        display: block;
-      }
-
-      .carte-auth h1 {
-        font-size: var(--fs-2xl);
-        font-weight: 700;
-        color: var(--gf-forest);
-        margin: 0;
-      }
-
-      .carte-auth .sous-titre {
-        font-size: var(--fs-base);
-        color: var(--gf-muted);
-        margin-top: var(--sp-4);
-      }
-
-      /* Messages flash */
-      .message {
-        padding: var(--sp-12) var(--sp-16);
-        border-radius: var(--radius-md);
-        margin-bottom: var(--sp-16);
-        font-weight: 600;
-        border-left: 4px solid transparent;
-        display: flex;
-        align-items: center;
-        gap: var(--sp-10);
-        font-size: var(--fs-sm);
-      }
-      .message.error {
-        background: #fde8e4;
-        border-color: #b85a4a;
-        color: #7a3326;
-      }
-      .message.success {
-        background: #e7f3e4;
-        border-color: var(--gf-green);
-        color: #1a3a2a;
-      }
-      .message i {
-        font-size: var(--fs-lg);
-      }
-
-      /* Formulaire */
-      .auth-form {
-        display: flex;
-        flex-direction: column;
-        gap: var(--sp-16);
-      }
-
-      .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: var(--sp-6);
-      }
-
-      .form-group label {
-        font-size: var(--fs-base);
-        font-weight: 600;
-        color: var(--gf-forest);
-        display: flex;
-        align-items: center;
-        gap: var(--sp-8);
-      }
-
-      .form-group label i {
-        color: var(--gf-green);
-        width: 18px;
-        font-size: var(--fs-base);
-      }
-
-      .form-group input {
-        width: 100%;
-        padding: var(--sp-10) var(--sp-14);
-        border: 1.5px solid var(--gf-line);
-        border-radius: var(--radius-sm);
-        font-size: var(--fs-base);
-        font-family: inherit;
-        color: var(--gf-text);
-        background: var(--blanc);
-        transition: var(--transition);
-        min-height: 44px;
-      }
-
-      .form-group input:focus {
-        border-color: var(--gf-green);
-        box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.12);
-        outline: none;
-      }
-
-      .form-group input:hover {
-        border-color: var(--gf-green-light);
-      }
-
-      .form-group input::placeholder {
-        color: #999;
-      }
-
-      .form-options {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: var(--sp-8);
-        font-size: var(--fs-sm);
-      }
-
-      .form-options label {
-        display: flex;
-        align-items: center;
-        gap: var(--sp-6);
-        font-weight: 400;
-        color: var(--gf-muted);
-        cursor: pointer;
-      }
-
-      .form-options label input[type="checkbox"] {
-        accent-color: var(--gf-green);
-        width: 16px;
-        height: 16px;
-        cursor: pointer;
-      }
-
-      .form-options a {
-        color: var(--gf-green);
-        font-weight: 500;
-      }
-      .form-options a:hover {
-        text-decoration: underline;
-      }
-
-      .btn-connexion {
-        width: 100%;
-        justify-content: center;
-        margin-top: var(--sp-4);
-        min-height: 48px;
-        font-size: var(--fs-md);
-      }
-
-      /* Liens footer */
-      .auth-footer {
-        text-align: center;
-        margin-top: var(--sp-20);
-        padding-top: var(--sp-16);
-        border-top: 1px solid var(--gf-line);
-        font-size: var(--fs-base);
-        color: var(--gf-muted);
-      }
-
-      .auth-footer a {
-        color: var(--ali-orange);
-        font-weight: 600;
-        transition: var(--transition);
-      }
-      .auth-footer a:hover {
-        color: var(--ali-orange-dark);
-        text-decoration: underline;
-      }
-
-      .auth-footer i {
-        margin-right: var(--sp-4);
-      }
-
-      /* =====================================================
-         FOOTER
-        ====================================================== */
-      .footer {
-        background: var(--gf-forest);
-        color: rgba(255, 255, 255, 0.7);
-        margin-top: auto;
-        border-top: 3px solid var(--gf-green);
-        flex-shrink: 0;
-        width: 100%;
-      }
-      .footer-newsletter {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        padding: var(--sp-24) 0;
-      }
-      .footer-newsletter .conteneur {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--sp-20);
-        flex-wrap: wrap;
-      }
-      .footer-newsletter .nl-text h3 {
-        color: #fff;
-        font-size: var(--fs-lg);
-        font-weight: 700;
-        margin-bottom: var(--sp-4);
-      }
-      .footer-newsletter .nl-text p {
-        font-size: var(--fs-base);
-        color: rgba(255, 255, 255, 0.6);
-        margin: 0;
-      }
-      .nl-form {
-        display: flex;
-        gap: 0;
-        flex-shrink: 0;
-      }
-      .nl-form input {
-        border: none;
-        padding: 0 var(--sp-16);
-        height: 46px;
-        width: 280px;
-        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-        font-size: var(--fs-base);
-        outline: none;
-        background: rgba(255, 255, 255, 0.95);
-        min-height: 46px;
-      }
-      .nl-form input:focus {
-        background: #fff;
-      }
-      .nl-form button {
-        background: var(--gf-gold);
-        color: #3D2A0F;
-        border: none;
-        padding: 0 var(--sp-28);
-        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-        font-weight: 700;
-        font-size: var(--fs-base);
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        white-space: nowrap;
-        min-height: 46px;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-8);
-      }
-      .nl-form button:hover {
-        background: #C9924D;
-      }
-
-      .footer-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-        gap: var(--sp-30);
-        padding: var(--sp-40) 0 var(--sp-28);
-      }
-      .footer .logo {
-        color: #fff;
-        font-size: var(--fs-xl);
-        font-weight: 800;
-        display: inline-block;
-        margin-bottom: var(--sp-12);
-      }
-      .footer .logo i {
-        color: var(--gf-leaf);
-      }
-      .footer .footer-description {
-        font-size: var(--fs-base);
-        line-height: 1.8;
-        max-width: 280px;
-        color: rgba(255, 255, 255, 0.65);
-        margin: 0;
-      }
-      .footer h4 {
-        color: #fff;
-        font-size: var(--fs-md);
-        font-weight: 700;
-        margin-bottom: var(--sp-14);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      .footer ul li {
-        margin-bottom: var(--sp-8);
-      }
-      .footer ul li a {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: var(--fs-base);
-        transition: all 0.2s ease-in-out;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-4);
-      }
-      .footer ul li a:hover {
-        color: #fff;
-      }
-      .footer ul li i {
-        width: 22px;
-        color: var(--gf-gold);
-      }
-      .footer-bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        padding: var(--sp-18) 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: var(--sp-12);
-        font-size: var(--fs-sm);
-      }
-      .footer-socials {
-        display: flex;
-        gap: var(--sp-10);
-      }
-      .footer-socials a {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.06);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255, 255, 255, 0.5);
-        transition: all 0.2s ease-in-out;
-        font-size: var(--fs-md);
-      }
-      .footer-socials a:hover {
-        background: var(--gf-green);
-        color: #fff;
-        transform: translateY(-2px);
-      }
-
-      /* =====================================================
-         RESPONSIVE
-        ====================================================== */
-      @media (max-width: 1024px) {
-        .footer-grid {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
-        .nl-form input {
-          width: 220px;
-        }
-      }
-
-      @media (max-width: 900px) {
-        .mh-actions .mh-action.delivery {
-          display: none;
-        }
-        .btn-cta-orange {
-          display: none;
-        }
-        .footer-grid {
-          grid-template-columns: 1fr 1fr;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .market-header .conteneur {
-          flex-wrap: wrap;
-          gap: var(--sp-15);
-        }
-        .mh-logo-text {
-          font-size: var(--fs-xl);
-        }
-        .mh-search {
-          order: 3;
-          max-width: 100%;
-          width: 100%;
-        }
-        .mh-search form {
-          height: 38px;
-        }
-        .mh-search button {
-          padding: 0 var(--sp-15);
-          font-size: var(--fs-sm);
-        }
-        .mh-search .search-icons {
-          display: none;
-        }
-        .mh-actions {
-          gap: var(--sp-12);
-        }
-        .mh-action i {
-          font-size: var(--fs-lg);
-        }
-        .mh-action {
-          font-size: var(--fs-xs);
-        }
-        .btn-cta-orange {
-          padding: var(--sp-6) var(--sp-14);
-          font-size: var(--fs-sm);
-          min-height: 36px;
-          min-width: 80px;
-        }
-
-        .page-connexion {
-          padding: var(--sp-16) 0 var(--sp-30);
-          min-height: calc(100vh - 150px);
-        }
-
-        .carte-auth {
-          padding: var(--sp-20);
-          max-width: 100%;
-          margin: 0 var(--sp-12);
-        }
-
-        .carte-auth .auth-header .icon {
-          font-size: 40px;
-        }
-
-        .carte-auth h1 {
-          font-size: var(--fs-xl);
-        }
-
-        .form-group input {
-          font-size: var(--fs-sm);
-          padding: var(--sp-8) var(--sp-12);
-          min-height: 38px;
-        }
-
-        .form-options {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: var(--sp-6);
-        }
-
-        .btn-connexion {
-          min-height: 44px;
-          font-size: var(--fs-base);
-        }
-
-        .footer-newsletter .conteneur {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .footer-newsletter .nl-text {
-          text-align: center;
-        }
-        .nl-form {
-          width: 100%;
-        }
-        .nl-form input {
-          width: 100%;
-          flex: 1;
-        }
-        .nl-form button {
-          padding: 0 var(--sp-20);
-          font-size: var(--fs-sm);
-        }
-        .footer-grid {
-          grid-template-columns: 1fr 1fr;
-          gap: var(--sp-20);
-          padding: var(--sp-30) 0 var(--sp-20);
-        }
-        .footer .footer-description {
-          max-width: 100%;
-        }
-        .footer-bottom {
-          flex-direction: column;
-          text-align: center;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .mh-logo-text {
-          font-size: var(--fs-lg);
-        }
-        .mh-logo-text i {
-          font-size: var(--fs-md);
-        }
-        .mh-search form {
-          height: 34px;
-          border-radius: var(--radius-xl);
-        }
-        .mh-search input {
-          font-size: var(--fs-sm);
-          padding: 0 var(--sp-12);
-        }
-        .mh-search button {
-          padding: 0 var(--sp-12);
-          font-size: var(--fs-sm);
-        }
-        .mh-search button span {
-          display: none;
-        }
-        .mh-actions {
-          gap: var(--sp-8);
-        }
-        .mh-action i {
-          font-size: var(--fs-md);
-        }
-        .mh-action .cart-count {
-          font-size: var(--fs-xs);
-          min-width: 14px;
-          height: 14px;
-          top: -3px;
-          right: -6px;
-        }
-        .btn-cta-orange {
-          padding: var(--sp-4) var(--sp-10);
-          font-size: var(--fs-xs);
-          border-radius: var(--radius-xl);
-          min-height: 28px;
-          min-width: 60px;
-        }
-        .market-header {
-          padding: var(--sp-8) 0;
-        }
-        .conteneur {
-          padding: 0 var(--sp-12);
-        }
-
-        .carte-auth {
-          padding: var(--sp-16);
-          margin: 0;
-          border-radius: var(--radius-md);
-        }
-
-        .carte-auth .auth-header .icon {
-          font-size: 36px;
-        }
-
-        .carte-auth h1 {
-          font-size: var(--fs-lg);
-        }
-
-        .carte-auth .sous-titre {
-          font-size: var(--fs-sm);
-        }
-
-        .message {
-          font-size: var(--fs-sm);
-          padding: var(--sp-10) var(--sp-12);
-        }
-
-        .form-group label {
-          font-size: var(--fs-sm);
-        }
-
-        .form-group input {
-          font-size: var(--fs-sm);
-          padding: var(--sp-8) var(--sp-10);
-          min-height: 36px;
-        }
-
-        .btn-connexion {
-          font-size: var(--fs-sm);
-          min-height: 40px;
-          padding: var(--sp-8) var(--sp-16);
-        }
-
-        .auth-footer {
-          font-size: var(--fs-sm);
-          padding-top: var(--sp-12);
-          margin-top: var(--sp-16);
-        }
-
-        .footer-newsletter {
-          padding: var(--sp-18) 0;
-        }
-        .footer-newsletter .nl-text h3 {
-          font-size: var(--fs-md);
-        }
-        .footer-newsletter .nl-text p {
-          font-size: var(--fs-sm);
-        }
-        .nl-form {
-          flex-direction: column;
-          gap: var(--sp-8);
-        }
-        .nl-form input {
-          width: 100%;
-          border-radius: var(--radius-sm);
-          height: 42px;
-          font-size: var(--fs-sm);
-          min-height: 42px;
-        }
-        .nl-form button {
-          border-radius: var(--radius-sm);
-          padding: var(--sp-12) 0;
-          width: 100%;
-          font-size: var(--fs-base);
-          min-height: 42px;
-          justify-content: center;
-        }
-
-        .footer-grid {
-          grid-template-columns: 1fr;
-          gap: var(--sp-16);
-          padding: var(--sp-20) 0 var(--sp-16);
-        }
-        .footer h4 {
-          font-size: var(--fs-sm);
-          margin-bottom: var(--sp-10);
-        }
-        .footer ul li a,
-        .footer .footer-description {
-          font-size: var(--fs-sm);
-        }
-        .footer .footer-description {
-          max-width: 100%;
-        }
-        .footer-bottom {
-          flex-direction: column;
-          text-align: center;
-          padding: var(--sp-14) 0;
-          font-size: var(--fs-sm);
-        }
-        .footer-socials a {
-          width: 30px;
-          height: 30px;
-          font-size: var(--fs-sm);
-        }
-      }
-    </style>
-  
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-    <style>
-      body, input, button, select, textarea {
-        font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      }
-      h1, h2, h3, h4, h5, .mh-logo-text {
-        font-family: "Bricolage Grotesque", "Instrument Sans", "Segoe UI", sans-serif;
-      }
-    </style>
-</head>
-
-  <body>
-    <!-- =====================================================
-         HEADER - UNIFORMISÉ AVEC LES AUTRES PAGES
-    ====================================================== -->
-    <div th:replace="~{front/fragments/layout :: mainHeader}"></div>
-
-    <!-- =====================================================
-         CONTENU PRINCIPAL
-    ====================================================== -->
-    <main class="page-connexion">
-      <div class="conteneur">
-        <div class="carte-auth">
-          <div class="auth-header">
-            <span class="icon"><i class="fas fa-leaf"></i></span>
-            <h1>Connexion</h1>
-            <p class="sous-titre">Connectez-vous à votre compte greenField</p>
-          </div>
-
-          <!-- Messages flash -->
-          <div class="message success" th:if="${success}" th:text="${success}">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="message error" th:if="${error}" th:text="${error}">
-            <i class="fas fa-exclamation-circle"></i>
-          </div>
-
-          <form class="auth-form" th:action="@{/login}" method="post">
-            <input type="hidden" name="redirect" th:value="${redirect}" />
-
-            <div class="form-group">
-              <label for="email"
-                ><i class="fas fa-envelope"></i> Adresse email</label
-              >
-              <input
-                id="email"
-                type="email"
-                name="email"
-                required
-                placeholder="votre@email.com"
-              />
+  <head
+    th:replace="~{front/fragments/layout :: head(pageTitle='Connexion - GreenField')}"
+  ></head>
+
+  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+    <div th:fragment="pageContent">
+      <!-- Single Page Header start -->
+      <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Connexion</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+          <li class="breadcrumb-item"><a th:href="@{/}">Accueil</a></li>
+          <li class="breadcrumb-item active text-white">Connexion</li>
+        </ol>
+      </div>
+      <!-- Single Page Header End -->
+
+      <!-- Connexion Start -->
+      <div class="container-fluid py-5">
+        <div class="container py-5">
+          <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+              <div class="bg-light rounded p-5">
+                <div class="text-center mb-4">
+                  <h1 class="display-6 text-primary">Connexion</h1>
+                  <p class="text-muted">
+                    Connectez-vous à votre compte greenField
+                  </p>
+                </div>
+
+                <!-- Messages flash -->
+                <div
+                  class="alert alert-success"
+                  th:if="${success}"
+                  th:text="${success}"
+                  role="alert"
+                >
+                  <i class="fas fa-check-circle me-2"></i>
+                </div>
+                <div
+                  class="alert alert-danger"
+                  th:if="${error}"
+                  th:text="${error}"
+                  role="alert"
+                >
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                </div>
+
+                <form class="auth-form" th:action="@{/login}" method="post">
+                  <input type="hidden" name="redirect" th:value="${redirect}" />
+
+                  <div class="mb-3">
+                    <label for="email" class="form-label fw-bold">
+                      <i class="fas fa-envelope me-2 text-primary"></i> Adresse
+                      email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      name="email"
+                      class="form-control border-2 rounded-pill px-4 py-2"
+                      required
+                      placeholder="votre@email.com"
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="password" class="form-label fw-bold">
+                      <i class="fas fa-lock me-2 text-primary"></i> Mot de passe
+                    </label>
+                    <input
+                      id="password"
+                      type="password"
+                      name="motDePasse"
+                      class="form-control border-2 rounded-pill px-4 py-2"
+                      required
+                      placeholder="Votre mot de passe"
+                    />
+                  </div>
+
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-4"
+                  >
+                    <div class="form-check">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="remember"
+                        name="remember"
+                      />
+                      <label class="form-check-label" for="remember"
+                        >Se souvenir de moi</label
+                      >
+                    </div>
+                    <a href="#" class="text-primary">Mot de passe oublié ?</a>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="btn btn-primary w-100 rounded-pill py-3"
+                  >
+                    <i class="fas fa-sign-in-alt me-2"></i> Se connecter
+                  </button>
+                </form>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                  <p class="mb-0">
+                    <i class="fas fa-user-plus me-2 text-primary"></i>
+                    Pas encore de compte ?
+                    <a th:href="@{/signup}" class="text-primary fw-bold"
+                      >S'inscrire</a
+                    >
+                  </p>
+                </div>
+              </div>
             </div>
-
-            <div class="form-group">
-              <label for="password"
-                ><i class="fas fa-lock"></i> Mot de passe</label
-              >
-              <input
-                id="password"
-                type="password"
-                name="motDePasse"
-                required
-                placeholder="Votre mot de passe"
-              />
-            </div>
-
-            <div class="form-options">
-              <label>
-                <input type="checkbox" name="remember" />
-                Se souvenir de moi
-              </label>
-              <a href="#">Mot de passe oublié ?</a>
-            </div>
-
-            <button type="submit" class="btn btn-orange btn-connexion">
-              <i class="fas fa-sign-in-alt"></i> Se connecter
-            </button>
-          </form>
-
-          <div class="auth-footer">
-            <i class="fas fa-user-plus"></i>
-            Pas encore de compte ?
-            <a th:href="@{/signup}">S'inscrire</a>
           </div>
         </div>
       </div>
-    </main>
+      <!-- Connexion End -->
+    </div>
   </body>
 </html>

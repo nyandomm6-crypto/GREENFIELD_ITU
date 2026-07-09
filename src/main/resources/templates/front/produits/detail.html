@@ -1,1679 +1,530 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${produit.nom} + ' - greenField'">
-      Produit - greenField
-    </title>
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-
-    <style>
-      /* =====================================================
-           TOKENS - DESIGN SYSTEM UNIFIÉ
-        ====================================================== */
-      :root {
-        /* Couleurs principales */
-        --gf-forest: #0A2E1C;
-        --gf-forest-2: #123D27;
-        --gf-green: #009951;
-        --gf-green-light: #5EB453;
-        --gf-leaf: #93D888;
-        --gf-gold: #A46D2C;
-        --gf-cream: #F7F4EC;
-        --gf-line: #E3E9E1;
-        --gf-text: #14261B;
-        --gf-muted: #62705F;
-
-        /* Couleurs d'accent */
-        --ali-orange: #A46D2C;
-        --ali-orange-light: #B98136;
-        --ali-orange-dark: #7E5C15;
-        --danger: #d32f2f;
-        --success: #2e7d32;
-
-        /* Ombres */
-        --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
-        --ombre-forte: 0 8px 20px rgba(0, 0, 0, 0.1);
-
-        /* Tailles de police - DESIGN SYSTEM */
-        --fs-xs: 11px;
-        --fs-sm: 13px;
-        --fs-base: 14px;
-        --fs-md: 15px;
-        --fs-lg: 18px;
-        --fs-xl: 20px;
-        --fs-2xl: 24px;
-        --fs-3xl: 28px;
-        --fs-4xl: 32px;
-
-        /* Espacements */
-        --sp-2: 2px;
-        --sp-4: 4px;
-        --sp-6: 6px;
-        --sp-8: 8px;
-        --sp-10: 10px;
-        --sp-12: 12px;
-        --sp-14: 14px;
-        --sp-16: 16px;
-        --sp-18: 18px;
-        --sp-20: 20px;
-        --sp-24: 24px;
-        --sp-28: 28px;
-        --sp-30: 30px;
-        --sp-32: 32px;
-        --sp-36: 36px;
-        --sp-40: 40px;
-
-        /* Rayons */
-        --radius-sm: 8px;
-        --radius-md: 12px;
-        --radius-lg: 16px;
-        --radius-xl: 20px;
-        --radius-full: 50px;
-
-        /* Transitions */
-        --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-        --bg-panier: #f5f3ef;
-        --blanc: #ffffff;
-        --vert-clair: #e6f4ee;
-      }
-
-      /* =====================================================
-           RESET & BASE
-        ====================================================== */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        background: var(--bg-panier);
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-        font-size: var(--fs-base);
-        color: var(--gf-text);
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        line-height: 1.6;
-      }
-
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-      ul {
-        list-style: none;
-      }
-      .conteneur {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 var(--sp-20);
-      }
-
-      /* =====================================================
-           BOUTONS UNIFORMISÉS
-        ====================================================== */
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--sp-8);
-        padding: var(--sp-12) var(--sp-28);
-        border: none;
-        border-radius: var(--radius-full);
-        font-size: var(--fs-base);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        text-align: center;
-        min-height: 48px;
-        min-width: 120px;
-        font-family: inherit;
-        line-height: 1.2;
-      }
-
-      .btn-primary {
-        background: linear-gradient(
-          135deg,
-          var(--gf-green),
-          var(--gf-forest-2)
-        );
-        color: #fff;
-      }
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
-      }
-
-      .btn-orange {
-        background: linear-gradient(
-          135deg,
-          var(--ali-orange-light),
-          var(--ali-orange-dark)
-        );
-        color: #fff;
-        box-shadow: 0 4px 16px rgba(255, 106, 0, 0.3);
-      }
-      .btn-orange:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(255, 106, 0, 0.4);
-        opacity: 0.9;
-      }
-
-      .btn-outline {
-        background: transparent;
-        color: var(--gf-green);
-        border: 2px solid var(--gf-green);
-      }
-      .btn-outline:hover {
-        background: var(--gf-green);
-        color: #fff;
-      }
-
-      .btn-secondary {
-        background: transparent;
-        color: var(--gf-text);
-        border: 1.5px solid var(--gf-line);
-      }
-      .btn-secondary:hover {
-        background: var(--gf-cream);
-        border-color: var(--gf-green);
-        color: var(--gf-forest);
-        transform: translateY(-2px);
-      }
-      .btn-secondary i {
-        color: var(--gf-green);
-      }
-
-      .btn-sm {
-        padding: var(--sp-6) var(--sp-14);
-        font-size: var(--fs-sm);
-        min-height: 36px;
-        min-width: 80px;
-      }
-
-      .btn-block {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-      }
-
-      .btn-icon {
-        min-width: 44px;
-        width: 44px;
-        height: 44px;
-        padding: 0;
-        border-radius: 50%;
-      }
-
-      .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none !important;
-        box-shadow: none !important;
-      }
-
-      .btn-cta-orange {
-        background: var(--ali-orange);
-        color: #fff !important;
-        padding: var(--sp-10) var(--sp-20);
-        border-radius: var(--radius-full);
-        font-weight: 600;
-        font-size: var(--fs-base);
-        transition: background 0.2s;
-        display: inline-block;
-        min-height: 44px;
-        min-width: 120px;
-        text-align: center;
-        line-height: 1.2;
-      }
-      .btn-cta-orange:hover {
-        background: var(--ali-orange-dark);
-        color: #fff;
-      }
-
-      .btn-indisponible {
-        background: var(--gf-cream);
-        color: var(--gf-muted);
-        border: 1px solid var(--gf-line);
-        padding: var(--sp-12) var(--sp-32);
-        border-radius: var(--radius-full);
-        font-weight: 600;
-        font-size: var(--fs-md);
-        cursor: not-allowed;
-        font-family: inherit;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-10);
-        opacity: 0.7;
-        min-height: 48px;
-      }
-      .btn-indisponible i {
-        font-size: var(--fs-md);
-      }
-
-      /* =====================================================
-           HEADER - UNIFORMISÉ AVEC LES AUTRES PAGES
-        ====================================================== */
-      .market-header {
-        background: #ffffff;
-        padding: var(--sp-12) 0;
-        position: sticky;
-        top: 0;
-        z-index: 1002;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        border-bottom: 1px solid #e6e6e6;
-      }
-      .market-header .conteneur {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--sp-28);
-      }
-
-      .mh-logo {
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-      }
-      .mh-logo-text {
-        font-size: var(--fs-3xl);
-        font-weight: 700;
-        color: var(--ali-orange);
-        letter-spacing: -1px;
-      }
-      .mh-logo-text span {
-        color: #333;
-      }
-      .mh-logo-text i {
-        color: var(--gf-green);
-        font-size: var(--fs-xl);
-        margin-right: var(--sp-4);
-      }
-
-      .mh-search {
-        flex: 1;
-        max-width: 700px;
-      }
-      .mh-search form {
-        display: flex;
-        height: 44px;
-        border: 2px solid var(--ali-orange);
-        border-radius: var(--radius-full);
-        overflow: hidden;
-        background: #fff;
-      }
-      .mh-search input {
-        flex: 1;
-        border: none;
-        padding: 0 var(--sp-16);
-        font-size: var(--fs-base);
-        outline: none;
-        color: #333;
-      }
-      .mh-search input::placeholder {
-        color: #999;
-      }
-      .mh-search .search-icons {
-        display: flex;
-        align-items: center;
-        padding-right: var(--sp-10);
-        color: #999;
-        gap: var(--sp-8);
-        cursor: pointer;
-      }
-      .mh-search button {
-        background: linear-gradient(
-          135deg,
-          var(--ali-orange-light),
-          var(--ali-orange-dark)
-        );
-        border: none;
-        color: #fff;
-        padding: 0 var(--sp-28);
-        font-weight: 600;
-        font-size: var(--fs-md);
-        cursor: pointer;
-        transition: opacity 0.2s;
-        display: flex;
-        align-items: center;
-        gap: var(--sp-8);
-        min-height: 44px;
-      }
-      .mh-search button:hover {
-        opacity: 0.9;
-      }
-
-      .mh-actions {
-        display: flex;
-        align-items: center;
-        gap: var(--sp-18);
-        flex-shrink: 0;
-      }
-      .mh-action {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: #333;
-        font-size: var(--fs-sm);
-        font-weight: 500;
-        transition: color 0.2s;
-        position: relative;
-      }
-      .mh-action:hover {
-        color: var(--ali-orange);
-      }
-      .mh-action i {
-        font-size: var(--fs-xl);
-        margin-bottom: 0px;
-      }
-      .mh-action .cart-count {
-        position: absolute;
-        top: -4px;
-        right: -8px;
-        background: var(--ali-orange);
-        color: #fff;
-        font-size: var(--fs-xs);
-        font-weight: 700;
-        min-width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      /* =====================================================
-         PAGE DETAIL - MEME DESIGN QUE PRODUITS
-        ====================================================== */
-      .page-detail {
-        padding: var(--sp-24) 0 var(--sp-40);
-        flex: 1 0 auto;
-        background: var(--bg-panier);
-      }
-
-      .breadcrumb {
-        font-size: var(--fs-sm);
-        color: var(--gf-muted);
-        margin-bottom: var(--sp-20);
-      }
-      .breadcrumb a {
-        color: var(--gf-green);
-      }
-      .breadcrumb a:hover {
-        text-decoration: underline;
-      }
-      .breadcrumb span {
-        color: var(--gf-text);
-        font-weight: 600;
-      }
-
-      /* Message flash */
-      .message {
-        padding: var(--sp-14) var(--sp-20);
-        border-radius: var(--radius-md);
-        margin: var(--sp-16) 0;
-        font-weight: 600;
-        border-left: 5px solid transparent;
-        box-shadow: var(--ombre);
-        display: flex;
-        align-items: center;
-        gap: var(--sp-12);
-        font-size: var(--fs-base);
-      }
-      .message.error {
-        background: #fde8e4;
-        border-color: #b85a4a;
-        color: #7a3326;
-      }
-      .message.success {
-        background: #e7f3e4;
-        border-color: var(--gf-green);
-        color: #1a3a2a;
-      }
-      .message i {
-        font-size: var(--fs-xl);
-      }
-
-      /* ===== BLOC DETAIL ===== */
-      .bloc-detail {
-        background: var(--blanc);
-        border: 1px solid var(--gf-line);
-        border-radius: var(--radius-lg);
-        box-shadow: var(--ombre);
-        padding: var(--sp-32);
-        display: flex;
-        gap: var(--sp-36);
-        flex-wrap: wrap;
-        transition: var(--transition);
-      }
-
-      .bloc-detail:hover {
-        box-shadow: var(--ombre-forte);
-      }
-
-      /* Colonne gauche - Visuel */
-      .col-visuel {
-        flex: 0 0 280px;
-        display: flex;
-        flex-direction: column;
-        gap: var(--sp-16);
-      }
-
-      .visuel-detail {
-        width: 100%;
-        height: 260px;
-        background: linear-gradient(135deg, #e6f4ee, #eaf3e8);
-        border-radius: var(--radius-lg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 80px;
-        transition: var(--transition);
-        border: 1px solid var(--gf-line);
-        overflow: hidden;
-      }
-
-      .visuel-detail img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-
-      .visuel-detail:hover {
-        transform: scale(1.02);
-      }
-
-      /* Badges */
-      .badge-container {
-        display: flex;
-        gap: var(--sp-8);
-        flex-wrap: wrap;
-      }
-
-      .badge-detail {
-        padding: var(--sp-4) var(--sp-14);
-        border-radius: var(--radius-xl);
-        font-size: var(--fs-xs);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        background: var(--gf-cream);
-        color: var(--gf-muted);
-        border: 1px solid var(--gf-line);
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-4);
-        min-height: 28px;
-      }
-
-      .badge-detail.bio {
-        background: #e6f4ee;
-        color: var(--gf-green);
-        border-color: var(--gf-green-light);
-      }
-
-      .badge-detail.stock-ok-badge {
-        background: #e6f4ee;
-        color: var(--gf-green);
-        border-color: var(--gf-green-light);
-      }
-
-      .badge-detail.stock-rupture-badge {
-        background: #fde8e4;
-        color: var(--danger);
-        border-color: #f5c6c6;
-      }
-
-      /* Colonne droite - Infos */
-      .col-infos {
-        flex: 1;
-        min-width: 280px;
-        display: flex;
-        flex-direction: column;
-        gap: var(--sp-12);
-      }
-
-      .categorie-detail {
-        font-size: var(--fs-sm);
-        color: var(--gf-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        font-weight: 600;
-      }
-
-      .col-infos h1 {
-        font-size: var(--fs-3xl);
-        font-weight: 800;
-        color: var(--gf-forest);
-        margin: 0;
-        line-height: 1.2;
-      }
-
-      .prix-detail {
-        font-size: var(--fs-4xl);
-        font-weight: 800;
-        color: var(--gf-forest);
-        margin: var(--sp-4) 0 var(--sp-8);
-      }
-
-      .prix-detail small {
-        font-size: var(--fs-lg);
-        font-weight: 600;
-        color: var(--gf-muted);
-      }
-
-      /* Description */
-      .description-detail {
-        font-size: var(--fs-md);
-        line-height: 1.8;
-        color: var(--gf-text);
-        margin: var(--sp-4) 0 var(--sp-8);
-        padding: var(--sp-16) 0;
-        border-top: 1px solid var(--gf-line);
-        border-bottom: 1px solid var(--gf-line);
-      }
-
-      .description-detail p {
-        margin-bottom: var(--sp-10);
-      }
-
-      .description-detail p:last-child {
-        margin-bottom: 0;
-      }
-
-      .description-detail .highlight {
-        color: var(--gf-green);
-        font-weight: 600;
-      }
-
-      .description-detail strong {
-        color: var(--gf-forest);
-      }
-
-      /* Stock */
-      .stock-detail {
-        font-size: var(--fs-base);
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: var(--sp-8);
-        padding: var(--sp-8) var(--sp-16);
-        border-radius: var(--radius-sm);
-        background: var(--gf-cream);
-        width: fit-content;
-        min-height: 44px;
-      }
-
-      .stock-detail i {
-        font-size: var(--fs-md);
-      }
-
-      .stock-ok {
-        color: var(--gf-green);
-      }
-
-      .stock-rupture {
-        color: var(--danger);
-      }
-
-      /* Formulaire d'ajout */
-      .form-ajout {
-        display: flex;
-        align-items: center;
-        gap: var(--sp-14);
-        flex-wrap: wrap;
-        margin-top: var(--sp-6);
-      }
-
-      .form-ajout .qte-wrapper {
-        display: flex;
-        align-items: center;
-        gap: var(--sp-8);
-        background: var(--gf-cream);
-        border-radius: var(--radius-full);
-        padding: var(--sp-4);
-        border: 1px solid var(--gf-line);
-      }
-
-      .form-ajout .qte-wrapper button {
-        background: transparent;
-        border: none;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--gf-text);
-        cursor: pointer;
-        transition: var(--transition);
-        font-size: var(--fs-md);
-        font-weight: 700;
-        min-width: 36px;
-        min-height: 36px;
-      }
-
-      .form-ajout .qte-wrapper button:hover {
-        background: var(--gf-green);
-        color: var(--blanc);
-      }
-
-      .form-ajout .qte-wrapper button:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-      }
-
-      .form-ajout .qte-wrapper button:disabled:hover {
-        background: transparent;
-        color: var(--gf-text);
-      }
-
-      .form-ajout .qte-display {
-        min-width: 32px;
-        text-align: center;
-        font-weight: 700;
-        font-size: var(--fs-lg);
-        color: var(--gf-forest);
-      }
-
-      .form-ajout input[type="hidden"] {
-        display: none;
-      }
-
-      .btn-ajouter {
-        background: linear-gradient(
-          135deg,
-          var(--ali-orange-light),
-          var(--ali-orange-dark)
-        );
-        color: var(--blanc);
-        border: none;
-        padding: var(--sp-12) var(--sp-32);
-        border-radius: var(--radius-full);
-        font-weight: 700;
-        font-size: var(--fs-md);
-        cursor: pointer;
-        transition: var(--transition);
-        font-family: inherit;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-10);
-        box-shadow: 0 4px 16px rgba(255, 106, 0, 0.3);
-        min-height: 48px;
-        min-width: 160px;
-      }
-
-      .btn-ajouter:hover {
-        opacity: 0.9;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(255, 106, 0, 0.4);
-      }
-
-      .btn-ajouter:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none !important;
-        box-shadow: none !important;
-      }
-
-      .btn-ajouter i {
-        font-size: var(--fs-md);
-      }
-
-      .btn-retour {
-        background: transparent;
-        color: var(--gf-text);
-        border: 1.5px solid var(--gf-line);
-        padding: var(--sp-10) var(--sp-24);
-        border-radius: var(--radius-full);
-        font-weight: 600;
-        font-size: var(--fs-base);
-        cursor: pointer;
-        transition: var(--transition);
-        font-family: inherit;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-8);
-        width: fit-content;
-        min-height: 44px;
-        min-width: 100px;
-      }
-
-      .btn-retour:hover {
-        background: var(--gf-cream);
-        border-color: var(--gf-green);
-        color: var(--gf-forest);
-        transform: translateY(-2px);
-      }
-
-      /* =====================================================
-         TOAST
-        ====================================================== */
-      .toast {
-        position: fixed;
-        bottom: var(--sp-30);
-        right: var(--sp-30);
-        background: var(--gf-forest);
-        color: var(--blanc);
-        padding: var(--sp-14) var(--sp-24);
-        border-radius: var(--radius-md);
-        box-shadow: var(--ombre-forte);
-        display: flex;
-        align-items: center;
-        gap: var(--sp-12);
-        z-index: 9999;
-        transform: translateY(100px);
-        opacity: 0;
-        transition: all 0.4s ease;
-        font-weight: 500;
-        font-size: var(--fs-base);
-        border-left: 4px solid var(--ali-orange);
-        max-width: 400px;
-      }
-
-      .toast.show {
-        transform: translateY(0);
-        opacity: 1;
-      }
-
-      .toast i {
-        font-size: var(--fs-xl);
-        color: var(--ali-orange);
-        flex-shrink: 0;
-      }
-
-      /* =====================================================
-         FOOTER
-        ====================================================== */
-      .footer {
-        background: var(--gf-forest);
-        color: rgba(255, 255, 255, 0.7);
-        margin-top: auto;
-        border-top: 3px solid var(--gf-green);
-        flex-shrink: 0;
-        width: 100%;
-      }
-      .footer-newsletter {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        padding: var(--sp-24) 0;
-      }
-      .footer-newsletter .conteneur {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--sp-20);
-        flex-wrap: wrap;
-      }
-      .footer-newsletter .nl-text h3 {
-        color: #fff;
-        font-size: var(--fs-lg);
-        font-weight: 700;
-        margin-bottom: var(--sp-4);
-      }
-      .footer-newsletter .nl-text p {
-        font-size: var(--fs-base);
-        color: rgba(255, 255, 255, 0.6);
-        margin: 0;
-      }
-      .nl-form {
-        display: flex;
-        gap: 0;
-        flex-shrink: 0;
-      }
-      .nl-form input {
-        border: none;
-        padding: 0 var(--sp-16);
-        height: 46px;
-        width: 280px;
-        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-        font-size: var(--fs-base);
-        outline: none;
-        background: rgba(255, 255, 255, 0.95);
-        min-height: 46px;
-      }
-      .nl-form input:focus {
-        background: #fff;
-      }
-      .nl-form button {
-        background: var(--gf-gold);
-        color: #3D2A0F;
-        border: none;
-        padding: 0 var(--sp-28);
-        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-        font-weight: 700;
-        font-size: var(--fs-base);
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        white-space: nowrap;
-        min-height: 46px;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-8);
-      }
-      .nl-form button:hover {
-        background: #C9924D;
-      }
-
-      .footer-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-        gap: var(--sp-30);
-        padding: var(--sp-40) 0 var(--sp-28);
-      }
-      .footer .logo {
-        color: #fff;
-        font-size: var(--fs-xl);
-        font-weight: 800;
-        display: inline-block;
-        margin-bottom: var(--sp-12);
-      }
-      .footer .logo i {
-        color: var(--gf-leaf);
-      }
-      .footer .footer-description {
-        font-size: var(--fs-base);
-        line-height: 1.8;
-        max-width: 280px;
-        color: rgba(255, 255, 255, 0.65);
-        margin: 0;
-      }
-      .footer h4 {
-        color: #fff;
-        font-size: var(--fs-md);
-        font-weight: 700;
-        margin-bottom: var(--sp-14);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      .footer ul li {
-        margin-bottom: var(--sp-8);
-      }
-      .footer ul li a {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: var(--fs-base);
-        transition: all 0.2s ease-in-out;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-4);
-      }
-      .footer ul li a:hover {
-        color: #fff;
-      }
-      .footer ul li i {
-        width: 22px;
-        color: var(--gf-gold);
-      }
-      .footer-bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        padding: var(--sp-18) 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: var(--sp-12);
-        font-size: var(--fs-sm);
-      }
-      .footer-socials {
-        display: flex;
-        gap: var(--sp-10);
-      }
-      .footer-socials a {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.06);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255, 255, 255, 0.5);
-        transition: all 0.2s ease-in-out;
-        font-size: var(--fs-md);
-      }
-      .footer-socials a:hover {
-        background: var(--gf-green);
-        color: #fff;
-        transform: translateY(-2px);
-      }
-
-      /* =====================================================
-         RESPONSIVE
-        ====================================================== */
-      @media (max-width: 1024px) {
-        .footer-grid {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
-        .nl-form input {
-          width: 220px;
-        }
-        .col-visuel {
-          flex: 0 0 240px;
-        }
-        .visuel-detail {
-          height: 220px;
-          font-size: 64px;
-        }
-      }
-
-      @media (max-width: 900px) {
-        .mh-actions .mh-action.delivery {
-          display: none;
-        }
-        .btn-cta-orange {
-          display: none;
-        }
-        .footer-grid {
-          grid-template-columns: 1fr 1fr;
-        }
-        .col-visuel {
-          flex: 0 0 100%;
-        }
-        .visuel-detail {
-          height: 200px;
-          font-size: 56px;
-        }
-        .bloc-detail {
-          padding: var(--sp-24);
-          gap: var(--sp-24);
-        }
-        .col-infos h1 {
-          font-size: var(--fs-2xl);
-        }
-        .prix-detail {
-          font-size: var(--fs-3xl);
-        }
-      }
-
-      @media (max-width: 768px) {
-        .market-header .conteneur {
-          flex-wrap: wrap;
-          gap: var(--sp-15);
-        }
-        .mh-logo-text {
-          font-size: var(--fs-xl);
-        }
-        .mh-search {
-          order: 3;
-          max-width: 100%;
-          width: 100%;
-        }
-        .mh-search form {
-          height: 38px;
-        }
-        .mh-search button {
-          padding: 0 var(--sp-15);
-          font-size: var(--fs-sm);
-        }
-
-        .page-detail {
-          padding: var(--sp-16) 0 var(--sp-30);
-        }
-
-        .bloc-detail {
-          padding: var(--sp-20);
-          gap: var(--sp-20);
-        }
-
-        .visuel-detail {
-          height: 180px;
-          font-size: 48px;
-        }
-
-        .col-infos h1 {
-          font-size: var(--fs-xl);
-        }
-
-        .prix-detail {
-          font-size: var(--fs-2xl);
-        }
-
-        .description-detail {
-          font-size: var(--fs-base);
-          padding: var(--sp-12) 0;
-        }
-
-        .form-ajout {
-          gap: var(--sp-10);
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        .form-ajout .qte-wrapper {
-          width: fit-content;
-        }
-
-        .form-ajout .qte-wrapper button {
-          width: 32px;
-          height: 32px;
-          font-size: var(--fs-base);
-          min-width: 32px;
-          min-height: 32px;
-        }
-
-        .form-ajout .qte-display {
-          font-size: var(--fs-md);
-          min-width: 28px;
-        }
-
-        .btn-ajouter {
-          padding: var(--sp-10) var(--sp-24);
-          font-size: var(--fs-base);
-          min-height: 44px;
-          min-width: 140px;
-        }
-
-        .btn-retour {
-          padding: var(--sp-10) var(--sp-18);
-          font-size: var(--fs-sm);
-          min-height: 40px;
-          min-width: 80px;
-        }
-
-        .btn-indisponible {
-          padding: var(--sp-10) var(--sp-24);
-          font-size: var(--fs-base);
-          min-height: 44px;
-        }
-
-        .stock-detail {
-          font-size: var(--fs-sm);
-          padding: var(--sp-6) var(--sp-14);
-          min-height: 38px;
-        }
-
-        .footer-newsletter .conteneur {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .footer-newsletter .nl-text {
-          text-align: center;
-        }
-        .nl-form {
-          width: 100%;
-        }
-        .nl-form input {
-          width: 100%;
-          flex: 1;
-        }
-        .nl-form button {
-          padding: 0 var(--sp-20);
-          font-size: var(--fs-sm);
-        }
-        .footer-grid {
-          grid-template-columns: 1fr 1fr;
-          gap: var(--sp-20);
-          padding: var(--sp-30) 0 var(--sp-20);
-        }
-        .footer .footer-description {
-          max-width: 100%;
-        }
-        .footer-bottom {
-          flex-direction: column;
-          text-align: center;
-        }
-      }
-
-      @media (max-width: 480px) {
-        .mh-logo-text {
-          font-size: var(--fs-lg);
-        }
-        .mh-logo-text i {
-          font-size: var(--fs-md);
-        }
-        .mh-search form {
-          height: 34px;
-          border-radius: var(--radius-xl);
-        }
-        .mh-search input {
-          font-size: var(--fs-sm);
-          padding: 0 var(--sp-12);
-        }
-        .mh-search button {
-          padding: 0 var(--sp-12);
-          font-size: var(--fs-sm);
-        }
-        .mh-search button span {
-          display: none;
-        }
-        .mh-actions {
-          gap: var(--sp-8);
-        }
-        .mh-action i {
-          font-size: var(--fs-md);
-        }
-        .mh-action .cart-count {
-          font-size: var(--fs-xs);
-          min-width: 14px;
-          height: 14px;
-          top: -3px;
-          right: -6px;
-        }
-        .btn-cta-orange {
-          padding: var(--sp-4) var(--sp-10);
-          font-size: var(--fs-xs);
-          border-radius: var(--radius-xl);
-          min-height: 28px;
-          min-width: 60px;
-        }
-        .market-header {
-          padding: var(--sp-8) 0;
-        }
-        .conteneur {
-          padding: 0 var(--sp-12);
-        }
-
-        .page-detail {
-          padding: var(--sp-12) 0 var(--sp-24);
-        }
-
-        .bloc-detail {
-          padding: var(--sp-16);
-          gap: var(--sp-16);
-        }
-
-        .visuel-detail {
-          height: 150px;
-          font-size: 40px;
-        }
-
-        .col-infos h1 {
-          font-size: var(--fs-lg);
-        }
-
-        .prix-detail {
-          font-size: var(--fs-xl);
-        }
-
-        .prix-detail small {
-          font-size: var(--fs-base);
-        }
-
-        .description-detail {
-          font-size: var(--fs-sm);
-          padding: var(--sp-10) 0;
-          margin: var(--sp-4) 0;
-        }
-
-        .categorie-detail {
-          font-size: var(--fs-xs);
-        }
-
-        .form-ajout {
-          flex-direction: column;
-          align-items: stretch;
-          gap: var(--sp-8);
-        }
-
-        .form-ajout .qte-wrapper {
-          width: fit-content;
-        }
-
-        .btn-ajouter {
-          width: 100%;
-          justify-content: center;
-          padding: var(--sp-12) var(--sp-20);
-          font-size: var(--fs-base);
-          min-height: 44px;
-        }
-
-        .btn-retour {
-          width: 100%;
-          justify-content: center;
-        }
-
-        .btn-indisponible {
-          width: 100%;
-          justify-content: center;
-        }
-
-        .stock-detail {
-          font-size: var(--fs-sm);
-          padding: var(--sp-6) var(--sp-12);
-          min-height: 36px;
-        }
-
-        .badge-detail {
-          font-size: var(--fs-xs);
-          padding: var(--sp-2) var(--sp-10);
-          min-height: 24px;
-        }
-
-        .breadcrumb {
-          font-size: var(--fs-sm);
-          margin-bottom: var(--sp-14);
-        }
-
-        .message {
-          font-size: var(--fs-sm);
-          padding: var(--sp-12) var(--sp-16);
-          margin: var(--sp-12) 0;
-        }
-
-        .footer-newsletter {
-          padding: var(--sp-18) 0;
-        }
-        .footer-newsletter .nl-text h3 {
-          font-size: var(--fs-md);
-        }
-        .footer-newsletter .nl-text p {
-          font-size: var(--fs-sm);
-        }
-        .nl-form {
-          flex-direction: column;
-          gap: var(--sp-8);
-        }
-        .nl-form input {
-          width: 100%;
-          border-radius: var(--radius-sm);
-          height: 42px;
-          font-size: var(--fs-sm);
-          min-height: 42px;
-        }
-        .nl-form button {
-          border-radius: var(--radius-sm);
-          padding: var(--sp-12) 0;
-          width: 100%;
-          font-size: var(--fs-base);
-          min-height: 42px;
-          justify-content: center;
-        }
-
-        .footer-grid {
-          grid-template-columns: 1fr;
-          gap: var(--sp-16);
-          padding: var(--sp-20) 0 var(--sp-16);
-        }
-        .footer h4 {
-          font-size: var(--fs-sm);
-          margin-bottom: var(--sp-10);
-        }
-        .footer ul li a,
-        .footer .footer-description {
-          font-size: var(--fs-sm);
-        }
-        .footer .footer-description {
-          max-width: 100%;
-        }
-        .footer-bottom {
-          flex-direction: column;
-          text-align: center;
-          padding: var(--sp-14) 0;
-          font-size: var(--fs-sm);
-        }
-        .footer-socials a {
-          width: 30px;
-          height: 30px;
-          font-size: var(--fs-sm);
-        }
-
-        .toast {
-          bottom: var(--sp-16);
-          right: var(--sp-16);
-          left: var(--sp-16);
-          padding: var(--sp-12) var(--sp-18);
-          font-size: var(--fs-sm);
-          border-left-width: 3px;
-          max-width: none;
-        }
-        .toast i {
-          font-size: var(--fs-md);
-        }
-      }
-
-      @media (max-width: 360px) {
-        .visuel-detail {
-          height: 120px;
-          font-size: 32px;
-        }
-
-        .col-infos h1 {
-          font-size: var(--fs-md);
-        }
-
-        .prix-detail {
-          font-size: var(--fs-lg);
-        }
-
-        .form-ajout .qte-wrapper button {
-          width: 28px;
-          height: 28px;
-          font-size: var(--fs-sm);
-          min-width: 28px;
-          min-height: 28px;
-        }
-
-        .form-ajout .qte-display {
-          font-size: var(--fs-base);
-          min-width: 24px;
-        }
-
-        .btn-ajouter {
-          font-size: var(--fs-sm);
-          padding: var(--sp-10) var(--sp-16);
-          min-height: 40px;
-        }
-      }
-    </style>
-  
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-    <style>
-      body, input, button, select, textarea {
-        font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      }
-      h1, h2, h3, h4, h5, .mh-logo-text {
-        font-family: "Bricolage Grotesque", "Instrument Sans", "Segoe UI", sans-serif;
-      }
-    </style>
-</head>
-
-  <body>
-    <!-- =====================================================
-         HEADER - UNIFORMISÉ AVEC LES AUTRES PAGES
-    ====================================================== -->
-    <div th:replace="~{front/fragments/layout :: mainHeader}"></div>
-
-    <!-- =====================================================
-         CONTENU PRINCIPAL
-    ====================================================== -->
-    <main class="page-detail">
-      <div class="conteneur">
-        <!-- Fil d'Ariane -->
-        <div class="breadcrumb">
-          <a href="/">Accueil</a> / <a th:href="@{/produits}">Produits</a> /
-          <span th:text="${produit.nom}">Compost (1kg)</span>
-        </div>
-
-        <!-- Message flash -->
-        <div class="message error" th:if="${error}" th:text="${error}">
-          <i class="fas fa-exclamation-circle"></i>
-        </div>
-        <div class="message success" th:if="${success}" th:text="${success}">
-          <i class="fas fa-check-circle"></i>
-        </div>
-
-        <!-- ===== BLOC DETAIL ===== -->
-        <div class="bloc-detail">
-          <!-- Colonne gauche -->
-          <div class="col-visuel">
-            <div class="visuel-detail">
-              <img
-                th:src="${produit.imagePath != null} ? @{${produit.imagePath}} : 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=400&h=300&q=80'"
-                th:alt="${produit.nom}"
-              />
+  <head
+    th:replace="~{front/fragments/layout :: head(pageTitle=${produit.nom} + ' - GreenField')}"
+  >
+    <title>Produit - GreenField</title>
+  </head>
+  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+    <div th:fragment="pageContent">
+      <!-- Single Page Header start -->
+      <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Détail du produit</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+          <li class="breadcrumb-item"><a th:href="@{/}">Accueil</a></li>
+          <li class="breadcrumb-item">
+            <a th:href="@{/produits}">Boutique</a>
+          </li>
+          <li
+            class="breadcrumb-item active text-white"
+            th:text="${produit.nom}"
+          >
+            Produit
+          </li>
+        </ol>
+      </div>
+      <!-- Single Page Header End -->
+
+      <!-- Single Product Start -->
+      <div class="container-fluid py-5 mt-5">
+        <div class="container py-5">
+          <div class="row g-4 mb-5">
+            <div class="col-lg-8 col-xl-9">
+              <div class="row g-4">
+                <div class="col-lg-6">
+                  <div class="border rounded">
+                    <img
+                      th:src="${produit.imagePath != null} ? @{${produit.imagePath}} : '/img/single-item.jpg'"
+                      class="img-fluid rounded"
+                      th:alt="${produit.nom}"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <h4 class="fw-bold mb-3" th:text="${produit.nom}">Brocoli</h4>
+                  <p
+                    class="mb-3"
+                    th:text="'Catégorie : ' + (${produit.categorie != null ? produit.categorie.libelle : 'Non catégorisé'})"
+                  >
+                    Category: Vegetables
+                  </p>
+                  <h5 class="fw-bold mb-3" th:text="${produit.pu} + ' Ar'">
+                    3,35 $
+                  </h5>
+                  <div class="d-flex mb-4">
+                    <i class="fa fa-star text-secondary"></i>
+                    <i class="fa fa-star text-secondary"></i>
+                    <i class="fa fa-star text-secondary"></i>
+                    <i class="fa fa-star text-secondary"></i>
+                    <i class="fa fa-star"></i>
+                  </div>
+                  <p class="mb-4">
+                    The generated Lorem Ipsum is therefore always free from
+                    repetition injected humour, or non-characteristic words etc.
+                  </p>
+                  <p class="mb-4">
+                    Susp endisse ultricies nisi vel quam suscipit. Sabertooth
+                    peacock flounder; chain pickerel hatchetfish, pencilfish
+                    snailfish
+                  </p>
+
+                  <!-- Quantité -->
+                  <div
+                    class="input-group quantity mb-5"
+                    style="width: 100px"
+                    id="productQuantity"
+                    th:attr="data-product-id=${produit.id}, data-stock=${stock}"
+                  >
+                    <div class="input-group-btn">
+                      <button
+                        class="btn btn-sm btn-minus rounded-circle bg-light border"
+                        type="button"
+                        id="btnMoins"
+                      >
+                        <i class="fa fa-minus"></i>
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm text-center border-0"
+                      id="qteInput"
+                      value="1"
+                    />
+                    <div class="input-group-btn">
+                      <button
+                        class="btn btn-sm btn-plus rounded-circle bg-light border"
+                        type="button"
+                        id="btnPlus"
+                      >
+                        <i class="fa fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary"
+                    id="btnAjouter"
+                  >
+                    <i class="fa fa-shopping-bag me-2 text-primary"></i> Ajouter
+                    au panier
+                  </button>
+
+                  <!-- Message stock -->
+                  <p th:if="${stock > 0}" class="text-success">
+                    <i class="fas fa-check-circle"></i> En stock —
+                    <span th:text="${stock}"></span> unité(s)
+                  </p>
+                  <p th:unless="${stock > 0}" class="text-danger">
+                    <i class="fas fa-times-circle"></i> Rupture de stock
+                  </p>
+
+                  <!-- Message de confirmation -->
+                  <div
+                    id="messageAjout"
+                    style="display: none"
+                    class="alert alert-success mt-3"
+                  >
+                    <i class="fas fa-check-circle"></i>
+                    <span id="messageTexte">Produit ajouté au panier !</span>
+                  </div>
+                  <div
+                    id="messageError"
+                    style="display: none"
+                    class="alert alert-danger mt-3"
+                  >
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="messageErrorTexte">Erreur</span>
+                  </div>
+                </div>
+
+                <!-- Description et Avis -->
+                <div class="col-lg-12">
+                  <nav>
+                    <div class="nav nav-tabs mb-3">
+                      <button
+                        class="nav-link active border-white border-bottom-0"
+                        type="button"
+                        role="tab"
+                        id="nav-about-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-about"
+                        aria-controls="nav-about"
+                        aria-selected="true"
+                      >
+                        Description
+                      </button>
+                      <button
+                        class="nav-link border-white border-bottom-0"
+                        type="button"
+                        role="tab"
+                        id="nav-mission-tab"
+                        data-bs-toggle="tab"
+                        data-bs-target="#nav-mission"
+                        aria-controls="nav-mission"
+                        aria-selected="false"
+                      >
+                        Avis
+                      </button>
+                    </div>
+                  </nav>
+                  <div class="tab-content mb-5">
+                    <div
+                      class="tab-pane active"
+                      id="nav-about"
+                      role="tabpanel"
+                      aria-labelledby="nav-about-tab"
+                    >
+                      <p>
+                        Le produit
+                        <strong th:text="${produit.nom}"></strong> est un
+                        produit de qualité supérieure, conçu pour répondre aux
+                        besoins des agriculteurs et jardiniers les plus
+                        exigeants.
+                      </p>
+                      <div class="px-2">
+                        <div class="row g-4">
+                          <div class="col-6">
+                            <div
+                              class="row bg-light align-items-center text-center justify-content-center py-2"
+                            >
+                              <div class="col-6"><p class="mb-0">Prix</p></div>
+                              <div class="col-6">
+                                <p class="mb-0" th:text="${produit.pu} + ' Ar'">
+                                  1 kg
+                                </p>
+                              </div>
+                            </div>
+                            <div
+                              class="row text-center align-items-center justify-content-center py-2"
+                            >
+                              <div class="col-6">
+                                <p class="mb-0">Catégorie</p>
+                              </div>
+                              <div class="col-6">
+                                <p
+                                  class="mb-0"
+                                  th:text="${produit.categorie != null ? produit.categorie.libelle : 'N/A'}"
+                                >
+                                  Agro Farm
+                                </p>
+                              </div>
+                            </div>
+                            <div
+                              class="row bg-light text-center align-items-center justify-content-center py-2"
+                            >
+                              <div class="col-6">
+                                <p class="mb-0">Qualité</p>
+                              </div>
+                              <div class="col-6"><p class="mb-0">Bio</p></div>
+                            </div>
+                            <div
+                              class="row text-center align-items-center justify-content-center py-2"
+                            >
+                              <div class="col-6"><p class="mb-0">Stock</p></div>
+                              <div class="col-6">
+                                <p class="mb-0" th:text="${stock} + ' unités'">
+                                  Healthy
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="tab-pane"
+                      id="nav-mission"
+                      role="tabpanel"
+                      aria-labelledby="nav-mission-tab"
+                    >
+                      <div class="d-flex">
+                        <img
+                          src="/img/avatar.jpg"
+                          class="img-fluid rounded-circle p-3"
+                          style="width: 100px; height: 100px"
+                          alt=""
+                        />
+                        <div>
+                          <p class="mb-2" style="font-size: 14px">
+                            April 12, 2024
+                          </p>
+                          <div class="d-flex justify-content-between">
+                            <h5>Jason Smith</h5>
+                            <div class="d-flex mb-3">
+                              <i class="fa fa-star text-secondary"></i>
+                              <i class="fa fa-star text-secondary"></i>
+                              <i class="fa fa-star text-secondary"></i>
+                              <i class="fa fa-star text-secondary"></i>
+                              <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                          <p>
+                            The generated Lorem Ipsum is therefore always free
+                            from repetition injected humour, or
+                            non-characteristic words etc.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="d-flex">
+                        <img
+                          src="/img/avatar.jpg"
+                          class="img-fluid rounded-circle p-3"
+                          style="width: 100px; height: 100px"
+                          alt=""
+                        />
+                        <div>
+                          <p class="mb-2" style="font-size: 14px">
+                            April 12, 2024
+                          </p>
+                          <div class="d-flex justify-content-between">
+                            <h5>Sam Peters</h5>
+                            <div class="d-flex mb-3">
+                              <i class="fa fa-star text-secondary"></i>
+                              <i class="fa fa-star text-secondary"></i>
+                              <i class="fa fa-star text-secondary"></i>
+                              <i class="fa fa-star"></i>
+                              <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                          <p class="text-dark">
+                            The generated Lorem Ipsum is therefore always free
+                            from repetition injected humour, or
+                            non-characteristic words etc.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Formulaire d'avis -->
+                <form action="#">
+                  <h4 class="mb-5 fw-bold">Laisser un commentaire</h4>
+                  <div class="row g-4">
+                    <div class="col-lg-6">
+                      <div class="border-bottom rounded">
+                        <input
+                          type="text"
+                          class="form-control border-0 me-4"
+                          placeholder="Votre nom *"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="border-bottom rounded">
+                        <input
+                          type="email"
+                          class="form-control border-0"
+                          placeholder="Votre email *"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="border-bottom rounded my-4">
+                        <textarea
+                          class="form-control border-0"
+                          cols="30"
+                          rows="8"
+                          placeholder="Votre avis *"
+                          spellcheck="false"
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div class="col-lg-12">
+                      <div class="d-flex justify-content-between py-3 mb-5">
+                        <div class="d-flex align-items-center">
+                          <p class="mb-0 me-3">Votre note :</p>
+                          <div
+                            class="d-flex align-items-center"
+                            style="font-size: 12px"
+                          >
+                            <i class="fa fa-star text-muted"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                          </div>
+                        </div>
+                        <a
+                          href="#"
+                          class="btn border border-secondary text-primary rounded-pill px-4 py-3"
+                          >Envoyer</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
 
-            <div class="badge-container">
-              <span
-                class="badge-detail bio"
-                th:if="${produit.categorie != null && produit.categorie.libelle == 'Bio'}"
-              >
-                <i class="fas fa-leaf"></i> Bio
-              </span>
-              <span
-                class="badge-detail"
-                th:if="${produit.categorie != null}"
-                th:text="${produit.categorie.libelle}"
-              >
-                Catégorie
-              </span>
-              <span class="badge-detail stock-ok-badge" th:if="${stock > 0}">
-                <i class="fas fa-check-circle"></i> En stock
-              </span>
-              <span
-                class="badge-detail stock-rupture-badge"
-                th:unless="${stock > 0}"
-              >
-                <i class="fas fa-times-circle"></i> Rupture
-              </span>
+            <!-- Sidebar -->
+            <div class="col-lg-4 col-xl-3">
+              <div class="row g-4 fruite">
+                <div class="col-lg-12">
+                  <div class="input-group w-100 mx-auto d-flex mb-4">
+                    <input
+                      type="search"
+                      class="form-control p-3"
+                      placeholder="Rechercher..."
+                      aria-describedby="search-icon-1"
+                    />
+                    <span id="search-icon-1" class="input-group-text p-3"
+                      ><i class="fa fa-search"></i
+                    ></span>
+                  </div>
+                  <div class="mb-4">
+                    <h4>Catégories</h4>
+                    <ul class="list-unstyled fruite-categorie">
+                      <li th:each="categorie : ${categories}">
+                        <div class="d-flex justify-content-between fruite-name">
+                          <a
+                            th:href="@{/produits(idCategorie=${categorie.id})}"
+                          >
+                            <i class="fas fa-apple-alt me-2"></i>
+                            <span th:text="${categorie.libelle}">Apples</span>
+                          </a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <h4 class="mb-4">Produits populaires</h4>
+                  <div
+                    class="d-flex align-items-center justify-content-start"
+                    th:each="p : ${relatedProducts}"
+                    th:if="${relatedProducts != null and !relatedProducts.isEmpty()}"
+                  >
+                    <div class="rounded" style="width: 100px; height: 100px">
+                      <img
+                        th:src="${p.imagePath != null} ? @{${p.imagePath}} : '/img/featur-1.jpg'"
+                        class="img-fluid rounded"
+                        th:alt="${p.nom}"
+                      />
+                    </div>
+                    <div>
+                      <h6 class="mb-2" th:text="${p.nom}">Big Banana</h6>
+                      <div class="d-flex mb-2">
+                        <i class="fa fa-star text-secondary"></i>
+                        <i class="fa fa-star text-secondary"></i>
+                        <i class="fa fa-star text-secondary"></i>
+                        <i class="fa fa-star text-secondary"></i>
+                        <i class="fa fa-star"></i>
+                      </div>
+                      <div class="d-flex mb-2">
+                        <h5 class="fw-bold me-2" th:text="${p.pu} + ' Ar'">
+                          2.99 $
+                        </h5>
+                      </div>
+                      <a
+                        th:href="@{/produits/{id}(id=${p.id})}"
+                        class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                        >Voir</a
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="d-flex justify-content-center my-4"
+                    th:if="${relatedProducts == null or relatedProducts.isEmpty()}"
+                  >
+                    <p class="text-muted">Aucun produit similaire</p>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="position-relative">
+                    <img
+                      src="/img/banner-fruits.jpg"
+                      class="img-fluid w-100 rounded"
+                      alt=""
+                    />
+                    <div
+                      class="position-absolute"
+                      style="top: 50%; right: 10px; transform: translateY(-50%)"
+                    >
+                      <h3 class="text-secondary fw-bold">
+                        Fresh <br />
+                        Fruits <br />
+                        Banner
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- Colonne droite -->
-          <div class="col-infos">
-            <p
-              class="categorie-detail"
-              th:if="${produit.categorie != null}"
-              th:text="${produit.categorie.libelle}"
-            >
-              Engrais
-            </p>
-
-            <h1 th:text="${produit.nom}">Compost (1kg)</h1>
-
-            <p class="prix-detail">
-              <span th:text="${produit.pu}"></span> <small>Ar</small>
-            </p>
-
-            <!-- Description -->
-            <div class="description-detail">
-              <p>
-                <span class="highlight" th:text="${produit.nom}"
-                  >Compost (1kg)</span
-                >
-                est un produit de qualité supérieure, conçu pour répondre aux
-                besoins des agriculteurs et jardiniers les plus exigeants.
-              </p>
-              <p>
-                <strong>Caractéristiques :</strong><br />
-                • 100% naturel et respectueux de l'environnement<br />
-                • Issu de
-                <span class="highlight">matières organiques</span>
-                sélectionnées<br />
-                • Idéal pour l'enrichissement des sols et la croissance des
-                plantes<br />
-                • Sans OGM ni produits chimiques de synthèse
-              </p>
-              <p>
-                <strong>Conseils d'utilisation :</strong><br />
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-            </div>
-
-            <div
-              class="stock-detail"
-              th:classappend="${stock > 0} ? 'stock-ok' : 'stock-rupture'"
-            >
-              <i th:if="${stock > 0}" class="fas fa-check-circle"></i>
-              <i th:unless="${stock > 0}" class="fas fa-times-circle"></i>
-              <span th:if="${stock > 0}">
-                En stock — <strong th:text="${stock}"></strong> unité(s)
-                disponible(s)
-              </span>
-              <span th:unless="${stock > 0}"> Rupture de stock </span>
-            </div>
-
-            <!-- Formulaire d'ajout -->
-            <div th:if="${stock > 0}">
-              <form
-                class="form-ajout"
-                method="post"
-                th:action="@{/panier/ajouter}"
+          <!-- Produits liés -->
+          <h1 class="fw-bold mb-0">Produits similaires</h1>
+          <div class="vesitable">
+            <div class="row">
+              <div
+                class="col-md-6 col-lg-4 col-xl-3"
+                th:each="p : ${relatedProducts}"
+                th:if="${relatedProducts != null and !relatedProducts.isEmpty()}"
               >
-                <input
-                  type="hidden"
-                  name="idProduit"
-                  th:value="${produit.id}"
-                />
-
-                <div class="qte-wrapper">
-                  <button
-                    type="button"
-                    onclick="changerQuantiteDetail(-1)"
-                    id="btnMoins"
+                <div
+                  class="border border-primary rounded position-relative vesitable-item"
+                >
+                  <div
+                    class="vesitable-img"
+                    style="height: 200px; overflow: hidden"
                   >
-                    <i class="fas fa-minus"></i>
-                  </button>
-                  <span class="qte-display" id="qteDisplay">1</span>
-                  <button
-                    type="button"
-                    onclick="changerQuantiteDetail(1)"
-                    id="btnPlus"
+                    <img
+                      th:src="${p.imagePath != null} ? @{${p.imagePath}} : '/img/vegetable-item-6.jpg'"
+                      class="img-fluid w-100 h-100 rounded-top"
+                      style="object-fit: cover"
+                      th:alt="${p.nom}"
+                    />
+                  </div>
+                  <div
+                    class="text-white bg-primary px-3 py-1 rounded position-absolute"
+                    style="top: 10px; right: 10px"
+                    th:text="${p.categorie != null ? p.categorie.libelle : 'Produit'}"
                   >
-                    <i class="fas fa-plus"></i>
-                  </button>
+                    Vegetable
+                  </div>
+                  <div class="p-4 pb-0 rounded-bottom">
+                    <h4 th:text="${p.nom}">Parsely</h4>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit
+                      sed do eiusmod te incididunt
+                    </p>
+                    <div class="d-flex justify-content-between flex-lg-wrap">
+                      <p
+                        class="text-dark fs-5 fw-bold"
+                        th:text="${p.pu} + ' Ar'"
+                      >
+                        $4.99 / kg
+                      </p>
+                      <a
+                        th:href="@{/produits/{id}(id=${p.id})}"
+                        class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary"
+                        ><i class="fa fa-shopping-bag me-2 text-primary"></i>
+                        Voir</a
+                      >
+                    </div>
+                  </div>
                 </div>
-
-                <input
-                  type="hidden"
-                  name="quantite"
-                  id="quantiteInput"
-                  value="1"
-                />
-
-                <button type="submit" class="btn-ajouter" id="btnAjouterPanier">
-                  <i class="fas fa-cart-plus"></i> Ajouter au panier
-                </button>
-              </form>
+              </div>
             </div>
-
-            <div th:unless="${stock > 0}">
-              <span class="btn-indisponible">
-                <i class="fas fa-times"></i> Produit indisponible
-              </span>
-            </div>
-
-            <!-- Bouton retour -->
-            <a class="btn-retour" th:href="@{/produits}">
-              <i class="fas fa-arrow-left"></i> Retour aux produits
-            </a>
           </div>
         </div>
       </div>
-    </main>
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-    <div th:replace="~{front/fragments/layout :: footer}"></div>
-
-    <!-- =====================================================
-         TOAST
-    ====================================================== -->
-    <div id="toast" class="toast">
-      <i class="fas fa-check-circle"></i>
-      <span id="toastMessage">Produit ajouté au panier</span>
+      <!-- Single Product End -->
     </div>
 
-    <!-- =====================================================
-         SCRIPT
-    ====================================================== -->
-    <script>
-      // Gestion de la quantité sur la page détail
-      let qteDetail = 1;
-      const maxStock = parseInt("[[${stock}]]") || 999;
+    <!-- Scripts intégrés -->
+    <th:block th:fragment="scripts">
+      <!-- jQuery et Bootstrap -->
+      <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"
+      ></script>
+      <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      ></script>
 
-      function changerQuantiteDetail(delta) {
-        qteDetail = Math.max(1, Math.min(maxStock, qteDetail + delta));
-
-        const display = document.getElementById("qteDisplay");
-        const input = document.getElementById("quantiteInput");
-        const btnMoins = document.getElementById("btnMoins");
-        const btnPlus = document.getElementById("btnPlus");
-
-        if (display) display.textContent = qteDetail;
-        if (input) input.value = qteDetail;
-
-        if (btnMoins) btnMoins.disabled = qteDetail <= 1;
-        if (btnPlus) btnPlus.disabled = qteDetail >= maxStock;
-      }
-
-      // Toast notification
-      let toastTimeout = null;
-
-      function showToast(message, isError = false) {
-        const toast = document.getElementById("toast");
-        const toastMessage = document.getElementById("toastMessage");
-        const icon = toast.querySelector("i");
-
-        toastMessage.textContent = message;
-
-        if (isError) {
-          icon.className = "fas fa-exclamation-circle";
-          toast.style.borderLeftColor = "#d32f2f";
-        } else {
-          icon.className = "fas fa-check-circle";
-          toast.style.borderLeftColor = "var(--ali-orange)";
-        }
-
-        toast.classList.add("show");
-
-        if (toastTimeout) clearTimeout(toastTimeout);
-        toastTimeout = setTimeout(() => toast.classList.remove("show"), 3000);
-      }
-
-      // Interception du formulaire d'ajout pour AJAX
-      document.addEventListener("DOMContentLoaded", function () {
-        const form = document.querySelector(".form-ajout");
-        if (form) {
-          form.addEventListener("submit", function (e) {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-            const idProduit = formData.get("idProduit");
-            const quantite = formData.get("quantite");
-
-            const btn = document.getElementById("btnAjouterPanier");
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Ajout...';
-
-            fetch("/panier/ajouter", {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body:
-                "idProduit=" +
-                encodeURIComponent(idProduit) +
-                "&quantite=" +
-                encodeURIComponent(quantite),
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                if (data.success) {
-                  const cartCount = document.querySelector(".cart-count");
-                  if (cartCount) {
-                    cartCount.textContent =
-                      data.nouveauTotal ||
-                      parseInt(cartCount.textContent) + parseInt(quantite);
-                  }
-                  const nomProduit =
-                    document.querySelector("h1")?.textContent || "Produit";
-                  showToast(
-                    nomProduit + " ajouté au panier ! (" + quantite + "x)",
-                  );
-                } else {
-                  showToast(data.message || "Erreur lors de l'ajout", true);
-                }
-              })
-              .catch((error) => {
-                console.error("Erreur:", error);
-                showToast("Erreur de connexion au serveur", true);
-              })
-              .finally(() => {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-              });
-          });
-        }
-      });
-    </script>
+      <script></script>
+    </th:block>
   </body>
 </html>

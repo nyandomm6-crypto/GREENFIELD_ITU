@@ -12,43 +12,44 @@ import org.springframework.data.repository.query.Param;
 import itu.greenField.model.Produit;
 
 public interface ProduitRepository extends JpaRepository<Produit, Integer> {
-    Optional<Produit> findByMatricule(String matricule);
+        Optional<Produit> findByMatricule(String matricule);
 
-    List<Produit> findByCategorie_Id(Integer idCategorie);
+        Page<Produit> findByCategorie_Id(Integer idCategorie, Pageable pageable);
 
-    List<Produit> findByNomContainingIgnoreCase(String motCle);
+        Page<Produit> findByNomContainingIgnoreCase(String motCle, Pageable pageable);
 
-    List<Produit> findByCategorie_IdAndNomContainingIgnoreCase(Integer idCategorie, String motCle);
+        Page<Produit> findByCategorie_IdAndNomContainingIgnoreCase(Integer idCategorie, String motCle,
+                        Pageable pageable);
 
-    public Optional<Produit> findFirstByNom(String nom);
+        public Optional<Produit> findFirstByNom(String nom);
 
-    @Query("SELECT p FROM Produit p WHERE " +
-            "(:idCategorie IS NULL OR p.categorie.id = :idCategorie) AND " +
-            "(:motCle IS NULL OR LOWER(p.nom) LIKE :motClePattern " +
-            "OR LOWER(p.matricule) LIKE :motClePattern)")
-    List<Produit> searchProduits(@Param("idCategorie") Integer idCategorie,
-            @Param("motCle") String motCle,
-            @Param("motClePattern") String motClePattern);
+        @Query("SELECT p FROM Produit p WHERE " +
+                        "(:idCategorie IS NULL OR p.categorie.id = :idCategorie) AND " +
+                        "(:motCle IS NULL OR LOWER(p.nom) LIKE :motClePattern " +
+                        "OR LOWER(p.matricule) LIKE :motClePattern)")
+        List<Produit> searchProduits(@Param("idCategorie") Integer idCategorie,
+                        @Param("motCle") String motCle,
+                        @Param("motClePattern") String motClePattern);
 
-    @Query("SELECT p FROM Produit p WHERE " +
-            "(:idCategorie IS NULL OR p.categorie.id = :idCategorie) AND " +
-            "(:motCle IS NULL OR LOWER(p.nom) LIKE :motClePattern " +
-            "OR LOWER(p.matricule) LIKE :motClePattern)")
-    Page<Produit> searchProduits(@Param("idCategorie") Integer idCategorie,
-            @Param("motCle") String motCle,
-            @Param("motClePattern") String motClePattern,
-            Pageable pageable);
+        @Query("SELECT p FROM Produit p WHERE " +
+                        "(:idCategorie IS NULL OR p.categorie.id = :idCategorie) AND " +
+                        "(:motCle IS NULL OR LOWER(p.nom) LIKE :motClePattern " +
+                        "OR LOWER(p.matricule) LIKE :motClePattern)")
+        Page<Produit> searchProduits(@Param("idCategorie") Integer idCategorie,
+                        @Param("motCle") String motCle,
+                        @Param("motClePattern") String motClePattern,
+                        Pageable pageable);
 
-    boolean existsByMatricule(String matricule);
+        boolean existsByMatricule(String matricule);
 
-    boolean existsByMatriculeAndIdNot(String matricule, Integer id);
+        boolean existsByMatriculeAndIdNot(String matricule, Integer id);
 
-    // 5 produits les plus vendus (somme des quantités commandées décroissante)
-    @Query("SELECT p FROM Produit p JOIN p.detailsCommande dc " +
-            "GROUP BY p ORDER BY SUM(dc.quantite) DESC")
-    List<Produit> findBestSellers(Pageable pageable);
+        // 5 produits les plus vendus (somme des quantités commandées décroissante)
+        @Query("SELECT p FROM Produit p JOIN p.detailsCommande dc " +
+                        "GROUP BY p ORDER BY SUM(dc.quantite) DESC")
+        List<Produit> findBestSellers(Pageable pageable);
 
-    // Nouveaux produits (les plus récents par id décroissant)
-    List<Produit> findTop10ByOrderByIdDesc();
+        // Nouveaux produits (les plus récents par id décroissant)
+        List<Produit> findTop10ByOrderByIdDesc();
 
 }

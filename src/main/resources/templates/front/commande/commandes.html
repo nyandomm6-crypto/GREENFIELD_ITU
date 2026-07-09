@@ -1,1190 +1,181 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mes commandes - greenField</title>
-
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-
-    <style>
-      /* =====================================================
-           TOKENS - DESIGN SYSTEM UNIFIÉ
-        ====================================================== */
-      :root {
-        /* Couleurs principales */
-        --gf-forest: #0A2E1C;
-        --gf-forest-2: #123D27;
-        --gf-green: #009951;
-        --gf-green-light: #5EB453;
-        --gf-leaf: #93D888;
-        --gf-gold: #A46D2C;
-        --gf-cream: #F7F4EC;
-        --gf-line: #E3E9E1;
-        --gf-text: #14261B;
-        --gf-muted: #62705F;
-
-        /* Couleurs d'accent */
-        --ali-orange: #A46D2C;
-        --ali-orange-light: #B98136;
-        --ali-orange-dark: #7E5C15;
-        --danger: #d32f2f;
-        --success: #2e7d32;
-
-        /* Ombres */
-        --ombre: 0 4px 12px rgba(0, 0, 0, 0.06);
-        --ombre-forte: 0 8px 20px rgba(0, 0, 0, 0.1);
-
-        /* Tailles de police - DESIGN SYSTEM */
-        --fs-xs: 11px;
-        --fs-sm: 13px;
-        --fs-base: 14px;
-        --fs-md: 15px;
-        --fs-lg: 18px;
-        --fs-xl: 20px;
-        --fs-2xl: 24px;
-        --fs-3xl: 28px;
-        --fs-4xl: 32px;
-
-        /* Espacements */
-        --sp-2: 2px;
-        --sp-4: 4px;
-        --sp-6: 6px;
-        --sp-8: 8px;
-        --sp-10: 10px;
-        --sp-12: 12px;
-        --sp-14: 14px;
-        --sp-16: 16px;
-        --sp-18: 18px;
-        --sp-20: 20px;
-        --sp-24: 24px;
-        --sp-28: 28px;
-        --sp-30: 30px;
-        --sp-40: 40px;
-
-        /* Rayons */
-        --radius-sm: 8px;
-        --radius-md: 12px;
-        --radius-lg: 16px;
-        --radius-xl: 20px;
-        --radius-full: 50px;
-
-        /* Transitions */
-        --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-        --bg-panier: #f5f3ef;
-        --blanc: #ffffff;
-      }
-
-      /* =====================================================
-           RESET & BASE
-        ====================================================== */
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        background: var(--bg-panier);
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          "Helvetica Neue", Arial, sans-serif;
-        font-size: var(--fs-base);
-        color: var(--gf-text);
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        line-height: 1.6;
-      }
-
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-      ul {
-        list-style: none;
-      }
-      .conteneur {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 0 var(--sp-20);
-      }
-
-      /* =====================================================
-           BOUTONS UNIFORMISÉS
-        ====================================================== */
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: var(--sp-8);
-        padding: var(--sp-10) var(--sp-24);
-        border: none;
-        border-radius: var(--radius-full);
-        font-size: var(--fs-base);
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        text-align: center;
-        min-height: 44px;
-        min-width: 120px;
-        font-family: inherit;
-        line-height: 1.2;
-      }
-
-      .btn-primary {
-        background: linear-gradient(
-          135deg,
-          var(--gf-green),
-          var(--gf-forest-2)
-        );
-        color: #fff;
-      }
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
-      }
-
-      .btn-orange {
-        background: linear-gradient(
-          135deg,
-          var(--ali-orange-light),
-          var(--ali-orange-dark)
-        );
-        color: #fff;
-        box-shadow: 0 4px 14px rgba(255, 106, 0, 0.2);
-      }
-      .btn-orange:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(255, 106, 0, 0.3);
-        opacity: 0.9;
-      }
-
-      .btn-outline {
-        background: transparent;
-        color: var(--gf-green);
-        border: 2px solid var(--gf-green);
-      }
-      .btn-outline:hover {
-        background: var(--gf-green);
-        color: #fff;
-      }
-
-      .btn-secondary {
-        background: var(--gf-cream);
-        color: var(--gf-text);
-        border: 1px solid var(--gf-line);
-      }
-      .btn-secondary:hover {
-        background: var(--blanc);
-        border-color: var(--gf-green);
-        color: var(--gf-forest);
-      }
-
-      .btn-sm {
-        padding: var(--sp-6) var(--sp-14);
-        font-size: var(--fs-sm);
-        min-height: 36px;
-        min-width: 80px;
-      }
-
-      .btn-block {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-      }
-
-      .btn-icon {
-        min-width: 44px;
-        width: 44px;
-        height: 44px;
-        padding: 0;
-        border-radius: 50%;
-      }
-
-      .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none !important;
-        box-shadow: none !important;
-      }
-
-      .btn-cta-orange {
-        background: var(--ali-orange);
-        color: #fff !important;
-        padding: var(--sp-10) var(--sp-20);
-        border-radius: var(--radius-full);
-        font-weight: 600;
-        font-size: var(--fs-base);
-        transition: background 0.2s;
-        display: inline-block;
-        min-height: 44px;
-        min-width: 120px;
-        text-align: center;
-        line-height: 1.2;
-      }
-      .btn-cta-orange:hover {
-        background: var(--ali-orange-dark);
-        color: #fff;
-      }
-
-      /* =====================================================
-           HEADER - RESPONSIVE
-        ====================================================== */
-      .market-header {
-        background: #ffffff;
-        padding: var(--sp-12) 0;
-        position: sticky;
-        top: 0;
-        z-index: 1002;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        border-bottom: 1px solid #e6e6e6;
-      }
-      .market-header .conteneur {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--sp-28);
-      }
-
-      .mh-logo {
-        display: flex;
-        align-items: center;
-        flex-shrink: 0;
-      }
-      .mh-logo-text {
-        font-size: var(--fs-3xl);
-        font-weight: 700;
-        color: var(--ali-orange);
-        letter-spacing: -1px;
-      }
-      .mh-logo-text span {
-        color: #333;
-      }
-      .mh-logo-text i {
-        color: var(--gf-green);
-        font-size: var(--fs-xl);
-        margin-right: var(--sp-4);
-      }
-
-      .mh-search {
-        flex: 1;
-        max-width: 700px;
-      }
-      .mh-search form {
-        display: flex;
-        height: 44px;
-        border: 2px solid var(--ali-orange);
-        border-radius: var(--radius-full);
-        overflow: hidden;
-        background: #fff;
-      }
-      .mh-search input {
-        flex: 1;
-        border: none;
-        padding: 0 var(--sp-16);
-        font-size: var(--fs-base);
-        outline: none;
-        color: #333;
-      }
-      .mh-search input::placeholder {
-        color: #999;
-      }
-      .mh-search .search-icons {
-        display: flex;
-        align-items: center;
-        padding-right: var(--sp-10);
-        color: #999;
-        gap: var(--sp-8);
-        cursor: pointer;
-      }
-      .mh-search button {
-        background: linear-gradient(
-          135deg,
-          var(--ali-orange-light),
-          var(--ali-orange-dark)
-        );
-        border: none;
-        color: #fff;
-        padding: 0 var(--sp-28);
-        font-weight: 600;
-        font-size: var(--fs-md);
-        cursor: pointer;
-        transition: opacity 0.2s;
-        display: flex;
-        align-items: center;
-        gap: var(--sp-8);
-        min-height: 44px;
-      }
-      .mh-search button:hover {
-        opacity: 0.9;
-      }
-
-      .mh-actions {
-        display: flex;
-        align-items: center;
-        gap: var(--sp-18);
-        flex-shrink: 0;
-      }
-      .mh-action {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: #333;
-        font-size: var(--fs-sm);
-        font-weight: 500;
-        transition: color 0.2s;
-        position: relative;
-      }
-      .mh-action:hover {
-        color: var(--ali-orange);
-      }
-      .mh-action i {
-        font-size: var(--fs-xl);
-        margin-bottom: 0px;
-      }
-      .mh-action .cart-count {
-        position: absolute;
-        top: -4px;
-        right: -8px;
-        background: var(--ali-orange);
-        color: #fff;
-        font-size: var(--fs-xs);
-        font-weight: 700;
-        min-width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      /* =====================================================
-         PAGE COMMANDES
-        ====================================================== */
-      .page-commandes {
-        padding: var(--sp-24) 0 var(--sp-40);
-        flex: 1 0 auto;
-        background: var(--bg-panier);
-      }
-
-      .breadcrumb {
-        font-size: var(--fs-sm);
-        color: var(--gf-muted);
-        margin-bottom: var(--sp-16);
-      }
-      .breadcrumb a {
-        color: var(--gf-green);
-      }
-      .breadcrumb a:hover {
-        text-decoration: underline;
-      }
-      .breadcrumb span {
-        color: var(--gf-text);
-        font-weight: 600;
-      }
-
-      .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: var(--sp-16);
-        margin-bottom: var(--sp-24);
-      }
-
-      .page-header h1 {
-        font-size: var(--fs-4xl);
-        font-weight: 700;
-        color: var(--gf-forest);
-        letter-spacing: -0.5px;
-      }
-
-      .page-header h1 i {
-        color: var(--ali-orange);
-        margin-right: var(--sp-8);
-      }
-
-      .page-header p {
-        color: var(--gf-muted);
-        font-size: var(--fs-md);
-        margin-top: var(--sp-4);
-      }
-
-      /* =====================================================
-           COMMANDES LISTE
-        ====================================================== */
-      .contenu-commandes {
-        display: grid;
-        gap: var(--sp-18);
-      }
-
-      .commande-card {
-        background: var(--blanc);
-        border: 1px solid var(--gf-line);
-        border-radius: var(--radius-lg);
-        padding: var(--sp-20) var(--sp-22);
-        box-shadow: var(--ombre);
-        transition: var(--transition);
-      }
-
-      .commande-card:hover {
-        box-shadow: var(--ombre-forte);
-        border-color: rgba(45, 106, 79, 0.15);
-      }
-
-      .commande-card-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: var(--sp-12);
-        margin-bottom: var(--sp-14);
-      }
-
-      .commande-titre {
-        display: flex;
-        align-items: center;
-        gap: var(--sp-10);
-        font-size: var(--fs-lg);
-        font-weight: 700;
-        color: var(--gf-forest);
-      }
-
-      .commande-titre i {
-        color: var(--ali-orange);
-      }
-
-      .commande-meta {
-        display: flex;
-        gap: var(--sp-12);
-        flex-wrap: wrap;
-        color: var(--gf-muted);
-        font-size: var(--fs-base);
-        margin-top: var(--sp-4);
-      }
-
-      .commande-meta i {
-        color: var(--gf-green);
-        margin-right: var(--sp-4);
-      }
-
-      .badge-statut {
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-8);
-        padding: var(--sp-6) var(--sp-16);
-        border-radius: var(--radius-full);
-        font-size: var(--fs-sm);
-        font-weight: 700;
-        text-transform: capitalize;
-        min-height: 36px;
-      }
-
-      .badge-statut.en-attente {
-        background: #fff8e1;
-        color: #8a6d1d;
-      }
-
-      .badge-statut.validee {
-        background: #e8f5e9;
-        color: var(--gf-green);
-      }
-
-      .badge-statut.en-cours {
-        background: #e3f2fd;
-        color: #1565c0;
-      }
-
-      .badge-statut.livree {
-        background: #e8f5e9;
-        color: var(--gf-green);
-      }
-
-      .badge-statut.annulee {
-        background: #fdecea;
-        color: var(--danger);
-      }
-
-      .badge-statut.remboursee {
-        background: #f3e5f5;
-        color: #7b1fa2;
-      }
-
-      .badge-statut i {
-        font-size: var(--fs-sm);
-      }
-
-      .commande-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: var(--sp-12);
-        margin-top: var(--sp-14);
-      }
-
-      .commande-info {
-        background: var(--gf-cream);
-        border: 1px solid var(--gf-line);
-        border-radius: var(--radius-sm);
-        padding: var(--sp-12) var(--sp-14);
-      }
-
-      .commande-info label {
-        display: block;
-        font-size: var(--fs-xs);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: var(--gf-muted);
-        margin-bottom: var(--sp-6);
-        font-weight: 600;
-      }
-
-      .commande-info label i {
-        margin-right: var(--sp-4);
-        color: var(--gf-green);
-      }
-
-      .commande-info strong {
-        font-size: var(--fs-md);
-        color: var(--gf-text);
-        font-weight: 700;
-      }
-
-      .commande-actions {
-        margin-top: var(--sp-16);
-        display: flex;
-        justify-content: flex-end;
-        gap: var(--sp-10);
-        flex-wrap: wrap;
-      }
-
-      /* Panier vide */
-      .vide {
-        background: var(--blanc);
-        border: 2px dashed var(--gf-line);
-        border-radius: var(--radius-lg);
-        padding: var(--sp-40) var(--sp-20);
-        text-align: center;
-        color: var(--gf-muted);
-        grid-column: 1 / -1;
-      }
-
-      .vide i {
-        font-size: 48px;
-        display: block;
-        margin-bottom: var(--sp-16);
-        color: var(--gf-line);
-      }
-
-      .vide p {
-        font-size: var(--fs-md);
-      }
-
-      .vide a {
-        display: inline-block;
-        margin-top: var(--sp-12);
-        color: var(--gf-green);
-        font-weight: 600;
-      }
-
-      /* =====================================================
-         FOOTER
-        ====================================================== */
-      .footer {
-        background: var(--gf-forest);
-        color: rgba(255, 255, 255, 0.7);
-        margin-top: auto;
-        border-top: 3px solid var(--gf-green);
-        flex-shrink: 0;
-        width: 100%;
-      }
-      .footer-newsletter {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        padding: var(--sp-24) 0;
-      }
-      .footer-newsletter .conteneur {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: var(--sp-20);
-        flex-wrap: wrap;
-      }
-      .footer-newsletter .nl-text h3 {
-        color: #fff;
-        font-size: var(--fs-lg);
-        font-weight: 700;
-        margin-bottom: var(--sp-4);
-      }
-      .footer-newsletter .nl-text p {
-        font-size: var(--fs-base);
-        color: rgba(255, 255, 255, 0.6);
-        margin: 0;
-      }
-      .nl-form {
-        display: flex;
-        gap: 0;
-        flex-shrink: 0;
-      }
-      .nl-form input {
-        border: none;
-        padding: 0 var(--sp-16);
-        height: 46px;
-        width: 280px;
-        border-radius: var(--radius-sm) 0 0 var(--radius-sm);
-        font-size: var(--fs-base);
-        outline: none;
-        background: rgba(255, 255, 255, 0.95);
-        min-height: 46px;
-      }
-      .nl-form input:focus {
-        background: #fff;
-      }
-      .nl-form button {
-        background: var(--gf-gold);
-        color: #3D2A0F;
-        border: none;
-        padding: 0 var(--sp-28);
-        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-        font-weight: 700;
-        font-size: var(--fs-base);
-        cursor: pointer;
-        transition: all 0.2s ease-in-out;
-        white-space: nowrap;
-        min-height: 46px;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-8);
-      }
-      .nl-form button:hover {
-        background: #C9924D;
-      }
-
-      .footer-grid {
-        display: grid;
-        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-        gap: var(--sp-30);
-        padding: var(--sp-40) 0 var(--sp-28);
-      }
-      .footer .logo {
-        color: #fff;
-        font-size: var(--fs-xl);
-        font-weight: 800;
-        display: inline-block;
-        margin-bottom: var(--sp-12);
-      }
-      .footer .logo i {
-        color: var(--gf-leaf);
-      }
-      .footer .footer-description {
-        font-size: var(--fs-base);
-        line-height: 1.8;
-        max-width: 280px;
-        color: rgba(255, 255, 255, 0.65);
-        margin: 0;
-      }
-      .footer h4 {
-        color: #fff;
-        font-size: var(--fs-md);
-        font-weight: 700;
-        margin-bottom: var(--sp-14);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      .footer ul li {
-        margin-bottom: var(--sp-8);
-      }
-      .footer ul li a {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: var(--fs-base);
-        transition: all 0.2s ease-in-out;
-        display: inline-flex;
-        align-items: center;
-        gap: var(--sp-4);
-      }
-      .footer ul li a:hover {
-        color: #fff;
-      }
-      .footer ul li i {
-        width: 22px;
-        color: var(--gf-gold);
-      }
-      .footer-bottom {
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        padding: var(--sp-18) 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: var(--sp-12);
-        font-size: var(--fs-sm);
-      }
-      .footer-socials {
-        display: flex;
-        gap: var(--sp-10);
-      }
-      .footer-socials a {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.06);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255, 255, 255, 0.5);
-        transition: all 0.2s ease-in-out;
-        font-size: var(--fs-md);
-      }
-      .footer-socials a:hover {
-        background: var(--gf-green);
-        color: #fff;
-        transform: translateY(-2px);
-      }
-
-      /* =====================================================
-         RESPONSIVE
-        ====================================================== */
-      @media (max-width: 1024px) {
-        .commande-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .footer-grid {
-          grid-template-columns: 1fr 1fr 1fr;
-        }
-      }
-
-      @media (max-width: 900px) {
-        .mh-actions .mh-action.delivery {
-          display: none;
-        }
-        .btn-cta-orange {
-          display: none;
-        }
-        .commande-grid {
-          grid-template-columns: repeat(2, 1fr);
-        }
-        .footer-grid {
-          grid-template-columns: 1fr 1fr;
-        }
-        .nl-form input {
-          width: 220px;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .market-header .conteneur {
-          flex-wrap: wrap;
-          gap: var(--sp-15);
-        }
-        .mh-logo-text {
-          font-size: var(--fs-xl);
-        }
-        .mh-search {
-          order: 3;
-          max-width: 100%;
-          width: 100%;
-        }
-        .mh-search form {
-          height: 38px;
-        }
-        .mh-search button {
-          padding: 0 var(--sp-15);
-          font-size: var(--fs-sm);
-        }
-        .mh-search .search-icons {
-          display: none;
-        }
-        .mh-actions {
-          gap: var(--sp-12);
-        }
-        .mh-action i {
-          font-size: var(--fs-lg);
-        }
-        .mh-action {
-          font-size: var(--fs-xs);
-        }
-        .btn-cta-orange {
-          padding: var(--sp-6) var(--sp-14);
-          font-size: var(--fs-sm);
-          min-height: 36px;
-          min-width: 80px;
-        }
-
-        .page-header h1 {
-          font-size: var(--fs-2xl);
-        }
-        .page-header p {
-          font-size: var(--fs-base);
-        }
-
-        .commande-card {
-          padding: var(--sp-16) var(--sp-18);
-        }
-
-        .commande-titre {
-          font-size: var(--fs-md);
-        }
-
-        .commande-grid {
-          grid-template-columns: repeat(2, 1fr);
-          gap: var(--sp-10);
-        }
-
-        .commande-info {
-          padding: var(--sp-10) var(--sp-12);
-        }
-
-        .commande-info strong {
-          font-size: var(--fs-base);
-        }
-
-        .footer-newsletter .conteneur {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .footer-newsletter .nl-text {
-          text-align: center;
-        }
-        .nl-form {
-          width: 100%;
-        }
-        .nl-form input {
-          width: 100%;
-          flex: 1;
-        }
-        .nl-form button {
-          padding: 0 var(--sp-20);
-          font-size: var(--fs-sm);
-        }
-        .footer-grid {
-          grid-template-columns: 1fr 1fr;
-          gap: var(--sp-20);
-          padding: var(--sp-30) 0 var(--sp-20);
-        }
-        .footer .footer-description {
-          max-width: 100%;
-        }
-        .footer-bottom {
-          flex-direction: column;
-          text-align: center;
-        }
-      }
-
-      @media (max-width: 560px) {
-        .mh-logo-text {
-          font-size: var(--fs-lg);
-        }
-        .mh-logo-text i {
-          font-size: var(--fs-md);
-        }
-        .mh-search form {
-          height: 34px;
-          border-radius: var(--radius-xl);
-        }
-        .mh-search input {
-          font-size: var(--fs-sm);
-          padding: 0 var(--sp-12);
-        }
-        .mh-search button {
-          padding: 0 var(--sp-12);
-          font-size: var(--fs-sm);
-        }
-        .mh-search button span {
-          display: none;
-        }
-        .mh-actions {
-          gap: var(--sp-8);
-        }
-        .mh-action i {
-          font-size: var(--fs-md);
-        }
-        .mh-action .cart-count {
-          font-size: var(--fs-xs);
-          min-width: 14px;
-          height: 14px;
-          top: -3px;
-          right: -6px;
-        }
-        .btn-cta-orange {
-          padding: var(--sp-4) var(--sp-10);
-          font-size: var(--fs-xs);
-          border-radius: var(--radius-xl);
-          min-height: 28px;
-          min-width: 60px;
-        }
-        .market-header {
-          padding: var(--sp-8) 0;
-        }
-        .conteneur {
-          padding: 0 var(--sp-12);
-        }
-
-        .page-header h1 {
-          font-size: var(--fs-xl);
-        }
-        .page-header p {
-          font-size: var(--fs-sm);
-        }
-
-        .commande-card {
-          padding: var(--sp-14) var(--sp-14);
-        }
-
-        .commande-card-head {
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        .commande-titre {
-          font-size: var(--fs-base);
-        }
-
-        .commande-grid {
-          grid-template-columns: 1fr;
-          gap: var(--sp-8);
-        }
-
-        .commande-info {
-          padding: var(--sp-8) var(--sp-10);
-        }
-
-        .commande-info strong {
-          font-size: var(--fs-sm);
-        }
-
-        .commande-actions {
-          justify-content: center;
-        }
-
-        .badge-statut {
-          font-size: var(--fs-sm);
-          padding: var(--sp-4) var(--sp-12);
-          align-self: flex-start;
-          min-height: 30px;
-        }
-
-        .btn {
-          padding: var(--sp-8) var(--sp-16);
-          font-size: var(--fs-sm);
-          min-height: 36px;
-          min-width: 80px;
-        }
-
-        .footer-newsletter {
-          padding: var(--sp-18) 0;
-        }
-        .footer-newsletter .nl-text h3 {
-          font-size: var(--fs-md);
-        }
-        .footer-newsletter .nl-text p {
-          font-size: var(--fs-sm);
-        }
-        .nl-form {
-          flex-direction: column;
-          gap: var(--sp-8);
-        }
-        .nl-form input {
-          width: 100%;
-          border-radius: var(--radius-sm);
-          height: 40px;
-          font-size: var(--fs-sm);
-          min-height: 40px;
-        }
-        .nl-form button {
-          border-radius: var(--radius-sm);
-          padding: var(--sp-10) 0;
-          width: 100%;
-          font-size: var(--fs-base);
-          min-height: 40px;
-          justify-content: center;
-        }
-
-        .footer-grid {
-          grid-template-columns: 1fr;
-          gap: var(--sp-16);
-          padding: var(--sp-20) 0 var(--sp-16);
-        }
-        .footer h4 {
-          font-size: var(--fs-sm);
-          margin-bottom: var(--sp-10);
-        }
-        .footer ul li a,
-        .footer .footer-description {
-          font-size: var(--fs-sm);
-        }
-        .footer .footer-description {
-          max-width: 100%;
-        }
-        .footer-bottom {
-          flex-direction: column;
-          text-align: center;
-          padding: var(--sp-14) 0;
-          font-size: var(--fs-sm);
-        }
-        .footer-socials a {
-          width: 30px;
-          height: 30px;
-          font-size: var(--fs-sm);
-        }
-
-        .vide {
-          padding: var(--sp-30) var(--sp-16);
-        }
-        .vide i {
-          font-size: 36px;
-        }
-        .vide p {
-          font-size: var(--fs-base);
-        }
-      }
-    </style>
-  
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-    <style>
-      body, input, button, select, textarea {
-        font-family: "Instrument Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      }
-      h1, h2, h3, h4, h5, .mh-logo-text {
-        font-family: "Bricolage Grotesque", "Instrument Sans", "Segoe UI", sans-serif;
-      }
-    </style>
-</head>
-
-  <body>
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
-    <div th:replace="~{front/fragments/layout :: mainHeader}"></div>
-
-    <!-- =====================================================
-         CONTENU PRINCIPAL
-    ====================================================== -->
-    <main class="page-commandes">
-      <div class="conteneur">
-        <div class="breadcrumb">
-          <a href="/">Accueil</a> / <span>Mes commandes</span>
-        </div>
-
-        <div class="page-header">
-          <div>
-            <h1><i class="fas fa-receipt"></i> Mes commandes</h1>
-            <p>Consultez vos commandes, leur statut actuel et leur détail.</p>
+  <head
+    th:replace="~{front/fragments/layout :: head(pageTitle='Mes commandes - GreenField')}"
+  >
+    <title>Mes commandes - GreenField</title>
+  </head>
+
+  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+    <div th:fragment="pageContent">
+      <!-- Single Page Header start -->
+      <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Mes commandes</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+          <li class="breadcrumb-item"><a th:href="@{/}">Accueil</a></li>
+          <li class="breadcrumb-item active text-white">Mes commandes</li>
+        </ol>
+      </div>
+      <!-- Single Page Header End -->
+
+      <!-- Commandes Start -->
+      <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+          <div class="row g-4">
+            <div class="col-lg-12">
+              <div class="row g-4">
+                <!-- En-tête -->
+                <div class="col-12">
+                  <div
+                    class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4"
+                  >
+                    <div>
+                      <h2 class="mb-0">
+                        <i class="fas fa-receipt text-primary me-2"></i>Mes
+                        commandes
+                      </h2>
+                      <p class="text-muted mb-0">
+                        Consultez vos commandes, leur statut actuel et leur
+                        détail.
+                      </p>
+                    </div>
+                    <div>
+                      <a
+                        th:href="@{/produits}"
+                        class="btn btn-primary rounded-pill px-4 py-2"
+                      >
+                        <i class="fa fa-plus me-2"></i> Nouvelle commande
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Liste des commandes -->
+                <div
+                  class="col-12"
+                  th:if="${commandes != null and !commandes.isEmpty()}"
+                >
+                  <div class="row g-4">
+                    <div class="col-12" th:each="commande : ${commandes}">
+                      <div class="card shadow-sm border-0 rounded-3">
+                        <div class="card-body p-4">
+                          <!-- En-tête commande -->
+                          <div
+                            class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3"
+                          >
+                            <div>
+                              <h5 class="card-title mb-1">
+                                <i class="fas fa-receipt text-primary me-2"></i>
+                                Commande #<span th:text="${commande.id}"></span>
+                              </h5>
+                              <div class="text-muted small">
+                                <span
+                                  th:text="${#dates.format(commande.datecommande, 'dd/MM/yyyy HH:mm')}"
+                                ></span>
+                                <span class="mx-2">|</span>
+                                <i class="fas fa-truck me-1"></i>
+                                <span
+                                  th:text="${commande.modeReception}"
+                                ></span>
+                              </div>
+                            </div>
+                            <span
+                              class="badge rounded-pill px-3 py-2"
+                              th:classappend="${commande.statutActuel != null and commande.statutActuel.nom == 'Validee'} ? 'bg-success' : (${commande.statutActuel != null and commande.statutActuel.nom == 'En cours'} ? 'bg-warning text-dark' : (${commande.statutActuel != null and commande.statutActuel.nom == 'Livree'} ? 'bg-info' : (${commande.statutActuel != null and commande.statutActuel.nom == 'Annulee'} ? 'bg-danger' : (${commande.statutActuel != null and commande.statutActuel.nom == 'Remboursee'} ? 'bg-secondary' : 'bg-secondary'))))"
+                              th:text="${commande.statutActuel != null and commande.statutActuel.nom != null ? commande.statutActuel.nom : 'En attente'}"
+                            >
+                            </span>
+                          </div>
+
+                          <!-- Informations commande -->
+                          <div class="row g-3">
+                            <div class="col-md-3 col-6">
+                              <div class="bg-light rounded-3 p-3 text-center">
+                                <small class="text-muted d-block"
+                                  ><i class="fas fa-user me-1"></i>Client</small
+                                >
+                                <strong
+                                  th:text="${commande.client != null ? commande.client.prenom + ' ' + commande.client.nom : 'Non défini'}"
+                                ></strong>
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                              <div class="bg-light rounded-3 p-3 text-center">
+                                <small class="text-muted d-block"
+                                  ><i class="fas fa-credit-card me-1"></i
+                                  >Total</small
+                                >
+                                <strong
+                                  class="text-primary"
+                                  th:text="${#numbers.formatDecimal(commande.totalGeneral, 0, 'DEFAULT', 0, 'DEFAULT') + ' Ar'}"
+                                ></strong>
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                              <div class="bg-light rounded-3 p-3 text-center">
+                                <small class="text-muted d-block"
+                                  ><i class="fas fa-boxes me-1"></i
+                                  >Produits</small
+                                >
+                                <strong
+                                  th:text="${commande.totalProduits != null ? commande.totalProduits : 0}"
+                                ></strong>
+                              </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                              <div class="bg-light rounded-3 p-3 text-center">
+                                <small class="text-muted d-block"
+                                  ><i class="fas fa-truck me-1"></i
+                                  >Réception</small
+                                >
+                                <strong
+                                  th:text="${commande.modeReception != null ? commande.modeReception : 'Non défini'}"
+                                ></strong>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Actions -->
+                          <div class="mt-3 text-end">
+                            <a
+                              th:href="@{|/commandes/${commande.id}|}"
+                              class="btn btn-outline-primary rounded-pill px-4"
+                            >
+                              <i class="fas fa-eye me-2"></i> Voir le détail
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Message si aucune commande -->
+                <div
+                  class="col-12"
+                  th:unless="${commandes != null and !commandes.isEmpty()}"
+                >
+                  <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-4x text-muted mb-3"></i>
+                    <h4 class="text-muted">Aucune commande trouvée</h4>
+                    <p class="text-muted">
+                      Vous n'avez pas encore passé de commande.
+                    </p>
+                    <a
+                      th:href="@{/produits}"
+                      class="btn btn-primary rounded-pill px-4 py-2 mt-2"
+                    >
+                      <i class="fas fa-shopping-bag me-2"></i> Découvrir nos
+                      produits
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        <!-- LISTE DES COMMANDES -->
-        <div
-          class="contenu-commandes"
-          th:if="${commandes != null and !commandes.isEmpty()}"
-        >
-          <article class="commande-card" th:each="commande : ${commandes}">
-            <div class="commande-card-head">
-              <div>
-                <div class="commande-titre">
-                  <i class="fas fa-receipt"></i>
-                  <span th:text="'Commande #' + ${commande.id}"></span>
-                </div>
-
-                <div class="commande-meta">
-                  <span
-                    th:text="${#dates.format(commande.datecommande, 'dd/MM/yyyy HH:mm')}"
-                  ></span>
-                  <span th:if="${commande.modeReception != null}">
-                    <i class="fas fa-truck"></i>
-                    <span th:text="${commande.modeReception}"></span>
-                  </span>
-                </div>
-              </div>
-
-              <span
-                class="badge-statut"
-                th:classappend="${commande.statutActuel != null and commande.statutActuel.nom != null ? #strings.toLowerCase(commande.statutActuel.nom).replace(' ', '-') : 'en-attente'}"
-              >
-                <i
-                  th:if="${commande.statutActuel != null and commande.statutActuel.nom != null}"
-                  th:class="${commande.statutActuel.nom == 'Validee' ? 'fas fa-check-circle' : 
-                              commande.statutActuel.nom == 'En cours' ? 'fas fa-spinner fa-spin' :
-                              commande.statutActuel.nom == 'Livree' ? 'fas fa-check-double' :
-                              commande.statutActuel.nom == 'Annulee' ? 'fas fa-times-circle' :
-                              commande.statutActuel.nom == 'Remboursee' ? 'fas fa-undo' :
-                              'fas fa-clock'}"
-                ></i>
-                <span
-                  th:text="${commande.statutActuel != null and commande.statutActuel.nom != null ? commande.statutActuel.nom : 'En attente'}"
-                ></span>
-              </span>
-            </div>
-
-            <div class="commande-grid">
-              <div class="commande-info">
-                <label><i class="fas fa-user"></i> Client</label>
-                <strong
-                  th:text="${commande.client != null ? commande.client.prenom + ' ' + commande.client.nom : 'Non défini'}"
-                ></strong>
-              </div>
-
-              <div class="commande-info">
-                <label><i class="fas fa-credit-card"></i> Total général</label>
-                <strong
-                  th:text="${#numbers.formatDecimal(commande.totalGeneral, 0, 'DEFAULT', 0, 'DEFAULT') + ' Ar'}"
-                ></strong>
-              </div>
-
-              <div class="commande-info">
-                <label><i class="fas fa-boxes"></i> Total produits</label>
-                <strong
-                  th:text="${commande.totalProduits != null ? commande.totalProduits : 0}"
-                ></strong>
-              </div>
-
-              <div class="commande-info">
-                <label><i class="fas fa-truck"></i> Réception</label>
-                <strong
-                  th:text="${commande.modeReception != null ? commande.modeReception : 'Non défini'}"
-                ></strong>
-              </div>
-            </div>
-
-            <div class="commande-actions">
-              <a
-                class="btn btn-secondary"
-                th:href="@{/commandes/{id}(id=${commande.id})}"
-              >
-                <i class="fas fa-eye"></i> Voir le détail
-              </a>
-            </div>
-          </article>
-        </div>
-
-        <!-- MESSAGE SI AUCUNE COMMANDE -->
-        <div
-          class="vide"
-          th:unless="${commandes != null and !commandes.isEmpty()}"
-        >
-          <i class="fas fa-inbox"></i>
-          <p>Aucune commande trouvée pour ce client.</p>
-          <a href="/produits" class="btn btn-orange">
-            <i class="fas fa-shopping-bag"></i> Découvrir nos produits
-          </a>
-        </div>
       </div>
-    </main>
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-    <div th:replace="~{front/fragments/layout :: footer}"></div>
+      <!-- Commandes End -->
+    </div>
   </body>
 </html>
