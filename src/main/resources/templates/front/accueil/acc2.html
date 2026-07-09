@@ -194,66 +194,6 @@
       </div>
       <!-- FAQ End -->
 
-      <!-- Testimonial Start -->
-      <div class="container-fluid testimonial py-5">
-        <div class="container py-5">
-          <div class="testimonial-header text-center">
-            <h4 class="text-primary">Our Testimonial</h4>
-            <h1 class="display-5 mb-5 text-dark">Our Client Saying!</h1>
-          </div>
-          <div class="owl-carousel testimonial-carousel">
-            <div
-              class="testimonial-item img-border-radius bg-light rounded p-4"
-              th:each="temoignage : ${temoignages}"
-            >
-              <div class="position-relative">
-                <i
-                  class="fa fa-quote-right fa-2x text-secondary position-absolute"
-                  style="bottom: 30px; right: 0"
-                ></i>
-                <div class="mb-4 pb-4 border-bottom border-secondary">
-                  <p class="mb-0" th:text="${temoignage.message}">
-                    Message du témoignage.
-                  </p>
-                </div>
-                <div class="d-flex align-items-center flex-nowrap">
-                  <div class="bg-secondary rounded">
-                    <img
-                      src="img/testimonial-1.jpg"
-                      class="img-fluid rounded"
-                      style="width: 100px; height: 100px"
-                      alt=""
-                    />
-                  </div>
-                  <div class="ms-4 d-block">
-                    <h4 class="text-dark" th:text="${temoignage.nom}">
-                      Client Name
-                    </h4>
-                    <p class="m-0 pb-3" th:text="${temoignage.poste}">
-                      Profession
-                    </p>
-                    <div class="d-flex pe-5">
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="text-center py-4 text-muted"
-            th:if="${temoignages == null or #lists.isEmpty(temoignages)}"
-          >
-            <p>Aucun témoignage actif pour le moment.</p>
-          </div>
-        </div>
-      </div>
-      <!-- Testimonial End -->
-
       <!-- Fruits Shop Start-->
       <div class="container-fluid fruite py-5">
         <div class="container py-5">
@@ -395,67 +335,6 @@
         </div>
       </div>
       <!-- Featurs End -->
-
-      <!-- Testimonial Form Start -->
-      <div class="container-fluid py-5" style="background: #f8f9fa">
-        <div class="container py-5">
-          <div class="row justify-content-center">
-            <div class="col-lg-8">
-              <div class="p-4 rounded shadow-sm bg-white">
-                <h4 class="mb-4">Ajouter un témoignage</h4>
-                <form th:action="@{/temoignages}" method="post">
-                  <div class="mb-3">
-                    <label class="form-label">Nom</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="nom"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Poste</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="poste"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Message</label>
-                    <textarea
-                      class="form-control"
-                      rows="4"
-                      name="message"
-                      required
-                    ></textarea>
-                  </div>
-                  <div class="form-check mb-3">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value="true"
-                      name="isActif"
-                      checked
-                    />
-                    <label class="form-check-label"
-                      >Activer immédiatement</label
-                    >
-                  </div>
-                  <button
-                    type="submit"
-                    class="btn btn-primary rounded-pill px-4"
-                  >
-                    Envoyer
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Testimonial Form End -->
 
       <!-- Vesitable Shop Start-->
       <div class="container-fluid vesitable py-5">
@@ -661,7 +540,7 @@
       </div>
       <!-- Fact Start -->
 
-      <!-- Tastimonial Start -->
+      <!-- Testimonial Start -->
       <div class="container-fluid testimonial py-5">
         <div class="container py-5">
           <div class="testimonial-header text-center">
@@ -671,6 +550,7 @@
           <div class="owl-carousel testimonial-carousel">
             <div
               class="testimonial-item img-border-radius bg-light rounded p-4"
+              th:each="temoignage : ${temoignages}"
             >
               <div class="position-relative">
                 <i
@@ -678,10 +558,8 @@
                   style="bottom: 30px; right: 0"
                 ></i>
                 <div class="mb-4 pb-4 border-bottom border-secondary">
-                  <p class="mb-0">
-                    Lorem Ipsum is simply dummy text of the printing Ipsum has
-                    been the industry's standard dummy text ever since the
-                    1500s,
+                  <p class="mb-0" th:text="${temoignage.message}">
+                    Message du témoignage.
                   </p>
                 </div>
                 <div class="d-flex align-items-center flex-nowrap">
@@ -694,99 +572,33 @@
                     />
                   </div>
                   <div class="ms-4 d-block">
-                    <h4 class="text-dark">Client Name</h4>
-                    <p class="m-0 pb-3">Profession</p>
+                    <h4 class="text-dark" th:text="${temoignage.nom}">
+                      Client Name
+                    </h4>
+                    <p class="m-0 pb-3" th:text="${temoignage.poste}">
+                      Profession
+                    </p>
                     <div class="d-flex pe-5">
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="testimonial-item img-border-radius bg-light rounded p-4"
-            >
-              <div class="position-relative">
-                <i
-                  class="fa fa-quote-right fa-2x text-secondary position-absolute"
-                  style="bottom: 30px; right: 0"
-                ></i>
-                <div class="mb-4 pb-4 border-bottom border-secondary">
-                  <p class="mb-0">
-                    Lorem Ipsum is simply dummy text of the printing Ipsum has
-                    been the industry's standard dummy text ever since the
-                    1500s,
-                  </p>
-                </div>
-                <div class="d-flex align-items-center flex-nowrap">
-                  <div class="bg-secondary rounded">
-                    <img
-                      src="img/testimonial-1.jpg"
-                      class="img-fluid rounded"
-                      style="width: 100px; height: 100px"
-                      alt=""
-                    />
-                  </div>
-                  <div class="ms-4 d-block">
-                    <h4 class="text-dark">Client Name</h4>
-                    <p class="m-0 pb-3">Profession</p>
-                    <div class="d-flex pe-5">
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="testimonial-item img-border-radius bg-light rounded p-4"
-            >
-              <div class="position-relative">
-                <i
-                  class="fa fa-quote-right fa-2x text-secondary position-absolute"
-                  style="bottom: 30px; right: 0"
-                ></i>
-                <div class="mb-4 pb-4 border-bottom border-secondary">
-                  <p class="mb-0">
-                    Lorem Ipsum is simply dummy text of the printing Ipsum has
-                    been the industry's standard dummy text ever since the
-                    1500s,
-                  </p>
-                </div>
-                <div class="d-flex align-items-center flex-nowrap">
-                  <div class="bg-secondary rounded">
-                    <img
-                      src="img/testimonial-1.jpg"
-                      class="img-fluid rounded"
-                      style="width: 100px; height: 100px"
-                      alt=""
-                    />
-                  </div>
-                  <div class="ms-4 d-block">
-                    <h4 class="text-dark">Client Name</h4>
-                    <p class="m-0 pb-3">Profession</p>
-                    <div class="d-flex pe-5">
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
-                      <i class="fas fa-star text-primary"></i>
+                      <i
+                        class="fas fa-star"
+                        th:each="i : ${#numbers.sequence(1, 5)}"
+                        th:classappend="${i <= (temoignage.note != null ? temoignage.note : 5)} ? ' text-primary' : ' text-muted'"
+                      ></i>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div
+            class="text-center py-4 text-muted"
+            th:if="${temoignages == null or #lists.isEmpty(temoignages)}"
+          >
+            <p>Aucun témoignage actif pour le moment.</p>
+          </div>
         </div>
       </div>
-      <!-- Tastimonial End -->
+      <!-- Testimonial End -->
     </div>
   </body>
 </html>

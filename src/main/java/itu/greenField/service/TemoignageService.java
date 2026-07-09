@@ -39,14 +39,16 @@ public class TemoignageService {
 
         Temoignage premier = new Temoignage();
         premier.setNom("Mialy Rakoto");
-        premier.setPoste("Client premium");
+        premier.setPoste("client");
         premier.setMessage("Le service est rapide, le cadre est agréable et les produits sont vraiment de qualité.");
+        premier.setNote(5);
         premier.setIsActif(true);
 
         Temoignage second = new Temoignage();
         second.setNom("Nirina Andriamiarina");
-        second.setPoste("Mère de famille");
+        second.setPoste("client");
         second.setMessage("J’ai trouvé exactement ce qu’il me fallait pour mes plantations. Merci GreenField !");
+        second.setNote(5);
         second.setIsActif(true);
 
         temoignageRepository.saveAll(List.of(premier, second));

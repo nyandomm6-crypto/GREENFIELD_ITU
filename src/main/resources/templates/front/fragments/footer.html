@@ -115,6 +115,104 @@
               <img src="img/payment.png" class="img-fluid" alt="" />
             </div>
           </div>
+          <div class="col-12">
+            <div class="p-4 rounded border border-secondary bg-dark-subtle">
+              <h4 class="text-light mb-3">Ajouter un témoignage</h4>
+              <form th:action="@{/temoignages}" method="post" class="row g-3">
+                <div class="col-12">
+                  <label class="form-label text-white-50">Commentaire</label>
+                  <textarea
+                    class="form-control"
+                    rows="3"
+                    name="message"
+                    required
+                  ></textarea>
+                </div>
+                <div class="col-12">
+                  <label class="form-label text-white-50">Note</label>
+                  <div class="d-flex gap-2 flex-wrap mb-3">
+                    <div class="form-check form-check-inline m-0">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="note"
+                        id="testimonial-note-1"
+                        value="1"
+                      />
+                      <label
+                        class="form-check-label text-warning"
+                        for="testimonial-note-1"
+                        ><i class="fas fa-star"></i
+                      ></label>
+                    </div>
+                    <div class="form-check form-check-inline m-0">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="note"
+                        id="testimonial-note-2"
+                        value="2"
+                      />
+                      <label
+                        class="form-check-label text-warning"
+                        for="testimonial-note-2"
+                        ><i class="fas fa-star"></i
+                      ></label>
+                    </div>
+                    <div class="form-check form-check-inline m-0">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="note"
+                        id="testimonial-note-3"
+                        value="3"
+                      />
+                      <label
+                        class="form-check-label text-warning"
+                        for="testimonial-note-3"
+                        ><i class="fas fa-star"></i
+                      ></label>
+                    </div>
+                    <div class="form-check form-check-inline m-0">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="note"
+                        id="testimonial-note-4"
+                        value="4"
+                      />
+                      <label
+                        class="form-check-label text-warning"
+                        for="testimonial-note-4"
+                        ><i class="fas fa-star"></i
+                      ></label>
+                    </div>
+                    <div class="form-check form-check-inline m-0">
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="note"
+                        id="testimonial-note-5"
+                        value="5"
+                        checked
+                      />
+                      <label
+                        class="form-check-label text-warning"
+                        for="testimonial-note-5"
+                        ><i class="fas fa-star"></i
+                      ></label>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary rounded-pill px-4"
+                  >
+                    Envoyer
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -2,9 +2,12 @@ package itu.greenField.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,13 +21,20 @@ public class Temoignage {
     @Column(nullable = false, length = 150)
     private String nom;
 
-    @Column(nullable = false, length = 150)
-    private String poste;
+    @Column(name = "poste", nullable = false, length = 150)
+    private String poste = "client";
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String message;
 
-    @Column(nullable = false)
+    @Column(name = "note", nullable = false)
+    private Integer note = 5;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_client")
+    private Client client;
+
+    @Column(name = "is_actif", nullable = false)
     private Boolean isActif = true;
 
     public Integer getId() {
@@ -57,6 +67,22 @@ public class Temoignage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Integer getNote() {
+        return note;
+    }
+
+    public void setNote(Integer note) {
+        this.note = note;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Boolean getIsActif() {
