@@ -1,4 +1,4 @@
--- Active: 1782932337041@@127.0.0.1@5433@bisous
+-- Active: 1782932337041@@127.0.0.1@5433@gr
 CREATE DATABASE gf;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite

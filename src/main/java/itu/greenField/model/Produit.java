@@ -68,7 +68,8 @@ public class Produit {
     /** Chemin web de la première image du produit, ou null si aucune. */
     public String getImagePath() {
         if (photos != null && !photos.isEmpty()) {
-            return photos.get(0).getPath();
+            int nombre = photos.size();
+            return photos.get(nombre - 1).getPath();
         }
         return null;
     }

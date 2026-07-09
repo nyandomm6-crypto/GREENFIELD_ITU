@@ -92,4 +92,8 @@ public class CategorieProduitService {
         }
         return count;
     }
+
+    public List<CategorieProduit> findAll() {
+        return categorieRepository.findAll();
+    }
 }
