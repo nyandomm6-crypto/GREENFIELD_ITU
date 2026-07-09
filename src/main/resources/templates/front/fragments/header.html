@@ -37,9 +37,27 @@
         </button>
         <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
           <div class="navbar-nav mx-auto">
-            <a th:href="@{/}" class="nav-item nav-link active">Accueil</a>
-            <a th:href="@{/produits}" class="nav-item nav-link">Boutique</a>
-            <a th:href="@{/commandes}" class="nav-item nav-link">Commandes</a>
+            <a
+              th:href="@{/}"
+              th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/'} ? ' active' : ''"
+              class="nav-item nav-link"
+            >
+              Accueil
+            </a>
+            <a
+              th:href="@{/produits}"
+              th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/produits')} ? ' active' : ''"
+              class="nav-item nav-link"
+            >
+              Boutique
+            </a>
+            <a
+              th:href="@{/commandes}"
+              th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/commandes')} ? ' active' : ''"
+              class="nav-item nav-link"
+            >
+              Commandes
+            </a>
           </div>
           <div class="d-flex m-3 me-0">
             <button

@@ -200,51 +200,177 @@
                       class="col-md-6 col-lg-6 col-xl-4"
                       th:each="produit : ${produits}"
                       th:if="${produits != null and !produits.isEmpty()}"
+                      th:with="stock=${stocks[produit.id]}"
                     >
-                      <div class="rounded position-relative fruite-item">
+                      <div
+                        class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden product-card"
+                      >
+                        <!-- Image -->
                         <div
-                          class="fruite-img"
-                          style="height: 250px; overflow: hidden"
+                          class="position-relative"
+                          style="height: 220px; overflow: hidden"
                         >
                           <img
                             th:src="${produit.imagePath != null} ? @{${produit.imagePath}} : 'img/fruite-item-5.jpg'"
-                            class="img-fluid w-100 h-100 rounded-top"
+                            class="card-img-top w-100 h-100"
                             style="object-fit: cover"
                             th:alt="${produit.nom}"
                           />
-                        </div>
-                        <div
-                          class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                          style="top: 10px; left: 10px"
-                          th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
-                        >
-                          Fruits
-                        </div>
-                        <div
-                          class="p-4 border border-secondary border-top-0 rounded-bottom"
-                        >
-                          <h4 th:text="${produit.nom}">Grapes</h4>
-                          <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit sed do eiusmod te incididunt
-                          </p>
-                          <div
-                            class="d-flex justify-content-between flex-lg-wrap"
+                          <!-- Badge catégorie -->
+                          <span
+                            class="badge position-absolute top-0 start-0 m-3 px-3 py-2 rounded-pill"
+                            style="
+                              background: linear-gradient(
+                                135deg,
+                                #009951,
+                                #0a2e1c
+                              );
+                              color: white;
+                              font-weight: 600;
+                              font-size: 12px;
+                            "
+                            th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
                           >
-                            <p
-                              class="text-dark fs-5 fw-bold mb-0"
-                              th:text="${produit.pu} + ' Ar'"
+                            Fruits
+                          </span>
+                          <!-- Badge stock -->
+                          <span
+                            class="badge position-absolute top-0 end-0 m-3 px-3 py-2 rounded-pill"
+                            th:classappend="${stock != null and stock > 0} ? 'bg-success' : 'bg-danger'"
+                            style="font-weight: 600; font-size: 12px"
+                          >
+                            <i
+                              th:if="${stock != null and stock > 0}"
+                              class="fas fa-check-circle me-1"
+                            ></i>
+                            <i
+                              th:unless="${stock != null and stock > 0}"
+                              class="fas fa-times-circle me-1"
+                            ></i>
+                            <span th:if="${stock != null and stock > 0}">
+                              <span th:text="${stock} + ' dispo'"></span>
+                            </span>
+                            <span th:unless="${stock != null and stock > 0}">
+                              Rupture
+                            </span>
+                          </span>
+                        </div>
+
+                        <!-- Corps -->
+                        <div class="card-body p-3 d-flex flex-column">
+                          <h5
+                            class="card-title fw-bold mb-1"
+                            th:text="${produit.nom}"
+                          >
+                            Grapes
+                          </h5>
+                          <p
+                            class="card-text text-muted small mb-2"
+                            style="flex: 1"
+                          >
+                            Lorem ipsum dolor sit amet consectetur adipisicing
+                            elit.
+                          </p>
+
+                          <!-- Prix et actions -->
+                          <div class="mt-1">
+                            <div
+                              class="d-flex justify-content-between align-items-center mb-2"
                             >
-                              $4.99 / kg
-                            </p>
-                            <a
-                              th:href="@{/produits/{id}(id=${produit.id})}"
-                              class="btn border border-secondary rounded-pill px-3 text-primary"
-                              ><i
-                                class="fa fa-shopping-bag me-2 text-primary"
-                              ></i>
-                              Voir</a
+                              <span
+                                class="h5 fw-bold text-primary mb-0"
+                                th:text="${produit.pu} + ' Ar'"
+                                >$4.99</span
+                              >
+                              <a
+                                th:href="@{/produits/{id}(id=${produit.id})}"
+                                class="btn btn-outline-primary btn-sm rounded-pill px-3"
+                                style="
+                                  height: 38px;
+                                  display: inline-flex;
+                                  align-items: center;
+                                "
+                              >
+                                <i class="fa fa-eye me-1"></i> Voir
+                              </a>
+                            </div>
+
+                            <!-- Quantité et ajout sur une seule ligne -->
+                            <div
+                              class="d-flex gap-1 align-items-center"
+                              style="height: 38px"
                             >
+                              <div
+                                class="input-group input-group-sm"
+                                style="width: 96px; height: 38px"
+                              >
+                                <button
+                                  type="button"
+                                  class="btn btn-outline-secondary qty-decrease"
+                                  style="
+                                    height: 38px;
+                                    width: 28px;
+                                    padding: 0;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border-radius: 20px 0 0 20px;
+                                  "
+                                >
+                                  −
+                                </button>
+                                <input
+                                  type="text"
+                                  class="form-control text-center product-qty-input"
+                                  value="1"
+                                  style="
+                                    height: 38px;
+                                    max-width: 36px;
+                                    min-width: 36px;
+                                    padding: 0;
+                                    font-size: 14px;
+                                    border-color: var(--gf-ligne);
+                                  "
+                                />
+                                <button
+                                  type="button"
+                                  class="btn btn-outline-secondary qty-increase"
+                                  style="
+                                    height: 38px;
+                                    width: 28px;
+                                    padding: 0;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    border-radius: 0 20px 20px 0;
+                                  "
+                                >
+                                  +
+                                </button>
+                              </div>
+                              <button
+                                type="button"
+                                class="btn btn-primary btn-sm rounded-pill flex-grow-1 btn-ajouter-panier-list"
+                                th:attr="data-product-id=${produit.id}"
+                                style="
+                                  height: 38px;
+                                  display: inline-flex;
+                                  align-items: center;
+                                  justify-content: center;
+                                  background: linear-gradient(
+                                    135deg,
+                                    #a46d2c,
+                                    #7e5c15
+                                  );
+                                  border: none;
+                                  color: #fff;
+                                  font-size: 0.85rem;
+                                  padding: 0 12px;
+                                "
+                              >
+                                <i class="fa fa-shopping-cart me-1"></i> Ajouter
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -268,14 +394,13 @@
                       </div>
                     </div>
 
-                    <!-- Pagination améliorée -->
+                    <!-- Pagination -->
                     <div
-                      class="col-12"
+                      class="col-12 mt-4"
                       th:if="${totalPages != null and totalPages > 1}"
                     >
-                      <nav aria-label="Page navigation">
+                      <nav aria-label="Navigation des pages">
                         <ul class="pagination justify-content-center">
-                          <!-- Page précédente -->
                           <li
                             class="page-item"
                             th:classappend="${currentPage == 0} ? 'disabled' : ''"
@@ -284,116 +409,52 @@
                               class="page-link"
                               th:if="${currentPage > 0}"
                               th:href="@{/produits(page=${currentPage - 1}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
-                              aria-label="Previous"
                             >
-                              <span aria-hidden="true">&laquo;</span>
+                              <i class="fas fa-chevron-left"></i>
                             </a>
                             <span
                               class="page-link"
                               th:unless="${currentPage > 0}"
-                            >
-                              <span aria-hidden="true">&laquo;</span>
-                            </span>
+                              ><i class="fas fa-chevron-left"></i
+                            ></span>
                           </li>
-
-                          <!-- Première page -->
                           <li
                             class="page-item"
-                            th:classappend="${currentPage == 0} ? 'active' : ''"
-                            th:if="${totalPages > 0}"
+                            th:each="pageIndex : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${pageIndex == currentPage} ? 'active' : ''"
                           >
                             <a
                               class="page-link"
-                              th:if="${currentPage != 0}"
-                              th:href="@{/produits(page=0, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
-                              th:text="1"
+                              th:if="${pageIndex != currentPage}"
+                              th:href="@{/produits(page=${pageIndex}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
+                              th:text="${pageIndex + 1}"
                             ></a>
                             <span
                               class="page-link"
-                              th:unless="${currentPage != 0}"
-                              th:text="1"
+                              th:unless="${pageIndex != currentPage}"
+                              th:text="${pageIndex + 1}"
                             ></span>
                           </li>
-
-                          <!-- Points de suspension si currentPage > 3 -->
-                          <li
-                            class="page-item disabled"
-                            th:if="${currentPage > 3}"
-                          >
-                            <span class="page-link">…</span>
-                          </li>
-
-                          <!-- Pages autour de la page courante -->
                           <li
                             class="page-item"
-                            th:each="page : ${#numbers.sequence(0, totalPages - 1)}"
-                            th:if="${page != 0 and page != totalPages - 1 and page >= currentPage - 2 and page <= currentPage + 2}"
-                            th:classappend="${page == currentPage} ? 'active' : ''"
+                            th:classappend="${currentPage + 1 >= totalPages} ? 'disabled' : ''"
                           >
                             <a
                               class="page-link"
-                              th:if="${page != currentPage}"
-                              th:href="@{/produits(page=${page}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
-                              th:text="${page + 1}"
-                            ></a>
-                            <span
-                              class="page-link"
-                              th:unless="${page != currentPage}"
-                              th:text="${page + 1}"
-                            ></span>
-                          </li>
-
-                          <!-- Points de suspension si currentPage < totalPages - 4 -->
-                          <li
-                            class="page-item disabled"
-                            th:if="${currentPage < totalPages - 4}"
-                          >
-                            <span class="page-link">…</span>
-                          </li>
-
-                          <!-- Dernière page -->
-                          <li
-                            class="page-item"
-                            th:classappend="${currentPage == totalPages - 1} ? 'active' : ''"
-                            th:if="${totalPages > 1}"
-                          >
-                            <a
-                              class="page-link"
-                              th:if="${currentPage != totalPages - 1}"
-                              th:href="@{/produits(page=${totalPages - 1}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
-                              th:text="${totalPages}"
-                            ></a>
-                            <span
-                              class="page-link"
-                              th:unless="${currentPage != totalPages - 1}"
-                              th:text="${totalPages}"
-                            ></span>
-                          </li>
-
-                          <!-- Page suivante -->
-                          <li
-                            class="page-item"
-                            th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
-                          >
-                            <a
-                              class="page-link"
-                              th:if="${currentPage < totalPages - 1}"
+                              th:if="${currentPage + 1 < totalPages}"
                               th:href="@{/produits(page=${currentPage + 1}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
-                              aria-label="Next"
                             >
-                              <span aria-hidden="true">&raquo;</span>
+                              <i class="fas fa-chevron-right"></i>
                             </a>
                             <span
                               class="page-link"
-                              th:unless="${currentPage < totalPages - 1}"
-                            >
-                              <span aria-hidden="true">&raquo;</span>
-                            </span>
+                              th:unless="${currentPage + 1 < totalPages}"
+                              ><i class="fas fa-chevron-right"></i
+                            ></span>
                           </li>
                         </ul>
                       </nav>
 
-                      <!-- Information du nombre de résultats -->
                       <div class="text-center text-muted mt-2">
                         <small>
                           Page <span th:text="${currentPage + 1}"></span> sur

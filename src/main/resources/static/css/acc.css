@@ -129,58 +129,175 @@ a:hover {
   border-color: var(--gf-ligne) !important;
 }
 
-/* --- Boutons avec les variables --- */
+/* ============================================================
+   BOUTONS - CORRIGÉS
+   ============================================================ */
+.btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  min-height: 46px !important;
+  padding: 0.75rem 1.5rem !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.2 !important;
+  text-decoration: none !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+/* --- Bouton Primaire --- */
 .btn-primary {
-  background-color: var(--gf-vert);
-  border-color: var(--gf-vert);
-  color: #fff;
+  background-color: var(--gf-vert) !important;
+  border-color: var(--gf-vert) !important;
+  color: #fff !important;
 }
 .btn-primary:hover {
-  background-color: var(--gf-vert-fonce);
-  border-color: var(--gf-vert-fonce);
-  color: #fff;
+  background-color: var(--gf-vert-fonce) !important;
+  border-color: var(--gf-vert-fonce) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 153, 81, 0.3);
 }
 
+/* --- Bouton Secondaire (Ocre) --- */
 .btn-secondary {
-  background-color: var(--gf-ocre);
-  border-color: var(--gf-ocre);
-  color: #fff;
+  background-color: var(--gf-ocre) !important;
+  border-color: var(--gf-ocre) !important;
+  color: #fff !important;
 }
 .btn-secondary:hover {
-  background-color: var(--gf-ocre-2);
-  border-color: var(--gf-ocre-2);
-  color: #fff;
+  background-color: var(--gf-ocre-2) !important;
+  border-color: var(--gf-ocre-2) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(164, 109, 44, 0.3);
 }
 
+/* --- Bouton Outline Primaire --- */
+.btn-outline-primary {
+  background-color: transparent !important;
+  border: 2px solid var(--gf-vert) !important;
+  color: var(--gf-vert) !important;
+}
+.btn-outline-primary:hover {
+  background-color: var(--gf-vert) !important;
+  border-color: var(--gf-vert) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 153, 81, 0.2);
+}
+
+/* --- Bouton Outline Secondaire --- */
 .btn-outline-secondary {
-  border-color: var(--gf-ocre);
-  color: var(--gf-ocre);
+  background-color: transparent !important;
+  border: 2px solid var(--gf-ocre) !important;
+  color: var(--gf-ocre) !important;
 }
 .btn-outline-secondary:hover {
-  background-color: var(--gf-ocre);
-  color: #fff;
+  background-color: var(--gf-ocre) !important;
+  border-color: var(--gf-ocre) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(164, 109, 44, 0.2);
 }
 
+/* --- Bouton Succès --- */
 .btn-success {
-  background-color: var(--gf-vert-2);
-  border-color: var(--gf-vert-2);
-  color: #fff;
+  background-color: var(--gf-vert-2) !important;
+  border-color: var(--gf-vert-2) !important;
+  color: #fff !important;
 }
 .btn-success:hover {
-  background-color: var(--gf-vert-fonce);
-  border-color: var(--gf-vert-fonce);
-  color: #fff;
+  background-color: var(--gf-vert-fonce) !important;
+  border-color: var(--gf-vert-fonce) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(94, 180, 83, 0.3);
 }
 
+/* --- Bouton Danger --- */
 .btn-danger {
-  background-color: var(--gf-rouge);
-  border-color: var(--gf-rouge);
-  color: #fff;
+  background-color: var(--gf-rouge) !important;
+  border-color: var(--gf-rouge) !important;
+  color: #fff !important;
 }
 .btn-danger:hover {
-  background-color: var(--gf-rouge-fonce);
-  border-color: var(--gf-rouge-fonce);
-  color: #fff;
+  background-color: var(--gf-rouge-fonce) !important;
+  border-color: var(--gf-rouge-fonce) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(230, 56, 58, 0.3);
+}
+
+/* --- Bouton avec bordure secondaire (pour les cartes produits) --- */
+.btn.border-secondary {
+  background-color: transparent !important;
+  border: 2px solid var(--gf-ocre) !important;
+  color: var(--gf-ocre) !important;
+}
+.btn.border-secondary:hover {
+  background-color: var(--gf-ocre) !important;
+  border-color: var(--gf-ocre) !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(164, 109, 44, 0.2);
+}
+
+/* --- Taille Small --- */
+.btn-sm {
+  min-height: 38px !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.85rem !important;
+}
+
+/* --- Taille Large --- */
+.btn-lg {
+  min-height: 52px !important;
+  padding: 0.9rem 1.8rem !important;
+  font-size: 1.05rem !important;
+}
+
+/* --- Boutons Carrés --- */
+.btn-square {
+  width: 32px;
+  height: 32px;
+  padding: 0 !important;
+}
+.btn-sm-square {
+  width: 34px;
+  height: 34px;
+  padding: 0 !important;
+}
+.btn-md-square {
+  width: 44px;
+  height: 44px;
+  padding: 0 !important;
+}
+.btn-lg-square {
+  width: 56px;
+  height: 56px;
+  padding: 0 !important;
+}
+.btn-square,
+.btn-sm-square,
+.btn-md-square,
+.btn-lg-square {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+}
+
+/* --- Désactivé --- */
+.btn:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 /* ============================================================
@@ -194,7 +311,6 @@ a:hover {
     visibility 0s linear 0.5s;
   z-index: 99999;
 }
-
 #spinner.show {
   transition:
     opacity 0.8s ease-out,
@@ -217,51 +333,137 @@ a:hover {
 }
 
 /* ============================================================
-   BUTTONS
+   PRODUCT CARDS
    ============================================================ */
-.btn {
-  font-weight: 600;
-  transition: 0.5s;
+.product-card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
-
-.btn-square {
-  width: 32px;
-  height: 32px;
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(10, 46, 28, 0.12) !important;
 }
-
-.btn-sm-square {
-  width: 34px;
-  height: 34px;
+.product-card .card-body {
+  padding: 0.95rem 0.95rem 1rem !important;
 }
-
-.btn-md-square {
-  width: 44px;
-  height: 44px;
+.product-card .card-title {
+  font-size: 1rem;
+  line-height: 1.3;
 }
-
-.btn-lg-square {
-  width: 56px;
-  height: 56px;
+.product-card .card-text {
+  font-size: 0.88rem;
+  line-height: 1.45;
 }
-
-.btn-square,
-.btn-sm-square,
-.btn-md-square,
-.btn-lg-square {
-  padding: 0;
-  display: flex;
+.product-card .price-row {
+  gap: 0.5rem;
+}
+.product-card .card-actions {
+  margin-top: auto;
+}
+.product-card .product-qty-group {
+  width: 86px;
+  flex-shrink: 0;
+}
+.product-card .product-qty-group .btn,
+.qty-decrease,
+.qty-increase {
+  width: 28px;
+  height: 28px;
+  min-height: 28px !important;
+  padding: 0 !important;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-weight: normal;
+  border-radius: 999px;
+  font-size: 0.95rem;
+}
+.product-card .product-qty-group .form-control,
+.product-qty-input {
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
+  height: 28px;
+  padding: 0;
+  font-size: 0.82rem;
+}
+.product-card .btn-ajouter-panier-list {
+  min-height: 30px !important;
+  padding: 0.4rem 0.7rem !important;
+  font-size: 0.84rem !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #a46d2c, #7e5c15) !important;
+  border: none !important;
+  color: #fff !important;
+}
+.product-card .btn-ajouter-panier-list:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(164, 109, 44, 0.3);
 }
 
-.btn.border-secondary {
-  transition: 0.5s;
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+.pagination,
+.section-pagination .pagination {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
+  margin: 1.5rem auto 0 !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+  list-style: none !important;
 }
-
-.btn.border-secondary:hover {
-  background: var(--bs-secondary) !important;
-  color: var(--bs-white) !important;
+.pagination .page-item,
+.section-pagination .pagination .page-item {
+  display: flex;
+}
+.pagination .page-item .page-link,
+.section-pagination .pagination .page-link,
+.section-pagination .btn-pagination {
+  min-width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--gf-ligne);
+  border-radius: 999px;
+  color: var(--gf-sapin);
+  background-color: var(--gf-papier);
+  font-weight: 600;
+  padding: 0 0.8rem;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.pagination .page-item .page-link:hover,
+.section-pagination .pagination .page-link:hover,
+.section-pagination .btn-pagination:hover {
+  background-color: var(--gf-mousse);
+  border-color: var(--gf-vert);
+  color: var(--gf-vert-fonce);
+}
+.pagination .page-item.active .page-link,
+.section-pagination .pagination .page-item.active .page-link,
+.section-pagination .btn-pagination.active {
+  background-color: var(--gf-vert);
+  border-color: var(--gf-vert);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(0, 153, 81, 0.18);
+}
+.pagination .page-item.disabled .page-link,
+.section-pagination .pagination .page-item.disabled .page-link {
+  color: var(--gf-gris-2);
+  background-color: #f7f9f6;
+  border-color: var(--gf-ligne);
+  cursor: not-allowed;
+}
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link,
+.section-pagination .pagination .page-item:first-child .page-link,
+.section-pagination .pagination .page-item:last-child .page-link {
+  min-width: 46px;
 }
 
 /* ============================================================
@@ -272,12 +474,10 @@ a:hover {
   background: var(--bs-white);
   border: 0;
 }
-
 .topbar {
   padding: 20px;
   border-radius: 230px 100px;
 }
-
 .topbar .top-info {
   font-size: 15px;
   line-height: 0;
@@ -285,7 +485,6 @@ a:hover {
   display: flex;
   align-items: center;
 }
-
 .topbar .top-link {
   font-size: 15px;
   line-height: 0;
@@ -293,16 +492,13 @@ a:hover {
   display: flex;
   align-items: center;
 }
-
 .topbar .top-link a {
   letter-spacing: 1px;
 }
-
 .topbar .top-link a small:hover {
   color: var(--bs-secondary) !important;
   transition: 0.5s;
 }
-
 .topbar .top-link a small:hover i {
   color: var(--bs-primary) !important;
 }
@@ -315,19 +511,16 @@ a:hover {
   font-size: 16px;
   transition: 0.5s;
 }
-
 .navbar {
   height: 100px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 .navbar .navbar-nav .nav-link:hover,
 .navbar .navbar-nav .nav-link.active,
 .fixed-top.bg-white .navbar .navbar-nav .nav-link:hover,
 .fixed-top.bg-white .navbar .navbar-nav .nav-link.active {
   color: var(--bs-primary);
 }
-
 .navbar .dropdown-toggle::after {
   border: none;
   content: "\f107";
@@ -336,7 +529,6 @@ a:hover {
   vertical-align: middle;
   margin-left: 8px;
 }
-
 @media (min-width: 1200px) {
   .navbar .nav-item .dropdown-menu {
     display: block;
@@ -349,12 +541,10 @@ a:hover {
     opacity: 0;
   }
 }
-
 .dropdown .dropdown-menu a:hover {
   background: var(--bs-secondary);
   color: var(--bs-primary);
 }
-
 .navbar .nav-item:hover .dropdown-menu {
   transform: rotateX(0deg);
   visibility: visible;
@@ -363,7 +553,6 @@ a:hover {
   transition: 0.5s;
   opacity: 1;
 }
-
 #searchModal .modal-content {
   background: rgba(255, 255, 255, 0.8);
 }
@@ -379,11 +568,9 @@ a:hover {
   background-repeat: no-repeat;
   background-size: cover;
 }
-
 .carousel-item {
   position: relative;
 }
-
 .carousel-item a {
   position: absolute;
   top: 50%;
@@ -392,7 +579,6 @@ a:hover {
   font-size: 25px;
   background: linear-gradient(rgba(255, 181, 36, 0.7), rgba(255, 181, 36, 0.7));
 }
-
 .carousel-control-next,
 .carousel-control-prev {
   width: 48px;
@@ -404,15 +590,12 @@ a:hover {
   top: 50%;
   transform: translateY(-50%);
 }
-
 .carousel-control-next {
   margin-right: 20px;
 }
-
 .carousel-control-prev {
   margin-left: 20px;
 }
-
 .page-header {
   position: relative;
   background:
@@ -422,14 +605,12 @@ a:hover {
   background-repeat: no-repeat;
   background-size: cover;
 }
-
 @media (min-width: 992px) {
   .hero-header,
   .page-header {
     margin-top: 152px !important;
   }
 }
-
 @media (max-width: 992px) {
   .hero-header,
   .page-header {
@@ -445,7 +626,6 @@ a:hover {
   width: 120px;
   height: 120px;
 }
-
 .featurs .featurs-item .featurs-icon::after {
   content: "";
   width: 35px;
@@ -476,42 +656,33 @@ a:hover {
 .fruite .tab-class .nav-item a.active {
   background: var(--bs-secondary) !important;
 }
-
 .fruite .tab-class .nav-item a.active span {
   color: var(--bs-white) !important;
 }
-
 .fruite .fruite-categorie .fruite-name {
   line-height: 40px;
 }
-
 .fruite .fruite-categorie .fruite-name a {
   transition: 0.5s;
 }
-
 .fruite .fruite-categorie .fruite-name a:hover {
   color: var(--bs-secondary);
 }
-
 .fruite .fruite-item {
   height: 100%;
   transition: 0.5s;
 }
-
 .fruite .fruite-item:hover {
   box-shadow: 0 0 55px rgba(0, 0, 0, 0.4);
 }
-
 .fruite .fruite-item .fruite-img {
   overflow: hidden;
   transition: 0.5s;
   border-radius: 10px 10px 0 0;
 }
-
 .fruite .fruite-item .fruite-img img {
   transition: 0.5s;
 }
-
 .fruite .fruite-item .fruite-img img:hover {
   transform: scale(1.3);
 }
@@ -523,30 +694,24 @@ a:hover {
   height: 100%;
   transition: 0.5s;
 }
-
 .vesitable .vesitable-item:hover {
   box-shadow: 0 0 55px rgba(0, 0, 0, 0.4);
 }
-
 .vesitable .vesitable-item .vesitable-img {
   overflow: hidden;
   transition: 0.5s;
   border-radius: 10px 10px 0 0;
 }
-
 .vesitable .vesitable-item .vesitable-img img {
   transition: 0.5s;
 }
-
 .vesitable .vesitable-item .vesitable-img img:hover {
   transform: scale(1.2);
 }
-
 .vesitable .owl-stage {
   margin: 50px 0;
   position: relative;
 }
-
 .vesitable .owl-nav .owl-prev {
   position: absolute;
   top: -8px;
@@ -557,12 +722,10 @@ a:hover {
   border-radius: 20px;
   transition: 0.5s;
 }
-
 .vesitable .owl-nav .owl-prev:hover {
   background: var(--bs-secondary);
   color: var(--bs-white);
 }
-
 .vesitable .owl-nav .owl-next {
   position: absolute;
   top: -8px;
@@ -573,7 +736,6 @@ a:hover {
   border-radius: 20px;
   transition: 0.5s;
 }
-
 .vesitable .owl-nav .owl-next:hover {
   background: var(--bs-secondary);
   color: var(--bs-white);
@@ -594,18 +756,15 @@ a:hover {
   text-align: center;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
 }
-
 .counter i {
   font-size: 60px;
   margin-bottom: 25px;
 }
-
 .counter h4 {
   color: var(--bs-primary);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-
 .counter h1 {
   margin-bottom: 0;
 }
@@ -623,12 +782,10 @@ a:hover {
   border-radius: 20px;
   transition: 0.5s;
 }
-
 .testimonial .owl-nav .owl-prev:hover {
   background: var(--bs-secondary);
   color: var(--bs-white);
 }
-
 .testimonial .owl-nav .owl-next {
   position: absolute;
   top: -58px;
@@ -639,7 +796,6 @@ a:hover {
   border-radius: 20px;
   transition: 0.5s;
 }
-
 .testimonial .owl-nav .owl-next:hover {
   background: var(--bs-secondary);
   color: var(--bs-white);
@@ -648,29 +804,6 @@ a:hover {
 /* ============================================================
    SINGLE PAGE / PAGINATION
    ============================================================ */
-.pagination {
-  display: inline-block;
-}
-
-.pagination a {
-  color: var(--bs-dark);
-  padding: 10px 16px;
-  text-decoration: none;
-  transition: 0.5s;
-  border: 1px solid var(--bs-secondary);
-  margin: 0 4px;
-}
-
-.pagination a.active {
-  background-color: var(--bs-primary);
-  color: var(--bs-light);
-  border: 1px solid var(--bs-secondary);
-}
-
-.pagination a:hover:not(.active) {
-  background-color: var(--bs-primary);
-}
-
 .nav.nav-tabs .nav-link.active {
   border-bottom: 2px solid var(--bs-secondary) !important;
 }
@@ -683,30 +816,29 @@ a:hover {
   color: rgba(255, 255, 255, 0.5);
   transition: 0.5s;
 }
-
 .footer .footer-item .btn-link:hover {
   color: var(--bs-secondary) !important;
 }
-
 .footer .footer-item p.mb-4 {
   line-height: 35px;
 }
+
+/* ============================================================
+   FRUITE ITEM
+   ============================================================ */
 .fruite-item {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
-
 .fruite-item .p-4 {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
-
 .fruite-item .p-4 .d-flex {
   margin-top: auto;
 }
-
 .fruite-item .p-4 p {
   flex: 1;
   overflow: hidden;

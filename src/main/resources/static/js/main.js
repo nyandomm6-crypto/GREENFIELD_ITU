@@ -247,6 +247,110 @@
       });
   }
 
+  function getPanierMessageContainer() {
+    let container = document.getElementById("panier-message-container");
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "panier-message-container";
+      container.className = "position-fixed bottom-0 end-0 p-3";
+      container.style.zIndex = "2000";
+      container.style.maxWidth = "360px";
+      container.style.width = "auto";
+      document.body.appendChild(container);
+    }
+    return container;
+  }
+
+  function showPanierMessage(text, success) {
+    const container = getPanierMessageContainer();
+    const message = document.createElement("div");
+    message.className =
+      "alert alert-" + (success ? "success" : "danger") + " shadow-sm";
+    message.setAttribute("role", "alert");
+    message.textContent = text;
+    message.style.marginTop = "0.5rem";
+    message.style.minWidth = "220px";
+    container.appendChild(message);
+
+    setTimeout(function () {
+      if (message.parentElement) {
+        message.parentElement.removeChild(message);
+      }
+    }, 4000);
+  }
+
+  function ajouterAuPanierListe(idProduit, btn) {
+    if (!idProduit || !btn) {
+      return;
+    }
+
+    const originalLabel = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML =
+      '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Ajout en cours...';
+
+    const card = btn.closest(".product-card");
+    const qtyInput = card?.querySelector(".product-qty-input");
+    const quantite = parseInt(qtyInput?.value, 10) || 1;
+
+    const url = "/panier/ajouter";
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body:
+        "idProduit=" +
+        encodeURIComponent(idProduit) +
+        "&quantite=" +
+        encodeURIComponent(quantite),
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          return response.json().then(function (errorData) {
+            const serverMessage =
+              errorData && errorData.message
+                ? errorData.message
+                : "Erreur serveur: " + response.status;
+            throw new Error(serverMessage);
+          });
+        }
+        return response.json();
+      })
+      .then(function (data) {
+        if (data.success) {
+          const cartCount = document.querySelector(".cart-count");
+          if (cartCount) {
+            const nouveauTotal = Number.parseInt(data.nouveauTotal, 10);
+            cartCount.textContent = Number.isFinite(nouveauTotal)
+              ? nouveauTotal
+              : (parseInt(cartCount.textContent, 10) || 0) + quantite;
+          }
+          showPanierMessage(
+            "✅ Produit ajouté au panier ! (" + quantite + "x)",
+            true,
+          );
+        } else {
+          const errorMessage =
+            data.message || "Erreur lors de l'ajout au panier";
+          showPanierMessage(errorMessage, false);
+        }
+      })
+      .catch(function (error) {
+        console.error("Erreur:", error);
+        const text =
+          error && error.message
+            ? error.message
+            : "Erreur de connexion au serveur. Veuillez réessayer.";
+        showPanierMessage(text, false);
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.innerHTML = originalLabel;
+      });
+  }
+
   function changerMode() {
     const selected = document.querySelector(
       'input[name="modeReception"]:checked',
@@ -321,8 +425,63 @@
     setTimeout(validate, 100);
   }
 
+  function initQuantityControls() {
+    document.addEventListener("click", function (event) {
+      const decrease = event.target.closest(".qty-decrease");
+      if (decrease) {
+        const card = decrease.closest(".product-card");
+        const input = card?.querySelector(".product-qty-input");
+        if (!input) {
+          return;
+        }
+        event.preventDefault();
+        let value = parseInt(input.value, 10) || 1;
+        value = Math.max(1, value - 1);
+        input.value = value;
+        return;
+      }
+
+      const increase = event.target.closest(".qty-increase");
+      if (increase) {
+        const card = increase.closest(".product-card");
+        const input = card?.querySelector(".product-qty-input");
+        if (!input) {
+          return;
+        }
+        event.preventDefault();
+        let value = parseInt(input.value, 10) || 1;
+        value = value + 1;
+        input.value = value;
+        return;
+      }
+    });
+  }
+
+  function initListeBoutonsPanier() {
+    document.addEventListener("click", function (event) {
+      const button = event.target.closest(".btn-ajouter-panier-list");
+      if (!button) {
+        return;
+      }
+      event.preventDefault();
+      const productId = button.dataset.productId;
+      if (!productId) {
+        return;
+      }
+      ajouterAuPanierListe(productId, button);
+    });
+  }
+
+  function onDomReady(callback) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", callback);
+    } else {
+      callback();
+    }
+  }
+
   // Initialisation quand le DOM est chargé
-  document.addEventListener("DOMContentLoaded", function () {
+  onDomReady(function () {
     // Bouton moins
     const btnMoins = document.getElementById("btnMoins");
     if (btnMoins) {
@@ -339,11 +498,15 @@
       });
     }
 
-    // Bouton ajouter
+    // Bouton ajouter (page détail)
     const btnAjouter = document.getElementById("btnAjouter");
     if (btnAjouter) {
       btnAjouter.addEventListener("click", ajouterAuPanier);
     }
+
+    // Boutons ajouter au panier dans la liste produits
+    initListeBoutonsPanier();
+    initQuantityControls();
 
     // Empêcher la soumission du formulaire par Enter
     const qteInput = document.getElementById("qteInput");
