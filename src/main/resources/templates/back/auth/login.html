@@ -2,153 +2,124 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
   <head
     th:replace="~{front/fragments/layout :: head(pageTitle='Connexion - GreenField')}"
-  >
-    <title>Connexion - GreenField</title>
-  </head>
+  ></head>
 
   <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
     <div th:fragment="pageContent">
       <!-- Single Page Header start -->
       <div class="container-fluid page-header py-5">
         <h1 class="text-center text-white display-6">Connexion</h1>
-        <ol class="breadcrumb justify-content-center mb-0">
-          <li class="breadcrumb-item"><a th:href="@{/}">Accueil</a></li>
-          <li class="breadcrumb-item active text-white">Connexion</li>
-        </ol>
       </div>
       <!-- Single Page Header End -->
 
       <!-- Connexion Start -->
-      <div class="container-fluid fruite py-5">
+      <div class="container-fluid py-5">
         <div class="container py-5">
-          <div class="row g-4">
-            <div class="col-lg-12">
-              <div class="row g-4 justify-content-center">
-                <div class="col-lg-6 col-md-8">
-                  <div class="card shadow-sm border-0 rounded-3">
-                    <div class="card-body p-4">
-                      <div class="text-center mb-4">
-                        <img th:src="@{/img/logo.png}" alt="greenField"
-                             style="height: 80px; width: auto; background: transparent;" class="mb-3" />
-                        <h3 class="mb-1">Connexion</h3>
-                        <p class="text-muted">
-                          Connectez-vous à votre compte greenField
-                        </p>
-                      </div>
+          <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+              <div class="bg-light rounded p-5">
+                <div class="text-center mb-4">
+                  <h1 class="display-6 text-primary">Connexion</h1>
+                  <p class="text-muted">
+                    Connectez-vous à votre compte greenField
+                  </p>
+                </div>
 
-                      <!-- Messages flash -->
-                      <div
-                        class="alert alert-success"
-                        th:if="${success}"
-                        th:text="${success}"
-                        role="alert"
+                <!-- Messages flash -->
+                <div
+                  class="alert alert-success"
+                  th:if="${success}"
+                  th:text="${success}"
+                  role="alert"
+                >
+                  <i class="fas fa-check-circle me-2"></i>
+                </div>
+                <div
+                  class="alert alert-danger"
+                  th:if="${error}"
+                  th:text="${error}"
+                  role="alert"
+                >
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                </div>
+
+                <form class="auth-form" th:action="@{/emp/login}" method="post">
+                  <input type="hidden" name="redirect" th:value="${redirect}" />
+
+                  <div class="mb-3">
+                    <label for="email" class="form-label fw-bold">
+                      <i class="fas fa-envelope me-2 text-primary"></i> Adresse
+                      email
+                    </label>
+                    <input
+                      id="email"
+                      type="email"
+                      name="email"
+                      class="form-control border-2 rounded-pill px-4 py-2"
+                      required
+                      placeholder="votre@email.com"
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="password" class="form-label fw-bold">
+                      <i class="fas fa-lock me-2 text-primary"></i> Mot de passe
+                    </label>
+                    <div class="position-relative">
+                      <input
+                        id="password"
+                        type="password"
+                        name="motDePasse"
+                        class="form-control border-2 rounded-pill px-4 py-2 pe-5"
+                        required
+                        placeholder="Votre mot de passe"
+                      />
+                      <button
+                        type="button"
+                        id="togglePassword"
+                        tabindex="-1"
+                        aria-label="Afficher le mot de passe"
+                        class="btn p-0 border-0 bg-transparent position-absolute top-50 translate-middle-y text-muted"
+                        style="right: 1.1rem"
                       >
-                        <i class="fas fa-check-circle me-2"></i>
-                      </div>
-                      <div
-                        class="alert alert-danger"
-                        th:if="${error}"
-                        th:text="${error}"
-                        role="alert"
-                      >
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                      </div>
-
-                      <form th:action="@{/emp/login}" method="post">
-                        <input
-                          type="hidden"
-                          name="redirect"
-                          th:value="${redirect}"
-                        />
-
-                        <div class="mb-3">
-                          <label class="form-label fw-bold">
-                            <i class="fas fa-envelope me-2 text-primary"></i
-                            >Adresse email
-                          </label>
-                          <input
-                            type="email"
-                            class="form-control"
-                            name="email"
-                            required
-                            placeholder="votre@email.com"
-                          />
-                        </div>
-
-                        <div class="mb-3">
-                          <label class="form-label fw-bold">
-                            <i class="fas fa-lock me-2 text-primary"></i>Mot de
-                            passe
-                          </label>
-                          <div class="input-group">
-                            <input
-                              type="password"
-                              class="form-control"
-                              name="motDePasse"
-                              id="motDePasse"
-                              required
-                              placeholder="Votre mot de passe"
-                            />
-                            <button
-                              type="button"
-                              class="btn btn-outline-secondary"
-                              id="togglePassword"
-                              tabindex="-1"
-                              aria-label="Afficher le mot de passe"
-                            >
-                              <!-- oeil ouvert -->
-                              <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
-                                <circle cx="12" cy="12" r="3"></circle>
-                              </svg>
-                              <!-- oeil barré -->
-                              <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none">
-                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                                <line x1="1" y1="1" x2="23" y2="23"></line>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-
-                        <div
-                          class="d-flex justify-content-between align-items-center mb-4"
-                        >
-                          <div class="form-check">
-                            <input
-                              type="checkbox"
-                              class="form-check-input"
-                              id="remember"
-                              name="remember"
-                            />
-                            <label class="form-check-label" for="remember"
-                              >Se souvenir de moi</label
-                            >
-                          </div>
-                          <a href="#" class="text-primary"
-                            >Mot de passe oublié ?</a
-                          >
-                        </div>
-
-                        <button
-                          type="submit"
-                          class="btn btn-primary w-100 rounded-pill py-3"
-                        >
-                          <i class="fas fa-sign-in-alt me-2"></i> Se connecter
-                        </button>
-                      </form>
-
-                      <div class="text-center mt-4 pt-3 border-top">
-                        <p class="mb-0">
-                          <i class="fas fa-user-plus me-2 text-primary"></i>
-                          Pas encore de compte ?
-                          <a th:href="@{/signup}" class="text-primary fw-bold"
-                            >S'inscrire</a
-                          >
-                        </p>
-                      </div>
+                        <!-- oeil ouvert -->
+                        <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <!-- oeil barré -->
+                        <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none">
+                          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                          <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                      </button>
                     </div>
                   </div>
-                </div>
+
+                  <div
+                    class="d-flex justify-content-between align-items-center mb-4"
+                  >
+                    <div class="form-check">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        id="remember"
+                        name="remember"
+                      />
+                      <label class="form-check-label" for="remember"
+                        >Se souvenir de moi</label
+                      >
+                    </div>
+                    <a href="#" class="text-primary">Mot de passe oublié ?</a>
+                  </div>
+
+                  <button
+                    type="submit"
+                    class="btn btn-primary w-100 rounded-pill py-3"
+                  >
+                    <i class="fas fa-sign-in-alt me-2"></i> Se connecter
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -159,7 +130,7 @@
       <script>
         (function () {
           const toggle = document.getElementById("togglePassword");
-          const input = document.getElementById("motDePasse");
+          const input = document.getElementById("password");
           const eyeOpen = document.getElementById("eyeOpen");
           const eyeClosed = document.getElementById("eyeClosed");
           if (toggle && input) {
