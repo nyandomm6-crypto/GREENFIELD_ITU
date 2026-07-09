@@ -63,6 +63,17 @@
         </form>
 
         <!-- Liste des mouvements -->
+        <form th:action="@{/back/tresorerie}" method="get" class="barre-filtres" style="margin-bottom: 12px;">
+          <div class="filtre">
+            <label for="size">Éléments par page</label>
+            <select name="size" id="size" onchange="this.form.submit()">
+              <option th:each="opt : ${ {5, 10, 25, 50, 100} }"
+                      th:value="${opt}" th:text="${opt}"
+                      th:selected="${opt == size}"></option>
+            </select>
+          </div>
+        </form>
+
         <div class="tableau-scroll">
           <table>
             <thead>

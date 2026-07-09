@@ -71,9 +71,18 @@ public class CommandesService {
     private final ProvinceLivraisonService provinceLivraisonService;
     private final FraisLivraisonService fraisLivraisonService;
     private final ImportCommandeExelService importCommandeExelService;
+    private final EntityExcelService entityExcelService;
 
     public List<Commandes> getCommandesDispo() {
         return commandesRepository.findDispoCommandes();
+    }
+
+    /** Commandes du point de vente de retrait donné (par code) — utilisé par l'espace caissier. */
+    public List<Commandes> findByPointDeVenteRetrait(String code) {
+        if (code == null || code.isBlank()) {
+            return new ArrayList<>();
+        }
+        return commandesRepository.findByPointDeVenteRetrait_CodeOrderByIdDesc(code);
     }
 
     public Commandes getCommandeById(Integer id) {
@@ -312,6 +321,54 @@ public class CommandesService {
         List<Commandes> resultList = query.getResultList();
 
         return new PageImpl<Commandes>(resultList, pageable, total);
+    }
+
+    /** En-têtes du fichier Excel d'export des commandes. */
+    public static final String[] EXPORT_HEADERS = {
+            "ID", "Date", "Client", "Mode de réception", "Type", "Statut",
+            "Total produits", "Frais livraison", "Total général", "Point de vente / Adresse"
+    };
+
+    /**
+     * Exporte au format Excel les commandes correspondant aux filtres courants
+     * (mêmes filtres que la liste, mais sans pagination).
+     */
+    public byte[] exportCommandesExcel(CommandeBackFilterDto filter) throws Exception {
+        if (filter == null) {
+            filter = new CommandeBackFilterDto();
+        }
+        // Récupérer toutes les lignes correspondant aux filtres (pas de pagination).
+        filter.setPageNumber(1);
+        filter.setLineNumber(Integer.MAX_VALUE);
+        List<Commandes> commandes = findWithDynamicFilters(filter).getContent();
+
+        List<Object[]> rows = new ArrayList<>();
+        for (Commandes c : commandes) {
+            String client = c.getClient() != null
+                    ? (c.getClient().getNom() + " " + c.getClient().getPrenom()).trim()
+                    : "";
+            String lieu;
+            if (c.getPointDeVenteRetrait() != null) {
+                lieu = c.getPointDeVenteRetrait().getNom();
+            } else if (c.getAdresseLivraison() != null) {
+                lieu = c.getAdresseLivraison();
+            } else {
+                lieu = "";
+            }
+            rows.add(new Object[] {
+                    c.getId(),
+                    c.getDatecommande() != null ? c.getDatecommande().toString() : "",
+                    client,
+                    c.getModeReception() != null ? c.getModeReception().name() : "",
+                    c.getTypeCommande() != null ? c.getTypeCommande().name() : "",
+                    c.getStatutActuel() != null ? c.getStatutActuel().getNom() : "",
+                    c.getTotalProduits(),
+                    c.getFraisLivraison(),
+                    c.getTotalGeneral(),
+                    lieu
+            });
+        }
+        return entityExcelService.export("commandes", EXPORT_HEADERS, rows);
     }
 
     public byte[] generateTemplateExcelFile(List<Produit> produits) throws Exception {

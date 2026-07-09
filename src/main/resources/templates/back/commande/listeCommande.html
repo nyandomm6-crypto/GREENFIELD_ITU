@@ -154,6 +154,9 @@
               <button type="submit" class="btn btn-vert">
                 <i class="fas fa-filter"></i> Appliquer les filtres
               </button>
+              <button type="submit" th:formaction="@{/commandes/export}" formmethod="post" class="btn btn-ligne">
+                <i class="fas fa-file-excel"></i> Exporter Excel
+              </button>
               <a th:href="@{/commandes/list}" class="btn btn-ligne">Réinitialiser</a>
             </div>
           </div>

@@ -30,6 +30,14 @@
             <label for="motCle">Mot clé</label>
             <input type="text" id="motCle" name="motCle" th:value="${motCle}" placeholder="Libellé de la catégorie…" />
           </div>
+          <div class="filtre">
+            <label for="size">Éléments par page</label>
+            <select name="size" id="size" onchange="this.form.submit()">
+              <option th:each="opt : ${ {5, 10, 25, 50, 100} }"
+                      th:value="${opt}" th:text="${opt}"
+                      th:selected="${opt == size}"></option>
+            </select>
+          </div>
           <div class="filtre-actions">
             <button type="submit" class="btn btn-vert"><i class="fas fa-magnifying-glass"></i> Rechercher</button>
           </div>
@@ -40,6 +48,7 @@
             <thead>
               <tr>
                 <th>#</th>
+                <th>Image</th>
                 <th>Libellé</th>
                 <th class="num">Nombre de produits</th>
                 <th>Actions</th>
@@ -48,6 +57,14 @@
             <tbody>
               <tr th:each="cat : ${categories}">
                 <td class="mono" th:text="${cat.id}"></td>
+                <td>
+                  <img th:if="${cat.image != null}" th:src="@{${cat.image}}" alt=""
+                       style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e5e5;" />
+                  <span th:unless="${cat.image != null}"
+                        style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:8px; background:#f0f2f0; color:#9aa59a;">
+                    <i class="fas fa-image"></i>
+                  </span>
+                </td>
                 <td><strong th:text="${cat.libelle}"></strong></td>
                 <td class="num" th:text="${cat.produits != null ? cat.produits.size() : 0}"></td>
                 <td>
@@ -64,7 +81,7 @@
                 </td>
               </tr>
               <tr th:if="${#lists.isEmpty(categories)}">
-                <td colspan="4">
+                <td colspan="5">
                   <div class="vide">
                     <i class="fas fa-tags"></i>
                     <p>Aucune catégorie ne correspond à cette recherche.</p>

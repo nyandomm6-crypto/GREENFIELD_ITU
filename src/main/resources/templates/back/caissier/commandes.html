@@ -45,6 +45,7 @@
                 <th>Statut</th>
                 <th class="num">Total</th>
                 <th>Mode</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -66,9 +67,15 @@
                 >
                   Mode
                 </td>
+                <td>
+                  <a th:href="@{/caissier/commande/detail/{id}(id=${commande.id})}"
+                     class="btn btn-sm btn-ligne">
+                    <i class="fas fa-eye"></i> Détail
+                  </a>
+                </td>
               </tr>
               <tr th:if="${#lists.isEmpty(commandes)}">
-                <td colspan="5">
+                <td colspan="6">
                   <div class="vide">
                     <i class="fas fa-box-open"></i>
                     <p>Aucune commande disponible.</p>

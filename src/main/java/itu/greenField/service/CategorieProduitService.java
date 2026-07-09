@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import itu.greenField.model.CategorieProduit;
 import itu.greenField.repository.CategorieProduitRepository;
@@ -25,6 +26,7 @@ public class CategorieProduitService {
 
     private final CategorieProduitRepository categorieRepository;
     private final EntityExcelService excelService;
+    private final FileStorageService fileStorageService;
 
     public Page<CategorieProduit> searchPage(String motCle, int page, int size) {
         String cleanMotCle = (motCle != null && !motCle.trim().isEmpty()) ? motCle.trim() : null;
@@ -53,6 +55,30 @@ public class CategorieProduitService {
     public CategorieProduit save(CategorieProduit categorie) {
         categorie.setLibelle(categorie.getLibelle().trim());
         return categorieRepository.save(categorie);
+    }
+
+    /**
+     * Sauvegarde la catégorie et, si une image est fournie, la stocke sur disque.
+     * En édition sans nouveau fichier, l'image existante est conservée.
+     */
+    @Transactional
+    public CategorieProduit save(CategorieProduit categorie, MultipartFile image) {
+        categorie.setLibelle(categorie.getLibelle().trim());
+
+        // Conserver l'image existante si aucun nouveau fichier n'est envoyé.
+        if ((image == null || image.isEmpty()) && categorie.getId() != null) {
+            categorieRepository.findById(categorie.getId())
+                    .ifPresent(existant -> categorie.setImage(existant.getImage()));
+        }
+
+        CategorieProduit saved = categorieRepository.save(categorie);
+
+        if (image != null && !image.isEmpty()) {
+            String path = fileStorageService.store(image, "categories", "c" + saved.getId());
+            saved.setImage(path);
+            saved = categorieRepository.save(saved);
+        }
+        return saved;
     }
 
     @Transactional

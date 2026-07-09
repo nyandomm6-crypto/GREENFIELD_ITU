@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout-caissier :: head('Mouvements de stock')}"
+  ></head>
+
+  <body class="bo">
+    <aside
+      th:replace="~{back/fragments/layout-caissier :: sidebar('mouvements')}"
+    ></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout-caissier :: topbar('Mouvements de stock')}"
+      ></header>
+
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              Boutique <i class="fas fa-chevron-right"></i> Mouvements de stock
+            </p>
+            <h1>Mouvements de stock</h1>
+            <p class="sous-titre">
+              Mouvements de stock de votre point de vente
+              <strong
+                th:if="${employe.pointDeVente != null}"
+                th:text="${employe.pointDeVente.nom}"
+              ></strong>.
+            </p>
+          </div>
+        </div>
+
+        <th:block
+          th:replace="~{back/fragments/layout-caissier :: alertes}"
+        ></th:block>
+
+        <div class="tableau-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Produit</th>
+                <th class="num">Quantité</th>
+              </tr>
+            </thead>
+            <tbody>
+              <th:block th:each="mvt : ${mouvements}">
+                <tr th:each="fille : ${mvt.mvtStockFilles}">
+                  <td class="mono" th:text="${mvt.id}">1</td>
+                  <td
+                    th:text="${mvt.dateMvt != null ? #temporals.format(mvt.dateMvt, 'dd/MM/yyyy HH:mm') : '—'}"
+                  >
+                    —
+                  </td>
+                  <td>
+                    <span
+                      class="badge badge-sans-point"
+                      th:text="${mvt.typeMouvement != null ? mvt.typeMouvement.name() : '—'}"
+                    ></span>
+                  </td>
+                  <td th:text="${fille.produit != null ? fille.produit.nom : '—'}">
+                    Produit
+                  </td>
+                  <td class="num" th:text="${fille.quantite}">0</td>
+                </tr>
+              </th:block>
+              <tr th:if="${#lists.isEmpty(mouvements)}">
+                <td colspan="5">
+                  <div class="vide">
+                    <i class="fas fa-right-left"></i>
+                    <p>Aucun mouvement de stock pour votre point de vente.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+    </main>
+  </body>
+</html>

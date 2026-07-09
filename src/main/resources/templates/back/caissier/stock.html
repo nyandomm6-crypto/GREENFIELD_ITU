@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout-caissier :: head('Stock disponible')}"
+  ></head>
+
+  <body class="bo">
+    <aside
+      th:replace="~{back/fragments/layout-caissier :: sidebar('stock')}"
+    ></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout-caissier :: topbar('Stock disponible')}"
+      ></header>
+
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              Boutique <i class="fas fa-chevron-right"></i> Stock disponible
+            </p>
+            <h1>Stock disponible</h1>
+            <p class="sous-titre">
+              Quantités disponibles dans votre point de vente
+              <strong
+                th:if="${employe.pointDeVente != null}"
+                th:text="${employe.pointDeVente.nom}"
+              ></strong>.
+            </p>
+          </div>
+        </div>
+
+        <th:block
+          th:replace="~{back/fragments/layout-caissier :: alertes}"
+        ></th:block>
+
+        <div class="tableau-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Matricule</th>
+                <th>Produit</th>
+                <th>Catégorie</th>
+                <th class="num">Quantité en stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="s : ${stocks}">
+                <td class="mono" th:text="${s.produit.matricule}">MAT-001</td>
+                <td th:text="${s.produit.nom}">Produit</td>
+                <td
+                  th:text="${s.produit.categorie != null ? s.produit.categorie.libelle : '—'}"
+                >
+                  Catégorie
+                </td>
+                <td class="num" th:text="${s.stock}">0</td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(stocks)}">
+                <td colspan="4">
+                  <div class="vide">
+                    <i class="fas fa-box-open"></i>
+                    <p>Aucun stock à afficher pour votre point de vente.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+    </main>
+  </body>
+</html>

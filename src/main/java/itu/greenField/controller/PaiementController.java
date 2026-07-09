@@ -105,13 +105,35 @@ public class PaiementController {
     }
 
     @GetMapping({ "/", "", "/list" })
-    public ModelAndView listPaiements(@RequestParam(name = "statut", required = false) StatutPaiement statut) {
+    public ModelAndView listPaiements(@RequestParam(name = "statut", required = false) StatutPaiement statut,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         ModelAndView mv = new ModelAndView("front/paiement/listePaiement");
         List<Paiement> paiements = paiementService.findByStatut(statut);
-        mv.addObject("paiements", paiements);
+
+        // Pagination en mémoire (« nombre d'éléments par page »)
+        if (size <= 0) {
+            size = 10;
+        }
+        int total = paiements.size();
+        int totalPages = (int) Math.ceil((double) total / size);
+        if (page < 0) {
+            page = 0;
+        }
+        if (totalPages > 0 && page >= totalPages) {
+            page = totalPages - 1;
+        }
+        int from = Math.min(page * size, total);
+        int to = Math.min(from + size, total);
+
+        mv.addObject("paiements", paiements.subList(from, to));
         mv.addObject("statut", statut);
         mv.addObject("statutsPaiement", StatutPaiement.values());
         mv.addObject("paiementService", paiementService);
+        mv.addObject("page", page);
+        mv.addObject("size", size);
+        mv.addObject("totalPages", totalPages);
+        mv.addObject("totalElements", total);
         return mv;
     }
 

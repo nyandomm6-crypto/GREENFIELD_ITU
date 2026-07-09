@@ -35,6 +35,9 @@ public class Produit {
     @Column(name = "poids_moyenne_unitaire", nullable = false, precision = 10, scale = 2)
     private BigDecimal poids;
 
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idcategorie")
     @JsonIgnoreProperties("produits") // évite la boucle Produit -> CategorieProduit -> [produits] -> Produit
@@ -120,6 +123,14 @@ public class Produit {
 
     public void setPoids(BigDecimal poids) {
         this.poids = poids;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<DemandeStockFille> getDemandesStockFille() {

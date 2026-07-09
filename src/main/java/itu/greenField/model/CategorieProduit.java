@@ -20,6 +20,9 @@ public class CategorieProduit {
     @Column(nullable = false, length = 150)
     private String libelle;
 
+    @Column(name = "image", length = 255)
+    private String image;
+
     @OneToMany(mappedBy = "categorie")
     private List<Produit> produits;
 
@@ -37,6 +40,14 @@ public class CategorieProduit {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public List<Produit> getProduits() {

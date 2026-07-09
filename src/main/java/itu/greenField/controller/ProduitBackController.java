@@ -1,7 +1,9 @@
 package itu.greenField.controller;
 
 import itu.greenField.model.*;
+import itu.greenField.service.AuthGuard;
 import itu.greenField.service.ProduitBackService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -23,6 +25,19 @@ import java.util.Map;
 public class ProduitBackController {
 
     private final ProduitBackService produitService;
+
+    /** Garde de rôle : toutes les routes /back de ce contrôleur sont réservées à l'Administrateur. */
+    @ModelAttribute
+    public void guardAdmin(HttpSession session) {
+        if (!AuthGuard.isAdmin(session)) {
+            throw new AuthGuard.AccesRefuseException();
+        }
+    }
+
+    @ExceptionHandler(AuthGuard.AccesRefuseException.class)
+    public String onAccesRefuse() {
+        return "redirect:/emp/login";
+    }
 
     @GetMapping({ "/produits", "/produits/list" })
     public String listProduits(@RequestParam(required = false) Integer idCategorie,

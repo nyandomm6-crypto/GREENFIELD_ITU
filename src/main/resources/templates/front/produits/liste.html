@@ -84,6 +84,17 @@
                           Nom A-Z
                         </option>
                       </select>
+                      <label for="sizeSelect" class="ms-3">Par page :</label>
+                      <select
+                        id="sizeSelect"
+                        name="size"
+                        class="border-0 form-select-sm bg-light"
+                        onchange="document.getElementById('sortForm').submit()"
+                      >
+                        <option th:each="opt : ${ {12, 24, 48, 96} }"
+                                th:value="${opt}" th:text="${opt}"
+                                th:selected="${opt == pageSize}"></option>
+                      </select>
                     </form>
                   </div>
                 </div>
@@ -404,7 +415,7 @@
                             <a
                               class="page-link"
                               th:if="${currentPage > 0}"
-                              th:href="@{/produits(page=${currentPage - 1}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
+                              th:href="@{/produits(page=${currentPage - 1}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax}, size=${pageSize})}"
                             >
                               <i class="fas fa-chevron-left"></i>
                             </a>
@@ -422,7 +433,7 @@
                             <a
                               class="page-link"
                               th:if="${pageIndex != currentPage}"
-                              th:href="@{/produits(page=${pageIndex}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
+                              th:href="@{/produits(page=${pageIndex}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax}, size=${pageSize})}"
                               th:text="${pageIndex + 1}"
                             ></a>
                             <span
@@ -438,7 +449,7 @@
                             <a
                               class="page-link"
                               th:if="${currentPage + 1 < totalPages}"
-                              th:href="@{/produits(page=${currentPage + 1}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax})}"
+                              th:href="@{/produits(page=${currentPage + 1}, motCle=${motCle}, idCategorie=${idCategorieSelectionnee}, sort=${sort}, prixMax=${prixMax}, size=${pageSize})}"
                             >
                               <i class="fas fa-chevron-right"></i>
                             </a>

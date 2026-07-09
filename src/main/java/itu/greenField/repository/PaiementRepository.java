@@ -28,4 +28,7 @@ public interface PaiementRepository extends JpaRepository<Paiement, Integer> {
 
     List<Paiement> findByStatut(StatutPaiement statut);
 
+    /** Paiements dont la commande est rattachée à un point de vente de retrait (par code). */
+    List<Paiement> findByCommande_PointDeVenteRetrait_CodeOrderByIdDesc(String code);
+
 }
