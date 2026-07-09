@@ -13,11 +13,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import itu.greenField.model.CategorieProduit;
 import itu.greenField.model.Produit;
 import itu.greenField.repository.CategorieProduitRepository;
+import itu.greenField.service.AvisProduitService;
 import itu.greenField.service.ProduitService;
+import jakarta.servlet.http.HttpSession;
 
 class ProduitControllerTest {
 
@@ -25,7 +28,8 @@ class ProduitControllerTest {
     void shouldExposePaginationAttributesOnProductsPage() {
         ProduitService produitService = mock(ProduitService.class);
         CategorieProduitRepository categorieProduitRepository = mock(CategorieProduitRepository.class);
-        ProduitController controller = new ProduitController(produitService, categorieProduitRepository);
+        ProduitController controller = new ProduitController(produitService, categorieProduitRepository,
+                mock(AvisProduitService.class));
         Model model = mock(Model.class);
 
         Produit produit = new Produit();
@@ -41,5 +45,20 @@ class ProduitControllerTest {
 
         assertEquals("front/produits/liste", view);
         assertNotNull(view);
+    }
+
+    @Test
+    void shouldRedirectToLoginWhenClientIsNotAuthenticated() {
+        ProduitService produitService = mock(ProduitService.class);
+        CategorieProduitRepository categorieProduitRepository = mock(CategorieProduitRepository.class);
+        AvisProduitService avisProduitService = mock(AvisProduitService.class);
+        ProduitController controller = new ProduitController(produitService, categorieProduitRepository,
+                avisProduitService);
+        HttpSession session = mock(HttpSession.class);
+        RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
+
+        String view = controller.posterAvis(7, "Très bien", 5, session, redirectAttributes);
+
+        assertEquals("redirect:/login?redirect=/produits/7", view);
     }
 }
