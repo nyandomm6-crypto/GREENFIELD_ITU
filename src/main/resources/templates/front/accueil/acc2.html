@@ -112,24 +112,81 @@
       <!-- Featurs Section End -->
 
       <!-- FAQ Start -->
-      <div class="container-fluid py-5">
+      <div class="container-fluid py-5" style="background: #f8f9fa">
         <div class="container py-5">
           <div class="text-center mx-auto mb-5" style="max-width: 700px">
+            <h4 class="text-primary">Foire aux questions</h4>
             <h1 class="display-4">FAQ</h1>
-            <p>Les réponses aux questions les plus fréquentes.</p>
+            <p class="text-muted">
+              Les réponses aux questions les plus fréquentes.
+            </p>
           </div>
-          <div class="row g-4">
-            <div class="col-lg-6" th:each="faq : ${faqList}">
-              <div class="bg-light rounded p-4 h-100">
-                <h5 class="fw-bold text-primary mb-2" th:text="${faq.question}">
-                  Question
-                </h5>
-                <p class="mb-0 text-muted" th:text="${faq.reponse}">Réponse</p>
+          <div class="row justify-content-center">
+            <div class="col-lg-8">
+              <div class="accordion" id="faqAccordion">
+                <div
+                  class="accordion-item border-0 shadow-sm mb-3 rounded-3 overflow-hidden"
+                  th:each="faq, iterStat : ${faqList}"
+                  th:if="${faqList != null and !faqList.isEmpty()}"
+                >
+                  <h2
+                    class="accordion-header"
+                    th:id="'faqHeading' + ${iterStat.index}"
+                  >
+                    <button
+                      class="accordion-button collapsed"
+                      type="button"
+                      data-bs-toggle="collapse"
+                      th:data-bs-target="'#faqCollapse' + ${iterStat.index}"
+                      th:aria-controls="'faqCollapse' + ${iterStat.index}"
+                      th:classappend="${iterStat.index == 0} ? '' : 'collapsed'"
+                    >
+                      <span class="d-flex align-items-center gap-3">
+                        <span
+                          class="badge rounded-circle bg-primary text-white"
+                          style="
+                            width: 32px;
+                            height: 32px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-shrink: 0;
+                          "
+                          th:text="${iterStat.index + 1}"
+                        >
+                        </span>
+                        <span class="fw-bold" th:text="${faq.question}"
+                          >Question</span
+                        >
+                      </span>
+                    </button>
+                  </h2>
+                  <div
+                    th:id="'faqCollapse' + ${iterStat.index}"
+                    class="accordion-collapse collapse"
+                    th:classappend="${iterStat.index == 0} ? 'show' : ''"
+                    th:aria-labelledby="'faqHeading' + ${iterStat.index}"
+                    data-bs-parent="#faqAccordion"
+                  >
+                    <div
+                      class="accordion-body text-muted"
+                      th:text="${faq.reponse}"
+                    >
+                      Réponse
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="col-12" th:if="${faqList == null or faqList.isEmpty()}">
-              <div class="text-center py-4 text-muted">
-                Aucune question fréquente n'est disponible pour le moment.
+
+              <!-- Message si aucune FAQ -->
+              <div
+                class="text-center py-4 text-muted"
+                th:if="${faqList == null or faqList.isEmpty()}"
+              >
+                <i class="fas fa-question-circle fa-3x mb-3"></i>
+                <p>
+                  Aucune question fréquente n'est disponible pour le moment.
+                </p>
               </div>
             </div>
           </div>
