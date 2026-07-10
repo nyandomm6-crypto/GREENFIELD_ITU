@@ -3,10 +3,13 @@ package itu.greenField.controller;
 import itu.greenField.model.Client;
 import itu.greenField.model.Commandes;
 import itu.greenField.model.DetailsCommande;
+import itu.greenField.model.Employes;
 import itu.greenField.repository.ClientRepository;
 import itu.greenField.repository.CommandesRepository;
 import itu.greenField.repository.StatutCommandeRepository;
+import itu.greenField.service.AuthGuard;
 import itu.greenField.service.CommandeFrontService;
+import itu.greenField.service.EmployesService;
 import itu.greenField.service.PanierService;
 import itu.greenField.service.ValidationMailService;
 import itu.greenField.service.ValidationService;
@@ -40,11 +43,12 @@ public class AuthClientController {
     private CommandeFrontService commandeService;
     private CommandesRepository commandesRepository;
     private StatutCommandeRepository statutCommandeRepository;
+    private EmployesService employesService;
 
     public AuthClientController(ClientRepository clientRepository, ValidationService validationService,
             ValidationMailService validationMailService, PanierService panierService,
             CommandeFrontService commandeService, CommandesRepository commandesRepository,
-            StatutCommandeRepository statutCommandeRepository) {
+            StatutCommandeRepository statutCommandeRepository, EmployesService employesService) {
         this.clientRepository = clientRepository;
         this.validationService = validationService;
         this.validationMailService = validationMailService;
@@ -52,6 +56,7 @@ public class AuthClientController {
         this.commandeService = commandeService;
         this.commandesRepository = commandesRepository;
         this.statutCommandeRepository = statutCommandeRepository;
+        this.employesService = employesService;
     }
 
     @GetMapping("/login")
@@ -86,6 +91,12 @@ public class AuthClientController {
         return "redirect:/validation/email";
     }
 
+    /**
+     * Login unifié : un seul formulaire pour tout le monde.
+     * On cherche l'email d'abord parmi les employés (back-office), puis parmi
+     * les clients (boutique). La redirection dépend ensuite du type de compte
+     * et, pour les employés, de leur rôle.
+     */
     @PostMapping("/login")
     public String traiterLogin(@RequestParam String email,
             @RequestParam String motDePasse,
@@ -95,8 +106,15 @@ public class AuthClientController {
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        Client client = clientRepository.findByMail(email);
+        // 1) Tentative EMPLOYÉ (admin / caissier / livreur…)
+        Employes employe = employesService.findByEmail(email);
+        if (employe != null && employe.getMotdepasse().equals(motDePasse)) {
+            session.setAttribute(AuthGuard.SESSION_KEY, employesService.getById(employe.getId()));
+            return redirectSelonRole(employe, redirect);
+        }
 
+        // 2) Tentative CLIENT (boutique)
+        Client client = clientRepository.findByMail(email);
         if (client == null || !client.getMotdepasse().equals(motDePasse)) {
             redirectAttributes.addFlashAttribute("error", "Email ou mot de passe incorrect.");
             redirectAttributes.addFlashAttribute("redirect", redirect);
@@ -117,6 +135,24 @@ public class AuthClientController {
         }
 
         return "redirect:/";
+    }
+
+    /** Destination back-office d'un employé selon son rôle. */
+    private String redirectSelonRole(Employes employe, String redirect) {
+        switch (employe.getRole()) {
+            case Livreur:
+                return "redirect:/livreurs/dashboard";
+            case Caissier:
+                if (redirect != null && !redirect.isBlank() && redirect.startsWith("/caissier")) {
+                    return "redirect:" + redirect;
+                }
+                return "redirect:/caissier/dashboard";
+            case Administrateur:
+                return "redirect:/commandes/list";
+            default:
+                // Rôles sans interface dédiée : retour au login.
+                return "redirect:/login";
+        }
     }
 
     /**
