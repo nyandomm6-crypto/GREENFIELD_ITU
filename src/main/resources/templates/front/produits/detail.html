@@ -56,14 +56,12 @@
                     <i class="fa fa-star text-secondary"></i>
                     <i class="fa fa-star"></i>
                   </div>
-                  <p class="mb-4">
-                    The generated Lorem Ipsum is therefore always free from
-                    repetition injected humour, or non-characteristic words etc.
-                  </p>
-                  <p class="mb-4">
-                    Susp endisse ultricies nisi vel quam suscipit. Sabertooth
-                    peacock flounder; chain pickerel hatchetfish, pencilfish
-                    snailfish
+                  <p class="mb-4" style="white-space: pre-line"
+                     th:if="${produit.description != null and !produit.description.isEmpty()}"
+                     th:text="${produit.description}"></p>
+                  <p class="mb-4 text-muted"
+                     th:if="${produit.description == null or produit.description.isEmpty()}">
+                    Aucune description disponible pour ce produit.
                   </p>
 
                   <!-- Quantité -->
@@ -173,7 +171,10 @@
                       role="tabpanel"
                       aria-labelledby="nav-about-tab"
                     >
-                      <p>
+                      <p style="white-space: pre-line"
+                         th:if="${produit.description != null and !produit.description.isEmpty()}"
+                         th:text="${produit.description}"></p>
+                      <p th:if="${produit.description == null or produit.description.isEmpty()}">
                         Le produit
                         <strong th:text="${produit.nom}"></strong> est un
                         produit de qualité supérieure, conçu pour répondre aux

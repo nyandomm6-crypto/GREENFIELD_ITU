@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout-caissier :: head('Produits')}"
+  ></head>
+
+  <body class="bo">
+    <aside
+      th:replace="~{back/fragments/layout-caissier :: sidebar('produits')}"
+    ></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout-caissier :: topbar('Produits')}"
+      ></header>
+
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              Boutique <i class="fas fa-chevron-right"></i> Produits
+            </p>
+            <h1>Produits</h1>
+            <p class="sous-titre">
+              Liste des produits disponibles en boutique.
+            </p>
+          </div>
+        </div>
+
+        <div class="tableau-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix</th>
+                <th>Catégorie</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="produit : ${produits}">
+                <td class="mono" th:text="${produit.matricule}">MAT-001</td>
+                <td th:text="${produit.nom}">Produit</td>
+                <td style="max-width: 260px; color: #6b746b;"
+                    th:title="${produit.description}"
+                    th:text="${produit.description != null and !produit.description.isEmpty()
+                      ? (produit.description.length() > 80 ? produit.description.substring(0,80) + '…' : produit.description)
+                      : '—'}">—</td>
+                <td class="num" th:text="${produit.pu}">0</td>
+                <td
+                  th:text="${produit.categorie != null ? produit.categorie.libelle : '—'}"
+                >
+                  Catégorie
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(produits)}">
+                <td colspan="5">
+                  <div class="vide">
+                    <i class="fas fa-box-open"></i>
+                    <p>Aucun produit à afficher.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+    </main>
+  </body>
+</html>

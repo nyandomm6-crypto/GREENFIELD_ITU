@@ -16,7 +16,8 @@ CREATE TABLE PointDeVente (
 
 CREATE TABLE CategorieProduit (
     id SERIAL PRIMARY KEY,
-    libelle VARCHAR(150) NOT NULL
+    libelle VARCHAR(150) NOT NULL,
+    image VARCHAR(255)
 );
 
 CREATE TABLE Produit (
@@ -24,6 +25,7 @@ CREATE TABLE Produit (
     nom VARCHAR(150) NOT NULL,
     matricule VARCHAR(50) UNIQUE NOT NULL,
     pu DECIMAL(10, 2) NOT NULL,
+    description TEXT,
     idcategorie INT REFERENCES CategorieProduit (id) ON DELETE SET NULL,
     poids_moyenne_unitaire DECIMAL(10, 2) DEFAULT 0
 );

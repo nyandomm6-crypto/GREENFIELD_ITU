@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import itu.greenField.model.CategorieProduit;
+import itu.greenField.service.AuthGuard;
 import itu.greenField.service.CategorieProduitService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -20,6 +22,28 @@ import lombok.RequiredArgsConstructor;
 public class CategorieProduitController {
 
     private final CategorieProduitService categorieService;
+
+    /**
+     * Empêche le data-binder de mapper le fichier « image » (MultipartFile) sur la
+     * propriété String CategorieProduit.image — le fichier est récupéré via @RequestParam.
+     */
+    @org.springframework.web.bind.annotation.InitBinder
+    public void initBinder(org.springframework.web.bind.WebDataBinder binder) {
+        binder.setDisallowedFields("image");
+    }
+
+    /** Garde de rôle : /back/categories réservé à l'Administrateur. */
+    @ModelAttribute
+    public void guardAdmin(HttpSession session) {
+        if (!AuthGuard.isAdmin(session)) {
+            throw new AuthGuard.AccesRefuseException();
+        }
+    }
+
+    @ExceptionHandler(AuthGuard.AccesRefuseException.class)
+    public String onAccesRefuse() {
+        return "redirect:/emp/login";
+    }
 
     @GetMapping({ "", "/", "/list" })
     public String list(@RequestParam(required = false) String motCle,
@@ -44,7 +68,9 @@ public class CategorieProduitController {
     }
 
     @PostMapping("/nouveau")
-    public String create(@ModelAttribute CategorieProduit categorie, Model model,
+    public String create(@ModelAttribute CategorieProduit categorie,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            Model model,
             RedirectAttributes redirectAttributes) {
         String error = categorieService.validate(categorie);
         if (error != null) {
@@ -52,7 +78,7 @@ public class CategorieProduitController {
             model.addAttribute("isEdit", false);
             return "back/categories/form";
         }
-        categorieService.save(categorie);
+        categorieService.save(categorie, image);
         redirectAttributes.addFlashAttribute("success", "Catégorie créée avec succès.");
         return "redirect:/back/categories";
     }
@@ -70,7 +96,9 @@ public class CategorieProduitController {
     }
 
     @PostMapping("/modifier/{id}")
-    public String update(@PathVariable Integer id, @ModelAttribute CategorieProduit categorie, Model model,
+    public String update(@PathVariable Integer id, @ModelAttribute CategorieProduit categorie,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            Model model,
             RedirectAttributes redirectAttributes) {
         categorie.setId(id);
         String error = categorieService.validate(categorie);
@@ -79,7 +107,7 @@ public class CategorieProduitController {
             model.addAttribute("isEdit", true);
             return "back/categories/form";
         }
-        categorieService.save(categorie);
+        categorieService.save(categorie, image);
         redirectAttributes.addFlashAttribute("success", "Catégorie modifiée avec succès.");
         return "redirect:/back/categories";
     }

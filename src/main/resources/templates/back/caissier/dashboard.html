@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout-caissier :: head('Tableau de bord')}"
+  ></head>
+
+  <body class="bo">
+    <aside
+      th:replace="~{back/fragments/layout-caissier :: sidebar('dashboard')}"
+    ></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout-caissier :: topbar('Tableau de bord')}"
+      ></header>
+
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              Accueil <i class="fas fa-chevron-right"></i> Tableau de bord
+            </p>
+            <h1>Tableau de bord caissier</h1>
+            <p class="sous-titre">
+              Suivez les commandes, paiements et produits de la boutique.
+            </p>
+          </div>
+        </div>
+
+        <div class="grille-3">
+          <div class="carte carte-stat">
+            <h2>Commandes</h2>
+            <p
+              class="statistique"
+              th:text="${commandes != null ? commandes.size() : 0}"
+            >
+              0
+            </p>
+            <p>Commandes disponibles pour traitement.</p>
+          </div>
+          <div class="carte carte-stat">
+            <h2>Paiements</h2>
+            <p
+              class="statistique"
+              th:text="${paiements != null ? paiements.size() : 0}"
+            >
+              0
+            </p>
+            <p>Paiements enregistrés.</p>
+          </div>
+          <div class="carte carte-stat">
+            <h2>Actions rapides</h2>
+            <div class="liste-actions">
+              <a th:href="@{/caissier/commandes}" class="btn btn-ligne"
+                >Voir commandes</a
+              >
+              <a th:href="@{/caissier/produits}" class="btn btn-ligne"
+                >Voir produits</a
+              >
+              <a th:href="@{/caissier/paiements}" class="btn btn-ligne"
+                >Voir paiements</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="carte">
+          <div class="carte-tete">
+            <h2><i class="fa-solid fa-receipt"></i> Commandes récentes</h2>
+          </div>
+          <div class="carte-corps">
+            <div class="tableau-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>Statut</th>
+                    <th class="num">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="commande : ${commandes}">
+                    <td class="mono" th:text="${commande.id}">1</td>
+                    <td
+                      th:text="${commande.client != null ? commande.client.nom + ' ' + commande.client.prenom : '—'}"
+                    >
+                      Client
+                    </td>
+                    <td
+                      th:text="${commande.statutActuel != null ? commande.statutActuel.nom : '—'}"
+                    >
+                      Statut
+                    </td>
+                    <td class="num" th:text="${commande.totalGeneral}">0</td>
+                  </tr>
+                  <tr th:if="${#lists.isEmpty(commandes)}">
+                    <td colspan="4">
+                      <div class="vide">
+                        <i class="fas fa-box-open"></i>
+                        <p>Aucune commande disponible.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+    </main>
+  </body>
+</html>

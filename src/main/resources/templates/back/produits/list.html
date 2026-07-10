@@ -58,6 +58,15 @@
             />
           </div>
 
+          <div class="filtre">
+            <label for="size">Éléments par page</label>
+            <select name="size" id="size" onchange="this.form.submit()">
+              <option th:each="opt : ${ {5, 10, 25, 50, 100} }"
+                      th:value="${opt}" th:text="${opt}"
+                      th:selected="${opt == size}"></option>
+            </select>
+          </div>
+
           <div class="filtre-actions">
             <button type="submit" class="btn btn-vert">
               <i class="fas fa-magnifying-glass"></i> Rechercher
@@ -72,6 +81,7 @@
                 <th>Image</th>
                 <th>Matricule</th>
                 <th>Nom</th>
+                <th>Description</th>
                 <th>Catégorie</th>
                 <th class="num">Prix unitaire</th>
                 <th>Actions</th>
@@ -89,6 +99,11 @@
                 </td>
                 <td class="mono" th:text="${p.matricule}"></td>
                 <td><strong th:text="${p.nom}"></strong></td>
+                <td style="max-width: 260px; color: #6b746b;"
+                    th:title="${p.description}"
+                    th:text="${p.description != null and !p.description.isEmpty()
+                      ? (p.description.length() > 80 ? p.description.substring(0,80) + '…' : p.description)
+                      : '—'}"></td>
                 <td>
                   <span
                     class="badge badge-feuille badge-sans-point"
@@ -115,7 +130,7 @@
                 </td>
               </tr>
               <tr th:if="${#lists.isEmpty(produits)}">
-                <td colspan="6">
+                <td colspan="7">
                   <div class="vide">
                     <i class="fas fa-seedling"></i>
                     <p>Aucun produit ne correspond à cette recherche.</p>

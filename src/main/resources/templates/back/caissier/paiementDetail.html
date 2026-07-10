@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head
+    th:replace="~{back/fragments/layout-caissier :: head('Détail paiement')}"
+  ></head>
+
+  <body class="bo">
+    <aside
+      th:replace="~{back/fragments/layout-caissier :: sidebar('paiements')}"
+    ></aside>
+
+    <main class="bo-main">
+      <header
+        th:replace="~{back/fragments/layout-caissier :: topbar('Détail paiement')}"
+      ></header>
+
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/caissier/paiements}">Paiements</a>
+              <i class="fas fa-chevron-right"></i>
+              <span class="mono" th:text="'#' + ${paiement.id}"></span>
+            </p>
+            <h1 th:text="'Paiement #' + ${paiement.id}"></h1>
+          </div>
+          <div class="page-actions">
+            <a th:href="@{/caissier/paiements}" class="btn btn-ligne">
+              <i class="fas fa-arrow-left"></i> Retour
+            </a>
+          </div>
+        </div>
+
+        <th:block
+          th:replace="~{back/fragments/layout-caissier :: alertes}"
+        ></th:block>
+
+        <div class="kpi-grille">
+          <div class="kpi">
+            <p class="kpi-libelle"><i class="fas fa-receipt"></i> Commande</p>
+            <p class="kpi-valeur" style="font-size: 18px"
+               th:text="${paiement.commande != null ? '#' + paiement.commande.id : '—'}"></p>
+          </div>
+          <div class="kpi">
+            <p class="kpi-libelle"><i class="fas fa-circle-info"></i> Statut</p>
+            <p class="kpi-valeur" style="font-size: 18px"
+               th:text="${paiement.statut != null ? paiement.statut.name() : '—'}"></p>
+          </div>
+          <div class="kpi">
+            <p class="kpi-libelle"><i class="fas fa-calendar"></i> Date</p>
+            <p class="kpi-valeur" style="font-size: 18px"
+               th:text="${paiement.date != null ? paiement.date : '—'}"></p>
+          </div>
+        </div>
+
+        <div class="carte">
+          <div class="carte-tete">
+            <h2><i class="fas fa-coins texte-vert"></i> Détails du paiement</h2>
+          </div>
+          <div class="tableau-scroll" style="border: none;">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Type</th>
+                  <th class="num">Montant</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="f : ${filles}">
+                  <td class="mono" th:text="${f.id}">1</td>
+                  <td th:text="${f.typePayement != null ? f.typePayement.name() : '—'}">Type</td>
+                  <td class="num" th:text="${f.valeur}">0</td>
+                  <td th:text="${f.date != null ? f.date : '—'}">Date</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(filles)}">
+                  <td colspan="4">
+                    <div class="vide"><i class="fas fa-coins"></i><p>Aucun détail de paiement.</p></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+    </main>
+  </body>
+</html>

@@ -65,6 +65,30 @@ public class PaiementService {
         return paiementRepository.findByStatut(statut);
     }
 
+    /** Paiements du point de vente de retrait donné (par code) — espace caissier. */
+    public List<Paiement> findByPointDeVente(String code) {
+        if (code == null || code.isBlank()) {
+            return new ArrayList<>();
+        }
+        return paiementRepository.findByCommande_PointDeVenteRetrait_CodeOrderByIdDesc(code);
+    }
+
+    /**
+     * Création d'un paiement par un caissier (côté back-end). Vérifie d'abord que
+     * la commande appartient bien au point de vente du caissier, puis réutilise la
+     * logique de paiement existante (total ou reste à payer).
+     */
+    @Transactional
+    public Paiement creerPaiementCaissier(Integer commandeId, List<PaiementLigneDto> lignes, String pdvCode)
+            throws Exception {
+        Commandes commande = getCommandeOuErreur(commandeId);
+        if (pdvCode == null || commande.getPointDeVenteRetrait() == null
+                || !pdvCode.equals(commande.getPointDeVenteRetrait().getCode())) {
+            throw new Exception("Cette commande n'appartient pas à votre point de vente.");
+        }
+        return payerTotalOuReste(commandeId, lignes);
+    }
+
     public Paiement findById(Integer id) {
         return paiementRepository.findById(id).orElse(null);
     }

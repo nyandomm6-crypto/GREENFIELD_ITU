@@ -58,15 +58,37 @@ public class PointDeVenteController {
 
     // Liste des points de vente
     @GetMapping
-    public String listePointDeVente(Model model, @RequestParam(required = false) String code) {
+    public String listePointDeVente(Model model, @RequestParam(required = false) String code,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         List<PointDeVente> pointDeVentes;
         if (code != null && !code.isEmpty()) {
             pointDeVentes = pointDeVenteRepository.findByCodeContainingIgnoreCase(code);
         } else {
             pointDeVentes = pointDeVenteService.getAllPointDeVente();
         }
-        model.addAttribute("pointDeVentes", pointDeVentes);
+
+        // Pagination en mémoire (« nombre d'éléments par page »)
+        if (size <= 0) {
+            size = 10;
+        }
+        int total = pointDeVentes.size();
+        int totalPages = (int) Math.ceil((double) total / size);
+        if (page < 0) {
+            page = 0;
+        }
+        if (totalPages > 0 && page >= totalPages) {
+            page = totalPages - 1;
+        }
+        int from = Math.min(page * size, total);
+        int to = Math.min(from + size, total);
+
+        model.addAttribute("pointDeVentes", pointDeVentes.subList(from, to));
         model.addAttribute("code", code);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalElements", total);
         return "pointdevente/liste";
     }
 

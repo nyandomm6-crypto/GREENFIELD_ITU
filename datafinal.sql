@@ -306,3 +306,21 @@ VALUES (1, 0.0, 5000.00), -- Antananarivo, supérieur à 0kg
     (6, 2000.0, 1800000.00), -- Toliara, supérieur à 2000kg
     (6, 5000.0, 4000000.00);
 -- Toliara, supérieur à 5000kg
+
+
+
+INSERT INTO PointDeVente (nom, code, adresse, contact)
+VALUES
+('Point de vente Antananarivo', 'PT001', 'Antananarivo', '0340001001'),
+('Point de vente Toamasina', 'PT002', 'Toamasina', '0340001002'),
+('Point de vente Fianarantsoa', 'PT003', 'Fianarantsoa', '0340001003');
+
+
+
+INSERT INTO Employes
+(nom, prenom, adresse, contact, mail, motdepasse, role, idptdevente)
+VALUES
+('Rakoto', 'Admin', 'Antananarivo', '0340000001', 'admin@gmail.com', 'admin123', 'Administrateur', NULL),
+('Rabe', 'Jean', 'Antananarivo', '0340000002', 'caissier@gmail.com', 'caissier123', 'Caissier', 'PT001'),
+('Randria', 'Paul', 'Antananarivo', '0340000003', 'livreur@gmail.com', 'livreur123', 'Livreur', 'PT001'),
+('Rasoanaivo', 'Marie', 'Antananarivo', '0340000004', 'employe@gmail.com', 'employe123', 'Employe', 'PT001');

@@ -45,6 +45,14 @@
                             th:selected="${role != null and role == r}"></option>
                     </select>
                 </div>
+                <div class="filtre">
+                    <label>Éléments par page</label>
+                    <select name="size" onchange="this.form.submit()">
+                        <option th:each="opt : ${ {5, 10, 25, 50, 100} }"
+                                th:value="${opt}" th:text="${opt}"
+                                th:selected="${opt == size}"></option>
+                    </select>
+                </div>
                 <div class="barre-form" style="justify-content: flex-start;">
                     <button type="submit" class="btn btn-vert btn-sm">Filtrer</button>
                     <a th:href="${estActif} ? @{/employes} : @{/employes/archives}" class="btn btn-ligne btn-sm">Réinitialiser</a>

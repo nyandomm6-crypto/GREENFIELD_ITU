@@ -26,6 +26,12 @@ import itu.greenField.service.PointDeVenteService;
 import itu.greenField.service.ProduitService;
 import itu.greenField.service.ProvinceLivraisonService;
 import itu.greenField.service.StatutCommandeService;
+import itu.greenField.service.AuthGuard;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,6 +73,26 @@ public class CommandeController {
         this.provinceLivraisonService = provinceLivraisonService;
         this.pointDeVenteService = pointDeVenteService;
         this.paiementService = paiementService;
+    }
+
+    /**
+     * Garde de rôle : les routes back-office /commandes/** sont réservées à
+     * l'Administrateur. Les routes front client /commandes/fo/** restent ouvertes.
+     */
+    @ModelAttribute
+    public void guard(HttpServletRequest request, HttpSession session) {
+        String uri = request.getRequestURI();
+        if (uri != null && uri.startsWith("/commandes/fo")) {
+            return; // espace client
+        }
+        if (!AuthGuard.isAdmin(session)) {
+            throw new AuthGuard.AccesRefuseException();
+        }
+    }
+
+    @ExceptionHandler(AuthGuard.AccesRefuseException.class)
+    public String onAccesRefuse() {
+        return "redirect:/emp/login";
     }
 
     @GetMapping("/form/new")
@@ -367,6 +393,20 @@ public class CommandeController {
             model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
             model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
         }
+    }
+
+    @PostMapping("/export")
+    @ResponseBody
+    public ResponseEntity<byte[]> exportCommandes(
+            @ModelAttribute("commandeFilterDto") CommandeBackFilterDto filter) throws Exception {
+        byte[] content = commandeService.exportCommandesExcel(filter);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(
+                MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", "commandes.xlsx");
+
+        return ResponseEntity.ok().headers(headers).body(content);
     }
 
     @GetMapping("/api/download-template")

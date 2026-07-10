@@ -101,6 +101,18 @@
               </div>
 
               <div class="champ" style="grid-column: 1 / -1;">
+                <label for="description">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="4"
+                  placeholder="Décrivez le produit (origine, qualité, conseils…)"
+                  th:text="${produit.description}"
+                ></textarea>
+                <span class="aide">Facultatif. Affichée sur les pages de consultation.</span>
+              </div>
+
+              <div class="champ" style="grid-column: 1 / -1;">
                 <label for="image">Image du produit</label>
                 <div th:if="${isEdit && produit.imagePath != null}" style="margin-bottom: 10px;">
                   <img th:src="@{${produit.imagePath}}" alt="Image actuelle"

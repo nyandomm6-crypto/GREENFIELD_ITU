@@ -1,111 +1,170 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head
+    th:replace="~{back/fragments/layout-livreur :: head('Détail de la livraison')}"
+  ></head>
 
-<head th:replace="~{back/fragments/layout :: head('Détail de la livraison')}"></head>
-
-<body class="bo">
-    <aside th:replace="~{back/fragments/layout :: sidebar('livreur')}"></aside>
+  <body class="bo">
+    <aside
+      th:replace="~{back/fragments/layout-livreur :: sidebar('livreur')}"
+    ></aside>
 
     <main class="bo-main">
-        <header th:replace="~{back/fragments/layout :: topbar('Mes livraisons')}"></header>
+      <header
+        th:replace="~{back/fragments/layout-livreur :: topbar('Mes livraisons')}"
+      ></header>
 
-        <div class="bo-contenu">
-
-            <div class="page-tete">
-                <div>
-                    <p class="fil"><a th:href="@{/livreurs/livraisons}">Mes livraisons</a> / Détail</p>
-                    <h1 th:text="|Livraison #${livraison.id}|">Détail de la livraison</h1>
-                </div>
-                <div class="page-actions">
-                    <a th:href="@{/livreurs/livraisons}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour</a>
-                </div>
-            </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-circle-info"></i> Informations générales</h2>
-                </div>
-                <div class="carte-corps">
-                    <dl class="fiche">
-                        <dt>Date</dt>
-                        <dd th:text="${#temporals.format(livraison.dateLivraison,'dd/MM/yyyy HH:mm')}"></dd>
-
-                        <dt>Statut</dt>
-                        <dd><span class="badge badge-vert" th:text="${livraison.statutLivraison}"></span></dd>
-
-                        <dt>Véhicule</dt>
-                        <dd><span th:text="${livraison.vehicule.marque}"></span> <span th:text="${livraison.vehicule.modele}"></span></dd>
-
-                        <dt>Matricule</dt>
-                        <dd class="mono" th:text="${livraison.vehicule.matricule}"></dd>
-                    </dl>
-                </div>
-            </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-basket-shopping"></i> Commandes à livrer</h2>
-                </div>
-                <div class="carte-corps">
-                    <div class="tableau-scroll">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Commande</th>
-                                    <th>Client</th>
-                                    <th>Adresse</th>
-                                    <th class="num">Montant</th>
-                                    <th>Statut</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr th:if="${#lists.isEmpty(livraison.filles)}">
-                                    <td colspan="6">
-                                        <div class="vide">
-                                            <i class="fa-solid fa-basket-shopping"></i>
-                                            <p>Aucune commande.</p>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr th:each="lf : ${livraison.filles}">
-                                    <td class="mono" th:text="${lf.commande.id}"></td>
-
-                                    <td th:text="${lf.commande.client.nom + ' ' + lf.commande.client.prenom}"></td>
-
-                                    <td th:text="${lf.commande.adresseLivraison}"></td>
-
-                                    <td class="num texte-ocre" th:text="${lf.commande.totalGeneral}"></td>
-
-                                    <td><span class="badge badge-vert" th:text="${lf.commande.statutActuel.nom}"></span></td>
-
-                                    <td>
-                                        <div class="cellule-actions">
-                                            <form th:action="@{/livreurs/livraisonFille/valider}" method="post" style="display: inline">
-                                                <input type="hidden" name="idLivraisonFille" th:value="${lf.id}" />
-                                                <input type="hidden" name="idCommandes" th:value="${lf.commande.id}" />
-                                                <button type="submit" class="btn btn-sm btn-doux">Valider</button>
-                                            </form>
-
-                                            <form th:action="@{/livreurs/livraisonFille/annuler}" method="post" style="display: inline">
-                                                <input type="hidden" name="idLivraisonFille" th:value="${lf.id}" />
-                                                <button type="submit" class="btn btn-sm btn-doux-rouge">Annuler</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
+      <div class="bo-contenu">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/livreurs/livraisons}">Mes livraisons</a> / Détail
+            </p>
+            <h1 th:text="|Livraison #${livraison.id}|">
+              Détail de la livraison
+            </h1>
+          </div>
+          <div class="page-actions">
+            <a th:href="@{/livreurs/livraisons}" class="btn btn-ligne"
+              ><i class="fa-solid fa-arrow-left"></i> Retour</a
+            >
+          </div>
         </div>
 
-        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
-    </main>
-</body>
+        <div class="carte">
+          <div class="carte-tete">
+            <h2>
+              <i class="fa-solid fa-circle-info"></i> Informations générales
+            </h2>
+          </div>
+          <div class="carte-corps">
+            <dl class="fiche">
+              <dt>Date</dt>
+              <dd
+                th:text="${#temporals.format(livraison.dateLivraison,'dd/MM/yyyy HH:mm')}"
+              ></dd>
 
+              <dt>Statut</dt>
+              <dd>
+                <span
+                  class="badge badge-vert"
+                  th:text="${livraison.statutLivraison}"
+                ></span>
+              </dd>
+
+              <dt>Véhicule</dt>
+              <dd>
+                <span th:text="${livraison.vehicule.marque}"></span>
+                <span th:text="${livraison.vehicule.modele}"></span>
+              </dd>
+
+              <dt>Matricule</dt>
+              <dd class="mono" th:text="${livraison.vehicule.matricule}"></dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="carte">
+          <div class="carte-tete">
+            <h2>
+              <i class="fa-solid fa-basket-shopping"></i> Commandes à livrer
+            </h2>
+          </div>
+          <div class="carte-corps">
+            <div class="tableau-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Commande</th>
+                    <th>Client</th>
+                    <th>Adresse</th>
+                    <th class="num">Montant</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(livraison.filles)}">
+                    <td colspan="6">
+                      <div class="vide">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                        <p>Aucune commande.</p>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr th:each="lf : ${livraison.filles}">
+                    <td class="mono" th:text="${lf.commande.id}"></td>
+
+                    <td
+                      th:text="${lf.commande.client.nom + ' ' + lf.commande.client.prenom}"
+                    ></td>
+
+                    <td th:text="${lf.commande.adresseLivraison}"></td>
+
+                    <td
+                      class="num texte-ocre"
+                      th:text="${lf.commande.totalGeneral}"
+                    ></td>
+
+                    <td>
+                      <span
+                        class="badge badge-vert"
+                        th:text="${lf.commande.statutActuel.nom}"
+                      ></span>
+                    </td>
+
+                    <td>
+                      <div class="cellule-actions">
+                        <form
+                          th:action="@{/livreurs/livraisonFille/valider}"
+                          method="post"
+                          style="display: inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="idLivraisonFille"
+                            th:value="${lf.id}"
+                          />
+                          <input
+                            type="hidden"
+                            name="idCommandes"
+                            th:value="${lf.commande.id}"
+                          />
+                          <button type="submit" class="btn btn-sm btn-doux">
+                            Valider
+                          </button>
+                        </form>
+
+                        <form
+                          th:action="@{/livreurs/livraisonFille/annuler}"
+                          method="post"
+                          style="display: inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="idLivraisonFille"
+                            th:value="${lf.id}"
+                          />
+                          <button
+                            type="submit"
+                            class="btn btn-sm btn-doux-rouge"
+                          >
+                            Annuler
+                          </button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-livreur :: pied}"></footer>
+    </main>
+  </body>
 </html>

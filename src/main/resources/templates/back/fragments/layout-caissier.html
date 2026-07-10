@@ -1,13 +1,11 @@
 <!doctype html>
 <!-- =====================================================================
-  greenField — LAYOUT BACK OFFICE
-  Fragments réutilisables par toutes les pages d'administration :
+  greenField — LAYOUT ESPACE CAISSIER
+  Fragments réutilisables par toutes les pages de l'espace caissier :
 
     head(titre)     : <head> complet (fonts, CSS, favicon)
     sidebar(actif)  : navigation latérale — 'actif' met l'entrée en surbrillance
-                      valeurs : produits | stocks | stock-entree | commandes |
-                                paiements | frais | livraisons | livreur |
-                                vehicules | pdv | employes
+                      valeurs : produits | paiements | contact | compte
     topbar(titre)   : barre supérieure avec titre de page
     alertes         : affiche automatiquement success / succes / error / alert / message
     pied            : pied de page
@@ -16,7 +14,9 @@
   <head th:fragment="head(titre)">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="${titre} + ' · greenField Admin'">greenField Admin</title>
+    <title th:text="${titre} + ' · greenField Caissier'">
+      greenField Caissier
+    </title>
 
     <link rel="icon" type="image/png" th:href="@{/img/logo.png}" />
 
@@ -45,7 +45,7 @@
        SIDEBAR
     ================================================================== -->
     <aside class="bo-sidebar" th:fragment="sidebar(actif)">
-      <a th:href="@{/commandes/list}" class="bo-brand">
+      <a th:href="@{/caissier/dashboard}" class="bo-brand">
         <span
           class="bo-brand-icone"
           style="background: transparent; overflow: hidden"
@@ -62,118 +62,76 @@
         </span>
         <span>
           <span class="bo-brand-nom">green<span>Field</span></span>
-          <span class="bo-brand-sous">Administration</span>
+          <span class="bo-brand-sous">Caissier</span>
         </span>
       </a>
       <div class="sillons"></div>
 
       <nav class="bo-nav">
-        <p class="bo-nav-groupe">Catalogue</p>
+        <p class="bo-nav-groupe">Tableau de bord</p>
         <a
-          th:href="@{/back/produits}"
+          th:href="@{/caissier/dashboard}"
           class="bo-nav-lien"
-          th:classappend="${actif == 'produits'} ? 'actif'"
+          th:classappend="${actif == 'dashboard'} ? 'actif'"
         >
-          <i class="fas fa-carrot"></i> Produits
-        </a>
-        <a
-          th:href="@{/back/categories}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'categories'} ? 'actif'"
-        >
-          <i class="fas fa-tags"></i> Catégories
-        </a>
-        <a
-          th:href="@{/back/stocks}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'stocks'} ? 'actif'"
-        >
-          <i class="fas fa-boxes-stacked"></i> Suivi des stocks
-        </a>
-        <a
-          th:href="@{/back/stocks/entree}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'stock-entree'} ? 'actif'"
-        >
-          <i class="fas fa-dolly"></i> Entrée de stock
+          <i class="fas fa-chart-line"></i> Tableau de bord
         </a>
 
-        <p class="bo-nav-groupe">Site</p>
+        <p class="bo-nav-groupe">Boutique</p>
         <a
-          th:href="@{/back/homepage}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'homepage'} ? 'actif'"
-        >
-          <i class="fas fa-house"></i> Contenu accueil
-        </a>
-
-        <p class="bo-nav-groupe">Ventes</p>
-        <a
-          th:href="@{/commandes/list}"
+          th:href="@{/caissier/commandes}"
           class="bo-nav-lien"
           th:classappend="${actif == 'commandes'} ? 'actif'"
         >
           <i class="fas fa-receipt"></i> Commandes
         </a>
         <a
-          th:href="@{/paiements/list}"
+          th:href="@{/caissier/produits}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'produits'} ? 'actif'"
+        >
+          <i class="fas fa-boxes-stacked"></i> Produits
+        </a>
+        <a
+          th:href="@{/caissier/stock}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'stock'} ? 'actif'"
+        >
+          <i class="fas fa-warehouse"></i> Stock disponible
+        </a>
+        <a
+          th:href="@{/caissier/mouvements}"
+          class="bo-nav-lien"
+          th:classappend="${actif == 'mouvements'} ? 'actif'"
+        >
+          <i class="fas fa-right-left"></i> Mouvements de stock
+        </a>
+
+        <p class="bo-nav-groupe">Paiements</p>
+        <a
+          th:href="@{/caissier/paiements}"
           class="bo-nav-lien"
           th:classappend="${actif == 'paiements'} ? 'actif'"
         >
-          <i class="fas fa-coins"></i> Paiements
-        </a>
-        <a
-          th:href="@{/frais/list}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'frais'} ? 'actif'"
-        >
-          <i class="fas fa-truck-ramp-box"></i> Frais de livraison
-        </a>
-        <a
-          th:href="@{/back/tresorerie}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'tresorerie'} ? 'actif'"
-        >
-          <i class="fas fa-wallet"></i> Trésorerie
-        </a>
-        <a
-          th:href="@{/back/statistiques}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'statistiques'} ? 'actif'"
-        >
-          <i class="fas fa-chart-pie"></i> Statistiques
+          <i class="fas fa-receipt"></i> Paiements
         </a>
 
-        <p class="bo-nav-groupe">Logistique</p>
+        <p class="bo-nav-groupe">Support</p>
         <a
-          th:href="@{/livraison}"
+          th:href="@{/caissier/contact}"
           class="bo-nav-lien"
-          th:classappend="${actif == 'livraisons'} ? 'actif'"
+          th:classappend="${actif == 'contact'} ? 'actif'"
         >
-          <i class="fas fa-route"></i> Livraisons
-        </a>
-        <a
-          th:href="@{/vehicules}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'vehicules'} ? 'actif'"
-        >
-          <i class="fas fa-truck"></i> Véhicules
+          <i class="fas fa-headset"></i> Contact admin
         </a>
 
-        <p class="bo-nav-groupe">Réseau &amp; équipe</p>
+        <p class="bo-nav-groupe">Compte</p>
         <a
-          th:href="@{/pointdevente}"
+          th:href="@{/caissier/profil}"
           class="bo-nav-lien"
-          th:classappend="${actif == 'pdv'} ? 'actif'"
+          th:classappend="${actif == 'compte'} ? 'actif'"
         >
-          <i class="fas fa-store"></i> Points de vente
-        </a>
-        <a
-          th:href="@{/employes}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'employes'} ? 'actif'"
-        >
-          <i class="fas fa-users"></i> Employés
+          <i class="fas fa-user-gear"></i> Mon compte
         </a>
       </nav>
 
@@ -233,9 +191,7 @@
        PIED DE PAGE
     ================================================================== -->
     <footer class="bo-pied" th:fragment="pied">
-      <span
-        >greenField · Marché des producteurs — console d'administration</span
-      >
+      <span>greenField · Marché des producteurs — Espace caissier</span>
       <span>Antananarivo, Madagascar</span>
     </footer>
   </body>

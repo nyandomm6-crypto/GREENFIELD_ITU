@@ -24,8 +24,10 @@
     </div>
     <div class="container px-0">
       <nav class="navbar navbar-light bg-white navbar-expand-xl">
-        <a th:href="@{/}" class="navbar-brand">
-          <h1 class="text-primary display-6">Greenfield</h1>
+        <a th:href="@{/}" class="navbar-brand d-flex align-items-center">
+          <img th:src="@{/img/logo.png}" alt="greenField"
+               style="height: 56px; width: auto; background: transparent;" />
+          <span class="text-primary display-6 ms-2 mb-0">greenField</span>
         </a>
         <button
           class="navbar-toggler py-2 px-3"
