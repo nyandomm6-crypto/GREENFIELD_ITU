@@ -1,4 +1,4 @@
--- Active: 1782932337041@@127.0.0.1@5433@gr
+-- Active: 1782932337041@@127.0.0.1@5433@final_gr
 CREATE DATABASE gf;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
@@ -370,3 +370,5 @@ CREATE TABLE IF NOT EXISTS banniere (
     promo_prix VARCHAR(50),
     promo_unite VARCHAR(50)
 );
+
+ALTER TABLE Produit ADD COLUMN description TEXT;
