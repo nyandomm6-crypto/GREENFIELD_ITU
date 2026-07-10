@@ -16,6 +16,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,11 +35,31 @@ public class FraisLivraisonService {
         this.provinceLivraisonService = provinceLivraisonService;
     }
 
+    public FraisLivraison maxLivraisonForProvince(Integer provinceId) {
+        return fraisLivraisonRepository.findMaxPoidsReferenceByProvinceId(provinceId)
+                .orElseThrow(() -> new RuntimeException("Frais de livraison non trouvé pour la province : " + provinceId));
+    }
+
     public FraisLivraison calculateFraisLivraison(Integer provinceId, Double poids) {
-        FraisLivraison fraisLivraison = fraisLivraisonRepository
-                .findFirstByProvinceLivraisonIdAndPoidsReferenceGreaterThanOrderByPoidsReferenceAsc(provinceId, poids)
-                .orElseThrow(() -> new RuntimeException("Frais de livraison non trouvé pour le poids : " + poids));
-        return fraisLivraison;
+        FraisLivraison max = maxLivraisonForProvince(provinceId);
+        Double pMax = max.getPoidsReference().doubleValue();
+        if (poids > pMax) {
+            int divison = (int) Math.floor(poids / pMax);
+            double reste = poids % pMax;
+            double montant = max.getMontant().doubleValue() * divison;
+            if (reste > 0) {
+                FraisLivraison fraisReste = fraisLivraisonRepository
+                        .findFirstByProvinceLivraisonIdAndPoidsReferenceGreaterThanOrderByPoidsReferenceAsc(provinceId, poids)
+                    .orElseThrow(() -> new RuntimeException("Frais de livraison non trouvé pour le poids : " + poids));
+                montant += fraisReste.getMontant().doubleValue();
+            }
+            max.setMontant(BigDecimal.valueOf(montant));
+            return max;
+        } else {
+            return fraisLivraisonRepository
+                    .findFirstByProvinceLivraisonIdAndPoidsReferenceGreaterThanOrderByPoidsReferenceAsc(provinceId, poids)
+                    .orElseThrow(() -> new RuntimeException("Frais de livraison non trouvé pour le poids : " + poids));
+        }
     }
 
     public List<FraisLivraison> getAllFraisLivraison() {
