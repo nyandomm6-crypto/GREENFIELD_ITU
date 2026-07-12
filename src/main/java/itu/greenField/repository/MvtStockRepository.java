@@ -19,8 +19,8 @@ public interface MvtStockRepository extends JpaRepository<MvtStock, Integer> {
                         "  WHEN ms.typeMouvement IN (itu.greenField.model.TypeMvt.Entree_Production, itu.greenField.model.TypeMvt.Entree_Boutique) THEN msf.quantite "
                         +
                         "  ELSE -msf.quantite END), 0) " +
-                        "FROM MvtStockFille msf JOIN msf.mvtStock ms " +
-                        "WHERE msf.produit.id = :idProduit AND (:ptDeVenteCode IS NULL OR ms.pointDeVente.code = :ptDeVenteCode)")
+                        "FROM MvtStockFille msf JOIN msf.mvtStock ms LEFT JOIN ms.pointDeVente pdv " +
+                        "WHERE msf.produit.id = :idProduit AND (:ptDeVenteCode IS NULL OR pdv.code = :ptDeVenteCode)")
         Integer getStockByProduitAndOptionalPointDeVente(@Param("idProduit") Integer idProduit,
                         @Param("ptDeVenteCode") String ptDeVenteCode);
 }
