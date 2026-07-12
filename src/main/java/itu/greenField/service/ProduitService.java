@@ -93,6 +93,9 @@ public class ProduitService {
     }
 
     public String produitToJson(Produit produit) {
+        if (produit == null) {
+            return "{\"id\": \"\", \"matricule\": \"\", \"nom\": \"\", \"pu\": \"0\"}";
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("{");
 
