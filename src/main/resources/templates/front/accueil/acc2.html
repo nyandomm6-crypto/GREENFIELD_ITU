@@ -44,7 +44,7 @@
                     th:classappend="${iterStat.index == 0} ? 'active' : ''"
                   >
                     <img
-                      src="img/hero-img-1.png"
+                      th:src="${categorie.image}"
                       class="img-fluid w-100 h-100 bg-secondary rounded"
                       th:alt="${categorie.libelle}"
                     />
