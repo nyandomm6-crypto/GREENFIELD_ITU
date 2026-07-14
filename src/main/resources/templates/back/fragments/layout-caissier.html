@@ -152,6 +152,15 @@
       <a th:href="@{/}" class="bo-topbar-lien">
         <i class="fas fa-store"></i> Voir la boutique
       </a>
+      <form th:action="@{/logout}" method="post" class="ms-2">
+        <button
+          type="submit"
+          class="btn btn-sm btn-outline-danger rounded-pill"
+        >
+          <i class="fas fa-sign-out-alt"></i>
+          <span class="d-none d-md-inline ms-1">Déconnexion</span>
+        </button>
+      </form>
       <div class="bo-topbar-profil">
         <span class="bo-avatar"><i class="fas fa-user"></i></span>
       </div>
