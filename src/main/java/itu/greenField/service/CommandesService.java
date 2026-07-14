@@ -29,6 +29,7 @@ import itu.greenField.model.ProvinceLivraison;
 import itu.greenField.model.FraisLivraison;
 import itu.greenField.repository.CommandesRepository;
 import itu.greenField.repository.DetailsCommandeRepository;
+import itu.greenField.model.MvtStock;
 
 import org.springframework.data.domain.Pageable;
 import org.apache.poi.ss.usermodel.Cell;
@@ -72,6 +73,7 @@ public class CommandesService {
     private final FraisLivraisonService fraisLivraisonService;
     private final ImportCommandeExelService importCommandeExelService;
     private final EntityExcelService entityExcelService;
+    private final MvtStockService mvtStockService;
 
     public List<Commandes> getCommandesDispo() {
         return commandesRepository.findDispoCommandes();
@@ -111,6 +113,28 @@ public class CommandesService {
         if (currentStatut.getNom().equals("Anulée")) {
             throw new Exception("Une commande anulée ne peut plus être modifiée!");
         }
+    }
+
+    @Transactional
+    public void livrerRetraitBoutiqueCommande(Integer idCommande) throws Exception {
+        Commandes cmd = commandesRepository.findById(idCommande).orElse(null);
+        if (cmd == null) {
+            throw new RuntimeException("Commande introuvable avec l'ID: " + idCommande);
+        }
+        StatutCommande statutLivree = statutCommandeService.findByNom("Livrée");
+        if (statutLivree == null) {
+            throw new RuntimeException("Statut commande \"Livrée\" n'existe pas");
+        }
+        cmd.setStatutActuel(statutLivree);
+        commandesRepository.save(cmd);
+
+        MvtStock mvtStock = mvtStockService.saveMvtStock(cmd);
+
+        HistoriqueStatutCommande hist = new HistoriqueStatutCommande();
+        hist.setStatutCommande(statutLivree);
+        hist.setCommande(cmd);
+        hist.setDatechangement(new java.sql.Timestamp(System.currentTimeMillis()));
+        historiqueStatutCommandeService.save(hist);
     }
 
     @Transactional
@@ -174,6 +198,14 @@ public class CommandesService {
         commande.setHeureReceptionDebut(commandeFormDto.getSqlTypeOfHeureReceptionDebut());
         commande.setHeureReceptionFin(commandeFormDto.getSqlTypeOfHeureReceptionFin());
         commande.setAdresseLivraison(commandeFormDto.getAddress());
+
+        if(commandeFormDto.getCodePointDeVendeCreateur() != null && !commandeFormDto.getCodePointDeVendeCreateur().isEmpty()){
+            PointDeVente pdvCreateur = pointDeVenteService.findPointDeVenteByCode(commandeFormDto.getCodePointDeVendeCreateur());
+            if(pdvCreateur != null){
+                commande.setPointDeVenteCreateur(pdvCreateur);
+            }
+        }
+            
 
         /* Static pour le moment */
         if (commandeFormDto.getAddress() == null || modeReception == ModeReception.Retrait_Boutique) {
