@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import itu.greenField.dto.FraisLivraisonFilterDto;
 import itu.greenField.dto.FraisLivraisonFormDto;
@@ -29,35 +30,48 @@ public class FraisLivraisonService {
     private final ProvinceLivraisonService provinceLivraisonService;
 
     public FraisLivraisonService(FraisLivraisonRepository fraisLivraisonRepository,
-            ProvinceLivraisonService provinceLivraisonService
-    ) {
+            ProvinceLivraisonService provinceLivraisonService) {
         this.fraisLivraisonRepository = fraisLivraisonRepository;
         this.provinceLivraisonService = provinceLivraisonService;
     }
 
     public FraisLivraison maxLivraisonForProvince(Integer provinceId) {
         return fraisLivraisonRepository.findMaxPoidsReferenceByProvinceId(provinceId)
-                .orElseThrow(() -> new RuntimeException("Frais de livraison non trouvé pour la province : " + provinceId));
+                .orElseThrow(
+                        () -> new RuntimeException("Frais de livraison non trouvé pour la province : " + provinceId));
     }
 
+    @Transactional(readOnly = true)
     public FraisLivraison calculateFraisLivraison(Integer provinceId, Double poids) {
         FraisLivraison max = maxLivraisonForProvince(provinceId);
         Double pMax = max.getPoidsReference().doubleValue();
+
         if (poids > pMax) {
             int divison = (int) Math.floor(poids / pMax);
             double reste = poids % pMax;
             double montant = max.getMontant().doubleValue() * divison;
+
             if (reste > 0) {
                 FraisLivraison fraisReste = fraisLivraisonRepository
-                        .findFirstByProvinceLivraisonIdAndPoidsReferenceGreaterThanOrderByPoidsReferenceAsc(provinceId, poids)
-                    .orElseThrow(() -> new RuntimeException("Frais de livraison non trouvé pour le poids : " + poids));
+                        .findFirstByProvinceLivraisonIdAndPoidsReferenceLessThanEqualOrderByPoidsReferenceDesc(provinceId,
+                                reste)
+                        .orElseThrow(() -> new RuntimeException(
+                                "Frais de livraison non trouvé pour le poids reste : " + reste));
                 montant += fraisReste.getMontant().doubleValue();
             }
-            max.setMontant(BigDecimal.valueOf(montant));
-            return max;
+
+            FraisLivraison resultatVirtuel = new FraisLivraison();
+            resultatVirtuel.setId(null);
+            resultatVirtuel.setProvinceLivraison(max.getProvinceLivraison());
+            resultatVirtuel.setPoidsReference(BigDecimal.valueOf(poids));
+            resultatVirtuel.setMontant(BigDecimal.valueOf(montant));
+
+            return resultatVirtuel;
+
         } else {
             return fraisLivraisonRepository
-                    .findFirstByProvinceLivraisonIdAndPoidsReferenceGreaterThanOrderByPoidsReferenceAsc(provinceId, poids)
+                    .findFirstByProvinceLivraisonIdAndPoidsReferenceLessThanEqualOrderByPoidsReferenceDesc(provinceId,
+                            poids)
                     .orElseThrow(() -> new RuntimeException("Frais de livraison non trouvé pour le poids : " + poids));
         }
     }
