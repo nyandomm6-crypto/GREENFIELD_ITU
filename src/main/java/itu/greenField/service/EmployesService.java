@@ -82,7 +82,7 @@ public class EmployesService {
                 .map(PointDeVente::getCode)
                 .toArray(String[]::new);
         List<EntityExcelService.Dropdown> dropdowns = new ArrayList<>();
-        dropdowns.add(new EntityExcelService.Dropdown(6, roles));    // colonne "Role"
+        dropdowns.add(new EntityExcelService.Dropdown(6, roles)); // colonne "Role"
         dropdowns.add(new EntityExcelService.Dropdown(7, codesPdv)); // colonne "Code_Point_De_Vente"
         return excelService.template("employes", EXCEL_HEADERS, dropdowns);
     }
@@ -293,7 +293,7 @@ public class EmployesService {
     }
 
     public List<Employes> getLivreur() {
-        return employesRepository.findAll();
+        return employesRepository.findLivreursByString();
     }
 
     public Employes findByEmail(String email) {
