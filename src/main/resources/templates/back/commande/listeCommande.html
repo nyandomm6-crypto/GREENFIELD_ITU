@@ -35,6 +35,16 @@
               <div id="liste-clients" class="d-none"></div>
             </div>
             <div class="filtre">
+              <label for="point-de-vente-option">Point de vente</label>
+              <select id="point-de-vente-option">
+                <option value="">Tous</option>
+                <option value="null">Non asignée</option>
+                <option th:each="ptv : ${pointDeVenteOptions}" th:value="${ptv.code}"
+                  th:text="${ptv.nom}">
+                </option>
+              </select>
+            </div>
+            <div class="filtre">
               <label for="mode-reception-option">Mode de réception</label>
               <select id="mode-reception-option">
                 <option value="">Tous</option>
@@ -122,6 +132,13 @@
                 <button type="button" onclick="removeArrayFilter(this)">x</button>
               </div>
 
+              <div th:if="${commandeFilterDto?.pointDeVente != null and !#strings.isEmpty(commandeFilterDto.pointDeVente)}"
+                class="filtre-actif">
+                <span th:text="'Point de vente: ' + ${commandeFilterDto.pointDeVente}"></span>
+                <input type="hidden" name="pointDeVente" th:value="${commandeFilterDto.pointDeVente}" />
+                <button type="button" onclick="removeStaticFilter(this, 'pointDeVenteSelect')">x</button>
+              </div>
+
               <th:block
                 th:if="${commandeFilterDto?.typeFiltreDate != null and !#lists.isEmpty(commandeFilterDto.typeFiltreDate)}">
                 <div th:each="typeDate, iter : ${commandeFilterDto.typeFiltreDate}" class="filtre-actif">
@@ -169,6 +186,7 @@
                   <th>Date</th>
                   <th>Client</th>
                   <th>Type</th>
+                  <th>Point de vente</th>
                   <th>Mode de réception</th>
                   <th>Lieu de récupération</th>
                   <th>Début de récupération</th>
@@ -189,13 +207,14 @@
                   </td>
                   <td><strong th:text="|${cmd.client.nom} ${cmd.client.prenom}|"></strong></td>
                   <td th:text="${cmd.typeCommande}"></td>
+                  <td th:text="${cmd.pointDeVenteCreateur?.nom != null ? cmd.pointDeVenteCreateur?.nom : 'Non asignée'}"></td>
                   <td>
                     <span class="badge badge-sans-point"
                       th:classappend="${cmd.modeReception == 'Retrait_Boutique'} ? 'badge-feuille' : 'badge-ocre'"
                       th:text="${cmd.modeReception == 'Retrait_Boutique' ? 'Retrait' : (cmd.modeReception == 'Livraison_Domicile' ? 'Livraison' : cmd.modeReception)}"></span>
                   </td>
                   <td
-                    th:text="${cmd.pointDeVenteRetrait?.code != null ? cmd.pointDeVenteRetrait?.code : cmd.adresseLivraison}">
+                    th:text="${cmd.pointDeVenteRetrait?.nom != null ? cmd.pointDeVenteRetrait?.nom : cmd.adresseLivraison}">
                   </td>
                   <td
                     th:text="${cmd.heureReceptionDebut != null ? #dates.format(cmd.heureReceptionDebut, 'yyyy-MM-dd HH:mm') : ''}">
@@ -351,6 +370,7 @@
         const listeClientsDiv = document.getElementById('liste-clients');
         const activeFiltresDiv = document.querySelector('.active-filtres');
         const modeReceptionSelect = document.getElementById('mode-reception-option');
+        const pointDeVenteSelect = document.getElementById('point-de-vente-option');
         const filtreDateSelect = document.getElementById('filtre-date-option');
         const calculDateSelect = document.getElementById('calcul-date-option');
         const dateInput = document.getElementById('date-input');
@@ -390,6 +410,34 @@
                     modeReceptionSelect.value = '';
                     filtreDiv.remove();
                 });
+                filtreDiv.appendChild(removeButton);
+            }
+        });
+
+        pointDeVenteSelect.addEventListener('change', function () {
+            const selectedPointDeVente = pointDeVenteSelect.value;
+            const pointDeVenteInput = document.createElement("input");
+            pointDeVenteInput.type = "hidden";
+            pointDeVenteInput.name = "pointDeVente";
+            pointDeVenteInput.value = selectedPointDeVente;
+
+            if (selectedPointDeVente) {
+                const filtreDiv = document.createElement("div");
+                filtreDiv.classList.add("filtre-actif");
+                filtreDiv.appendChild(pointDeVenteInput);
+
+                const filtreText = document.createElement("span");
+                filtreText.textContent = `Point de vente: ${selectedPointDeVente}`;
+                filtreDiv.appendChild(filtreText);
+                activeFiltresDiv.appendChild(filtreDiv);
+
+                const removeButton = document.createElement("button");
+                removeButton.textContent = "x";
+                removeButton.addEventListener("click", function () {
+                    pointDeVenteSelect.value = '';
+                    filtreDiv.remove();
+                });
+
                 filtreDiv.appendChild(removeButton);
             }
         });
