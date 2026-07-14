@@ -1,40 +1,171 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-  <head
-    th:replace="~{back/fragments/layout-caissier :: head('Commandes')}"
-  ></head>
 
-  <body class="bo">
-    <aside
-      th:replace="~{back/fragments/layout-caissier :: sidebar('commandes')}"
-    ></aside>
+<head th:replace="~{back/fragments/layout-caissier :: head('Commandes')}"></head>
 
-    <main class="bo-main">
-      <header
-        th:replace="~{back/fragments/layout-caissier :: topbar('Commandes')}"
-      ></header>
+<body class="bo">
+  <aside th:replace="~{back/fragments/layout-caissier :: sidebar('commandes')}"></aside>
 
-      <div class="bo-contenu">
-        <div class="page-tete">
-          <div>
-            <p class="fil">
-              Boutique <i class="fas fa-chevron-right"></i> Commandes
-            </p>
-            <h1>Commandes</h1>
-            <p class="sous-titre">
-              Consultez les commandes de la boutique et créez-en de nouvelles.
-            </p>
+  <main class="bo-main">
+    <header th:replace="~{back/fragments/layout-caissier :: topbar('Commandes')}"></header>
+
+    <div class="bo-contenu">
+      <div class="page-tete">
+        <div>
+          <p class="fil">
+            Boutique <i class="fas fa-chevron-right"></i> Commandes
+          </p>
+          <h1>Commandes</h1>
+          <p class="sous-titre">
+            Consultez les commandes de la boutique et créez-en de nouvelles.
+          </p>
+        </div>
+        <div class="page-actions">
+          <a th:href="@{/caissier/commande/new}" class="btn btn-vert"><i class="fa-solid fa-plus"></i> Nouvelle
+            commande</a>
+        </div>
+      </div>
+
+      <div class="section-alert">
+        <div th:if="${alert != null}" th:text="${alert}" class="alert-danger"></div>
+        <div th:if="${succes != null}" th:text="${succes}" class="alert-success"></div>
+      </div>
+
+      <form th:action="@{/commandes/list}" th:object="${commandeFilterDto}" method="POST" id="form">
+        <div class="section-filtre barre-filtres">
+          <div class="filtre filtre-large">
+            <label for="client-input">Client</label>
+            <input type="text" id="client-input" placeholder="Tapez le nom ou le prénom du client" />
+            <div id="liste-clients" class="d-none"></div>
           </div>
-          <div class="page-actions">
-            <a th:href="@{/caissier/commande/new}" class="btn btn-vert"
-              ><i class="fa-solid fa-plus"></i> Nouvelle commande</a
-            >
+          <div class="filtre">
+            <label for="mode-reception-option">Mode de réception</label>
+            <select id="mode-reception-option">
+              <option value="">Tous</option>
+              <option th:each="mode : ${modeReceptionOptions}" th:value="${mode}"
+                th:text="${mode == 'Retrait_Boutique' ? 'Retrait' : (mode == 'Livraison_Domicile' ? 'Livraison' : mode)}">
+              </option>
+            </select>
+          </div>
+          <div class="filtre">
+            <label for="type-commande">Type de commande</label>
+            <select id="type-commande">
+              <option value="">Tous</option>
+              <option th:each="type : ${typeCommandeOptions}" th:value="${type}" th:text="${type}">
+              </option>
+            </select>
+          </div>
+          <div class="filtre">
+            <label for="statut-commande">Statut</label>
+            <select id="statut-commande">
+              <option value="">Tous</option>
+              <option th:each="statut : ${statutCommandeOptions}" th:value="${statut.id}" th:text="${statut.nom}">
+              </option>
+            </select>
+          </div>
+          <div class="filtre"></div>
+          <div class="filtre filtre-large">
+            <label for="filtre-date-option">Filtre sur les dates</label>
+            <div class="flex gap-8 flex-wrap">
+              <select id="filtre-date-option" style="flex: 1 1 130px">
+                <option th:each="opt : ${filtreDateOptions}" th:value="${opt.value}" th:text="${opt.label}">
+                </option>
+              </select>
+              <select id="calcul-date-option" style="flex: 0 1 90px">
+                <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}">
+                </option>
+              </select>
+              <input type="datetime-local" id="date-input" style="flex: 1 1 170px" />
+              <button id="ajouter-filtre-date" type="button" class="btn btn-doux btn-sm">
+                <i class="fas fa-plus"></i> Ajouter
+              </button>
+            </div>
+          </div>
+          <div class="filtre filtre-large">
+            <label>Filtre sur les nombres</label>
+            <div class="flex gap-8 flex-wrap">
+              <select id="filtre-nombre-option" style="flex: 1 1 130px">
+                <option th:each="opt : ${filtreNombreOptions}" th:value="${opt.value}" th:text="${opt.label}">
+                </option>
+              </select>
+              <select id="calcul-nombre-option" style="flex: 0 1 90px">
+                <option th:each="opt : ${calculOptions}" th:value="${opt.value}" th:text="${opt.label}"></option>
+              </select>
+              <input type="number" id="nombre-value-input" step="any" placeholder="Valeur…" style="flex: 1 1 110px" />
+              <button type="button" id="ajouter-filtre-nombre" class="btn btn-doux btn-sm">
+                <i class="fas fa-plus"></i> Ajouter
+              </button>
+            </div>
+          </div>
+
+          <div id="activeFiltresDiv" class="active-filtres d-flex flex-wrap gap-2 mb-3">
+            <div
+              th:if="${commandeFilterDto?.statutCommande != null and !#strings.isEmpty(commandeFilterDto.statutCommande)}"
+              class="filtre-actif">
+              <span th:text="'Statut de commande: ' + ${commandeFilterDto.statutCommande}"></span>
+              <input type="hidden" name="statutCommande" th:value="${commandeFilterDto.statutCommande}" />
+              <button type="button" onclick="removeStaticFilter(this, 'statutCommandeSelect')">x</button>
+            </div>
+
+            <div
+              th:if="${commandeFilterDto?.typeCommande != null and !#strings.isEmpty(commandeFilterDto.typeCommande)}"
+              class="filtre-actif">
+              <span th:text="'Type de commande: ' + ${commandeFilterDto.typeCommande}"></span>
+              <input type="hidden" name="typeCommande" th:value="${commandeFilterDto.typeCommande}" />
+              <button type="button" onclick="removeStaticFilter(this, 'typeCommandeSelect')">x</button>
+            </div>
+
+            <div
+              th:if="${commandeFilterDto?.modeReception != null and !#strings.isEmpty(commandeFilterDto.modeReception)}"
+              class="filtre-actif">
+              <span th:text="'Mode de réception: ' + ${commandeFilterDto.modeReception}"></span>
+              <input type="hidden" name="modeReception" th:value="${commandeFilterDto.modeReception}" />
+              <button type="button" onclick="removeStaticFilter(this, 'modeReceptionSelect')">x</button>
+            </div>
+
+            <div th:if="${commandeFilterDto?.clientId != null}" th:each="cId : ${commandeFilterDto.clientId}"
+              class="filtre-actif">
+              <span th:text="'Client ID: ' + ${cId}"></span>
+              <input type="hidden" name="clientId" th:value="${cId}" />
+              <button type="button" onclick="removeArrayFilter(this)">x</button>
+            </div>
+
+            <th:block
+              th:if="${commandeFilterDto?.typeFiltreDate != null and !#lists.isEmpty(commandeFilterDto.typeFiltreDate)}">
+              <div th:each="typeDate, iter : ${commandeFilterDto.typeFiltreDate}" class="filtre-actif">
+                <span
+                  th:text="'Filtre date: ' + ${typeDate} + ' ' + ${commandeFilterDto.operateurDate[iter.index]} + ' ' + ${commandeFilterDto.dateValue[iter.index]}"></span>
+                <input type="hidden" name="typeFiltreDate" th:value="${typeDate}" />
+                <input type="hidden" name="operateurDate" th:value="${commandeFilterDto.operateurDate[iter.index]}" />
+                <input type="hidden" name="dateValue" th:value="${commandeFilterDto.dateValue[iter.index]}" />
+                <button type="button" onclick="removeArrayFilter(this)">x</button>
+              </div>
+            </th:block>
+
+            <th:block
+              th:if="${commandeFilterDto?.typeFiltreNombre != null and !#lists.isEmpty(commandeFilterDto.typeFiltreNombre)}">
+              <div th:each="typeNombre, iter : ${commandeFilterDto.typeFiltreNombre}" class="filtre-actif">
+                <span
+                  th:text="'Filtre nombre: ' + ${typeNombre} + ' ' + ${commandeFilterDto.operateurNombre[iter.index]} + ' ' + ${commandeFilterDto.nombreValue[iter.index]}"></span>
+                <input type="hidden" name="typeFiltreNombre" th:value="${typeNombre}" />
+                <input type="hidden" name="operateurNombre"
+                  th:value="${commandeFilterDto.operateurNombre[iter.index]}" />
+                <input type="hidden" name="nombreValue" th:value="${commandeFilterDto.nombreValue[iter.index]}" />
+                <button type="button" onclick="removeArrayFilter(this)">x</button>
+              </div>
+            </th:block>
+          </div>
+
+          <div class="filtre-actions">
+            <button type="submit" class="btn btn-vert">
+              <i class="fas fa-filter"></i> Appliquer les filtres
+            </button>
+            <button type="submit" th:formaction="@{/commandes/export}" formmethod="post" class="btn btn-ligne">
+              <i class="fas fa-file-excel"></i> Exporter Excel
+            </button>
+            <a th:href="@{/commandes/list}" class="btn btn-ligne">Réinitialiser</a>
           </div>
         </div>
-
-        <th:block
-          th:replace="~{back/fragments/layout-caissier :: alertes}"
-        ></th:block>
 
         <div class="tableau-scroll">
           <table>
@@ -51,25 +182,18 @@
             <tbody>
               <tr th:each="commande : ${commandes}">
                 <td class="mono" th:text="${commande.id}">1</td>
-                <td
-                  th:text="${commande.client != null ? commande.client.nom + ' ' + commande.client.prenom : '—'}"
-                >
+                <td th:text="${commande.client != null ? commande.client.nom + ' ' + commande.client.prenom : '—'}">
                   Client
                 </td>
-                <td
-                  th:text="${commande.statutActuel != null ? commande.statutActuel.nom : '—'}"
-                >
+                <td th:text="${commande.statutActuel != null ? commande.statutActuel.nom : '—'}">
                   Statut
                 </td>
                 <td class="num" th:text="${commande.totalGeneral}">0</td>
-                <td
-                  th:text="${commande.modeReception != null ? commande.modeReception.name() : '—'}"
-                >
+                <td th:text="${commande.modeReception != null ? commande.modeReception.name() : '—'}">
                   Mode
                 </td>
                 <td>
-                  <a th:href="@{/caissier/commande/detail/{id}(id=${commande.id})}"
-                     class="btn btn-sm btn-ligne">
+                  <a th:href="@{/caissier/commande/detail/{id}(id=${commande.id})}" class="btn btn-sm btn-ligne">
                     <i class="fas fa-eye"></i> Détail
                   </a>
                 </td>
@@ -85,9 +209,349 @@
             </tbody>
           </table>
         </div>
-      </div>
 
-      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
-    </main>
-  </body>
+        <div class="section-pagination">
+          <label for="line-number">Nombre de lignes</label>
+          <input type="number" th:field="*{lineNumber}" id="line-number">
+          <input type="hidden" th:field="*{pageNumber}" id="pageParam">
+          <button type="submit" class="btn btn-ligne btn-sm">Appliquer</button>
+          <div class="pagination">
+            <button type="button" th:if="${hasPrevious}"
+              th:onclick="'changePage(' + (${commandeFilterDto.pageNumber - 1}) + ')'" class="btn-pagination">
+              « Précédent
+            </button>
+
+            <span>Page <strong th:text="${commandeFilterDto.pageNumber}">1</strong> sur <strong
+                th:text="${totalPages}">5</strong></span>
+
+            <button type="button" th:if="${hasNext}"
+              th:onclick="'changePage(' + (${commandeFilterDto.pageNumber + 1}) + ')'" class="btn-pagination">
+              Suivant »
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+  </main>
+
+  <script>
+    function searchClients(word) {
+      const url = '/clients/searchByWord';
+      const params = new URLSearchParams();
+      params.append('query', word);
+
+
+      if (word.length > 0) {
+        //console.log('Recherche de clients avec nom :', nom, 'et prénom :', prenom);
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params
+        })
+          .then(response => response.json())
+          .then(data => {
+            //console.log('Clients trouvés :', data);
+            listeClientsDiv.innerHTML = '';
+            listeClientsDiv.classList.remove('d-none');
+
+            if (data.length > 0) {
+              const ul = document.createElement('ul');
+              data.forEach(client => {
+                const children = `<div class="children-list" onclick="selectClient(${client.id}, '${client.nom}', '${client.prenom}')">${client.nom} ${client.prenom}</div>`;
+                listeClientsDiv.insertAdjacentHTML('beforeend', children);
+              });
+            } else {
+              const children = `<p> Aucun client trouvé. Verifiez les orthographes</p>`;
+              listeClientsDiv.insertAdjacentHTML('beforeend', children);
+            }
+          })
+          .catch(error => {
+            console.error('Erreur lors de la recherche des clients :', error);
+          });
+      } else {
+        listeClientsDiv.innerHTML = '';
+      }
+    }
+
+    function selectClient(clientId, nom, prenom) {
+      const clientIdinput = document.createElement("input");
+      clientIdinput.type = "hidden";
+      clientIdinput.name = "clientId";
+      clientIdinput.value = clientId;
+
+      if (activeFiltresDiv) {
+        const filtreDiv = document.createElement("div");
+        filtreDiv.classList.add("filtre-actif");
+
+        const filtreText = document.createElement("span");
+        filtreText.textContent = `Client: ${nom} ${prenom}`;
+        filtreDiv.appendChild(filtreText);
+        filtreDiv.appendChild(clientIdinput);
+        activeFiltresDiv.appendChild(filtreDiv);
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "x";
+        removeButton.addEventListener("click", function () {
+          filtreDiv.remove();
+        });
+        filtreDiv.appendChild(removeButton);
+
+        clientInput.value = '';
+      }
+
+      listeClientsDiv.classList.add('d-none');
+      listeClientsDiv.innerHTML = '';
+    }
+
+    function changePage(pageNumber) {
+      pageNumberInput.value = pageNumber;
+      form.submit();
+    }
+
+    function removeStaticFilter(buttonElement, selectId) {
+      const badge = buttonElement.parentElement;
+
+      const select = document.getElementById(selectId);
+      if (select) {
+        select.value = '';
+      }
+
+      badge.remove();
+    }
+
+    function removeArrayFilter(buttonElement) {
+      buttonElement.parentElement.remove();
+    }
+  </script>
+  <script>
+    const form = document.getElementById('form');
+    const clientInput = document.getElementById('client-input');
+    const listeClientsDiv = document.getElementById('liste-clients');
+    const activeFiltresDiv = document.querySelector('.active-filtres');
+    const modeReceptionSelect = document.getElementById('mode-reception-option');
+    const pointDeVenteSelect = document.getElementById('point-de-vente-option');
+    const filtreDateSelect = document.getElementById('filtre-date-option');
+    const calculDateSelect = document.getElementById('calcul-date-option');
+    const dateInput = document.getElementById('date-input');
+    const ajouterFiltreDateButton = document.getElementById('ajouter-filtre-date');
+    const ajouterFiltreNombreButton = document.getElementById('ajouter-filtre-nombre');
+    const typeCommandeSelect = document.getElementById('type-commande');
+    const statutCommandeSelect = document.getElementById('statut-commande');
+    const pageNumberInput = document.getElementById('pageParam');
+
+    clientInput.addEventListener('input', function () {
+      const query = clientInput.value.trim();
+      searchClients(query);
+      //.log('Nom recherché :', query);
+    });
+
+    modeReceptionSelect.addEventListener('change', function () {
+      const selectedMode = modeReceptionSelect.value;
+      const modeReceptioninput = document.createElement("input");
+      modeReceptioninput.type = "hidden";
+      modeReceptioninput.name = "modeReception";
+      modeReceptioninput.value = selectedMode;
+
+      if (selectedMode) {
+        const filtreDiv = document.createElement("div");
+        filtreDiv.classList.add("filtre-actif");
+
+        const filtreText = document.createElement("span");
+        const text = selectedMode === 'Retrait_Boutique' ? 'Retrait' : (selectedMode === 'Livraison_Domicile' ? 'Livraison' : selectedMode);
+        filtreText.textContent = `Mode de réception: ${text}`;
+        filtreDiv.appendChild(filtreText);
+        filtreDiv.appendChild(modeReceptioninput);
+        activeFiltresDiv.appendChild(filtreDiv);
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "x";
+        removeButton.addEventListener("click", function () {
+          modeReceptionSelect.value = '';
+          filtreDiv.remove();
+        });
+        filtreDiv.appendChild(removeButton);
+      }
+    });
+
+    pointDeVenteSelect.addEventListener('change', function () {
+      const selectedPointDeVente = pointDeVenteSelect.value;
+      const pointDeVenteInput = document.createElement("input");
+      pointDeVenteInput.type = "hidden";
+      pointDeVenteInput.name = "pointDeVente";
+      pointDeVenteInput.value = selectedPointDeVente;
+
+      if (selectedPointDeVente) {
+        const filtreDiv = document.createElement("div");
+        filtreDiv.classList.add("filtre-actif");
+        filtreDiv.appendChild(pointDeVenteInput);
+
+        const filtreText = document.createElement("span");
+        filtreText.textContent = `Point de vente: ${selectedPointDeVente}`;
+        filtreDiv.appendChild(filtreText);
+        activeFiltresDiv.appendChild(filtreDiv);
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "x";
+        removeButton.addEventListener("click", function () {
+          pointDeVenteSelect.value = '';
+          filtreDiv.remove();
+        });
+
+        filtreDiv.appendChild(removeButton);
+      }
+    });
+
+    ajouterFiltreDateButton.addEventListener('click', function () {
+      const selectedFiltreDate = filtreDateSelect.value;
+      const selectedCalculDate = calculDateSelect.value;
+      const selectedDate = dateInput.value;
+
+      if (selectedFiltreDate && selectedCalculDate && selectedDate) {
+        const labelDateInput = document.createElement("input");
+        labelDateInput.type = "hidden";
+        labelDateInput.name = "typeFiltreDate";
+        labelDateInput.value = selectedFiltreDate;
+
+        const operateurDateInput = document.createElement("input");
+        operateurDateInput.type = "hidden";
+        operateurDateInput.name = "operateurDate";
+        operateurDateInput.value = selectedCalculDate;
+
+        const dateValueInput = document.createElement("input");
+        dateValueInput.type = "hidden";
+        dateValueInput.name = "dateValue";
+        dateValueInput.value = selectedDate;
+
+        const filtreDiv = document.createElement("div");
+        filtreDiv.classList.add("filtre-actif");
+        filtreDiv.appendChild(dateValueInput);
+        filtreDiv.appendChild(labelDateInput);
+        filtreDiv.appendChild(operateurDateInput);
+
+        const filtreText = document.createElement("span");
+        filtreText.textContent = `Filtre date: ${selectedFiltreDate} ${selectedCalculDate} ${selectedDate}`;
+        filtreDiv.appendChild(filtreText);
+        activeFiltresDiv.appendChild(filtreDiv);
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "x";
+        removeButton.addEventListener("click", function () {
+          filtreDiv.remove();
+        });
+        filtreDiv.appendChild(removeButton);
+      }
+    });
+
+    ajouterFiltreNombreButton.addEventListener('click', function () {
+      const selectedFiltreNombre = document.getElementById('filtre-nombre-option').value;
+      const selectedCalculNombre = document.getElementById('calcul-nombre-option').value;
+      const selectedNombreVal = document.getElementById('nombre-value-input').value;
+
+      if (selectedFiltreNombre && selectedCalculNombre && selectedNombreVal) {
+
+        // 1. Input pour le type de colonne (ex: valeurTotale)
+        const labelNombreInput = document.createElement("input");
+        labelNombreInput.type = "hidden";
+        labelNombreInput.name = "typeFiltreNombre";
+        labelNombreInput.value = selectedFiltreNombre;
+
+        // 2. Input pour l'opérateur (0, 1, 2...)
+        const operateurNombreInput = document.createElement("input");
+        operateurNombreInput.type = "hidden";
+        operateurNombreInput.name = "operateurNombre";
+        operateurNombreInput.value = selectedCalculNombre;
+
+        // 3. Input pour la valeur numérique saisie
+        const nombreValueInput = document.createElement("input");
+        nombreValueInput.type = "hidden";
+        nombreValueInput.name = "nombreValue";
+        nombreValueInput.value = selectedNombreVal;
+
+        // 4. Création visuelle du badge
+        const filtreDiv = document.createElement("div");
+        filtreDiv.classList.add("filtre-actif");
+        filtreDiv.appendChild(labelNombreInput);
+        filtreDiv.appendChild(operateurNombreInput);
+        filtreDiv.appendChild(nombreValueInput);
+
+        const filtreText = document.createElement("span");
+        filtreText.textContent = `Filtre nombre: ${selectedFiltreNombre} ${selectedCalculNombre} ${selectedNombreVal}`;
+        filtreDiv.appendChild(filtreText);
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "x";
+
+        // Suppression propre si on clique sur "x"
+        removeButton.addEventListener('click', function () {
+          filtreDiv.remove();
+        });
+
+        filtreDiv.appendChild(removeButton);
+        activeFiltresDiv.appendChild(filtreDiv);
+
+        // On vide le champ de saisie
+        document.getElementById('nombre-value-input').value = '';
+      }
+    });
+
+    typeCommandeSelect.addEventListener('change', function () {
+      const selectedTypeCommande = typeCommandeSelect.value;
+      const typeCommandeInput = document.createElement("input");
+      typeCommandeInput.type = "hidden";
+      typeCommandeInput.name = "typeCommande";
+      typeCommandeInput.value = selectedTypeCommande;
+
+      if (selectedTypeCommande) {
+        const filtreDiv = document.createElement("div");
+        filtreDiv.classList.add("filtre-actif");
+        filtreDiv.appendChild(typeCommandeInput);
+
+        const filtreText = document.createElement("span");
+        filtreText.textContent = `Type de commande: ${selectedTypeCommande}`;
+        filtreDiv.appendChild(filtreText);
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "x";
+        removeButton.addEventListener("click", function () {
+          typeCommandeSelect.value = '';
+          filtreDiv.remove();
+        });
+
+        filtreDiv.appendChild(removeButton);
+        activeFiltresDiv.appendChild(filtreDiv);
+      }
+    });
+
+    statutCommandeSelect.addEventListener('change', function () {
+      const selectedStatutCommande = statutCommandeSelect.value;
+      const statutCommandeInput = document.createElement("input");
+      statutCommandeInput.type = "hidden";
+      statutCommandeInput.name = "statutCommande";
+      statutCommandeInput.value = selectedStatutCommande;
+      form.appendChild(statutCommandeInput);
+
+      if (selectedStatutCommande) {
+        const filtreDiv = document.createElement("div");
+        filtreDiv.classList.add("filtre-actif");
+
+        const filtreText = document.createElement("span");
+        filtreText.textContent = `Statut de commande: ${selectedStatutCommande}`;
+        filtreDiv.appendChild(filtreText);
+        activeFiltresDiv.appendChild(filtreDiv);
+
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "x";
+        removeButton.addEventListener("click", function () {
+          statutCommandeSelect.value = '';
+          activeFiltresDiv.removeChild(filtreDiv);
+          form.removeChild(statutCommandeInput);
+        });
+        filtreDiv.appendChild(removeButton);
+      }
+    });
+  </script>
+</body>
+
 </html>
