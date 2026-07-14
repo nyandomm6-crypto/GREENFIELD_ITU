@@ -136,6 +136,14 @@
       </nav>
 
       <div class="bo-sidebar-pied">
+        <form th:action="@{/logout}" method="post" class="w-100 mt-2">
+          <button
+            type="submit"
+            class="bo-nav-lien w-100 text-start border-0 bg-transparent px-3"
+          >
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+          </button>
+        </form>
         <a th:href="@{/}"
           ><i class="fas fa-arrow-up-right-from-square"></i> Voir la boutique</a
         >
@@ -152,15 +160,6 @@
       <a th:href="@{/}" class="bo-topbar-lien">
         <i class="fas fa-store"></i> Voir la boutique
       </a>
-      <form th:action="@{/logout}" method="post" class="ms-2">
-        <button
-          type="submit"
-          class="btn btn-sm btn-outline-danger rounded-pill"
-        >
-          <i class="fas fa-sign-out-alt"></i>
-          <span class="d-none d-md-inline ms-1">Déconnexion</span>
-        </button>
-      </form>
       <div class="bo-topbar-profil">
         <span class="bo-avatar"><i class="fas fa-user"></i></span>
       </div>

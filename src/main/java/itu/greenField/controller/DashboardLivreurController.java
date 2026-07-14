@@ -85,7 +85,7 @@ public class DashboardLivreurController {
         }
 
         model.addAttribute("livreur", employe);
-        model.addAttribute("livraisons", livraisonService.findByLivreur(employe));
+        model.addAttribute("livraisons", livraisonService.findByLivreurDispo(employe));
         return "back/livraison/mes-livraisons";
     }
 
@@ -104,6 +104,9 @@ public class DashboardLivreurController {
         Livraison livraison = livraisonService.getLivraisonById(id);
 
         if (livraison == null || !livraison.getLivreur().getId().equals(employe.getId())) {
+            return "redirect:/livreurs/livraisons";
+        }
+        if (!livraisonService.isMyLivraisonFille(id, employe)) {
             return "redirect:/livreurs/livraisons";
         }
 
@@ -160,6 +163,9 @@ public class DashboardLivreurController {
         model.addAttribute("reste", reste);
         model.addAttribute("huhu", 300);
         model.addAttribute("typesPaiement", TypePayement.values());
+        if (!livraisonService.isMyCommande(idCommande, employe)) {
+            return "redirect:/livreurs/livraisons";
+        }
 
         return "back/paiement/paiement-livraison";
     }
@@ -176,6 +182,11 @@ public class DashboardLivreurController {
             return "redirect:/emp/login";
         }
         paiementService.ajouterPayement(types, valeurs, idCommande);
+        for (BigDecimal bigDecimal : valeurs) {
+            if (bigDecimal.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("La valeur du paiement doit être positive");
+            }
+        }
         return "redirect:/paiements/facture?idCommande=" + idCommande;
     }
 

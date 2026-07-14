@@ -129,4 +129,27 @@ public class LivraisonService {
 
     }
 
+    public List<Livraison> findByLivreurDispo(Employes emp) {
+        return livraisonRepository.findByLivreurDispo(emp.getId());
+    }
+
+    public boolean isMyCommande(Integer idCommande, Employes employe) {
+        Commandes commande = commandesRepository.findById(idCommande).orElse(null);
+        List<LivraisonFille> lf = livraisonFilleRepository.findByCommande(commande);
+        for (LivraisonFille l : lf) {
+            if (l.getLivraison().getLivreur().getId().equals(employe.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMyLivraisonFille(Integer idLivraisonFille, Employes employe) {
+        LivraisonFille lf = livraisonFilleRepository.findById(idLivraisonFille).orElse(null);
+        if (lf == null) {
+            return false;
+        }
+        return lf.getLivraison().getLivreur().getId().equals(employe.getId());
+    }
+
 }
