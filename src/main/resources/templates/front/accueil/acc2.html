@@ -20,14 +20,14 @@
                 <input
                   class="form-control border-2 border-secondary w-75 py-3 px-4 rounded-pill"
                   type="text"
-                  placeholder="Search"
+                  placeholder="Rechercher"
                 />
                 <button
                   type="submit"
                   class="btn btn-primary border-2 border-secondary py-3 px-4 position-absolute rounded-pill text-white h-100"
                   style="top: 0; right: 25%"
                 >
-                  Submit Now
+                  Rechercher
                 </button>
               </div>
             </div>
@@ -66,7 +66,7 @@
                     class="carousel-control-prev-icon"
                     aria-hidden="true"
                   ></span>
-                  <span class="visually-hidden">Previous</span>
+                  <span class="visually-hidden">Précédent</span>
                 </button>
                 <button
                   class="carousel-control-next"
@@ -78,7 +78,7 @@
                     class="carousel-control-next-icon"
                     aria-hidden="true"
                   ></span>
-                  <span class="visually-hidden">Next</span>
+                  <span class="visually-hidden">Suivant</span>
                 </button>
               </div>
             </div>
@@ -99,9 +99,9 @@
                   <i th:class="${feature.icon} + ' fa-3x text-white'"></i>
                 </div>
                 <div class="featurs-content text-center">
-                  <h5 th:text="${feature.titre}">Free Shipping</h5>
+                  <h5 th:text="${feature.titre}">Livraison gratuite</h5>
                   <p class="mb-0" th:text="${feature.description}">
-                    Free on order over $300
+                    Gratuite pour toute commande de plus de 300 000 Ar
                   </p>
                 </div>
               </div>
@@ -218,7 +218,7 @@
                         class="text-dark"
                         style="width: 130px"
                         th:text="${categorie.libelle}"
-                        >All Products</span
+                        >Tous les produits</span
                       >
                     </a>
                   </li>
@@ -261,10 +261,10 @@
                           <div
                             class="p-4 border border-secondary border-top-0 rounded-bottom"
                           >
-                            <h4 th:text="${produit.nom}">Grapes</h4>
+                            <h4 th:text="${produit.nom}">Raisins</h4>
                             <p>
-                              Lorem ipsum dolor sit amet consectetur adipisicing
-                              elit sed do eiusmod te incididunt
+                              Découvrez nos produits frais, cultivés localement
+                              avec soin par nos producteurs partenaires.
                             </p>
                             <div
                               class="d-flex justify-content-between flex-lg-wrap"
@@ -273,7 +273,7 @@
                                 class="text-dark fs-5 fw-bold mb-0"
                                 th:text="${produit.pu} + ' Ar'"
                               >
-                                $4.99 / kg
+                                4 990 Ar / kg
                               </p>
                               <a
                                 th:href="@{/produits/{id}(id=${produit.id})}"
@@ -323,9 +323,9 @@
                         class="text-white"
                         th:text="${pub.titre}"
                       >
-                        Fresh Apples
+                        Pommes fraîches
                       </h5>
-                      <h3 class="mb-0" th:text="${pub.sousTitre}">20% OFF</h3>
+                      <h3 class="mb-0" th:text="${pub.sousTitre}">-20%</h3>
                     </div>
                   </div>
                 </div>
@@ -363,21 +363,21 @@
               >
                 <span
                   th:text="${produit.categorie != null ? produit.categorie.libelle : 'Produit'}"
-                  >Vegetable</span
+                    >Légume</span
                 >
               </div>
               <div class="p-4 rounded-bottom">
-                <h4 th:text="${produit.nom}">Parsley</h4>
+                <h4 th:text="${produit.nom}">Persil</h4>
                 <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit sed do
-                  eiusmod te incididunt
+                  Découvrez nos produits frais, cultivés localement
+                  avec soin par nos producteurs partenaires.
                 </p>
                 <div class="d-flex justify-content-between flex-lg-wrap">
                   <p
                     class="text-dark fs-5 fw-bold mb-0"
                     th:text="${produit.pu} + ' Ar'"
                   >
-                    $4.99 / kg
+                    4 990 Ar / kg
                   </p>
                   <a
                     th:href="@{/produits/{id}(id=${produit.id})}"
@@ -403,23 +403,23 @@
             <div class="col-lg-6">
               <div class="py-4">
                 <h1 class="display-3 text-white" th:text="${banniere.titre}">
-                  Fresh Exotic Fruits
+                  Fruits exotiques frais
                 </h1>
                 <p
                   class="fw-normal display-3 text-dark mb-4"
                   th:text="${banniere.sousTitre}"
                 >
-                  in Our Store
+                   dans notre boutique
                 </p>
                 <p class="mb-4 text-dark" th:text="${banniere.description}">
-                  The generated Lorem Ipsum is therefore always free from
-                  repetition injected humour, or non-characteristic words etc.
+                  Découvrez notre sélection de fruits exotiques frais,
+                  directement issus de nos producteurs locaux.
                 </p>
                 <a
                   th:href="${banniere.lien}"
                   class="banner-btn btn border-2 border-white rounded-pill text-dark py-3 px-5"
                   th:text="${banniere.btnTexte}"
-                  >BUY</a
+                  >ACHETER</a
                 >
               </div>
             </div>
@@ -442,7 +442,7 @@
                   </h1>
                   <div class="d-flex flex-column">
                     <span class="h2 mb-0" th:text="${banniere.promoPrix}"
-                      >50$</span
+                      >50 000 Ar</span
                     >
                     <span
                       class="h4 text-muted mb-0"
@@ -462,10 +462,10 @@
       <div class="container-fluid py-5">
         <div class="container py-5">
           <div class="text-center mx-auto mb-5" style="max-width: 700px">
-            <h1 class="display-4">Bestseller Products</h1>
+            <h1 class="display-4">Meilleures ventes</h1>
             <p>
-              Latin words, combined with a handful of model sentence structures,
-              to generate Lorem Ipsum which looks reasonable.
+              Découvrez les produits les plus appréciés par nos clients,
+              sélectionnés pour leur qualité et leur fraîcheur.
             </p>
           </div>
           <div class="row g-4">
@@ -496,7 +496,7 @@
                   </div>
                   <div class="col-6">
                     <a href="#" class="h5" th:text="${produit.nom}"
-                      >Organic Tomato</a
+                      >Tomate bio</a
                     >
                     <div class="d-flex my-3">
                       <i class="fas fa-star text-primary"></i>
@@ -505,7 +505,7 @@
                       <i class="fas fa-star text-primary"></i>
                       <i class="fas fa-star"></i>
                     </div>
-                    <h4 class="mb-3" th:text="${produit.pu} + ' Ar'">3.12 $</h4>
+                    <h4 class="mb-3" th:text="${produit.pu} + ' Ar'">3 120 Ar</h4>
                     <a
                       th:href="@{/produits/{id}(id=${produit.id})}"
                       class="btn border border-secondary rounded-pill px-3 text-primary"
@@ -530,7 +530,7 @@
               <div class="col-md-6 col-lg-6 col-xl-3" th:each="stat : ${stats}">
                 <div class="counter bg-white rounded p-5">
                   <i th:class="${stat.icon} + ' text-secondary'"></i>
-                  <h4 th:text="${stat.titre}">satisfied customers</h4>
+                  <h4 th:text="${stat.titre}">clients satisfaits</h4>
                   <h1 th:text="${stat.description}">1963</h1>
                 </div>
               </div>
@@ -544,8 +544,8 @@
       <div class="container-fluid testimonial py-5">
         <div class="container py-5">
           <div class="testimonial-header text-center">
-            <h4 class="text-primary">Our Testimonial</h4>
-            <h1 class="display-5 mb-5 text-dark">Our Client Saying!</h1>
+            <h4 class="text-primary">Nos témoignages</h4>
+            <h1 class="display-5 mb-5 text-dark">Ce que disent nos clients !</h1>
           </div>
           <div class="owl-carousel testimonial-carousel">
             <div
@@ -573,10 +573,10 @@
                   </div>
                   <div class="ms-4 d-block">
                     <h4 class="text-dark" th:text="${temoignage.nom}">
-                      Client Name
+                      Nom du client
                     </h4>
                     <p class="m-0 pb-3" th:text="${temoignage.poste}">
-                      Profession
+                      Métier
                     </p>
                     <div class="d-flex pe-5">
                       <i
