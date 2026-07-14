@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface FraisLivraisonRepository extends JpaRepository<FraisLivraison, Integer> {
     public Optional<FraisLivraison> findByProvinceLivraisonId(Integer provinceId);
 
-    public Optional<FraisLivraison> findFirstByProvinceLivraisonIdAndPoidsReferenceGreaterThanOrderByPoidsReferenceAsc(
+    public Optional<FraisLivraison> findFirstByProvinceLivraisonIdAndPoidsReferenceLessThanEqualOrderByPoidsReferenceDesc(
             Integer provinceId, Double poidsReference);
 
     @Query(value = "SELECT * FROM fraislivraison f "+
