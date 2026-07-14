@@ -203,11 +203,11 @@
                   <td
                     th:text="${cmd.heureReceptionFin != null ? #dates.format(cmd.heureReceptionFin, 'yyyy-MM-dd HH:mm') : ''}">
                   </td>
-                  <td class="num" th:text="${cmd.fraisLivraison}"></td>
+                  <td class="num" th:text="${cmd.fraisLivraison != null ? #numbers.formatDecimal(cmd.fraisLivraison, 1, 'DEFAULT', 2, 'DEFAULT') + ' Ar' : '0.00 Ar'}"></td>
                   <td><span class="badge badge-vert" th:text="${cmd.statutActuel?.nom}"></span></td>
-                  <td class="num" th:text="${cmd.totalProduits}"></td>
-                  <td class="num" th:text="${cmd.poidsTotal}"></td>
-                  <td class="num texte-ocre" th:text="${cmd.totalGeneral}"></td>
+                  <td class="num" th:text="${cmd.totalProduits != null ? #numbers.formatDecimal(cmd.totalProduits, 1, 'DEFAULT', 0, 'DEFAULT') : '0'}"></td>
+                  <td class="num" th:text="${cmd.poidsTotal != null ? #numbers.formatDecimal(cmd.poidsTotal, 1, 'DEFAULT', 2, 'DEFAULT') + ' kg' : '0.00 kg'}"></td>
+                  <td class="num texte-ocre" th:text="${cmd.totalGeneral != null ? #numbers.formatDecimal(cmd.totalGeneral, 1, 'DEFAULT', 2, 'DEFAULT') + ' Ar' : '0.00 Ar'}"></td>
                   <td>
                     <div class="cellule-actions">
                       <a th:href="@{|/commandes/detail/${cmd.id}|}" class="btn btn-sm btn-ligne">Détail</a>
