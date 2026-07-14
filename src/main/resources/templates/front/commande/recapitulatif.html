@@ -1,225 +1,165 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
-  <head
-    th:replace="~{front/fragments/layout :: head(pageTitle='Récapitulatif - GreenField')}"
-  >
-    <title>Récapitulatif - GreenField</title>
-  </head>
 
-  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
-    <div th:fragment="pageContent">
-      <!-- Single Page Header start -->
-      <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">Récapitulatif</h1>
-      </div>
-      <!-- Single Page Header End -->
+<head th:replace="~{front/fragments/layout :: head(pageTitle='Récapitulatif - GreenField')}">
+  <title>Récapitulatif - GreenField</title>
+</head>
 
-      <!-- Récapitulatif Start -->
-      <div class="container-fluid fruite py-5">
-        <div class="container py-5">
-          <div class="row g-4">
-            <div class="col-lg-12">
-              <div class="row g-4">
-                <div class="col-12">
-                  <div class="card shadow-sm border-0 rounded-3">
-                    <div class="card-body p-4">
-                      <form th:action="@{/commande/valider}" method="post">
-                        <div class="row g-4">
-                          <!-- Colonne gauche : Tableau des produits -->
-                          <div class="col-lg-7">
-                            <h5 class="mb-3">
-                              <i
-                                class="fas fa-shopping-bag text-primary me-2"
-                              ></i
-                              >Vos produits
-                            </h5>
-                            <div class="table-responsive">
-                              <table class="table table-bordered table-hover">
-                                <thead class="bg-light">
-                                  <tr>
-                                    <th>Produit</th>
-                                    <th class="text-end">Prix</th>
-                                    <th class="text-center">Qté</th>
-                                    <th class="text-end">Sous-total</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  <tr th:each="ligne : ${lignes}">
-                                    <td th:text="${ligne.produit.nom}"></td>
-                                    <td
-                                      class="text-end"
-                                      th:text="${ligne.produit.pu} + ' Ar'"
-                                    ></td>
-                                    <td
-                                      class="text-center"
-                                      th:text="${ligne.quantite}"
-                                    ></td>
-                                    <td
-                                      class="text-end fw-bold text-primary"
-                                      th:text="${ligne.sousTotal} + ' Ar'"
-                                    ></td>
-                                  </tr>
-                                  <tr class="table-primary">
-                                    <td
-                                      colspan="3"
-                                      class="text-end fw-bold fs-5"
-                                    >
-                                      Total
-                                    </td>
-                                    <td
-                                      class="text-end fw-bold fs-5 text-primary"
-                                      th:text="${total} + ' Ar'"
-                                    ></td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
+<body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+  <div th:fragment="pageContent">
+    <!-- Single Page Header start -->
+    <div class="container-fluid page-header py-5">
+      <h1 class="text-center text-white display-6">Récapitulatif</h1>
+    </div>
+    <!-- Single Page Header End -->
 
-                          <!-- Colonne droite : Formulaire -->
-                          <div class="col-lg-5">
-                            <h5 class="mb-3">
-                              <i
-                                class="fas fa-clipboard-list text-primary me-2"
-                              ></i
-                              >Informations de livraison
-                            </h5>
-
-                            <!-- Mode de réception -->
-                            <div class="mb-3">
-                              <label class="form-label fw-bold"
-                                ><i class="fas fa-truck me-2 text-primary"></i
-                                >Mode de réception</label
-                              >
-                              <div class="d-flex gap-3 flex-wrap">
-                                <div class="form-check">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="modeReception"
-                                    value="Livraison_Domicile"
-                                    id="livraison"
-                                  />
-                                  <label
-                                    class="form-check-label"
-                                    for="livraison"
-                                  >
-                                    <i class="fas fa-home me-1"></i> Livraison à
-                                    domicile
-                                  </label>
-                                </div>
-                                <div class="form-check">
-                                  <input
-                                    type="radio"
-                                    class="form-check-input"
-                                    name="modeReception"
-                                    value="Retrait_Boutique"
-                                    id="retrait"
-                                    checked
-                                  />
-                                  <label class="form-check-label" for="retrait">
-                                    <i class="fas fa-store me-1"></i> Retrait en
-                                    boutique
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Adresse de livraison -->
-                            <div
-                              id="blocLivraison"
-                              class="mb-3"
-                              style="display: none"
-                            >
-                              <label class="form-label fw-bold"
-                                ><i class="fas fa-map-pin me-2 text-primary"></i
-                                >Adresse de livraison</label
-                              >
-                              <textarea
-                                class="form-control"
-                                name="adresse"
-                                rows="2"
-                                placeholder="Votre adresse complète..."
-                              ></textarea>
-                            </div>
-
-                            <!-- Point de retrait -->
-                            <div id="blocRetrait" class="mb-3">
-                              <label class="form-label fw-bold"
-                                ><i
-                                  class="fas fa-store-alt me-2 text-primary"
-                                ></i
-                                >Point de retrait</label
-                              >
-                              <select class="form-select" name="pointRetrait">
-                                <option value="" disabled selected>
-                                  Choisir un point de vente
-                                </option>
-                                <option
-                                  th:each="pointDeVente : ${pointsDeVente}"
-                                  th:value="${pointDeVente.code}"
-                                  th:text="${pointDeVente.nom + ' - ' + pointDeVente.adresse}"
-                                ></option>
-                              </select>
-                            </div>
-
-                            <!-- Date et heure -->
-                            <div class="mb-3">
-                              <label class="form-label fw-bold"
-                                ><i
-                                  class="fas fa-calendar-alt me-2 text-primary"
-                                ></i
-                                >Date et heure de réception</label
-                              >
-                              <div class="row g-2">
-                                <div class="col-6">
-                                  <input
-                                    type="date"
-                                    class="form-control"
-                                    name="dateReception"
-                                  />
-                                </div>
-                                <div class="col-6">
-                                  <input
-                                    type="time"
-                                    class="form-control"
-                                    name="heureReception"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-
-                            <!-- Frais de livraison -->
-                            <div class="mb-3">
-                              <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Frais de livraison :
-                                <strong id="frais" class="text-primary"
-                                  >0 Ar</strong
-                                >
-                              </div>
-                            </div>
-
-                            <!-- Boutons -->
-                            <div class="d-flex gap-2 flex-wrap">
-                              <a
-                                th:href="@{/panier}"
-                                class="btn btn-outline-secondary rounded-pill px-4"
-                              >
-                                <i class="fas fa-arrow-left me-2"></i> Retour
-                              </a>
-                              <button
-                                type="submit"
-                                class="btn btn-primary rounded-pill px-4"
-                              >
-                                <i class="fas fa-check me-2"></i> Confirmer la
-                                commande
-                              </button>
-                            </div>
+    <!-- Récapitulatif Start -->
+    <div class="container-fluid fruite py-5">
+      <div class="container py-5">
+        <div class="row g-4">
+          <div class="col-lg-12">
+            <div class="row g-4">
+              <div class="col-12">
+                <div class="card shadow-sm border-0 rounded-3">
+                  <div class="card-body p-4">
+                    <form th:action="@{/commande/valider}" method="post">
+                      <div class="row g-4">
+                        <!-- Colonne gauche : Tableau des produits -->
+                        <div class="col-lg-7">
+                          <h5 class="mb-3">
+                            <i class="fas fa-shopping-bag text-primary me-2"></i>Vos produits
+                          </h5>
+                          <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                              <thead class="bg-light">
+                                <tr>
+                                  <th>Produit</th>
+                                  <th class="text-end">Prix</th>
+                                  <th class="text-center">Qté</th>
+                                  <th class="text-end">Poids unitaire</th>
+                                  <th class="text-end">Poids total</th>
+                                  <th class="text-end">Sous-total</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr th:each="ligne : ${lignes}">
+                                  <td th:text="${ligne.produit.nom}"></td>
+                                  <td class="text-end" th:text="${ligne.produit.pu} + ' Ar'"></td>
+                                  <td class="text-center" th:text="${ligne.quantite}"></td>
+                                  <td class="text-end" th:text="${ligne.produit.poids} + ' kg'">
+                                  </td>
+                                  <td class="text-end fw-bold text-primary"
+                                    th:text="${ligne.produit.poids * ligne.quantite} + ' kg'"></td>
+                                  <td class="text-end fw-bold text-primary" th:text="${ligne.sousTotal} + ' Ar'"></td>
+                                </tr>
+                                <tr class="table-primary">
+                                  <td colspan="4" class="text-end fw-bold fs-5">
+                                    Total
+                                  </td>
+                                  <td class="fw-bold fs-5 text-primary">
+                                    <span  th:text="${poidsTotal}"
+                                      id="poidsTotal"></span> kg
+                                  </td>
+                                  <td class="text-end fw-bold fs-5 text-primary" th:text="${total} + ' Ar'"></td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </div>
                         </div>
-                      </form>
-                    </div>
+
+                        <!-- Colonne droite : Formulaire -->
+                        <div class="col-lg-5">
+                          <h5 class="mb-3">
+                            <i class="fas fa-clipboard-list text-primary me-2"></i>Informations de livraison
+                          </h5>
+
+                          <!-- Mode de réception -->
+                          <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-truck me-2 text-primary"></i>Mode de
+                              réception</label>
+                            <div class="d-flex gap-3 flex-wrap">
+                              <div class="form-check">
+                                <input type="radio" class="form-check-input" name="modeReception"
+                                  value="Livraison_Domicile" id="livraison" />
+                                <label class="form-check-label" for="livraison">
+                                  <i class="fas fa-home me-1"></i> Livraison à
+                                  domicile
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                <input type="radio" class="form-check-input" name="modeReception"
+                                  value="Retrait_Boutique" id="retrait" checked />
+                                <label class="form-check-label" for="retrait">
+                                  <i class="fas fa-store me-1"></i> Retrait en
+                                  boutique
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Adresse de livraison -->
+                          <div id="blocLivraison" class="mb-3" style="display: none">
+                            <label class="form-label fw-bold"><i class="fas fa-map-pin me-2 text-primary"></i>Province
+                              de la livraison</label>
+                            <select class="form-select mb-3" name="province" id="province">
+                              <option value="" disabled selected>Selectionnez le province de la livraison</option>
+                              <option th:each="p : ${provinces}" th:value="${p.id}" th:text="${p.nom}"></option>
+                            </select>
+                            <label class="form-label fw-bold"><i class="fas fa-map-pin me-2 text-primary"></i>Adresse de
+                              livraison</label>
+                            <textarea class="form-control" name="adresse" rows="2"
+                              placeholder="Votre adresse complète..."></textarea>
+                          </div>
+
+                          <!-- Point de retrait -->
+                          <div id="blocRetrait" class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-store-alt me-2 text-primary"></i>Point de
+                              retrait</label>
+                            <select class="form-select" name="pointRetrait">
+                              <option value="" disabled selected>
+                                Choisir un point de vente
+                              </option>
+                              <option th:each="pointDeVente : ${pointsDeVente}" th:value="${pointDeVente.code}"
+                                th:text="${pointDeVente.nom + ' - ' + pointDeVente.adresse}"></option>
+                            </select>
+                          </div>
+
+                          <!-- Date et heure -->
+                          <div class="mb-3">
+                            <label class="form-label fw-bold"><i class="fas fa-calendar-alt me-2 text-primary"></i>Date
+                              et heure de réception</label>
+                            <div class="row g-2">
+                              <div class="col-6">
+                                <input type="date" class="form-control" name="dateReception" />
+                              </div>
+                              <div class="col-6">
+                                <input type="time" class="form-control" name="heureReception" />
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Frais de livraison -->
+                          <div class="mb-3">
+                            <div class="alert alert-info">
+                              <i class="fas fa-info-circle me-2"></i>
+                              Frais de livraison :
+                              <strong id="frais" class="text-primary">0 Ar</strong>
+                            </div>
+                          </div>
+
+                          <!-- Boutons -->
+                          <div class="d-flex gap-2 flex-wrap">
+                            <a th:href="@{/panier}" class="btn btn-outline-secondary rounded-pill px-4">
+                              <i class="fas fa-arrow-left me-2"></i> Retour
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                              <i class="fas fa-check me-2"></i> Confirmer la
+                              commande
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </div>
@@ -227,7 +167,9 @@
           </div>
         </div>
       </div>
-      <!-- Récapitulatif End -->
     </div>
-  </body>
+    <!-- Récapitulatif End -->
+  </div>
+</body>
+
 </html>
