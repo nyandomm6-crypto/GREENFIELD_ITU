@@ -55,7 +55,7 @@ public class Commandes {
     @Column(name = "heure_reception_fin")
     private java.sql.Timestamp heureReceptionFin;
 
-    @Column(name = "frais_livraison", precision = 10, scale = 2)
+    @Column(name = "frais_livraison", precision = 20, scale = 2)
     private BigDecimal fraisLivraison;
 
     @Column(name = "poids_total", precision = 10, scale = 2)
@@ -64,7 +64,7 @@ public class Commandes {
     @Column(name = "total_produits")
     private Integer totalProduits;
 
-    @Column(name = "total_general", nullable = false, precision = 10, scale = 2)
+    @Column(name = "total_general", nullable = false, precision = 20, scale = 2)
     private BigDecimal totalGeneral;
 
     @OneToMany(mappedBy = "commande")
