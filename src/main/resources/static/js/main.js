@@ -351,28 +351,63 @@
       });
   }
 
-  function changerMode() {
-    const selected = document.querySelector(
-      'input[name="modeReception"]:checked',
-    );
-    const blocLivraison = document.getElementById("blocLivraison");
-    const blocRetrait = document.getElementById("blocRetrait");
-    const frais = document.getElementById("frais");
-
-    if (!selected || !blocLivraison || !blocRetrait || !frais) {
-      return;
+  document.addEventListener("DOMContentLoaded", function () {
+    const provinceSelect = document.getElementById("province");
+    if (provinceSelect) {
+      provinceSelect.addEventListener("change", updateFraisLivraison);
     }
+  });
 
-    if (selected.value === "Livraison_Domicile") {
-      blocLivraison.style.display = "block";
-      blocRetrait.style.display = "none";
-      frais.textContent = "5 000 Ar";
+  function updateFraisLivraison() {
+    const provinceSelect = document.getElementById("province");
+    const provinceId = provinceSelect ? provinceSelect.value : null;
+    const poidsTotal = parseFloat(document.getElementById("poidsTotal").textContent);
+    const url = '/frais/calculate';
+    const params = new URLSearchParams();
+    params.append('provinceId', provinceId);
+    params.append('poidsTotal', poidsTotal);
+
+    if (provinceId && poidsTotal) {
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params
+      })
+        .then(response => response.json())
+        .then(data => {
+          frais.textContent = data.montant + " Ar";
+        })
+        .catch(error => {
+          console.error('Erreur lors du calcul des frais de livraison:', error);
+          frais.textContent = "Erreur";
+        });
     } else {
-      blocLivraison.style.display = "none";
-      blocRetrait.style.display = "block";
-      frais.textContent = "0 Ar";
+      frais.textContent = "Province ou poids total manquant";
     }
   }
+
+  function changerMode() {
+      const selected = document.querySelector(
+        'input[name="modeReception"]:checked',
+      );
+      const blocLivraison = document.getElementById("blocLivraison");
+      const blocRetrait = document.getElementById("blocRetrait");
+      const frais = document.getElementById("frais");
+
+      if (!selected || !blocLivraison || !blocRetrait || !frais) {
+        return;
+      }
+
+      if (selected.value === "Livraison_Domicile") {
+        updateFraisLivraison();
+        blocLivraison.style.display = "block";
+        blocRetrait.style.display = "none";
+        } else {
+        blocLivraison.style.display = "none";
+        blocRetrait.style.display = "block";
+        frais.textContent = "0 Ar";
+      }
+    }
 
   function setupSignupValidation() {
     const form = document.getElementById("signupForm");
