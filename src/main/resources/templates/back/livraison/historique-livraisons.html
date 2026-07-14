@@ -6,7 +6,7 @@
 
   <body class="bo">
     <aside
-      th:replace="~{back/fragments/layout-livreur :: sidebar('livreur')}"
+      th:replace="~{back/fragments/layout-livreur :: sidebar('historique')}"
     ></aside>
 
     <main class="bo-main">
@@ -37,12 +37,102 @@
           </div>
         </div>
 
-        <div class="vide">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          <p>
-            L'historique détaillé des livraisons n'est pas encore disponible sur
-            cette page.
-          </p>
+        <form
+          th:action="@{/livreurs/historique-livraisons}"
+          method="get"
+          class="mb-4"
+        >
+          <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+              <label for="statut" class="form-label">Statut</label>
+              <select id="statut" name="statut" class="form-select">
+                <option value="">Tous les statuts</option>
+                <option
+                  th:each="s : ${statuts}"
+                  th:value="${s}"
+                  th:text="${s}"
+                  th:selected="${statut != null and statut.name() == s.name()}"
+                ></option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="dateDebut" class="form-label">Du</label>
+              <input
+                type="date"
+                id="dateDebut"
+                name="dateDebut"
+                class="form-control"
+                th:value="${dateDebut}"
+              />
+            </div>
+            <div class="col-md-3">
+              <label for="dateFin" class="form-label">Au</label>
+              <input
+                type="date"
+                id="dateFin"
+                name="dateFin"
+                class="form-control"
+                th:value="${dateFin}"
+              />
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+              <button type="submit" class="btn btn-vert flex-grow-1">
+                <i class="fa-solid fa-filter"></i> Filtrer
+              </button>
+              <a
+                th:href="@{/livreurs/historique-livraisons}"
+                class="btn btn-ligne"
+              >
+                <i class="fa-solid fa-rotate-left"></i> Réinitialiser
+              </a>
+            </div>
+          </div>
+        </form>
+
+        <div class="tableau-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Véhicule</th>
+                <th>Immatriculation</th>
+                <th>Statut</th>
+                <th class="num">Commandes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:if="${#lists.isEmpty(livraisons)}">
+                <td colspan="6">
+                  <div class="vide">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <p>Aucune livraison n’a été trouvée.</p>
+                  </div>
+                </td>
+              </tr>
+
+              <tr th:each="livraison : ${livraisons}">
+                <td class="mono" th:text="${livraison.id}"></td>
+                <td
+                  th:text="${#temporals.format(livraison.dateLivraison, 'dd/MM/yyyy HH:mm')}"
+                ></td>
+                <td
+                  th:text="${livraison.vehicule != null ? livraison.vehicule.marque + ' ' + livraison.vehicule.modele : '-'}"
+                ></td>
+                <td
+                  class="mono"
+                  th:text="${livraison.vehicule != null ? livraison.vehicule.matricule : '-'}"
+                ></td>
+                <td>
+                  <span
+                    class="badge badge-vert"
+                    th:text="${livraison.statutLivraison}"
+                  ></span>
+                </td>
+                <td class="num" th:text="${#lists.size(livraison.filles)}"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 

@@ -108,7 +108,7 @@ public class LivraisonService {
     }
 
     public Livraison getLivraisonById(Integer id) {
-        return livraisonRepository.getById(id);
+        return livraisonRepository.findById(id).orElse(null);
     }
 
     public List<Livraison> findByLivreur(Employes emp) {

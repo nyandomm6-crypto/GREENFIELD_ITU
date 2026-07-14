@@ -1,6 +1,7 @@
 package itu.greenField.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,7 @@ import itu.greenField.model.Employes;
 import itu.greenField.model.Livraison;
 
 public interface LivraisonRepository extends JpaRepository<Livraison, Integer> {
-    public Livraison getById(Integer id);
+    public Optional<Livraison> findById(Integer id);
 
     List<Livraison> findByLivreur(Employes livreur);
 

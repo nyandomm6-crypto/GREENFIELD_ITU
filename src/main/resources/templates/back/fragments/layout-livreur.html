@@ -45,7 +45,7 @@
        SIDEBAR
     ================================================================== -->
     <aside class="bo-sidebar" th:fragment="sidebar(actif)">
-      <a th:href="@{/livreur/dashboard}" class="bo-brand">
+      <a th:href="@{/livreurs/dashboard}" class="bo-brand">
         <span
           class="bo-brand-icone"
           style="background: transparent; overflow: hidden"
@@ -79,20 +79,11 @@
 
         <p class="bo-nav-groupe">Suivi</p>
         <a
-          th:href="@{/livreurs/historique}"
+          th:href="@{/livreurs/historique-livraisons}"
           class="bo-nav-lien"
           th:classappend="${actif == 'historique'} ? 'actif'"
         >
           <i class="fas fa-clock-rotate-left"></i> Historique
-        </a>
-
-        <p class="bo-nav-groupe">Assistance</p>
-        <a
-          th:href="@{/livreur/contact}"
-          class="bo-nav-lien"
-          th:classappend="${actif == 'contact'} ? 'actif'"
-        >
-          <i class="fas fa-headset"></i> Contact
         </a>
 
         <p class="bo-nav-groupe">Compte</p>
