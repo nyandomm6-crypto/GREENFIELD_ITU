@@ -17,7 +17,7 @@ public class FraisLivraison {
     @Column(name = "poidsreference", nullable = false, precision = 10, scale = 2)
     private BigDecimal poidsReference;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 20, scale = 2)
     private BigDecimal montant;
 
     public Integer getId() {
