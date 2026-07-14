@@ -28,6 +28,9 @@
             <a th:href="@{/caissier/commandes}" class="btn btn-ligne">
               <i class="fas fa-arrow-left"></i> Retour
             </a>
+            <a th:if="${estLivrable}" th:href="@{/caissier/commande/livrer/{id}(id=${commande.id})}" class="btn btn-vert">
+              <i class="fas fa-send"></i> Livrer cette commande
+            </a>
           </div>
         </div>
 
@@ -72,7 +75,7 @@
                   <td class="num" th:text="${d.quantite}">0</td>
                   <td class="num" th:text="${d.puAuMomentAchat}">0</td>
                   <td class="num"
-                      th:text="${d.puAuMomentAchat != null and d.quantite != null ? d.puAuMomentAchat.multiply(T(java.math.BigDecimal).valueOf(d.quantite)) : 0}">0</td>
+                      th:text="${d.puAuMomentAchat != null and d.quantite != null ? d.puAuMomentAchat * d.quantite : 0}">0</td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(commande.detailsCommande)}">
                   <td colspan="4">
