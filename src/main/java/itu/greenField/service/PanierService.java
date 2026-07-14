@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import itu.greenField.model.Client;
+import itu.greenField.model.FraisLivraison;
 import itu.greenField.model.Panier;
 import itu.greenField.model.PanierFille;
 import itu.greenField.model.Produit;
@@ -21,13 +22,16 @@ public class PanierService {
     private final PanierRepository panierRepository;
     private final PanierFilleRepository panierFilleRepository;
     private final ProduitService produitService;
+    private final FraisLivraisonService fraisLivraisonService;
 
     public PanierService(PanierRepository panierRepository,
             PanierFilleRepository panierFilleRepository,
-            ProduitService produitService) {
+            ProduitService produitService,
+            FraisLivraisonService fraisLivraisonService) {
         this.panierRepository = panierRepository;
         this.panierFilleRepository = panierFilleRepository;
         this.produitService = produitService;
+        this.fraisLivraisonService = fraisLivraisonService;
     }
 
     /**
@@ -112,6 +116,22 @@ public class PanierService {
         return listerLignes(panier).stream()
                 .map(ligne -> ligne.getProduit().getPu().multiply(BigDecimal.valueOf(ligne.getQuantite())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal calculerPoidsTotal(Panier panier) {
+        return listerLignes(panier).stream()
+                .map(ligne -> ligne.getProduit().getPoids().multiply(BigDecimal.valueOf(ligne.getQuantite())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal calculerFraisLivraison(Integer provinceId, Panier panier) {
+        List<PanierFille> lignes = listerLignes(panier);
+        BigDecimal poidsTotal = BigDecimal.ZERO;
+        for (PanierFille ligne : lignes) {
+            poidsTotal = poidsTotal.add(ligne.getProduit().getPoids().multiply(BigDecimal.valueOf(ligne.getQuantite())));
+        }
+        FraisLivraison frais = fraisLivraisonService.calculateFraisLivraison(provinceId, poidsTotal.doubleValue());
+        return frais.getMontant();
     }
 
     /**
