@@ -38,25 +38,39 @@
         <div class="kpi-grille">
           <div class="kpi">
             <p class="kpi-libelle"><i class="fas fa-user"></i> Client</p>
-            <p class="kpi-valeur" style="font-size: 18px"
-               th:text="${commande.client != null ? commande.client.nom + ' ' + commande.client.prenom : '—'}"></p>
+            <p
+              class="kpi-valeur"
+              style="font-size: 18px"
+              th:text="${commande.client != null ? commande.client.nom + ' ' + commande.client.prenom : '—'}"
+            ></p>
           </div>
           <div class="kpi">
-            <p class="kpi-libelle"><i class="fas fa-truck"></i> Mode réception</p>
-            <p class="kpi-valeur" style="font-size: 18px"
-               th:text="${commande.modeReception != null ? commande.modeReception.name() : '—'}"></p>
+            <p class="kpi-libelle">
+              <i class="fas fa-truck"></i> Mode réception
+            </p>
+            <p
+              class="kpi-valeur"
+              style="font-size: 18px"
+              th:text="${commande.modeReception != null ? commande.modeReception.name() : '—'}"
+            ></p>
           </div>
           <div class="kpi kpi-ocre">
-            <p class="kpi-libelle"><i class="fas fa-coins"></i> Total général</p>
-            <p class="kpi-valeur"><span th:text="${commande.totalGeneral}"></span> <small>Ar</small></p>
+            <p class="kpi-libelle">
+              <i class="fas fa-coins"></i> Total général
+            </p>
+            <p class="kpi-valeur">
+              <span th:text="${commande.totalGeneral}"></span> <small>Ar</small>
+            </p>
           </div>
         </div>
 
         <div class="carte">
           <div class="carte-tete">
-            <h2><i class="fas fa-list texte-vert"></i> Détails de la commande</h2>
+            <h2>
+              <i class="fas fa-list texte-vert"></i> Détails de la commande
+            </h2>
           </div>
-          <div class="tableau-scroll" style="border: none;">
+          <div class="tableau-scroll" style="border: none">
             <table>
               <thead>
                 <tr>
@@ -68,15 +82,19 @@
               </thead>
               <tbody>
                 <tr th:each="d : ${commande.detailsCommande}">
-                  <td th:text="${d.produit != null ? d.produit.nom : '—'}">Produit</td>
+                  <td th:text="${d.produit != null ? d.produit.nom : '—'}">
+                    Produit
+                  </td>
                   <td class="num" th:text="${d.quantite}">0</td>
                   <td class="num" th:text="${d.puAuMomentAchat}">0</td>
-                  <td class="num"
-                      th:text="${d.puAuMomentAchat != null and d.quantite != null ? d.puAuMomentAchat.multiply(T(java.math.BigDecimal).valueOf(d.quantite)) : 0}">0</td>
+                  <td class="num" th:text="${d.puAuMomentAchat}">0</td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(commande.detailsCommande)}">
                   <td colspan="4">
-                    <div class="vide"><i class="fas fa-box-open"></i><p>Aucune ligne.</p></div>
+                    <div class="vide">
+                      <i class="fas fa-box-open"></i>
+                      <p>Aucune ligne.</p>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -84,39 +102,59 @@
           </div>
         </div>
 
-        <!-- Création de paiement (côté back-end) -->
         <div class="carte">
           <div class="carte-tete">
             <h2><i class="fas fa-cash-register texte-vert"></i> Paiement</h2>
           </div>
           <div class="carte-corps">
-            <p>Reste à payer : <strong><span th:text="${reste}">0</span> Ar</strong></p>
+            <p>
+              Reste à payer :
+              <strong><span th:text="${reste}">0</span> Ar</strong>
+            </p>
 
-            <form th:if="${reste != null and reste.compareTo(T(java.math.BigDecimal).ZERO) > 0}"
-                  th:action="@{/caissier/paiement/save}" method="post"
-                  class="grille-form" style="margin-top: 12px;">
-              <input type="hidden" name="commandeId" th:value="${commande.id}" />
+            <form
+              th:if="${reste != null}"
+              th:action="@{/caissier/paiement/save}"
+              method="post"
+              class="grille-form"
+              style="margin-top: 12px"
+            >
+              <input
+                type="hidden"
+                name="commandeId"
+                th:value="${commande.id}"
+              />
               <div class="champ">
                 <label for="typePayement">Type de paiement</label>
                 <select id="typePayement" name="typePayement">
-                  <option th:each="tp : ${typePayements}" th:value="${tp}" th:text="${tp.name()}"></option>
+                  <option
+                    th:each="tp : ${typePayements}"
+                    th:value="${tp}"
+                    th:text="${tp.name()}"
+                  ></option>
                 </select>
               </div>
               <div class="champ">
                 <label for="montant">Montant (Ar)</label>
-                <input type="number" step="0.01" id="montant" name="montant"
-                       th:value="${reste}" required />
+                <input
+                  type="number"
+                  step="0.01"
+                  id="montant"
+                  name="montant"
+                  th:value="${reste}"
+                  required
+                />
               </div>
-              <div class="champ" style="grid-column: 1 / -1;">
+              <div class="champ" style="grid-column: 1 / -1">
                 <button type="submit" class="btn btn-vert">
                   <i class="fas fa-floppy-disk"></i> Enregistrer le paiement
                 </button>
               </div>
             </form>
 
-            <p th:if="${reste == null or reste.compareTo(T(java.math.BigDecimal).ZERO) <= 0}"
-               class="texte-vert">
-              <i class="fas fa-circle-check"></i> Cette commande est entièrement payée.
+            <p th:unless="${reste != null}" class="texte-vert">
+              <i class="fas fa-circle-check"></i> Cette commande est entièrement
+              payée.
             </p>
           </div>
         </div>

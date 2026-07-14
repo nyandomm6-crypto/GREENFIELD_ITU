@@ -1,0 +1,1 @@
+curl -X POST "https://api.textbee.dev/api/v1/gateway/devices/6a562db0806d9579a8a6c7d2/send-sms" -H "Content-Type: application/json" -H "x-api-key: d6df50d4-0215-4b60-886f-db8ff54e940b" -d '{"recipients":["+261384361531"],"message":"Bonjour depuis greenField"}'
