@@ -91,9 +91,12 @@
                         class="border-0 form-select-sm bg-light"
                         onchange="document.getElementById('sortForm').submit()"
                       >
-                        <option th:each="opt : ${ {12, 24, 48, 96} }"
-                                th:value="${opt}" th:text="${opt}"
-                                th:selected="${opt == pageSize}"></option>
+                        <option
+                          th:each="opt : ${ {12, 24, 48, 96} }"
+                          th:value="${opt}"
+                          th:text="${opt}"
+                          th:selected="${opt == pageSize}"
+                        ></option>
                       </select>
                     </form>
                   </div>
@@ -134,69 +137,7 @@
                         </ul>
                       </div>
                     </div>
-                    <div class="col-lg-12">
-                      <div class="mb-3">
-                        <h4 class="mb-2">Prix</h4>
-                        <form
-                          th:action="@{/produits}"
-                          method="get"
-                          id="priceForm"
-                        >
-                          <input
-                            type="hidden"
-                            name="motCle"
-                            th:value="${motCle}"
-                          />
-                          <input
-                            type="hidden"
-                            name="idCategorie"
-                            th:value="${idCategorieSelectionnee}"
-                          />
-                          <input
-                            type="range"
-                            class="form-range w-100"
-                            id="rangeInput"
-                            name="prixMax"
-                            min="0"
-                            th:max="${prixMaxGlobal}"
-                            th:value="${prixMax}"
-                            onchange="
-                              document.getElementById('priceForm').submit()
-                            "
-                          />
-                          <output
-                            id="amount"
-                            name="amount"
-                            for="rangeInput"
-                            th:text="${prixMax} + ' Ar'"
-                            >0 Ar</output
-                          >
-                        </form>
-                      </div>
-                    </div>
-                    <div class="col-lg-12">
-                      <div class="position-relative">
-                        <img
-                          src="img/banner-fruits.jpg"
-                          class="img-fluid w-100 rounded"
-                          alt=""
-                        />
-                        <div
-                          class="position-absolute"
-                          style="
-                            top: 50%;
-                            right: 10px;
-                            transform: translateY(-50%);
-                          "
-                        >
-                          <h3 class="text-secondary fw-bold">
-                            Fresh <br />
-                            Fruits <br />
-                            Banner
-                          </h3>
-                        </div>
-                      </div>
-                    </div>
+                    <div class="col-lg-12"></div>
                   </div>
                 </div>
 

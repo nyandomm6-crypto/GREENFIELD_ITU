@@ -1,0 +1,109 @@
+# Modules du projet GreenField
+
+## MODULE 1 : Authentification
+
+Tables utilisées :
+
+- Client
+- Employes
+- validation_mail
+
+## MODULE 2 : Employé
+
+Tables utilisées :
+
+- Employes
+- PointDeVente
+
+## MODULE 3 : Véhicule
+
+Tables utilisées :
+
+- Vehicule
+- Livraison
+- LivraisonFille
+
+## MODULE 4 : Produit
+
+Tables utilisées :
+
+- Produit
+- CategorieProduit
+- photo
+- MvtStock
+- MvtStockFille
+- DemandeStock
+- DemandeStockFille
+- Transferts
+- TransfertsFille
+
+## MODULE 5 : Commande
+
+Tables utilisées :
+
+- Commandes
+- DetailsCommande
+- statutcommande
+- histstatutcommande
+- provinceLivraison
+- fraisLivraison
+
+## MODULE 6 : Livraison
+
+Tables utilisées :
+
+- Livraison
+- LivraisonFille
+- Vehicule
+- Employes
+- PointDeVente
+
+## MODULE 7 : Paiement
+
+Tables utilisées :
+
+- Paiement
+- PaiementFille
+- Tresorerie
+
+## MODULE 8 : Point de vente
+
+Tables utilisées :
+
+- PointDeVente
+- Transferts
+- TransfertsFille
+- MvtStock
+- MvtStockFille
+
+## MODULE 9 : Statistique
+
+Tables utilisées :
+
+- Tresorerie
+- MvtStock
+- Commandes
+- Paiement
+
+## MODULE 10 : Front office
+
+Tables utilisées :
+
+- Client
+- Panier
+- PanierFille
+- Produit
+- DetailsCommande
+- Commandes
+
+## Accueil (page d'accueil) — Tables utilisées :
+
+- Produit
+- CategorieProduit
+- photo
+- publicite
+- banniere
+- feature
+- temoignage
+- faq
+- avis_produit

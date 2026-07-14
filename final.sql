@@ -377,3 +377,5 @@ CREATE TABLE IF NOT EXISTS banniere (
     promo_prix VARCHAR(50),
     promo_unite VARCHAR(50)
 );
+
+ALTER TABLE Produit ADD COLUMN description TEXT;
