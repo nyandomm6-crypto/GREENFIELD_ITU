@@ -62,8 +62,8 @@ public class PubliciteService {
 
                 Publicite pub1 = new Publicite();
                 pub1.setImagePath("img/featur-1.jpg");
-                pub1.setTitre("Fresh Apples");
-                pub1.setSousTitre("20% OFF");
+                pub1.setTitre("Pommes fraîches");
+                pub1.setSousTitre("-20%");
                 pub1.setLien("#");
                 pub1.setClassDiv("service-item bg-secondary rounded border border-secondary");
                 pub1.setClassContent("service-content bg-primary text-center p-4 rounded");
@@ -72,8 +72,8 @@ public class PubliciteService {
 
                 Publicite pub2 = new Publicite();
                 pub2.setImagePath("img/featur-2.jpg");
-                pub2.setTitre("Tasty Fruits");
-                pub2.setSousTitre("Free delivery");
+                pub2.setTitre("Fruits savoureux");
+                pub2.setSousTitre("Livraison gratuite");
                 pub2.setLien("#");
                 pub2.setClassDiv("service-item bg-dark rounded border border-dark");
                 pub2.setClassContent("service-content bg-light text-center p-4 rounded");
@@ -82,8 +82,8 @@ public class PubliciteService {
 
                 Publicite pub3 = new Publicite();
                 pub3.setImagePath("img/featur-3.jpg");
-                pub3.setTitre("Exotic Vegetable");
-                pub3.setSousTitre("Discount 30$");
+                pub3.setTitre("Légumes exotiques");
+                pub3.setSousTitre("Remise de 30 000 Ar");
                 pub3.setLien("#");
                 pub3.setClassDiv("service-item bg-primary rounded border border-primary");
                 pub3.setClassContent("service-content bg-secondary text-center p-4 rounded");
