@@ -86,6 +86,7 @@ public class PanierController {
         model.addAttribute("panier", panier);
         model.addAttribute("lignes", panierService.listerLignes(panier));
         model.addAttribute("total", panierService.calculerTotal(panier));
+        model.addAttribute("poidsTotal", panierService.calculerPoidsTotal(panier));
 
         return "front/panier/panier";
     }
