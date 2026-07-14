@@ -10,6 +10,7 @@ import jakarta.validation.constraints.*;
 
 public class CommandeBackFormDto {
     private Integer commandeId;
+    private String codePointDeVendeCreateur;
 
     // Client
     private Integer clientId;
@@ -191,6 +192,14 @@ public class CommandeBackFormDto {
 
     public void setPointDeVenteId(Integer pointDeVenteId) {
         this.pointDeVenteId = pointDeVenteId;
+    }
+
+    public String getCodePointDeVendeCreateur() {
+        return codePointDeVendeCreateur;
+    }
+
+    public void setCodePointDeVendeCreateur(String codePointDeVendeCreateur) {
+        this.codePointDeVendeCreateur = codePointDeVendeCreateur;
     }
 
 }
