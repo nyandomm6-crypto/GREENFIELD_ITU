@@ -134,7 +134,7 @@ public class AuthClientController {
             return "redirect:" + redirect;
         }
 
-        return "redirect:/";
+        return "redirect:/commandes";
     }
 
     /** Destination back-office d'un employé selon son rôle. */
