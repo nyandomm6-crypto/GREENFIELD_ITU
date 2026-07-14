@@ -29,16 +29,19 @@ public class LivraisonService {
     private LivraisonFilleRepository livraisonFilleRepository;
     private CommandesRepository commandesRepository;
     private StatutCommandeRepository statutCommandeRepository;
+    private EnvoiSmsService envoiSmsService;
 
     public LivraisonService(LivraisonRepository livraisonRepository, VehiculeRepository vehiculeRepository,
             EmployesRepository employeRepository, LivraisonFilleRepository livraisonFilleRepository,
-            CommandesRepository commandesRepository, StatutCommandeRepository statutCommandeRepository) {
+            CommandesRepository commandesRepository, StatutCommandeRepository statutCommandeRepository,
+            EnvoiSmsService envoiSmsService) {
         this.livraisonRepository = livraisonRepository;
         this.vehiculeRepository = vehiculeRepository;
         this.employeRepository = employeRepository;
         this.livraisonFilleRepository = livraisonFilleRepository;
         this.commandesRepository = commandesRepository;
         this.statutCommandeRepository = statutCommandeRepository;
+        this.envoiSmsService = envoiSmsService;
     }
 
     public Integer createLivraison(Integer idVehicule, Integer idEmploye, List<Integer> idCommande,
@@ -54,6 +57,12 @@ public class LivraisonService {
         livraison.setStatutLivraison(StatutLivraison.En_attente);
 
         livraison = livraisonRepository.save(livraison);
+
+        if (employe != null && employe.getContact() != null && !employe.getContact().isBlank()) {
+            String message = "Bonjour " + employe.getPrenom()
+                    + ", une nouvelle livraison vous a été assignée. Veuillez consulter votre tableau de bord.";
+            envoiSmsService.envoyerSms(employe.getContact(), message);
+        }
 
         for (Integer id : idCommande) {
             Commandes commande = commandesRepository.getById(id);
