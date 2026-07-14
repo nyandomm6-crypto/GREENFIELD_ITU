@@ -1,5 +1,6 @@
 package itu.greenField.controller;
 
+import itu.greenField.repository.ProvinceLivraisonRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -21,6 +22,7 @@ import itu.greenField.model.Panier;
 import itu.greenField.repository.PointDeVenteRepository;
 import itu.greenField.service.CommandeFrontService;
 import itu.greenField.service.PanierService;
+import itu.greenField.service.ProvinceLivraisonService;
 
 @Controller
 public class CommandeFrontController {
@@ -28,12 +30,15 @@ public class CommandeFrontController {
     private final CommandeFrontService commandeService;
     private final PanierService panierService;
     private final PointDeVenteRepository pointDeVenteRepository;
+    private final ProvinceLivraisonService provinceLivraisonService;
 
     public CommandeFrontController(CommandeFrontService commandeService, PanierService panierService,
-            PointDeVenteRepository pointDeVenteRepository) {
+            PointDeVenteRepository pointDeVenteRepository,
+            ProvinceLivraisonService provinceLivraisonService) {
         this.commandeService = commandeService;
         this.panierService = panierService;
         this.pointDeVenteRepository = pointDeVenteRepository;
+        this.provinceLivraisonService = provinceLivraisonService;
     }
 
     /**
@@ -58,8 +63,10 @@ public class CommandeFrontController {
         model.addAttribute("panier", panier);
         model.addAttribute("lignes", panierService.listerLignes(panier));
         model.addAttribute("total", panierService.calculerTotal(panier));
+        model.addAttribute("poidsTotal", panierService.calculerPoidsTotal(panier));
         model.addAttribute("client", client);
         model.addAttribute("pointsDeVente", pointDeVenteRepository.findAll());
+        model.addAttribute("provinces", provinceLivraisonService.getAllProvinces());
         return "front/commande/recapitulatif";
     }
 
@@ -77,6 +84,7 @@ public class CommandeFrontController {
             @RequestParam("modeReception") String mode,
             @RequestParam(value = "adresse", required = false) String adresse,
             @RequestParam(value = "pointRetrait", required = false) String pointRetrait,
+            @RequestParam(value = "province", required = false) Integer provinceId,
             @RequestParam(value = "dateReception") String date,
             @RequestParam(value = "heureReception", required = false) String heure) {
 
@@ -113,6 +121,7 @@ public class CommandeFrontController {
                 modeReception,
                 adresse,
                 pointRetrait,
+                provinceId,
                 dateHeure, idCommande);
 
         if (erreur != null) {
