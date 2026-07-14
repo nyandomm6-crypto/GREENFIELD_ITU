@@ -3,6 +3,7 @@ package itu.greenField.controller;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,16 +14,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.data.domain.Page;
+import java.util.Set;
 
+import itu.greenField.dto.CommandeBackFilterDto;
 import itu.greenField.dto.CommandeBackFormDto;
 import itu.greenField.dto.DetailCommandeBackDto;
 import itu.greenField.dto.PaiementLigneDto;
+import itu.greenField.filtre.CalculOption;
+import itu.greenField.filtre.FiltreDateBackCommandeOption;
+import itu.greenField.filtre.FiltreNombreBackCommandeOption;
 import itu.greenField.model.Commandes;
 import itu.greenField.model.Employes;
 import itu.greenField.model.FRole;
 import itu.greenField.model.ModeReception;
 import itu.greenField.model.Paiement;
+import itu.greenField.model.TypeCommande;
 import itu.greenField.model.TypePayement;
 import itu.greenField.service.AuthGuard;
 import itu.greenField.service.CommandesService;
@@ -31,6 +40,7 @@ import itu.greenField.service.ProduitService;
 import itu.greenField.service.PaiementService;
 import itu.greenField.service.PointDeVenteService;
 import itu.greenField.service.ProvinceLivraisonService;
+import itu.greenField.service.StatutCommandeService;
 import itu.greenField.repository.MvtStockRepository;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -48,6 +58,8 @@ public class CaissierController {
     private final ProvinceLivraisonService provinceLivraisonService;
     private final PaiementService paiementService;
     private final MvtStockRepository mvtStockRepository;
+    private final StatutCommandeService statutCommandeService;
+    private final CommandesService commandeService;
 
     /**
      * Vérifie que l'utilisateur connecté est bien un Caissier.
@@ -93,15 +105,19 @@ public class CaissierController {
     }
 
     @GetMapping("/commandes")
-    public String commandes(HttpSession session, Model model) {
+    public ModelAndView listCommandes(HttpSession session) {
+        ModelAndView mv = new ModelAndView("back/caissier/commandes");
         Employes employe = requireCaissier(session);
         if (employe == null) {
             session.invalidate();
-            return "redirect:/emp/login";
+            mv.setViewName("/emp/login");
+            return mv;
         }
-        model.addAttribute("employe", employe);
-        model.addAttribute("commandes", commandesService.findByPointDeVenteRetrait(pdvCode(employe)));
-        return "back/caissier/commandes";
+        CommandeBackFilterDto filter = new CommandeBackFilterDto();
+        filter.setPointDeVente(pdvCode(employe));
+        
+        generateListCommandesModel(mv, filter);
+        return mv;
     }
 
     @GetMapping("/commande/detail/{id}")
@@ -113,9 +129,9 @@ public class CaissierController {
             return "redirect:/emp/login";
         }
         Commandes commande = commandesService.findById(id);
-        if (commande == null || commande.getPointDeVenteRetrait() == null
-                || !pdvCode(employe).equals(commande.getPointDeVenteRetrait().getCode())) {
-            redirectAttributes.addFlashAttribute("error",
+        if (commande == null || commande.getPointDeVenteCreateur() == null
+                || !pdvCode(employe).equals(commande.getPointDeVenteCreateur().getCode())) {
+            redirectAttributes.addFlashAttribute("alert",
                     "Cette commande n'existe pas ou n'appartient pas à votre point de vente.");
             return "redirect:/caissier/commandes";
         }
@@ -124,7 +140,54 @@ public class CaissierController {
         model.addAttribute("reste", paiementService.getMontantRestant(commande));
         model.addAttribute("dejaPaye", paiementService.findByCommandeId(commande.getId()) != null);
         model.addAttribute("typePayements", TypePayement.values());
+        boolean estLivrable = commande.getModeReception() == ModeReception.Retrait_Boutique
+                && commande.getStatutActuel().getId() == 1;
+                // && commande.getPointDeVenteRetrait() != null
+                // && commande.getPointDeVenteRetrait().getCode().equals(pdvCode(employe));
+        model.addAttribute("estLivrable", estLivrable);
         return "back/caissier/commandeDetail";
+    }
+
+    @GetMapping("/commande/livrer/{id}")
+    public String livrerCommande(@PathVariable Integer id, HttpSession session, RedirectAttributes redirectAttributes) {
+        try {
+            commandeService.livrerRetraitBoutiqueCommande(id);
+            redirectAttributes.addFlashAttribute("succes", "Commande livrée avec succès.");
+            return "redirect:/caissier/commande/detail/" + id;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/caissier/commande/detail/" + id;
+        }
+    }
+
+    private void generateListCommandesModel(ModelAndView mv, CommandeBackFilterDto filter) {
+        Page<Commandes> commandePage = commandeService.findWithDynamicFilters(filter);
+
+        if (mv != null) {
+            mv.addObject("commandes", commandePage.getContent());
+            mv.addObject("totalPages", commandePage.getTotalPages());
+            mv.addObject("hasPrevious", commandePage.hasPrevious());
+            mv.addObject("hasNext", commandePage.hasNext());
+
+            mv.addObject("commandeFilterDto", filter);
+
+            mv.addObject("modeReceptionOptions", ModeReception.getAllModeReception());
+            mv.addObject("typeCommandeOptions", TypeCommande.getAllTypeCommande());
+            mv.addObject("calculOptions", CalculOption.values());
+            mv.addObject("filtreDateOptions", FiltreDateBackCommandeOption.values());
+            mv.addObject("filtreNombreOptions", FiltreNombreBackCommandeOption.values());
+            mv.addObject("statutCommandeOptions", statutCommandeService.getAll());
+            mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
+            mv.addObject("pointDeVenteOptions", pointDeVenteService.getAll());
+
+            Set<Integer> commandesAvecResteAPayer = commandePage.getContent().stream()
+                    .filter(cmd -> paiementService.getMontantRestant(cmd).compareTo(java.math.BigDecimal.ZERO) > 0)
+                    .filter(cmd -> cmd.getPaiement() != null
+                            && cmd.getPaiement().getStatut() == itu.greenField.model.StatutPaiement.Reste)
+                    .map(Commandes::getId)
+                    .collect(Collectors.toSet());
+            mv.addObject("commandesAvecResteAPayer", commandesAvecResteAPayer);
+        }
     }
 
     @GetMapping("/paiements")
@@ -245,6 +308,7 @@ public class CaissierController {
         }
 
         try {
+            form.setCodePointDeVendeCreateur(pdvCode(employe));
             commandesService.saveBackCommande(form);
             redirectAttributes.addFlashAttribute("succes", "Commande enregistrée avec succès.");
             return "redirect:/caissier/commandes";
