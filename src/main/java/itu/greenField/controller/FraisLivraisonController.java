@@ -3,6 +3,8 @@ package itu.greenField.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import itu.greenField.dto.FraisLivraisonFilterDto;
 import itu.greenField.dto.FraisLivraisonFormDto;
@@ -44,6 +46,20 @@ public class FraisLivraisonController {
         mv.addObject("fraisFormDto", dto);
         mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
         return mv;
+    }
+
+    @PostMapping(value = "/calculate", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public String calculateFraisLivraison(
+            @RequestParam("provinceId") Integer provinceId,
+            @RequestParam("poidsTotal") Double poidsTotal) {
+
+        try {
+            FraisLivraison frais = fraisLivraisonService.calculateFraisLivraison(provinceId, poidsTotal);
+            return "{\"montant\": " + frais.getMontant() + "}";
+        } catch (Exception e) {
+            return "{\"error\": \"" + e.getMessage() + "\"}";
+        }
     }
 
     @GetMapping("/form/edit/{id}")
