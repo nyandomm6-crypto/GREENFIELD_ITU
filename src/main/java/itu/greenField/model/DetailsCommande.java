@@ -30,7 +30,7 @@ public class DetailsCommande {
     @Column(nullable = false)
     private Integer quantite;
 
-    @Column(name = "pu_au_moment_achat", nullable = false, precision = 10, scale = 2)
+    @Column(name = "pu_au_moment_achat", nullable = false, precision = 20, scale = 2)
     private BigDecimal puAuMomentAchat;
 
     public Integer getId() {
