@@ -42,14 +42,30 @@ public class ValidationMailService {
 
         validationMailRepository.save(validationMail);
 
+        String nomClient = client.getPrenom() != null && !client.getPrenom().isBlank()
+                ? client.getPrenom()
+                : "cher client";
+        String prenomClient = client.getNom() != null && !client.getNom().isBlank()
+                ? client.getNom()
+                : "";
+        String nomComplet = (prenomClient + " " + nomClient).trim();
+
+        String contenu = "Bonjour " + nomComplet + ",\n\n"
+                + "Merci pour votre inscription sur GreenField.\n"
+                + "Pour finaliser votre création de compte, veuillez utiliser le code de vérification suivant :\n\n"
+                + code + "\n\n"
+                + "Ce code est valable pendant 10 minutes.\n"
+                + "Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.\n\n"
+                + "Cordialement,\n"
+                + "L'équipe GreenField";
+
         envoiEmail.envoyerEmailAsync(
-                "greenField",
+                "GreenField",
                 "nyandomm6@gmail.com",
                 "wite ymxy elbc usra",
                 email,
-                "Validation de votre compte",
-                "Votre code de validation est : " + code
-                        + ".\nVeuillez le saisir pour confirmer votre compte.",
+                "Validation de votre compte GreenField",
+                contenu,
                 null,
                 false);
     }

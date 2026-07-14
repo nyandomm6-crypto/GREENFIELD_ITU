@@ -27,8 +27,7 @@ class AuthClientControllerTest {
                 mock(CommandeFrontService.class),
                 mock(CommandesRepository.class),
                 mock(StatutCommandeRepository.class),
-                mock(EmployesService.class)
-        );
+                mock(EmployesService.class));
 
         MockHttpSession session = new MockHttpSession();
         session.setAttribute("validationEmail", "client@example.com");

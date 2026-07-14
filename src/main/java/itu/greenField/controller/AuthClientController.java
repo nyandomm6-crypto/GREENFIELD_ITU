@@ -128,9 +128,10 @@ public class AuthClientController {
         }
 
         if (Boolean.FALSE.equals(client.getEstVerifie())) {
+            session.setAttribute("validationEmail", client.getMail());
             redirectAttributes.addFlashAttribute("error", "Veuillez d'abord valider votre adresse email.");
             redirectAttributes.addFlashAttribute("redirect", redirect);
-            return "redirect:/login";
+            return "redirect:/validation/email";
         }
 
         session.setAttribute("client", client);
@@ -184,6 +185,22 @@ public class AuthClientController {
             cookieVide.setMaxAge(0);
             response.addCookie(cookieVide);
         }
+    }
+
+    @GetMapping("/validation/renvoyer")
+    public String renvoyerCode(@RequestParam String email,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            validationMailService.send(email);
+            session.setAttribute("validationEmail", email);
+            redirectAttributes.addFlashAttribute("success", "Un nouveau code a été envoyé à votre adresse email.");
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        }
+
+        redirectAttributes.addFlashAttribute("email", email);
+        return "redirect:/validation/email";
     }
 
     @PostMapping("/signup")
