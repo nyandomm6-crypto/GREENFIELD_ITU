@@ -42,6 +42,10 @@ public class Commandes {
     @JoinColumn(name = "idptdevente_retrait", referencedColumnName = "code")
     private PointDeVente pointDeVenteRetrait;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "idptvente_createur", referencedColumnName = "code")
+    private PointDeVente pointDeVenteCreateur;
+
     @Column(name = "adresse_livraison")
     private String adresseLivraison;
 
@@ -255,5 +259,13 @@ public class Commandes {
 
     public void setTresoreries(List<Tresorerie> tresoreries) {
         this.tresoreries = tresoreries;
+    }
+
+    public PointDeVente getPointDeVenteCreateur() {
+        return pointDeVenteCreateur;
+    }
+
+    public void setPointDeVenteCreateur(PointDeVente pointDeVenteCreateur) {
+        this.pointDeVenteCreateur = pointDeVenteCreateur;
     }
 }
