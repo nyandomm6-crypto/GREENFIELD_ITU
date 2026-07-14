@@ -1,4 +1,4 @@
--- Active: 1782932337041@@127.0.0.1@5433@gr
+
 CREATE DATABASE gf;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
@@ -168,6 +168,13 @@ CREATE TABLE DetailsCommande (
     quantite INT NOT NULL,
     pu_au_moment_achat DECIMAL(10, 2) NOT NULL
 );
+
+-- ajout de plus de digit au prix unitaire pour les produits de grande valeur
+ALTER TABLE DetailsCommande ALTER COLUMN pu_au_moment_achat TYPE DECIMAL(20, 2);
+ALTER TABLE Produit ALTER COLUMN pu TYPE DECIMAL(20, 2);
+ALTER TABLE fraisLivraison ALTER COLUMN montant TYPE DECIMAL(20, 2);
+ALTER TABLE commandes ALTER COLUMN frais_livraison TYPE DECIMAL(20, 2);
+ALTER TABLE commandes ALTER COLUMN total_general TYPE DECIMAL(20, 2);
 
 -- =====================================================
 -- PAIEMENTS
