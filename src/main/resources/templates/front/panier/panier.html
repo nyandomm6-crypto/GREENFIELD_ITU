@@ -55,7 +55,8 @@
                                 <tr>
                                   <th>Produit</th>
                                   <th class="text-center">Quantité</th>
-                                  <th class="text-end">Total</th>
+                                  <th class="text-end">Poids</th>
+                                  <th class="text-end">Prix</th>
                                   <th class="text-center">Actions</th>
                                 </tr>
                               </thead>
@@ -151,6 +152,10 @@
                                   </td>
                                   <td
                                     class="text-end fw-bold text-primary"
+                                    th:text="${ligne.sousTotalPoids} + ' Kg'"
+                                  >
+                                  <td
+                                    class="text-end fw-bold text-primary"
                                     th:text="${ligne.sousTotal} + ' Ar'"
                                   >
                                     0 Ar
@@ -190,10 +195,6 @@
                           <div class="d-flex justify-content-between mb-2">
                             <span class="text-muted">Sous-total</span>
                             <span th:text="${total} + ' Ar'"></span>
-                          </div>
-                          <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Frais de livraison</span>
-                            <span>0 Ar</span>
                           </div>
                           <hr />
                           <div class="d-flex justify-content-between mb-3">
