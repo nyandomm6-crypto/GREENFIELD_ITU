@@ -31,8 +31,8 @@ public interface CommandesRepository extends JpaRepository<Commandes, Integer> {
     List<Commandes> findByPointDeVenteRetrait_CodeOrderByIdDesc(String code);
 
     @Query(value = "SELECT * FROM commandes c " +
-            "WHERE c.statutactuel != 2 " +
-            "AND c.statutactuel != 4", nativeQuery = true)
+            "WHERE c.statutactuel = 2 " +
+            "OR c.statutactuel = 1", nativeQuery = true)
     public List<Commandes> findDispoCommandes();
 
     @Query(value = "SELECT * FROM commandes c", nativeQuery = true)
