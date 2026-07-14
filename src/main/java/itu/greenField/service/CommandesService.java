@@ -257,6 +257,17 @@ public class CommandesService {
             params.put("mode", filter.getModeReception());
         }
 
+        if (filter.getPointDeVente() != null && !filter.getPointDeVente().isEmpty()) {
+            if(filter.getPointDeVente().equals("null")) {
+                sb.append("AND c.idptvente_createur IS NULL ");
+                sbCount.append("AND c.idptvente_createur IS NULL ");
+            } else {
+                sb.append("AND (c.idptvente_createur = :pointDeVente) ");
+                sbCount.append("AND (c.idptvente_createur = :pointDeVente) ");
+                params.put("pointDeVente", filter.getPointDeVente());
+            }
+        }
+
         // 3. Filtre Multi-Clients (idclient)
         if (filter.getClientId() != null && !filter.getClientId().isEmpty()) {
             sb.append("AND c.idclient IN (:clients) ");
