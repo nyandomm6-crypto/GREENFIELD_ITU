@@ -72,4 +72,12 @@ public class PanierFille {
         }
         return produit.getPu().multiply(BigDecimal.valueOf(quantite));
     }
+
+    @Transient
+    public BigDecimal getSousTotalPoids() {
+        if (produit == null || produit.getPu() == null || quantite == null) {
+            return BigDecimal.ZERO;
+        }
+        return produit.getPoids().multiply(BigDecimal.valueOf(quantite));
+    }
 }
