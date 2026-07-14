@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import itu.greenField.model.Client;
 import itu.greenField.model.Commandes;
 import itu.greenField.model.DetailsCommande;
+import itu.greenField.model.FraisLivraison;
+import itu.greenField.model.HistoriqueStatutCommande;
 import itu.greenField.model.ModeReception;
 import itu.greenField.model.PointDeVente;
 import itu.greenField.model.StatutCommande;
@@ -24,6 +26,7 @@ import itu.greenField.repository.CommandesRepository;
 import itu.greenField.repository.DetailsCommandeRepository;
 import itu.greenField.repository.PointDeVenteRepository;
 import itu.greenField.repository.StatutCommandeRepository;
+import itu.greenField.repository.HistoriqueStatutCommandeRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -36,6 +39,8 @@ public class CommandeFrontService {
     private final ProduitService produitService;
     private final PanierService panierService;
     private final StatutCommandeRepository statutCommandeRepository;
+    private final FraisLivraisonService fraisLivraisonService;
+    private final HistoriqueStatutCommandeRepository historiqueStatutCommandeRepository;
 
     /**
      * Valide l'achat : vérifie une dernière fois le stock de chaque ligne,
@@ -48,6 +53,7 @@ public class CommandeFrontService {
      */
     @Transactional
     public String validerAchat(Panier panier, Client client, ModeReception mode, String adresse, String point,
+            Integer provinceId,
             LocalDateTime dateHeure, AtomicReference<Integer> idCommande) {
         List<PanierFille> lignes = panierService.listerLignes(panier);
         StatutCommande statut = statutCommandeRepository.findByNom("Créée")
@@ -78,16 +84,26 @@ public class CommandeFrontService {
                 .mapToInt(ligne -> ligne.getQuantite())
                 .sum();
 
+        Double poidsTotal = lignes.stream()
+                .filter(Objects::nonNull)
+                .mapToDouble(ligne -> ligne.getProduit().getPoids().doubleValue() * ligne.getQuantite())
+                .sum();
+
         Commandes commande = new Commandes();
         commande.setClient(client);
         commande.setDatecommande(Timestamp.valueOf(LocalDateTime.now()));
         commande.setModeReception(mode);
-        commande.setTypeCommande(mode == ModeReception.Livraison_Domicile
-                ? itu.greenField.model.TypeCommande.En_ligne
-                : itu.greenField.model.TypeCommande.En_boutique);
+        commande.setTypeCommande(itu.greenField.model.TypeCommande.En_ligne);
         commande.setFraisLivraison(BigDecimal.ZERO);
         commande.setTotalProduits(totalProduits);
         commande.setTotalGeneral(total);
+        commande.setPoidsTotal(BigDecimal.valueOf(poidsTotal));
+
+        if(provinceId != null) {
+            FraisLivraison frais = fraisLivraisonService.calculateFraisLivraison(
+                    provinceId, poidsTotal);
+            commande.setFraisLivraison(frais.getMontant());
+        }
 
         if (dateHeure != null) {
             Timestamp reception = Timestamp.valueOf(dateHeure);
@@ -108,6 +124,13 @@ public class CommandeFrontService {
 
         commande = commandesRepository.save(commande);
         idCommande.set(commande.getId());
+
+        HistoriqueStatutCommande historique = new HistoriqueStatutCommande();
+        historique.setCommande(commande);
+        historique.setStatutCommande(statut);
+        historique.setDatechangement(Timestamp.valueOf(LocalDateTime.now()));
+
+        historiqueStatutCommandeRepository.save(historique);
 
         for (PanierFille ligne : lignes) {
             DetailsCommande detail = new DetailsCommande();
@@ -155,7 +178,7 @@ public class CommandeFrontService {
     }
 
     public List<Commandes> getCommandesDispo() {
-        return commandesRepository.findAll();
+        return commandesRepository.findDispoCommandes();
     }
 
 }
