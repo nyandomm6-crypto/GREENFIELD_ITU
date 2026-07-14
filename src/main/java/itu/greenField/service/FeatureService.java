@@ -1,4 +1,4 @@
-package itu.greenField.service;
+ package itu.greenField.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +52,10 @@ public class FeatureService {
         }
 
         List<Feature> features = new ArrayList<>();
-        features.add(new Feature("fas fa-car-side", "Free Shipping", "Free on order over $300", "features"));
-        features.add(new Feature("fas fa-user-shield", "Security Payment", "100% security payment", "features"));
-        features.add(new Feature("fas fa-exchange-alt", "30 Day Return", "30 day money guarantee", "features"));
-        features.add(new Feature("fa fa-phone-alt", "24/7 Support", "Support every time fast", "features"));
+        features.add(new Feature("fas fa-car-side", "Livraison gratuite", "Gratuite dès 300 000 Ar d'achat", "features"));
+        features.add(new Feature("fas fa-user-shield", "Paiement sécurisé", "Paiement 100% sécurisé", "features"));
+        features.add(new Feature("fas fa-exchange-alt", "Retours sous 30 jours", "Garantie satisfait ou remboursé", "features"));
+        features.add(new Feature("fa fa-phone-alt", "Support 24/7", "Une assistance toujours rapide", "features"));
 
         features.add(new Feature("fa fa-users", "Clients satisfaits", "1963", "stats"));
         features.add(new Feature("fa fa-star", "Qualité de service", "99%", "stats"));

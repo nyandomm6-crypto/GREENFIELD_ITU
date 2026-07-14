@@ -1,4 +1,3 @@
-
 CREATE DATABASE gf;
 
 -- Se connecter à la base greenfield avant d'exécuter la suite
@@ -170,10 +169,16 @@ CREATE TABLE DetailsCommande (
 );
 
 -- ajout de plus de digit au prix unitaire pour les produits de grande valeur
-ALTER TABLE DetailsCommande ALTER COLUMN pu_au_moment_achat TYPE DECIMAL(20, 2);
+ALTER TABLE DetailsCommande
+ALTER COLUMN pu_au_moment_achat TYPE DECIMAL(20, 2);
+
 ALTER TABLE Produit ALTER COLUMN pu TYPE DECIMAL(20, 2);
+
 ALTER TABLE fraisLivraison ALTER COLUMN montant TYPE DECIMAL(20, 2);
-ALTER TABLE commandes ALTER COLUMN frais_livraison TYPE DECIMAL(20, 2);
+
+ALTER TABLE commandes
+ALTER COLUMN frais_livraison TYPE DECIMAL(20, 2);
+
 ALTER TABLE commandes ALTER COLUMN total_general TYPE DECIMAL(20, 2);
 
 -- =====================================================
@@ -268,6 +273,17 @@ CREATE TABLE validation_mail (
     est_verifie BOOLEAN DEFAULT FALSE,
     date_expiration TIMESTAMP NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS password_reset_token (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL,
+    expires_at TIMESTAMP NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_password_reset_token_email ON password_reset_token (email);
 
 CREATE TABLE Panier (
     id SERIAL PRIMARY KEY,
@@ -379,3 +395,73 @@ CREATE TABLE IF NOT EXISTS banniere (
 );
 
 ALTER TABLE Produit ADD COLUMN description TEXT;
+
+UPDATE feature
+SET
+    titre = 'Livraison gratuite',
+    description = 'Gratuite à partir de 300 000 Ar d''achat'
+WHERE
+    titre = 'Free Shipping';
+
+UPDATE feature
+SET
+    titre = 'Paiement sécurisé',
+    description = 'Paiement 100% sécurisé'
+WHERE
+    titre = 'Security Payment';
+
+UPDATE feature
+SET
+    titre = 'Retours sous 30 jours',
+    description = 'Garantie satisfait ou remboursé'
+WHERE
+    titre = '30 Day Return';
+
+UPDATE feature
+SET
+    titre = 'Support 24/7',
+    description = 'Une assistance toujours rapide'
+WHERE
+    titre = '24/7 Support';
+
+UPDATE banniere
+SET
+    titre = 'Fruits exotiques frais',
+    sous_titre = 'dans notre boutique',
+    description = 'Decouvrez notre sélection de fruits exotiques frais, directement issus de nos producteurs locaux.',
+    btn_texte = 'ACHETER',
+    promo_prix = '50$'
+WHERE
+    titre = 'Fresh Exotic Fruits';
+
+UPDATE publicite
+SET
+    titre = 'Pommes fraîches',
+    sous_titre = '-20%'
+WHERE
+    titre = 'Pommes Fraîches';
+
+UPDATE publicite
+SET
+    titre = 'Fruits savoureux',
+    sous_titre = 'Livraison gratuite'
+WHERE
+    titre = 'Fruits Savoureux';
+
+UPDATE publicite
+SET
+    titre = 'Légumes exotiques',
+    sous_titre = 'Remise de 30 000 Ar'
+WHERE
+    titre = 'Légumes Exotiques';
+
+CREATE TABLE IF NOT EXISTS password_reset_token (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL,
+    expires_at TIMESTAMP NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_password_reset_token_email ON password_reset_token (email);

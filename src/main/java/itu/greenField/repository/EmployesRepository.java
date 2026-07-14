@@ -15,93 +15,94 @@ import itu.greenField.model.PointDeVente;
 import itu.greenField.model.Employes;
 
 public interface EmployesRepository extends JpaRepository<Employes, Integer> {
-        Optional<Employes> findByMailIgnoreCase(String mail);
+  Optional<Employes> findByMailIgnoreCase(String mail);
 
-        @Query("""
-                        SELECT e
-                        FROM Employes e
-                        LEFT JOIN FETCH e.pointDeVente
-                        WHERE e.id = :id
-                        """)
-        Optional<Employes> findWithPointDeVenteById(@Param("id") Integer id);
+  @Query("""
+      SELECT e
+      FROM Employes e
+      LEFT JOIN FETCH e.pointDeVente
+      WHERE e.id = :id
+      """)
+  Optional<Employes> findWithPointDeVenteById(@Param("id") Integer id);
 
-        @Query(value = """
-                        SELECT e.*
-                        FROM employes e
-                        LEFT JOIN pointdevente p ON p.code = e.idptdevente
-                        WHERE COALESCE(e.est_actif, true) = :estActif
-                          AND (:date IS NULL OR e.date = :date)
-                          AND (:role IS NULL OR e.role = :role)
-                          AND (
-                                :motCle IS NULL
-                                OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
-                          )
-                        ORDER BY e.nom, e.prenom
-                        """, nativeQuery = true)
-        List<Employes> filtrer(
-                        @Param("estActif") Boolean estActif,
-                        @Param("motCle") String motCle,
-                        @Param("date") LocalDate date,
-                        @Param("role") String role);
+  @Query(value = """
+      SELECT e.*
+      FROM employes e
+      LEFT JOIN pointdevente p ON p.code = e.idptdevente
+      WHERE COALESCE(e.est_actif, true) = :estActif
+        AND (:date IS NULL OR e.date = :date)
+        AND (:role IS NULL OR e.role = :role)
+        AND (
+              :motCle IS NULL
+              OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
+        )
+      ORDER BY e.nom, e.prenom
+      """, nativeQuery = true)
+  List<Employes> filtrer(
+      @Param("estActif") Boolean estActif,
+      @Param("motCle") String motCle,
+      @Param("date") LocalDate date,
+      @Param("role") String role);
 
-        @Query(value = """
-                        SELECT e.*
-                        FROM employes e
-                        LEFT JOIN pointdevente p ON p.code = e.idptdevente
-                        WHERE COALESCE(e.est_actif, true) = :estActif
-                          AND (:date IS NULL OR e.date = :date)
-                          AND (:role IS NULL OR e.role = :role)
-                          AND (
-                                :motCle IS NULL
-                                OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
-                          )
-                        ORDER BY e.nom, e.prenom
-                        """,
-                        countQuery = """
-                        SELECT count(*)
-                        FROM employes e
-                        LEFT JOIN pointdevente p ON p.code = e.idptdevente
-                        WHERE COALESCE(e.est_actif, true) = :estActif
-                          AND (:date IS NULL OR e.date = :date)
-                          AND (:role IS NULL OR e.role = :role)
-                          AND (
-                                :motCle IS NULL
-                                OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
-                                OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
-                          )
-                        """,
-                        nativeQuery = true)
-        Page<Employes> filtrer(
-                        @Param("estActif") Boolean estActif,
-                        @Param("motCle") String motCle,
-                        @Param("date") LocalDate date,
-                        @Param("role") String role,
-                        Pageable pageable);
+  @Query(value = """
+      SELECT e.*
+      FROM employes e
+      LEFT JOIN pointdevente p ON p.code = e.idptdevente
+      WHERE COALESCE(e.est_actif, true) = :estActif
+        AND (:date IS NULL OR e.date = :date)
+        AND (:role IS NULL OR e.role = :role)
+        AND (
+              :motCle IS NULL
+              OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
+        )
+      ORDER BY e.nom, e.prenom
+      """, countQuery = """
+      SELECT count(*)
+      FROM employes e
+      LEFT JOIN pointdevente p ON p.code = e.idptdevente
+      WHERE COALESCE(e.est_actif, true) = :estActif
+        AND (:date IS NULL OR e.date = :date)
+        AND (:role IS NULL OR e.role = :role)
+        AND (
+              :motCle IS NULL
+              OR COALESCE(e.nom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.prenom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.mail, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(e.contact, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(p.nom, '') ILIKE CONCAT('%', :motCle, '%')
+              OR COALESCE(p.code, '') ILIKE CONCAT('%', :motCle, '%')
+        )
+      """, nativeQuery = true)
+  Page<Employes> filtrer(
+      @Param("estActif") Boolean estActif,
+      @Param("motCle") String motCle,
+      @Param("date") LocalDate date,
+      @Param("role") String role,
+      Pageable pageable);
 
-        public Employes getById(Integer id);
+  public Employes getById(Integer id);
 
-        List<Employes> findByPointDeVente(PointDeVente pointDeVente);
+  List<Employes> findByPointDeVente(PointDeVente pointDeVente);
 
-        List<Employes> findByPointDeVenteAndNomContainingIgnoreCase(PointDeVente pointDeVente, String nom);
+  List<Employes> findByPointDeVenteAndNomContainingIgnoreCase(PointDeVente pointDeVente, String nom);
 
-        List<Employes> findByPointDeVenteAndRole(PointDeVente pointDeVente, FRole role);
+  List<Employes> findByPointDeVenteAndRole(PointDeVente pointDeVente, FRole role);
 
-        List<Employes> findByPointDeVenteAndNomContainingIgnoreCaseAndRole(PointDeVente pointDeVente, String nom,
-                        FRole role);
+  List<Employes> findByPointDeVenteAndNomContainingIgnoreCaseAndRole(PointDeVente pointDeVente, String nom,
+      FRole role);
 
-        Optional<Employes> findByMail(String mail);
+  Optional<Employes> findByMail(String mail);
+
+  @Query("SELECT e FROM Employes e WHERE e.role = 'Livreur'")
+  List<Employes> findLivreursByString();
 }

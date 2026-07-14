@@ -71,13 +71,18 @@ public class AuthClientController {
     }
 
     @GetMapping("/validation/email")
-    public String verifierMail() {
+    public String verifierMail(HttpSession session, Model model) {
+        Object sessionEmail = session.getAttribute("validationEmail");
+        if (sessionEmail != null) {
+            model.addAttribute("email", sessionEmail.toString());
+        }
         return "front/auth/email";
     }
 
     @PostMapping("/validation/email")
     public String verifierCode(@RequestParam String code,
             @RequestParam String email,
+            HttpSession session,
             RedirectAttributes redirectAttributes) {
 
         if (!validationMailService.verifier(code, email)) {
@@ -86,6 +91,7 @@ public class AuthClientController {
             redirectAttributes.addFlashAttribute("success", "Félicitations! Votre compte est maintenant valide.");
         }
 
+        session.setAttribute("validationEmail", email);
         redirectAttributes.addFlashAttribute("email", email);
 
         return "redirect:/validation/email";
@@ -122,9 +128,10 @@ public class AuthClientController {
         }
 
         if (Boolean.FALSE.equals(client.getEstVerifie())) {
+            session.setAttribute("validationEmail", client.getMail());
             redirectAttributes.addFlashAttribute("error", "Veuillez d'abord valider votre adresse email.");
             redirectAttributes.addFlashAttribute("redirect", redirect);
-            return "redirect:/login";
+            return "redirect:/validation/email";
         }
 
         session.setAttribute("client", client);
@@ -180,6 +187,22 @@ public class AuthClientController {
         }
     }
 
+    @GetMapping("/validation/renvoyer")
+    public String renvoyerCode(@RequestParam String email,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        try {
+            validationMailService.send(email);
+            session.setAttribute("validationEmail", email);
+            redirectAttributes.addFlashAttribute("success", "Un nouveau code a été envoyé à votre adresse email.");
+        } catch (RuntimeException ex) {
+            redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        }
+
+        redirectAttributes.addFlashAttribute("email", email);
+        return "redirect:/validation/email";
+    }
+
     @PostMapping("/signup")
     public String traiterSignup(
             @RequestParam String email,
@@ -188,6 +211,7 @@ public class AuthClientController {
             @RequestParam String prenom,
             @RequestParam String adresse,
             @RequestParam String contact,
+            HttpSession session,
             RedirectAttributes redirectAttributes) {
 
         boolean valide = validationService
@@ -204,6 +228,7 @@ public class AuthClientController {
             clientRepository.save(client);
             validationMailService.send(email);
             redirectAttributes.addFlashAttribute("email", email);
+            session.setAttribute("validationEmail", email);
 
             return "redirect:/validation/email";
         }

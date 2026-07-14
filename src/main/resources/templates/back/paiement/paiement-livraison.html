@@ -1,145 +1,197 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head
+    th:replace="~{back/fragments/layout-livreur :: head('Paiement commande')}"
+  ></head>
 
-<head th:replace="~{back/fragments/layout :: head('Paiement commande')}"></head>
-
-<body class="bo">
-    <aside th:replace="~{back/fragments/layout :: sidebar('livreur')}"></aside>
+  <body class="bo">
+    <aside
+      th:replace="~{back/fragments/layout-livreur :: sidebar('livreur')}"
+    ></aside>
 
     <main class="bo-main">
-        <header th:replace="~{back/fragments/layout :: topbar('Paiement')}"></header>
+      <header
+        th:replace="~{back/fragments/layout-livreur :: topbar('Paiement')}"
+      ></header>
 
-        <div class="bo-contenu bo-contenu-etroit">
-
-            <div class="page-tete">
-                <div>
-                    <p class="fil"><a th:href="@{/livreurs/livraisons}">Mes livraisons</a> / Paiement</p>
-                    <h1><i class="fa-solid fa-money-bill-wave"></i> Paiement de la commande</h1>
-                </div>
-                <div class="page-actions">
-                    <a th:href="@{/livreurs/livraisons}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour</a>
-                </div>
-            </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-file-lines"></i> Commande</h2>
-                </div>
-                <div class="carte-corps">
-                    <dl class="fiche">
-                        <dt>ID</dt>
-                        <dd class="mono" th:text="${commande.id}"></dd>
-
-                        <dt>Client</dt>
-                        <dd th:text="${commande.client.nom + ' ' + commande.client.prenom}"></dd>
-
-                        <dt>Total</dt>
-                        <dd class="mono" id="total" th:text="${commande.totalGeneral}"></dd>
-
-                        <dt>Reste</dt>
-                        <dd class="mono texte-ocre" id="reste" th:text="${reste}"></dd>
-                    </dl>
-                </div>
-            </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-receipt"></i> Paiements existants</h2>
-                </div>
-                <div class="carte-corps">
-                    <div class="tableau-scroll">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Type</th>
-                                    <th class="num">Montant</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:if="${#lists.isEmpty(paiement.filles)}">
-                                    <td colspan="3">
-                                        <div class="vide">
-                                            <i class="fa-solid fa-receipt"></i>
-                                            <p>Aucun paiement.</p>
-                                        </div>
-                                    </td>
-                                </tr>
-
-                                <tr th:each="pf, i : ${paiement.filles}">
-                                    <td th:text="${i.index + 1}"></td>
-                                    <td th:text="${pf.typePayement}"></td>
-                                    <td class="num mono" th:text="${pf.valeur}"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-plus"></i> Nouveau paiement</h2>
-                </div>
-                <div class="carte-corps">
-                    <form id="formPaiement" th:action="@{/livreurs/paiements/ajouter-multiple}" method="post">
-                        <input type="hidden" name="idCommande" th:value="${commande.id}" />
-
-                        <div class="tableau-scroll">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Type</th>
-                                        <th class="num">Montant</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-
-                                <tbody id="lines">
-                                    <tr>
-                                        <td>
-                                            <select name="typePayement">
-                                                <option th:each="t : ${typesPaiement}" th:value="${t}" th:text="${t}"></option>
-                                            </select>
-                                        </td>
-
-                                        <td>
-                                            <input type="number" step="0.01" min="0" name="valeur" class="montant" required />
-                                        </td>
-
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-doux-rouge" onclick="removeLine(this)">
-                                                <i class="fa-solid fa-xmark"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="barre-form" style="justify-content: flex-start; margin-top: 10px;">
-                            <button type="button" class="btn btn-doux btn-sm" onclick="addLine()">
-                                <i class="fa-solid fa-plus"></i> Ajouter ligne
-                            </button>
-                        </div>
-
-                        <div class="resume-paiement">
-                            <div>Total saisi : <span id="totalSaisi">0</span></div>
-                            <div>Reste : <span id="resteCalc">0</span></div>
-                        </div>
-
-                        <p class="text-danger" id="error"></p>
-
-                        <div class="barre-form">
-                            <button class="btn btn-vert" type="submit"><i class="fa-solid fa-check"></i> Valider paiement</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/livreurs/livraisons}">Mes livraisons</a> / Paiement
+            </p>
+            <h1>
+              <i class="fa-solid fa-money-bill-wave"></i> Paiement de la
+              commande
+            </h1>
+          </div>
+          <div class="page-actions">
+            <a th:href="@{/livreurs/livraisons}" class="btn btn-ligne"
+              ><i class="fa-solid fa-arrow-left"></i> Retour</a
+            >
+          </div>
         </div>
 
-        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+        <div class="carte">
+          <div class="carte-tete">
+            <h2><i class="fa-solid fa-file-lines"></i> Commande</h2>
+          </div>
+          <div class="carte-corps">
+            <dl class="fiche">
+              <dt>ID</dt>
+              <dd class="mono" th:text="${commande.id}"></dd>
+
+              <dt>Client</dt>
+              <dd
+                th:text="${commande.client.nom + ' ' + commande.client.prenom}"
+              ></dd>
+
+              <dt>Total</dt>
+              <dd
+                class="mono"
+                id="total"
+                th:text="${commande.totalGeneral}"
+              ></dd>
+
+              <dt>Reste</dt>
+              <dd class="mono texte-ocre" id="reste" th:text="${reste}"></dd>
+            </dl>
+          </div>
+        </div>
+
+        <div class="carte">
+          <div class="carte-tete">
+            <h2><i class="fa-solid fa-receipt"></i> Paiements existants</h2>
+          </div>
+          <div class="carte-corps">
+            <div class="tableau-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Type</th>
+                    <th class="num">Montant</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:if="${#lists.isEmpty(paiement.filles)}">
+                    <td colspan="3">
+                      <div class="vide">
+                        <i class="fa-solid fa-receipt"></i>
+                        <p>Aucun paiement.</p>
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr th:each="pf, i : ${paiement.filles}">
+                    <td th:text="${i.index + 1}"></td>
+                    <td th:text="${pf.typePayement}"></td>
+                    <td class="num mono" th:text="${pf.valeur}"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="carte">
+          <div class="carte-tete">
+            <h2><i class="fa-solid fa-plus"></i> Nouveau paiement</h2>
+          </div>
+          <div class="carte-corps">
+            <form
+              id="formPaiement"
+              th:action="@{/livreurs/paiements/ajouter-multiple}"
+              method="post"
+            >
+              <input
+                type="hidden"
+                name="idCommande"
+                th:value="${commande.id}"
+              />
+
+              <div class="tableau-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th class="num">Montant</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+
+                  <tbody id="lines">
+                    <tr>
+                      <td>
+                        <select name="typePayement">
+                          <option
+                            th:each="t : ${typesPaiement}"
+                            th:value="${t}"
+                            th:text="${t}"
+                          ></option>
+                        </select>
+                      </td>
+
+                      <td>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          name="valeur"
+                          class="montant"
+                          required
+                        />
+                      </td>
+
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-doux-rouge"
+                          onclick="removeLine(this)"
+                        >
+                          <i class="fa-solid fa-xmark"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div
+                class="barre-form"
+                style="justify-content: flex-start; margin-top: 10px"
+              >
+                <button
+                  type="button"
+                  class="btn btn-doux btn-sm"
+                  onclick="addLine()"
+                >
+                  <i class="fa-solid fa-plus"></i> Ajouter ligne
+                </button>
+              </div>
+
+              <div class="resume-paiement">
+                <div>Total saisi : <span id="totalSaisi">0</span></div>
+                <div>Reste : <span id="resteCalc">0</span></div>
+              </div>
+
+              <p class="text-danger" id="error"></p>
+
+              <div class="barre-form">
+                <button
+                  class="btn btn-vert"
+                  type="submit"
+                  th:disabled="${reste <= 0}"
+                >
+                  <i class="fa-solid fa-check"></i> Valider paiement
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-livreur :: pied}"></footer>
     </main>
 
     <script th:inline="javascript">
@@ -266,6 +318,5 @@
 
       calculer();
     </script>
-</body>
-
+  </body>
 </html>

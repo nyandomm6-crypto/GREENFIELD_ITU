@@ -63,7 +63,8 @@ public class CaissierController {
 
     /**
      * Vérifie que l'utilisateur connecté est bien un Caissier.
-     * Renvoie l'employé, ou null si l'accès est refusé (le contrôleur redirige alors).
+     * Renvoie l'employé, ou null si l'accès est refusé (le contrôleur redirige
+     * alors).
      */
     private Employes requireCaissier(HttpSession session) {
         Employes employe = AuthGuard.current(session);
@@ -90,6 +91,17 @@ public class CaissierController {
         model.addAttribute("commandes", commandesService.findByPointDeVenteRetrait(code));
         model.addAttribute("paiements", paiementService.findByPointDeVente(code));
         return "back/caissier/dashboard";
+    }
+
+    @GetMapping("/profil")
+    public String profil(HttpSession session, Model model) {
+        Employes employe = requireCaissier(session);
+        if (employe == null) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        model.addAttribute("employe", employe);
+        return "back/caissier/profil";
     }
 
     @GetMapping("/produits")

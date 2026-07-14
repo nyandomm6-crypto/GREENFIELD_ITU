@@ -1,30 +1,30 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
   <head
-    th:replace="~{back/fragments/layout-livreur :: head('Mon profil')}"
+    th:replace="~{back/fragments/layout-caissier :: head('Mon profil')}"
   ></head>
 
   <body class="bo">
     <aside
-      th:replace="~{back/fragments/layout-livreur :: sidebar('livreur')}"
+      th:replace="~{back/fragments/layout-caissier :: sidebar('compte')}"
     ></aside>
 
     <main class="bo-main">
       <header
-        th:replace="~{back/fragments/layout-livreur :: topbar('Mon profil')}"
+        th:replace="~{back/fragments/layout-caissier :: topbar('Mon profil')}"
       ></header>
 
       <div class="bo-contenu bo-contenu-etroit">
         <div class="page-tete">
           <div>
             <p class="fil">
-              <a th:href="@{/livreurs/dashboard}">Tableau de bord</a> / Mon
+              <a th:href="@{/caissier/dashboard}">Tableau de bord</a> / Mon
               profil
             </p>
             <h1>Mon profil</h1>
           </div>
           <div class="page-actions">
-            <a th:href="@{/livreurs/dashboard}" class="btn btn-ligne"
+            <a th:href="@{/caissier/dashboard}" class="btn btn-ligne"
               ><i class="fa-solid fa-arrow-left"></i> Tableau de bord</a
             >
           </div>
@@ -37,35 +37,35 @@
           <div class="carte-corps">
             <dl class="fiche">
               <dt>Nom</dt>
-              <dd th:text="${livreur.nom}"></dd>
+              <dd th:text="${employe.nom}"></dd>
 
               <dt>Prénom</dt>
-              <dd th:text="${livreur.prenom}"></dd>
+              <dd th:text="${employe.prenom}"></dd>
 
               <dt>Email</dt>
-              <dd th:text="${livreur.mail}"></dd>
+              <dd th:text="${employe.mail}"></dd>
 
               <dt>Contact</dt>
               <dd
-                th:text="${livreur.contact != null ? livreur.contact : '—'}"
+                th:text="${employe.contact != null ? employe.contact : '—'}"
               ></dd>
 
               <dt>Adresse</dt>
               <dd
-                th:text="${livreur.adresse != null ? livreur.adresse : '—'}"
+                th:text="${employe.adresse != null ? employe.adresse : '—'}"
               ></dd>
 
               <dt>Rôle</dt>
               <dd>
-                <span class="badge badge-vert" th:text="${livreur.role}"></span>
+                <span class="badge badge-vert" th:text="${employe.role}"></span>
               </dd>
 
               <dt>Statut</dt>
               <dd>
-                <span th:if="${livreur.estActif}" class="status-active"
+                <span th:if="${employe.estActif}" class="status-active"
                   >Actif</span
                 >
-                <span th:unless="${livreur.estActif}" class="status-inactive"
+                <span th:unless="${employe.estActif}" class="status-inactive"
                   >Inactif</span
                 >
               </dd>
@@ -82,7 +82,7 @@
         </div>
       </div>
 
-      <footer th:replace="~{back/fragments/layout-livreur :: pied}"></footer>
+      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
     </main>
   </body>
 </html>

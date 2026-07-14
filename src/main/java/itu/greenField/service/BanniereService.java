@@ -59,15 +59,15 @@ public class BanniereService {
         }
 
         Banniere banniere = new Banniere();
-        banniere.setTitre("Fresh Exotic Fruits");
-        banniere.setSousTitre("in Our Store");
+        banniere.setTitre("Fruits exotiques frais");
+        banniere.setSousTitre("dans notre boutique");
         banniere.setDescription(
-                "The generated Lorem Ipsum is therefore always free from repetition injected humour, or non-characteristic words etc.");
+                "Découvrez notre sélection de fruits exotiques frais, directement issus de nos producteurs locaux.");
         banniere.setImagePath("img/baner-1.png");
         banniere.setLien("#");
-        banniere.setBtnTexte("BUY");
+        banniere.setBtnTexte("ACHETER");
         banniere.setPromoNombre("1");
-        banniere.setPromoPrix("50$");
+        banniere.setPromoPrix("50 000 Ar");
         banniere.setPromoUnite("kg");
 
         banniereRepository.save(banniere);

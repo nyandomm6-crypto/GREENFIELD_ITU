@@ -1,0 +1,23 @@
+<div th:fragment="liste">
+  <div th:each="livraison : ${livraisons}">
+    <p>
+      Livraison N°
+      <span th:text="${livraison.id}"></span>
+
+      <span th:text="${livraison.statutLivraison}"></span>
+
+      <button
+        th:if="${livraison.statutLivraison.name() == 'En_attente'}"
+        th:onclick="'validerLivraison(' + ${livraison.id} + ')'"
+      >
+        Valider
+      </button>
+      <button
+        th:onclick="'detail(' + ${livraison.id} + ')'"
+        class="btn btn-info btn-sm"
+      >
+        voir détails
+      </button>
+    </p>
+  </div>
+</div>

@@ -29,16 +29,19 @@ public class LivraisonService {
     private LivraisonFilleRepository livraisonFilleRepository;
     private CommandesRepository commandesRepository;
     private StatutCommandeRepository statutCommandeRepository;
+    private EnvoiSmsService envoiSmsService;
 
     public LivraisonService(LivraisonRepository livraisonRepository, VehiculeRepository vehiculeRepository,
             EmployesRepository employeRepository, LivraisonFilleRepository livraisonFilleRepository,
-            CommandesRepository commandesRepository, StatutCommandeRepository statutCommandeRepository) {
+            CommandesRepository commandesRepository, StatutCommandeRepository statutCommandeRepository,
+            EnvoiSmsService envoiSmsService) {
         this.livraisonRepository = livraisonRepository;
         this.vehiculeRepository = vehiculeRepository;
         this.employeRepository = employeRepository;
         this.livraisonFilleRepository = livraisonFilleRepository;
         this.commandesRepository = commandesRepository;
         this.statutCommandeRepository = statutCommandeRepository;
+        this.envoiSmsService = envoiSmsService;
     }
 
     public Integer createLivraison(Integer idVehicule, Integer idEmploye, List<Integer> idCommande,
@@ -54,6 +57,12 @@ public class LivraisonService {
         livraison.setStatutLivraison(StatutLivraison.En_attente);
 
         livraison = livraisonRepository.save(livraison);
+
+        if (employe != null && employe.getContact() != null && !employe.getContact().isBlank()) {
+            String message = "Bonjour " + employe.getPrenom()
+                    + ", une nouvelle livraison vous a été assignée. Veuillez consulter votre tableau de bord.";
+            envoiSmsService.envoyerSms(employe.getContact(), message);
+        }
 
         for (Integer id : idCommande) {
             Commandes commande = commandesRepository.getById(id);
@@ -108,7 +117,7 @@ public class LivraisonService {
     }
 
     public Livraison getLivraisonById(Integer id) {
-        return livraisonRepository.getById(id);
+        return livraisonRepository.findById(id).orElse(null);
     }
 
     public List<Livraison> findByLivreur(Employes emp) {
@@ -127,6 +136,29 @@ public class LivraisonService {
         l.setStatutLivraison(StatutLivraison.Livre);
         livraisonRepository.save(l);
 
+    }
+
+    public List<Livraison> findByLivreurDispo(Employes emp) {
+        return livraisonRepository.findByLivreurDispo(emp.getId());
+    }
+
+    public boolean isMyCommande(Integer idCommande, Employes employe) {
+        Commandes commande = commandesRepository.findById(idCommande).orElse(null);
+        List<LivraisonFille> lf = livraisonFilleRepository.findByCommande(commande);
+        for (LivraisonFille l : lf) {
+            if (l.getLivraison().getLivreur().getId().equals(employe.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isMyLivraisonFille(Integer idLivraisonFille, Employes employe) {
+        LivraisonFille lf = livraisonFilleRepository.findById(idLivraisonFille).orElse(null);
+        if (lf == null) {
+            return false;
+        }
+        return lf.getLivraison().getLivreur().getId().equals(employe.getId());
     }
 
 }

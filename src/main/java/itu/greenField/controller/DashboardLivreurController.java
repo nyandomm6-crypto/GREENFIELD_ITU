@@ -1,8 +1,10 @@
 package itu.greenField.controller;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import itu.greenField.model.FRole;
 import itu.greenField.model.Livraison;
 import itu.greenField.model.LivraisonFille;
 import itu.greenField.model.Paiement;
+import itu.greenField.model.StatutLivraison;
 import itu.greenField.model.TypePayement;
 import itu.greenField.repository.CommandesRepository;
 import itu.greenField.repository.LivraisonFilleRepository;
@@ -38,7 +41,12 @@ public class DashboardLivreurController {
     private final PaiementRepository paiementRepository;
 
     @GetMapping("/historique-livraisons")
-    public String historiqueLivraisons(HttpSession session, Model model) {
+    public String historiqueLivraisons(
+            HttpSession session,
+            Model model,
+            @RequestParam(required = false) StatutLivraison statut,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin) {
         Employes employe = (Employes) session.getAttribute("employe");
 
         if (employe == null || employe.getRole() != FRole.Livreur) {
@@ -46,7 +54,26 @@ public class DashboardLivreurController {
             return "redirect:/emp/login";
         }
 
+        List<Livraison> livraisons = livraisonService.findByLivreur(employe).stream()
+                .filter(l -> statut == null || l.getStatutLivraison() == statut)
+                .filter(l -> dateDebut == null || (l.getDateLivraison() != null
+                        && !l.getDateLivraison().toLocalDate().isBefore(dateDebut)))
+                .filter(l -> dateFin == null || (l.getDateLivraison() != null
+                        && !l.getDateLivraison().toLocalDate().isAfter(dateFin)))
+                .sorted((a, b) -> {
+                    if (a.getDateLivraison() == null || b.getDateLivraison() == null) {
+                        return 0;
+                    }
+                    return b.getDateLivraison().compareTo(a.getDateLivraison());
+                })
+                .toList();
+
         model.addAttribute("livreur", employe);
+        model.addAttribute("livraisons", livraisons);
+        model.addAttribute("statuts", List.of(StatutLivraison.values()));
+        model.addAttribute("statut", statut);
+        model.addAttribute("dateDebut", dateDebut);
+        model.addAttribute("dateFin", dateFin);
         return "back/livraison/historique-livraisons";
     }
 
@@ -85,7 +112,7 @@ public class DashboardLivreurController {
         }
 
         model.addAttribute("livreur", employe);
-        model.addAttribute("livraisons", livraisonService.findByLivreur(employe));
+        model.addAttribute("livraisons", livraisonService.findByLivreurDispo(employe));
         return "back/livraison/mes-livraisons";
     }
 
@@ -104,6 +131,9 @@ public class DashboardLivreurController {
         Livraison livraison = livraisonService.getLivraisonById(id);
 
         if (livraison == null || !livraison.getLivreur().getId().equals(employe.getId())) {
+            return "redirect:/livreurs/livraisons";
+        }
+        if (!livraisonService.isMyLivraisonFille(id, employe)) {
             return "redirect:/livreurs/livraisons";
         }
 
@@ -160,6 +190,9 @@ public class DashboardLivreurController {
         model.addAttribute("reste", reste);
         model.addAttribute("huhu", 300);
         model.addAttribute("typesPaiement", TypePayement.values());
+        if (!livraisonService.isMyCommande(idCommande, employe)) {
+            return "redirect:/livreurs/livraisons";
+        }
 
         return "back/paiement/paiement-livraison";
     }
@@ -176,6 +209,11 @@ public class DashboardLivreurController {
             return "redirect:/emp/login";
         }
         paiementService.ajouterPayement(types, valeurs, idCommande);
+        for (BigDecimal bigDecimal : valeurs) {
+            if (bigDecimal.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new IllegalArgumentException("La valeur du paiement doit être positive");
+            }
+        }
         return "redirect:/paiements/facture?idCommande=" + idCommande;
     }
 
