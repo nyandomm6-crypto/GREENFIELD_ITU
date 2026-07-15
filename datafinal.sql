@@ -322,5 +322,5 @@ INSERT INTO Employes
 VALUES
 ('Rakoto', 'Admin', 'Antananarivo', '0340000001', 'admin@gmail.com', 'admin123', 'Administrateur', NULL),
 ('Rabe', 'Jean', 'Antananarivo', '0340000002', 'caissier@gmail.com', 'caissier123', 'Caissier', 'PT001'),
-('Randria', 'Paul', 'Antananarivo', '0340000003', 'livreur@gmail.com', 'livreur123', 'Livreur', 'PT001'),
+('Randria', 'Paul', 'Antananarivo', '0346678433', 'livreur@gmail.com', 'livreur123', 'Livreur', 'PT001'),
 ('Rasoanaivo', 'Marie', 'Antananarivo', '0340000004', 'employe@gmail.com', 'employe123', 'Employe', 'PT001');
