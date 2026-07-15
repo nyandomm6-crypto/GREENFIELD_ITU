@@ -74,8 +74,8 @@
           </div>
         </div>
 
-        <div class="row g-5">
-          <div class="col-lg-4 col-md-6">
+        <div class="row g-5 justify-content-center">
+          <div class="col-lg-5 col-md-6">
             <div class="footer-item">
               <h4 class="text-light mb-3">Pourquoi GreenField ?</h4>
               <p class="mb-4 text-secondary">
@@ -103,21 +103,17 @@
             </div>
           </div>
 
-          <div class="col-lg-4 col-md-6">
+          <div class="col-lg-5 col-md-6">
             <div class="footer-item">
               <h4 class="text-light mb-3">Contact</h4>
               <div class="d-flex flex-column gap-3 text-secondary">
                 <div class="d-flex align-items-start gap-3">
-                  <i class="fas fa-map-marker-alt mt-1 text-primary"></i>
-                  <span>1429 Netus Rd, NY 48247</span>
-                </div>
-                <div class="d-flex align-items-start gap-3">
                   <i class="fas fa-envelope mt-1 text-primary"></i>
-                  <span>greenfield@example.com</span>
+                  <span>serviceclient@greenfield.com</span>
                 </div>
                 <div class="d-flex align-items-start gap-3">
                   <i class="fas fa-phone-alt mt-1 text-primary"></i>
-                  <span>+0123 4567 8910</span>
+                  <span>038 51 363 57</span>
                 </div>
                 <div class="d-flex align-items-start gap-3">
                   <i class="fas fa-clock mt-1 text-primary"></i>
@@ -138,110 +134,7 @@
             </div>
           </div>
 
-          <div class="col-lg-4 col-md-12">
-            <div class="footer-item">
-              <h4 class="text-light mb-3">Ajouter un témoignage</h4>
-              <div
-                class="rounded-4 p-4 border border-secondary border-opacity-25 bg-transparent testimonial-card"
-              >
-                <form th:action="@{/temoignages}" method="post" class="row g-3">
-                  <div class="col-12">
-                    <label class="form-label text-white-50">Commentaire</label>
-                    <textarea
-                      class="form-control bg-transparent text-white border border-secondary border-opacity-50 rounded-3"
-                      rows="3"
-                      name="message"
-                      placeholder="Votre témoignage..."
-                      required
-                      style="
-                        background: transparent !important;
-                        border-color: rgba(255, 255, 255, 0.25) !important;
-                      "
-                    ></textarea>
-                  </div>
-                  <div class="col-12">
-                    <label class="form-label text-white-50">Note</label>
-                    <div class="d-flex gap-2 flex-wrap mb-3 rating-options">
-                      <input
-                        type="radio"
-                        class="btn-check"
-                        name="note"
-                        id="note1"
-                        value="1"
-                        autocomplete="off"
-                      />
-                      <label
-                        class="btn btn-outline-light btn-sm rounded-pill px-3 py-2"
-                        for="note1"
-                        >😞 1</label
-                      >
-                      <input
-                        type="radio"
-                        class="btn-check"
-                        name="note"
-                        id="note2"
-                        value="2"
-                        autocomplete="off"
-                      />
-                      <label
-                        class="btn btn-outline-light btn-sm rounded-pill px-3 py-2"
-                        for="note2"
-                        >🙁 2</label
-                      >
-                      <input
-                        type="radio"
-                        class="btn-check"
-                        name="note"
-                        id="note3"
-                        value="3"
-                        autocomplete="off"
-                      />
-                      <label
-                        class="btn btn-outline-light btn-sm rounded-pill px-3 py-2"
-                        for="note3"
-                        >😐 3</label
-                      >
-                      <input
-                        type="radio"
-                        class="btn-check"
-                        name="note"
-                        id="note4"
-                        value="4"
-                        autocomplete="off"
-                      />
-                      <label
-                        class="btn btn-outline-light btn-sm rounded-pill px-3 py-2"
-                        for="note4"
-                        >😊 4</label
-                      >
-                      <input
-                        type="radio"
-                        class="btn-check"
-                        name="note"
-                        id="note5"
-                        value="5"
-                        autocomplete="off"
-                        checked
-                      />
-                      <label
-                        class="btn btn-outline-light btn-sm rounded-pill px-3 py-2"
-                        for="note5"
-                        >🤩 5</label
-                      >
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <button
-                      type="submit"
-                      class="btn btn-vert rounded-pill px-4 w-100"
-                    >
-                      <i class="fas fa-paper-plane me-2"></i>Envoyer mon avis
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
