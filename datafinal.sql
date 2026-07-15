@@ -324,3 +324,13 @@ VALUES
 ('Rabe', 'Jean', 'Antananarivo', '0340000002', 'caissier@gmail.com', 'caissier123', 'Caissier', 'PT001'),
 ('Randria', 'Paul', 'Antananarivo', '0346678433', 'livreur@gmail.com', 'livreur123', 'Livreur', 'PT001'),
 ('Rasoanaivo', 'Marie', 'Antananarivo', '0340000004', 'employe@gmail.com', 'employe123', 'Employe', 'PT001');
+
+
+
+INSERT INTO Vehicule (matricule, marque, modele, annee, capacite, statut)
+VALUES
+('MAT001', 'Toyota', 'Hiace', 2020, 15.00, 'Disponible'),
+('MAT002', 'Mercedes-Benz', 'Sprinter', 2021, 20.00, 'Disponible'),
+('MAT003', 'Ford', 'Transit', 2019, 18.00, 'Disponible'),
+('MAT004', 'Hyundai', 'H350', 2022, 16.50, 'Disponible'),
+('MAT005', 'Renault', 'Master', 2023, 17.00, 'Disponible');
