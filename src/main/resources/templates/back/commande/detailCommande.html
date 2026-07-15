@@ -19,9 +19,8 @@
                 <div class="page-actions">
                     <a th:href="@{/commandes/list}" class="btn btn-ligne">Retour</a>
                     <a th:href="@{|/facture/${commande.id}|(print=1)}" target="_blank" class="btn btn-ligne"><i class="fa-solid fa-file-invoice"></i> Facture PDF</a>
-                    <a th:href="@{|/commandes/annuler/${commande.id}|}" class="btn btn-doux-rouge"><i class="fa-solid fa-ban"></i> Annuler</a>
                     <a th:href="@{|/commandes/form/edit/${commande.id}|}" class="btn btn-doux"><i class="fa-solid fa-pen"></i> Modifier</a>
-                    <a th:href="@{|/paiements/choix/${commande.id}|}" class="btn btn-vert"><i class="fa-solid fa-money-bill-wave"></i> Choix de paiement</a>
+                    <a th:href="@{|/back/paiements/choix/${commande.id}|}" class="btn btn-vert"><i class="fa-solid fa-money-bill-wave"></i> Choix de paiement</a>
                 </div>
             </div>
 

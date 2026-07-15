@@ -1,120 +1,198 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head
+    th:replace="~{front/fragments/layout :: head(pageTitle='Détail du paiement - GreenField')}"
+  >
+    <title>Détail du paiement - GreenField</title>
+  </head>
 
-<head th:replace="~{back/fragments/layout :: head('Détail du paiement')}"></head>
+  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+    <div th:fragment="pageContent">
+      <!-- Single Page Header start -->
+      <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Détail du paiement</h1>
+      </div>
+      <!-- Single Page Header End -->
 
-<body class="bo">
-    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
+      <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+          <div class="row g-4 justify-content-center">
+            <div class="col-lg-9">
+              <div class="alert alert-danger" th:if="${alert != null}" th:text="${alert}"></div>
+              <div class="alert alert-success" th:if="${succes != null}" th:text="${succes}"></div>
 
-    <main class="bo-main">
-        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
-
-        <div class="bo-contenu bo-contenu-etroit">
-
-            <div class="page-tete">
+              <div
+                class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4"
+              >
                 <div>
-                    <p class="fil"><a th:href="@{/paiements/list}">Paiements</a> / Détail</p>
-                    <h1 th:text="|Paiement #${paiement.id}|">Détail du paiement</h1>
+                  <h2 class="mb-0" th:text="|Paiement #${paiement.id}|"></h2>
+                  <p class="text-muted mb-0">
+                    Commande #<span th:text="${paiement.commande.id}"></span>
+                  </p>
                 </div>
-                <div class="page-actions">
-                    <a th:href="@{/paiements/list}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+                <div class="d-flex gap-2 flex-wrap">
+                  <a
+                    th:href="@{/paiements/list}"
+                    class="btn btn-outline-secondary rounded-pill px-4"
+                  >
+                    <i class="fas fa-arrow-left me-2"></i> Mes paiements
+                  </a>
+                  <a
+                    th:href="@{|/facture/${paiement.commande.id}|(print=1)}"
+                    target="_blank"
+                    class="btn btn-primary rounded-pill px-4"
+                  >
+                    <i class="fas fa-file-invoice me-2"></i> Facture
+                  </a>
                 </div>
+              </div>
+
+              <!-- Informations -->
+              <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                  <h3 class="h5 mb-3">
+                    <i class="fas fa-info-circle text-primary me-2"></i>
+                    Informations
+                  </h3>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Statut</span>
+                      <span
+                        class="badge"
+                        th:classappend="${paiement.statut.name() == 'Cloture'} ? 'bg-success' : 'bg-warning text-dark'"
+                        th:text="${paiement.statut}"
+                      ></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Montant total</span>
+                      <strong class="text-primary" th:text="${montantTotal}"></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Frais de livraison</span>
+                      <strong th:text="${paiement.commande.fraisLivraison}"></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Montant payé</span>
+                      <strong th:text="${montantPaye}"></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Montant restant</span>
+                      <strong th:text="${montantRestant}"></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">En attente de validation</span>
+                      <strong th:text="${montantEnAttente}"></strong>
+                    </li>
+                  </ul>
+
+                  <div
+                    th:if="${paiementService.aDesLignesEnAttente(paiement)}"
+                    class="alert alert-info mt-3 mb-0"
+                  >
+                    <i class="fas fa-hourglass-half me-2"></i>
+                    Votre paiement a bien été enregistré. Il sera validé par la
+                    boutique après vérification, puis votre commande sera
+                    préparée.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Détail des règlements -->
+              <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                  <h3 class="h5 mb-3">
+                    <i class="fas fa-receipt text-primary me-2"></i> Règlements
+                  </h3>
+                  <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th>Type</th>
+                          <th class="text-end">Montant</th>
+                          <th>Date</th>
+                          <th>État</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="fille : ${filles}">
+                          <td th:text="${fille.typePayement}"></td>
+                          <td class="text-end" th:text="${fille.valeur}"></td>
+                          <td th:text="${fille.date}"></td>
+                          <td>
+                            <span th:if="${fille.enAttente}" class="badge bg-warning text-dark">
+                              En attente de validation
+                            </span>
+                            <span th:unless="${fille.enAttente}" class="badge bg-success">
+                              Validé
+                            </span>
+                          </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(filles)}">
+                          <td colspan="4" class="text-center text-muted py-4">
+                            Aucun règlement enregistré.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Commande -->
+              <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                  <h3 class="h5 mb-3">
+                    <i class="fas fa-shopping-basket text-primary me-2"></i>
+                    Commande correspondante
+                  </h3>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Client</span>
+                      <strong
+                        th:text="|${paiement.commande.client.nom} ${paiement.commande.client.prenom}|"
+                      ></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Mode de réception</span>
+                      <strong th:text="${paiement.commande.modeReception}"></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Lieu</span>
+                      <strong
+                        th:text="${paiement.commande.pointDeVenteRetrait?.code != null ? paiement.commande.pointDeVenteRetrait.code : paiement.commande.adresseLivraison}"
+                      ></strong>
+                    </li>
+                  </ul>
+
+                  <!-- Le reste ne peut être payé qu'une fois le versement validé par la boutique. -->
+                  <div
+                    class="mt-4"
+                    th:if="${montantRestant.compareTo(T(java.math.BigDecimal).ZERO) > 0
+                            and !paiementService.aDesLignesEnAttente(paiement)}"
+                  >
+                    <a
+                      th:href="@{|/paiements/reste/${paiement.commande.id}|}"
+                      class="btn btn-primary rounded-pill px-4"
+                    >
+                      <i class="fas fa-money-bill-wave me-2"></i> Payer le reste
+                    </a>
+                  </div>
+
+                  <div
+                    class="alert alert-info mt-4 mb-0"
+                    th:if="${montantRestant.compareTo(T(java.math.BigDecimal).ZERO) > 0
+                            and paiementService.aDesLignesEnAttente(paiement)}"
+                  >
+                    <i class="fas fa-hourglass-half me-2"></i>
+                    Votre versement est en cours de validation par la boutique.
+                    Vous pourrez payer le reste une fois cette validation faite.
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
-            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-circle-info"></i> Informations</h2>
-                </div>
-                <div class="carte-corps">
-                    <dl class="fiche">
-                        <dt>Statut</dt>
-                        <dd><span class="badge badge-vert" th:text="${paiement.statut}"></span></dd>
-
-                        <dt>Commande</dt>
-                        <dd class="mono" th:text="|#${paiement.commande.id}|"></dd>
-
-                        <dt>Frais de livraison</dt>
-                        <dd class="mono" th:text="${paiement.commande.fraisLivraison}"></dd>
-
-                        <dt>Montant total</dt>
-                        <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
-
-                        <dt>Montant payé</dt>
-                        <dd class="mono" th:text="${montantPaye}"></dd>
-
-                        <dt>Montant restant</dt>
-                        <dd class="mono" th:text="${montantRestant}"></dd>
-                    </dl>
-                </div>
-            </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-receipt"></i> Paiements filles</h2>
-                </div>
-                <div class="carte-corps">
-                    <div class="tableau-scroll">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th class="num">Montant</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="fille : ${filles}">
-                                    <td th:text="${fille.typePayement}"></td>
-                                    <td class="num mono" th:text="${fille.valeur}"></td>
-                                    <td th:text="${fille.date}"></td>
-                                </tr>
-                                <tr th:if="${#lists.isEmpty(filles)}">
-                                    <td colspan="3">
-                                        <div class="vide">
-                                            <i class="fa-solid fa-receipt"></i>
-                                            <p>Aucun paiement enregistré.</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-basket-shopping"></i> Commande correspondante</h2>
-                </div>
-                <div class="carte-corps">
-                    <dl class="fiche">
-                        <dt>Client</dt>
-                        <dd th:text="|${paiement.commande.client.nom} ${paiement.commande.client.prenom}|"></dd>
-
-                        <dt>Mode de réception</dt>
-                        <dd th:text="${paiement.commande.modeReception}"></dd>
-
-                        <dt>Lieu</dt>
-                        <dd th:text="${paiement.commande.pointDeVenteRetrait?.code != null ? paiement.commande.pointDeVenteRetrait.code : paiement.commande.adresseLivraison}"></dd>
-                    </dl>
-                </div>
-            </div>
-
-            <div class="barre-form">
-                <form th:if="${paiement.statut.name() == 'Reste' and paiementService.aUnPaiementEnEspece(paiement)}"
-                    th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST">
-                    <button type="submit" class="btn btn-doux"><i class="fa-solid fa-check"></i> Confirmer paiement en espèce</button>
-                </form>
-                <a th:href="@{|/facture/${paiement.commande.id}|(print=1)}" target="_blank" class="btn btn-vert"><i class="fa-solid fa-file-invoice"></i> Exporter la facture</a>
-            </div>
-
+          </div>
         </div>
-
-        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
-    </main>
-</body>
-
+      </div>
+    </div>
+  </body>
 </html>

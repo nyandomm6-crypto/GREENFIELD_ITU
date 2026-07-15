@@ -37,6 +37,13 @@ public class PaiementFille {
     @Column(name = "date")
     private LocalDate date;
 
+    /**
+     * Une ligne en Espèce ou Mobile Money n'est encaissée (entrée trésorerie)
+     * qu'après confirmation manuelle par un caissier ou un administrateur.
+     */
+    @Column(name = "confirme", nullable = false)
+    private boolean confirme;
+
     public Integer getId() {
         return id;
     }
@@ -75,5 +82,23 @@ public class PaiementFille {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public boolean isConfirme() {
+        return confirme;
+    }
+
+    public void setConfirme(boolean confirme) {
+        this.confirme = confirme;
+    }
+
+    /** Vrai si ce type de paiement exige une confirmation manuelle avant encaissement. */
+    public boolean isAConfirmer() {
+        return TypePayement.Espece.equals(typePayement) || TypePayement.Mobile_Money.equals(typePayement);
+    }
+
+    /** Vrai si la ligne attend encore une confirmation manuelle. */
+    public boolean isEnAttente() {
+        return isAConfirmer() && !confirme;
     }
 }

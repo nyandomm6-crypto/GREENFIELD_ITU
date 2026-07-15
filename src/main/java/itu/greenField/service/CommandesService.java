@@ -79,12 +79,12 @@ public class CommandesService {
         return commandesRepository.findDispoCommandes();
     }
 
-    /** Commandes du point de vente de retrait donné (par code) — utilisé par l'espace caissier. */
-    public List<Commandes> findByPointDeVenteRetrait(String code) {
+    /** Commandes créées par le point de vente donné (par code) — utilisé par l'espace caissier. */
+    public List<Commandes> findByPointDeVenteCreateur(String code) {
         if (code == null || code.isBlank()) {
             return new ArrayList<>();
         }
-        return commandesRepository.findByPointDeVenteRetrait_CodeOrderByIdDesc(code);
+        return commandesRepository.findByPointDeVenteCreateur_CodeOrderByIdDesc(code);
     }
 
     public Commandes getCommandeById(Integer id) {

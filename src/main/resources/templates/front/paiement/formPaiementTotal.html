@@ -1,186 +1,345 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head
+    th:replace="~{front/fragments/layout :: head(pageTitle='Paiement - GreenField')}"
+  >
+    <title>Paiement - GreenField</title>
+  </head>
 
-<head th:replace="~{back/fragments/layout :: head(${modeReste} ? 'Payer le reste' : 'Paiement total')}"></head>
+  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+    <div th:fragment="pageContent">
+      <!-- Single Page Header start -->
+      <div class="container-fluid page-header py-5">
+        <h1
+          class="text-center text-white display-6"
+          th:text="${modeReste} ? 'Payer le reste' : 'Paiement total'"
+        ></h1>
+      </div>
+      <!-- Single Page Header End -->
 
-<body class="bo">
-    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
+      <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+          <div class="row g-4 justify-content-center">
+            <div class="col-lg-9">
+              <div class="alert alert-danger" th:if="${alert != null}" th:text="${alert}"></div>
+              <div class="alert alert-success" th:if="${succes != null}" th:text="${succes}"></div>
 
-    <main class="bo-main">
-        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
-
-        <div class="bo-contenu bo-contenu-etroit">
-
-            <div class="page-tete">
-                <div>
-                    <p class="fil"><a th:href="@{/paiements/list}">Paiements</a> / Formulaire</p>
-                    <h1 th:text="${modeReste} ? 'Payer le reste' : 'Paiement total'"></h1>
+              <!-- Récapitulatif -->
+              <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                  <h2 class="h4 mb-3">
+                    <i class="fas fa-receipt text-primary me-2"></i>
+                    Commande #<span th:text="${commande.id}"></span>
+                  </h2>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Montant total à payer</span>
+                      <strong th:text="${montantTotal}"></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Frais de livraison</span>
+                      <strong th:text="${commande.fraisLivraison}"></strong>
+                    </li>
+                    <li
+                      class="list-group-item d-flex justify-content-between"
+                      th:if="${modeReste}"
+                    >
+                      <span class="text-muted">Montant déjà payé</span>
+                      <strong th:text="${montantPaye}"></strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                      <span class="text-muted">Montant restant à payer</span>
+                      <strong class="text-primary" th:text="${montantRestant}"></strong>
+                    </li>
+                  </ul>
                 </div>
-            </div>
+              </div>
 
-            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
-            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-circle-info"></i> Commande #<span th:text="${commande.id}"></span></h2>
+              <!-- Paiements déjà enregistrés -->
+              <div
+                th:if="${fillesExistantes != null and !#lists.isEmpty(fillesExistantes)}"
+                class="card border-0 shadow-sm rounded-4 mb-4"
+              >
+                <div class="card-body p-4">
+                  <h2 class="h5 mb-3">
+                    <i class="fas fa-history text-primary me-2"></i> Paiements
+                    déjà enregistrés
+                  </h2>
+                  <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                      <thead>
+                        <tr>
+                          <th>Type</th>
+                          <th class="text-end">Montant</th>
+                          <th>Date</th>
+                          <th>État</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="fille : ${fillesExistantes}">
+                          <td th:text="${fille.typePayement}"></td>
+                          <td class="text-end" th:text="${fille.valeur}"></td>
+                          <td th:text="${fille.date}"></td>
+                          <td>
+                            <span th:if="${fille.enAttente}" class="badge bg-warning text-dark">
+                              En attente de validation
+                            </span>
+                            <span th:unless="${fille.enAttente}" class="badge bg-success">
+                              Validé
+                            </span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div class="carte-corps">
-                    <dl class="fiche">
-                        <dt>Montant total à payer</dt>
-                        <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
+              </div>
 
-                        <dt>Frais de livraison</dt>
-                        <dd class="mono" th:text="${commande.fraisLivraison}"></dd>
+              <!-- Nouveau paiement -->
+              <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-md-5">
+                  <h2 class="h4 mb-4">
+                    <i class="fas fa-money-bill-wave text-primary me-2"></i>
+                    Nouveau paiement
+                  </h2>
 
-                        <dt th:if="${modeReste}">Montant déjà payé</dt>
-                        <dd th:if="${modeReste}" class="mono" th:text="${montantPaye}"></dd>
+                  <form
+                    th:action="${modeReste} ? @{|/paiements/reste/${commande.id}|} : @{|/paiements/total/${commande.id}|}"
+                    th:object="${paiementFormDto}"
+                    method="POST"
+                  >
+                    <input type="hidden" th:field="*{commandeId}" />
 
-                        <dt>Montant restant à payer</dt>
-                        <dd class="mono texte-ocre" th:text="${montantRestant}"></dd>
-                    </dl>
-                </div>
-            </div>
-
-            <div th:if="${fillesExistantes != null and !#lists.isEmpty(fillesExistantes)}" class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-receipt"></i> Paiements déjà enregistrés</h2>
-                </div>
-                <div class="carte-corps">
-                    <div class="tableau-scroll">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th class="num">Montant</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="fille : ${fillesExistantes}">
-                                    <td th:text="${fille.typePayement}"></td>
-                                    <td class="num mono" th:text="${fille.valeur}"></td>
-                                    <td th:text="${fille.date}"></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="table-responsive mb-3">
+                      <table class="table align-middle" id="table-paiement">
+                        <thead>
+                          <tr>
+                            <th>Type de paiement</th>
+                            <th class="text-end">Montant</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="ligne-paiement" th:each="ligne, stat : *{lignes}">
+                            <td>
+                              <select
+                                class="form-select type-paiement"
+                                th:field="*{lignes[__${stat.index}__].typePayement}"
+                              >
+                                <option
+                                  th:each="type : ${typesPaiement}"
+                                  th:value="${type}"
+                                  th:text="${type}"
+                                ></option>
+                              </select>
+                            </td>
+                            <td class="text-end">
+                              <input
+                                type="number"
+                                step="0.01"
+                                class="form-control montant text-end"
+                                th:field="*{lignes[__${stat.index}__].montant}"
+                                required
+                              />
+                              <span class="montant-auto fw-bold" style="display: none"></span>
+                            </td>
+                            <td class="text-end">
+                              <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger rounded-pill"
+                                onclick="supprimerLignePaiement(this)"
+                              >
+                                <i class="fas fa-times"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
+
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary rounded-pill mb-4"
+                      onclick="ajouterLignePaiement()"
+                    >
+                      <i class="fas fa-plus me-2"></i> Ajouter une ligne
+                    </button>
+
+                    <!-- Mobile Money : pas de montant à saisir, seulement les numéros et un message -->
+                    <div id="bloc-mobile-money" class="mb-4" style="display: none">
+                      <label class="form-label fw-bold">Numéros de transfert</label>
+                      <ul class="list-group mb-3">
+                        <li
+                          class="list-group-item"
+                          th:each="numero : ${numerosTransfert}"
+                          th:text="${numero}"
+                        ></li>
+                      </ul>
+
+                      <label for="messageMobileMoney" class="form-label"
+                        >Message (facultatif)</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="messageMobileMoney"
+                        name="messageMobileMoney"
+                        placeholder="Référence du transfert, remarque..."
+                      />
+
+                      <div class="alert alert-info mt-3 mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Le montant réglé par Mobile Money correspond au reste à
+                        payer. Il sera validé par la boutique après vérification
+                        du transfert.
+                      </div>
+                    </div>
+
+                    <div
+                      id="alerte-mobile-money"
+                      class="alert alert-danger"
+                      style="display: none"
+                    >
+                      Une seule ligne Mobile Money est possible : son montant est
+                      calculé automatiquement.
+                    </div>
+
+                    <div class="d-flex gap-2 flex-wrap">
+                      <a
+                        th:href="@{|/paiements/choix/${commande.id}|}"
+                        class="btn btn-outline-secondary rounded-pill px-4"
+                      >
+                        <i class="fas fa-arrow-left me-2"></i> Retour
+                      </a>
+                      <button
+                        type="submit"
+                        id="btn-payer"
+                        class="btn btn-primary rounded-pill px-4"
+                      >
+                        <i class="fas fa-check me-2"></i> Payer
+                      </button>
+                    </div>
+                  </form>
                 </div>
+              </div>
             </div>
-
-            <div class="carte">
-                <div class="carte-tete">
-                    <h2><i class="fa-solid fa-money-bill-wave"></i> Nouveau paiement</h2>
-                </div>
-                <div class="carte-corps">
-                    <form th:action="${modeReste} ? @{|/paiements/reste/${commande.id}|} : @{|/paiements/total/${commande.id}|}"
-                        th:object="${paiementFormDto}" method="POST">
-                        <input type="hidden" th:field="*{commandeId}">
-
-                        <div class="tableau-scroll">
-                            <table id="table-paiement">
-                                <thead>
-                                    <tr>
-                                        <th>Type de paiement</th>
-                                        <th class="num">Montant</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="ligne-paiement" th:each="ligne, stat : *{lignes}">
-                                        <td>
-                                            <select class="type-paiement" th:field="*{lignes[__${stat.index}__].typePayement}">
-                                                <option th:each="type : ${typesPaiement}" th:value="${type}" th:text="${type}"></option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="number" step="0.01" class="montant" th:field="*{lignes[__${stat.index}__].montant}" required>
-                                        </td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-doux-rouge" onclick="supprimerLignePaiement(this)"><i class="fa-solid fa-xmark"></i> Supprimer</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="barre-form" style="justify-content: flex-start; margin-bottom: 10px;">
-                            <button type="button" class="btn btn-doux btn-sm" onclick="ajouterLignePaiement()"><i class="fa-solid fa-plus"></i> Ajouter une ligne</button>
-                        </div>
-
-                        <div id="bloc-mobile-money" class="champ">
-                            <label>Numéros de transfert</label>
-                            <div class="liste-coche" style="max-height: none;">
-                                <p th:each="numero : ${numerosTransfert}" th:text="${numero}" style="margin: 0; padding: 4px 0;"></p>
-                            </div>
-                        </div>
-
-                        <div class="barre-form">
-                            <button type="submit" class="btn btn-vert"><i class="fa-solid fa-check"></i> Payer</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
+          </div>
         </div>
+      </div>
 
-        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
-    </main>
-
-    <script th:inline="javascript">
-        const typesPaiement = /*[[${typesPaiement}]]*/[];
+      <script th:inline="javascript">
+        const typesPaiement = /*[[${typesPaiement}]]*/ [];
+        const montantRestant = /*[[${montantRestant}]]*/ 0;
 
         function ajouterLignePaiement() {
-            const tbody = document.querySelector('#table-paiement tbody');
-            const index = tbody.querySelectorAll('.ligne-paiement').length;
-            const options = typesPaiement.map(type => `<option value="${type}">${type}</option>`).join('');
-            tbody.insertAdjacentHTML('beforeend', `
-                <tr class="ligne-paiement">
-                    <td>
-                        <select class="type-paiement" name="lignes[${index}].typePayement" onchange="toggleMobileMoney()">
-                            ${options}
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" step="0.01" class="montant" name="lignes[${index}].montant" required>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-sm btn-doux-rouge" onclick="supprimerLignePaiement(this)"><i class="fa-solid fa-xmark"></i> Supprimer</button>
-                    </td>
-                </tr>
-            `);
-            toggleMobileMoney();
+          const tbody = document.querySelector('#table-paiement tbody');
+          const index = tbody.querySelectorAll('.ligne-paiement').length;
+          const options = typesPaiement
+            .map((type) => `<option value="${type}">${type}</option>`)
+            .join('');
+          tbody.insertAdjacentHTML(
+            'beforeend',
+            `
+              <tr class="ligne-paiement">
+                <td>
+                  <select class="form-select type-paiement" name="lignes[${index}].typePayement">
+                    ${options}
+                  </select>
+                </td>
+                <td class="text-end">
+                  <input type="number" step="0.01" class="form-control montant text-end" name="lignes[${index}].montant" required>
+                  <span class="montant-auto fw-bold" style="display:none"></span>
+                </td>
+                <td class="text-end">
+                  <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" onclick="supprimerLignePaiement(this)">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </td>
+              </tr>
+            `
+          );
+          toggleMobileMoney();
         }
 
         function supprimerLignePaiement(button) {
-            const lignes = document.querySelectorAll('.ligne-paiement');
-            if (lignes.length <= 1) {
-                alert('Vous devez garder au moins une ligne de paiement.');
-                return;
-            }
-            button.closest('.ligne-paiement').remove();
-            reindexerLignes();
-            toggleMobileMoney();
+          const lignes = document.querySelectorAll('.ligne-paiement');
+          if (lignes.length <= 1) {
+            alert('Vous devez garder au moins une ligne de paiement.');
+            return;
+          }
+          button.closest('.ligne-paiement').remove();
+          reindexerLignes();
+          toggleMobileMoney();
         }
 
         function reindexerLignes() {
-            document.querySelectorAll('.ligne-paiement').forEach((ligne, index) => {
-                ligne.querySelector('.type-paiement').name = `lignes[${index}].typePayement`;
-                ligne.querySelector('input[type="number"]').name = `lignes[${index}].montant`;
-            });
+          document.querySelectorAll('.ligne-paiement').forEach((ligne, index) => {
+            ligne.querySelector('.type-paiement').name = `lignes[${index}].typePayement`;
+            ligne.querySelector('.montant').name = `lignes[${index}].montant`;
+          });
         }
 
+        /**
+         * En Mobile Money le client ne saisit pas de montant : la ligne prend
+         * automatiquement ce qui reste après les autres lignes.
+         */
         function toggleMobileMoney() {
-            const hasMobileMoney = Array.from(document.querySelectorAll('.type-paiement'))
-                .some(select => select.value === 'Mobile_Money');
-            document.getElementById('bloc-mobile-money').style.display = hasMobileMoney ? 'block' : 'none';
+          const lignes = Array.from(document.querySelectorAll('.ligne-paiement'));
+          const lignesMobileMoney = lignes.filter(
+            (l) => l.querySelector('.type-paiement').value === 'Mobile_Money'
+          );
+
+          let sommeAutres = 0;
+          lignes
+            .filter((l) => !lignesMobileMoney.includes(l))
+            .forEach((ligne) => {
+              const input = ligne.querySelector('.montant');
+              input.style.display = '';
+              input.required = true;
+              ligne.querySelector('.montant-auto').style.display = 'none';
+              sommeAutres += parseFloat(input.value) || 0;
+            });
+
+          const reste = Math.max(
+            Math.round((montantRestant - sommeAutres) * 100) / 100,
+            0
+          );
+          lignesMobileMoney.forEach((ligne, i) => {
+            const input = ligne.querySelector('.montant');
+            const apercu = ligne.querySelector('.montant-auto');
+            input.style.display = 'none';
+            input.required = false;
+            input.value = i === 0 ? reste : 0;
+            apercu.style.display = '';
+            apercu.textContent = i === 0 ? reste : 0;
+          });
+
+          document.getElementById('bloc-mobile-money').style.display =
+            lignesMobileMoney.length ? 'block' : 'none';
+
+          // Plusieurs lignes Mobile Money n'ont pas de sens : le montant est calculé, pas saisi.
+          const enTrop = lignesMobileMoney.length > 1;
+          document.getElementById('alerte-mobile-money').style.display = enTrop
+            ? 'block'
+            : 'none';
+          document.getElementById('btn-payer').disabled = enTrop;
         }
 
-        document.querySelectorAll('.type-paiement').forEach(select => {
-            select.addEventListener('change', toggleMobileMoney);
+        document.addEventListener('change', (event) => {
+          if (
+            event.target.matches('.type-paiement') ||
+            event.target.matches('.montant')
+          ) {
+            toggleMobileMoney();
+          }
+        });
+        document.addEventListener('input', (event) => {
+          if (event.target.matches('.montant')) {
+            toggleMobileMoney();
+          }
         });
         toggleMobileMoney();
-    </script>
-</body>
-
+      </script>
+    </div>
+  </body>
 </html>

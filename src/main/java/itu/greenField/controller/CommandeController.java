@@ -363,10 +363,12 @@ public class CommandeController {
             mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
             mv.addObject("pointDeVenteOptions", pointDeVenteService.getAll());
 
+            // Le reste n'est payable qu'une fois les encaissements déjà versés confirmés.
             Set<Integer> commandesAvecResteAPayer = commandePage.getContent().stream()
                     .filter(cmd -> paiementService.getMontantRestant(cmd).compareTo(java.math.BigDecimal.ZERO) > 0)
                     .filter(cmd -> cmd.getPaiement() != null
-                            && cmd.getPaiement().getStatut() == itu.greenField.model.StatutPaiement.Reste)
+                            && cmd.getPaiement().getStatut() == itu.greenField.model.StatutPaiement.Reste
+                            && !paiementService.aDesLignesEnAttente(cmd.getPaiement()))
                     .map(Commandes::getId)
                     .collect(Collectors.toSet());
             mv.addObject("commandesAvecResteAPayer", commandesAvecResteAPayer);

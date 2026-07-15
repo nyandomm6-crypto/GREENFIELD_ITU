@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{back/fragments/layout-caissier :: head('Paiement avance')}"></head>
+
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout-caissier :: sidebar('paiements')}"></aside>
+
+    <main class="bo-main">
+      <header th:replace="~{back/fragments/layout-caissier :: topbar('Paiements')}"></header>
+
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/caissier/paiements}">Paiements</a>
+              <i class="fas fa-chevron-right"></i> Avance
+            </p>
+            <h1>Paiement de l'avance</h1>
+          </div>
+        </div>
+
+        <th:block th:replace="~{back/fragments/layout-caissier :: alertes}"></th:block>
+
+        <form th:action="@{|/caissier/paiement/avance/${commande.id}|}" method="POST">
+          <div class="carte">
+            <div class="carte-tete">
+              <h2>
+                <i class="fa-solid fa-hand-holding-dollar"></i> Commande #<span
+                  th:text="${commande.id}"
+                ></span>
+              </h2>
+            </div>
+            <div class="carte-corps">
+              <dl class="fiche">
+                <dt>Montant total à payer</dt>
+                <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
+
+                <dt>Frais de livraison</dt>
+                <dd class="mono" th:text="${commande.fraisLivraison}"></dd>
+
+                <dt>Avance à payer</dt>
+                <dd class="mono texte-ocre" th:text="${avanceAPayer}"></dd>
+
+                <dt>Mode de paiement</dt>
+                <dd>Mobile Money</dd>
+              </dl>
+
+              <!-- Mobile Money : le montant n'est pas saisi, c'est l'avance calculée. -->
+              <input type="hidden" name="montant" th:value="${avanceAPayer}" />
+
+              <div class="champ">
+                <label>Numéros de transfert</label>
+                <div class="liste-coche" style="max-height: none">
+                  <p
+                    th:each="numero : ${numerosTransfert}"
+                    th:text="${numero}"
+                    style="margin: 0; padding: 4px 0"
+                  ></p>
+                </div>
+
+                <label for="messageMobileMoney" style="margin-top: 12px"
+                  >Message (facultatif)</label
+                >
+                <input
+                  type="text"
+                  id="messageMobileMoney"
+                  name="messageMobileMoney"
+                  placeholder="Référence du transfert, remarque..."
+                />
+
+                <p class="sous-titre" style="margin-top: 8px">
+                  <i class="fa-solid fa-circle-info"></i>
+                  L'entrée de trésorerie ne sera créée qu'après confirmation
+                  manuelle de l'avance.
+                </p>
+              </div>
+
+              <div class="barre-form">
+                <a th:href="@{|/caissier/paiement/choix/${commande.id}|}" class="btn btn-ligne">
+                  <i class="fas fa-arrow-left"></i> Retour
+                </a>
+                <button type="submit" class="btn btn-vert">
+                  <i class="fa-solid fa-check"></i> Enregistrer l'avance
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+    </main>
+  </body>
+</html>

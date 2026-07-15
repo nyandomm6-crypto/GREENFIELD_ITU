@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head th:replace="~{back/fragments/layout :: head('Paiements')}"></head>
+
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
+
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
+
+        <div class="bo-contenu">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil">Ventes <i class="fas fa-chevron-right"></i> Paiements</p>
+                    <h1>Liste des paiements</h1>
+                </div>
+            </div>
+
+            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
+            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
+
+            <form th:action="@{/back/paiements/list}" method="GET" class="section-filtre barre-filtres">
+                <div class="filtre">
+                    <label for="statut">Statut</label>
+                    <select id="statut" name="statut">
+                        <option value="">Tous</option>
+                        <option th:each="s : ${statutsPaiement}" th:value="${s}" th:text="${s}" th:selected="${s == statut}">
+                        </option>
+                    </select>
+                </div>
+                <div class="filtre">
+                    <label for="size">Éléments par page</label>
+                    <select name="size" id="size" onchange="this.form.submit()">
+                        <option th:each="opt : ${ {5, 10, 25, 50, 100} }"
+                                th:value="${opt}" th:text="${opt}"
+                                th:selected="${opt == size}"></option>
+                    </select>
+                </div>
+                <div class="barre-form" style="justify-content: flex-start;">
+                    <button type="submit" class="btn btn-vert btn-sm">Filtrer</button>
+                </div>
+            </form>
+
+            <div class="tableau-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Commande</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th class="num">Total</th>
+                            <th class="num">À confirmer</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="paiement : ${paiements}">
+                            <td class="mono" th:text="${paiement.id}"></td>
+                            <td class="mono" th:text="${paiement.commande.id}"></td>
+                            <td th:text="${paiement.date}"></td>
+                            <td><span class="badge badge-vert" th:text="${paiement.statut}"></span></td>
+                            <td class="num texte-ocre" th:text="${paiementService.getMontantTotalCommande(paiement.commande)}"></td>
+                            <td class="num mono" th:text="${paiementService.getMontantEnAttente(paiement)}"></td>
+                            <td>
+                                <div class="cellule-actions">
+                                    <a th:href="@{|/back/paiements/detail/${paiement.id}|}" class="btn btn-sm btn-ligne">Détails</a>
+                                    <a th:if="${paiementService.aDesLignesEnAttente(paiement)}"
+                                        th:href="@{|/back/paiements/detail/${paiement.id}|}"
+                                        class="btn btn-sm btn-doux">Confirmer</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(paiements)}">
+                            <td colspan="7">
+                                <div class="vide">
+                                    <i class="fa-solid fa-money-bill-wave"></i>
+                                    <p>Aucun paiement trouvé.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section-pagination" th:if="${totalPages > 0}">
+                <span>Total : <strong th:text="${totalElements}">0</strong> paiement(s)</span>
+                <div class="pagination">
+                    <a class="btn-pagination" th:if="${page > 0}"
+                       th:href="@{/back/paiements/list(statut=${statut},page=${page - 1},size=${size})}">« Précédent</a>
+                    <span>Page <strong th:text="${page + 1}">1</strong> sur <strong th:text="${totalPages}">1</strong></span>
+                    <a class="btn-pagination" th:if="${page + 1 < totalPages}"
+                       th:href="@{/back/paiements/list(statut=${statut},page=${page + 1},size=${size})}">Suivant »</a>
+                </div>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
+</html>

@@ -196,7 +196,9 @@ CREATE TABLE PaiementFille (
     id SERIAL PRIMARY KEY,
     idPaiement INT REFERENCES Paiement (id) ON DELETE CASCADE,
     typePayement VARCHAR(50) NOT NULL,
-    valeur DECIMAL(10, 2) NOT NULL
+    valeur DECIMAL(10, 2) NOT NULL,
+    -- Espèce et Mobile Money ne sont encaissés (entrée trésorerie) qu'après confirmation manuelle
+    confirme BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- =====================================================

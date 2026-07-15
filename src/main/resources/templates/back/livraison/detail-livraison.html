@@ -52,14 +52,16 @@
                 ></span>
               </dd>
 
+              <!-- Une livraison peut ne pas encore avoir de véhicule affecté. -->
               <dt>Véhicule</dt>
               <dd>
-                <span th:text="${livraison.vehicule.marque}"></span>
-                <span th:text="${livraison.vehicule.modele}"></span>
+                <span th:text="${livraison.vehicule != null ? livraison.vehicule.marque : '—'}"></span>
+                <span th:text="${livraison.vehicule != null ? livraison.vehicule.modele : ''}"></span>
               </dd>
 
               <dt>Matricule</dt>
-              <dd class="mono" th:text="${livraison.vehicule.matricule}"></dd>
+              <dd class="mono"
+                  th:text="${livraison.vehicule != null ? livraison.vehicule.matricule : '—'}"></dd>
             </dl>
           </div>
         </div>

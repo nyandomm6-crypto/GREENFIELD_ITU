@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{back/fragments/layout-caissier :: head('Choix du paiement')}"></head>
+
+  <body class="bo">
+    <aside th:replace="~{back/fragments/layout-caissier :: sidebar('paiements')}"></aside>
+
+    <main class="bo-main">
+      <header th:replace="~{back/fragments/layout-caissier :: topbar('Paiements')}"></header>
+
+      <div class="bo-contenu bo-contenu-etroit">
+        <div class="page-tete">
+          <div>
+            <p class="fil">
+              <a th:href="@{/caissier/commandes}">Commandes</a>
+              <i class="fas fa-chevron-right"></i> Paiement
+            </p>
+            <h1>Choix du paiement</h1>
+            <p class="sous-titre">
+              Commande de votre point de vente : choisissez le type de règlement.
+            </p>
+          </div>
+          <div class="page-actions">
+            <a th:href="@{|/caissier/commande/detail/${commande.id}|}" class="btn btn-ligne">
+              <i class="fas fa-arrow-left"></i> Retour
+            </a>
+          </div>
+        </div>
+
+        <th:block th:replace="~{back/fragments/layout-caissier :: alertes}"></th:block>
+
+        <div
+          class="alerte alerte-info"
+          th:if="${paiement != null and paiementService.aDesLignesEnAttente(paiement)}"
+        >
+          <i class="fas fa-hourglass-half"></i>
+          Un encaissement est en attente de confirmation. Saisissez d'abord le
+          montant reçu et confirmez-le sur
+          <a th:href="@{|/caissier/paiement/detail/${paiement.id}|}">la fiche du paiement</a>
+          : le reste ne pourra être payé qu'ensuite.
+        </div>
+
+        <div class="carte">
+          <div class="carte-tete">
+            <h2>
+              <i class="fa-solid fa-money-bill-wave"></i> Commande #<span
+                th:text="${commande.id}"
+              ></span>
+            </h2>
+          </div>
+          <div class="carte-corps">
+            <dl class="fiche">
+              <dt>Total produits</dt>
+              <dd class="mono" th:text="${commande.totalGeneral}"></dd>
+
+              <dt>Frais de livraison</dt>
+              <dd class="mono" th:text="${commande.fraisLivraison}"></dd>
+
+              <dt>Montant total à payer</dt>
+              <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
+
+              <dt>Montant restant à payer</dt>
+              <dd class="mono texte-ocre" th:text="${montantRestant}"></dd>
+            </dl>
+
+            <div
+              class="btn-list barre-form"
+              style="justify-content: center; margin-top: 22px"
+            >
+              <a
+                th:if="${paiement == null}"
+                th:href="@{|/caissier/paiement/avance/${commande.id}|}"
+                class="btn btn-doux btn-lg"
+              >
+                <i class="fa-solid fa-hand-holding-dollar"></i> Payer l'avance
+              </a>
+              <a
+                th:if="${paiement == null}"
+                th:href="@{|/caissier/paiement/total/${commande.id}|}"
+                class="btn btn-vert btn-lg"
+              >
+                <i class="fa-solid fa-check"></i> Payer en totalité
+              </a>
+              <!-- Le reste ne peut être payé qu'une fois l'avance confirmée. -->
+              <a
+                th:if="${paiement != null and montantRestant.compareTo(T(java.math.BigDecimal).ZERO) > 0
+                        and !paiementService.aDesLignesEnAttente(paiement)}"
+                th:href="@{|/caissier/paiement/reste/${commande.id}|}"
+                class="btn btn-ocre btn-lg"
+              >
+                <i class="fa-solid fa-money-bill-wave"></i> Payer le reste
+              </a>
+              <a
+                th:if="${paiement != null}"
+                th:href="@{|/caissier/paiement/detail/${paiement.id}|}"
+                class="btn btn-ligne btn-lg"
+              >
+                <i class="fa-solid fa-eye"></i> Voir le paiement
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+    </main>
+  </body>
+</html>

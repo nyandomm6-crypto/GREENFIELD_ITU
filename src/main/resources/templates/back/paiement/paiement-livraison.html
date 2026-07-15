@@ -29,8 +29,19 @@
             <a th:href="@{/livreurs/livraisons}" class="btn btn-ligne"
               ><i class="fa-solid fa-arrow-left"></i> Retour</a
             >
+            <!-- C'est sur la fiche du paiement que le montant reçu est confirmé. -->
+            <a
+              th:if="${paiement != null}"
+              th:href="@{|/livreurs/paiement/detail/${paiement.id}|}"
+              class="btn btn-doux"
+              ><i class="fa-solid fa-eye"></i> Voir le paiement</a
+            >
           </div>
         </div>
+
+        <th:block
+          th:replace="~{back/fragments/layout-livreur :: alertes}"
+        ></th:block>
 
         <div class="carte">
           <div class="carte-tete">
@@ -46,12 +57,8 @@
                 th:text="${commande.client.nom + ' ' + commande.client.prenom}"
               ></dd>
 
-              <dt>Total</dt>
-              <dd
-                class="mono"
-                id="total"
-                th:text="${commande.totalGeneral}"
-              ></dd>
+              <dt>Total (frais de livraison inclus)</dt>
+              <dd class="mono" id="total" th:text="${montantTotal}"></dd>
 
               <dt>Reste</dt>
               <dd class="mono texte-ocre" id="reste" th:text="${reste}"></dd>
@@ -71,11 +78,13 @@
                     <th>#</th>
                     <th>Type</th>
                     <th class="num">Montant</th>
+                    <th>Encaissement</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr th:if="${#lists.isEmpty(paiement.filles)}">
-                    <td colspan="3">
+                  <!-- Aucun paiement n'existe tant que rien n'a été saisi. -->
+                  <tr th:if="${paiement == null or #lists.isEmpty(paiement.filles)}">
+                    <td colspan="4">
                       <div class="vide">
                         <i class="fa-solid fa-receipt"></i>
                         <p>Aucun paiement.</p>
@@ -83,10 +92,14 @@
                     </td>
                   </tr>
 
-                  <tr th:each="pf, i : ${paiement.filles}">
+                  <tr th:if="${paiement != null}" th:each="pf, i : ${paiement.filles}">
                     <td th:text="${i.index + 1}"></td>
                     <td th:text="${pf.typePayement}"></td>
                     <td class="num mono" th:text="${pf.valeur}"></td>
+                    <td>
+                      <span th:if="${pf.enAttente}" class="badge badge-ocre">À confirmer</span>
+                      <span th:unless="${pf.enAttente}" class="badge badge-vert">Encaissé</span>
+                    </td>
                   </tr>
                 </tbody>
               </table>

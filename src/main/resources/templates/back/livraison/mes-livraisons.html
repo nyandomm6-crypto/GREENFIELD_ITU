@@ -62,14 +62,18 @@
                 <td class="mono" th:text="${livraison.id}"></td>
 
                 <td
-                  th:text="${#temporals.format(livraison.dateLivraison,'dd/MM/yyyy HH:mm')}"
+                  th:text="${livraison.dateLivraison != null
+                            ? #temporals.format(livraison.dateLivraison,'dd/MM/yyyy HH:mm') : '—'}"
                 ></td>
 
+                <!-- Une livraison peut ne pas encore avoir de véhicule affecté. -->
                 <td
-                  th:text="${livraison.vehicule.marque + ' ' + livraison.vehicule.modele}"
+                  th:text="${livraison.vehicule != null
+                            ? livraison.vehicule.marque + ' ' + livraison.vehicule.modele : '—'}"
                 ></td>
 
-                <td class="mono" th:text="${livraison.vehicule.matricule}"></td>
+                <td class="mono"
+                    th:text="${livraison.vehicule != null ? livraison.vehicule.matricule : '—'}"></td>
 
                 <td>
                   <span

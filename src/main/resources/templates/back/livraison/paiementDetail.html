@@ -1,38 +1,38 @@
 <!doctype html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
   <head
-    th:replace="~{back/fragments/layout-caissier :: head('Détail paiement')}"
+    th:replace="~{back/fragments/layout-livreur :: head('Détail paiement')}"
   ></head>
 
   <body class="bo">
     <aside
-      th:replace="~{back/fragments/layout-caissier :: sidebar('paiements')}"
+      th:replace="~{back/fragments/layout-livreur :: sidebar('livreur')}"
     ></aside>
 
     <main class="bo-main">
       <header
-        th:replace="~{back/fragments/layout-caissier :: topbar('Détail paiement')}"
+        th:replace="~{back/fragments/layout-livreur :: topbar('Détail paiement')}"
       ></header>
 
       <div class="bo-contenu">
         <div class="page-tete">
           <div>
             <p class="fil">
-              <a th:href="@{/caissier/paiements}">Paiements</a>
+              <a th:href="@{/livreurs/livraisons}">Mes livraisons</a>
               <i class="fas fa-chevron-right"></i>
               <span class="mono" th:text="'#' + ${paiement.id}"></span>
             </p>
             <h1 th:text="'Paiement #' + ${paiement.id}"></h1>
           </div>
           <div class="page-actions">
-            <a th:href="@{/caissier/paiements}" class="btn btn-ligne">
+            <a th:href="@{/livreurs/livraisons}" class="btn btn-ligne">
               <i class="fas fa-arrow-left"></i> Retour
             </a>
           </div>
         </div>
 
         <th:block
-          th:replace="~{back/fragments/layout-caissier :: alertes}"
+          th:replace="~{back/fragments/layout-livreur :: alertes}"
         ></th:block>
 
         <div class="kpi-grille">
@@ -45,11 +45,6 @@
             <p class="kpi-libelle"><i class="fas fa-circle-info"></i> Statut</p>
             <p class="kpi-valeur" style="font-size: 18px"
                th:text="${paiement.statut != null ? paiement.statut.name() : '—'}"></p>
-          </div>
-          <div class="kpi">
-            <p class="kpi-libelle"><i class="fas fa-calendar"></i> Date</p>
-            <p class="kpi-valeur" style="font-size: 18px"
-               th:text="${paiement.date != null ? paiement.date : '—'}"></p>
           </div>
           <div class="kpi">
             <p class="kpi-libelle"><i class="fas fa-sack-dollar"></i> Total</p>
@@ -68,9 +63,10 @@
         <div class="alerte alerte-info" th:if="${paiementService.aDesLignesEnAttente(paiement)}">
           <i class="fas fa-hourglass-half"></i>
           Des encaissements attendent une confirmation. Saisissez le montant
-          réellement reçu (message de transfert pour le Mobile Money) puis confirmez
-          la ligne : c'est ce montant qui est encaissé en trésorerie. Tant que le
-          paiement n'est pas complet et confirmé, aucune sortie de stock n'est générée.
+          réellement reçu du client (message de transfert pour le Mobile Money)
+          puis confirmez la ligne : c'est ce montant qui est encaissé en
+          trésorerie. La sortie de stock de votre point de vente n'est générée
+          qu'une fois le paiement complet et confirmé.
         </div>
 
         <div class="carte">
@@ -102,7 +98,7 @@
                   <td>
                     <!-- Le montant saisi est celui réellement reçu : c'est lui qui est encaissé. -->
                     <form th:if="${f.enAttente}"
-                          th:action="@{|/caissier/paiement/confirmer/${paiement.id}|}" method="POST"
+                          th:action="@{|/livreurs/paiement/confirmer/${paiement.id}|}" method="POST"
                           style="display: flex; gap: 6px; align-items: center">
                       <input type="hidden" name="filleId" th:value="${f.id}" />
                       <input type="number" step="0.01" name="montantRecu" required
@@ -129,7 +125,7 @@
           <!-- Le reste ne peut être payé qu'une fois les encaissements confirmés. -->
           <a th:if="${montantRestant != null and montantRestant.compareTo(T(java.math.BigDecimal).ZERO) > 0
                       and !paiementService.aDesLignesEnAttente(paiement)}"
-             th:href="@{|/caissier/paiement/reste/${paiement.commande.id}|}" class="btn btn-ocre">
+             th:href="@{|/livreurs/livraisons/paiement/${paiement.commande.id}|}" class="btn btn-ocre">
             <i class="fas fa-money-bill-wave"></i> Payer le reste
           </a>
           <a th:if="${paiement.commande != null}"
@@ -139,7 +135,7 @@
         </div>
       </div>
 
-      <footer th:replace="~{back/fragments/layout-caissier :: pied}"></footer>
+      <footer th:replace="~{back/fragments/layout-livreur :: pied}"></footer>
     </main>
   </body>
 </html>

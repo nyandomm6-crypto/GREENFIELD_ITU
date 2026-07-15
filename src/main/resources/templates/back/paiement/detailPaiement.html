@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head th:replace="~{back/fragments/layout :: head('Détail du paiement')}"></head>
+
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
+
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
+
+        <div class="bo-contenu bo-contenu-etroit">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/back/paiements/list}">Paiements</a> / Détail</p>
+                    <h1 th:text="|Paiement #${paiement.id}|">Détail du paiement</h1>
+                </div>
+                <div class="page-actions">
+                    <a th:href="@{/back/paiements/list}" class="btn btn-ligne"><i class="fa-solid fa-arrow-left"></i> Retour</a>
+                </div>
+            </div>
+
+            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
+            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-circle-info"></i> Informations</h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>Statut</dt>
+                        <dd><span class="badge badge-vert" th:text="${paiement.statut}"></span></dd>
+
+                        <dt>Commande</dt>
+                        <dd class="mono" th:text="|#${paiement.commande.id}|"></dd>
+
+                        <dt>Frais de livraison</dt>
+                        <dd class="mono" th:text="${paiement.commande.fraisLivraison}"></dd>
+
+                        <dt>Montant total</dt>
+                        <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
+
+                        <dt>Montant payé</dt>
+                        <dd class="mono" th:text="${montantPaye}"></dd>
+
+                        <dt>Montant restant</dt>
+                        <dd class="mono" th:text="${montantRestant}"></dd>
+
+                        <dt>Montant en attente de confirmation</dt>
+                        <dd class="mono texte-ocre" th:text="${montantEnAttente}"></dd>
+                    </dl>
+
+                    <p th:if="${paiementService.aDesLignesEnAttente(paiement)}" class="sous-titre">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        Des encaissements attendent une confirmation. Saisissez le montant
+                        réellement reçu puis confirmez la ligne : c'est ce montant qui est
+                        encaissé en trésorerie. Tant que le paiement n'est pas complet et
+                        confirmé, aucune sortie de stock n'est générée.
+                    </p>
+                </div>
+            </div>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-receipt"></i> Paiements filles</h2>
+                </div>
+                <div class="carte-corps">
+                    <div class="tableau-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th class="num">Montant</th>
+                                    <th>Date</th>
+                                    <th>Encaissement</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="fille : ${filles}">
+                                    <td th:text="${fille.typePayement}"></td>
+                                    <td class="num mono" th:text="${fille.valeur}"></td>
+                                    <td th:text="${fille.date}"></td>
+                                    <td>
+                                        <span th:if="${fille.enAttente}" class="badge badge-ocre">À confirmer</span>
+                                        <span th:unless="${fille.enAttente}" class="badge badge-vert">Encaissé</span>
+                                    </td>
+                                    <td>
+                                        <!-- Le montant saisi est celui réellement reçu : c'est lui qui est encaissé. -->
+                                        <form th:if="${fille.enAttente}"
+                                            th:action="@{|/back/paiements/confirmer/${paiement.id}|}" method="POST"
+                                            style="display: flex; gap: 6px; align-items: center;">
+                                            <input type="hidden" name="filleId" th:value="${fille.id}">
+                                            <input type="number" step="0.01" name="montantRecu" required
+                                                th:value="${fille.valeur}" style="max-width: 120px;"
+                                                th:title="${fille.typePayement.name() == 'Mobile_Money'}
+                                                    ? 'Montant reçu (message de transfert)' : 'Montant encaissé'">
+                                            <button type="submit" class="btn btn-sm btn-doux">
+                                                <i class="fa-solid fa-check"></i> Confirmer
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(filles)}">
+                                    <td colspan="5">
+                                        <div class="vide">
+                                            <i class="fa-solid fa-receipt"></i>
+                                            <p>Aucun paiement enregistré.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-basket-shopping"></i> Commande correspondante</h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>Client</dt>
+                        <dd th:text="|${paiement.commande.client.nom} ${paiement.commande.client.prenom}|"></dd>
+
+                        <dt>Mode de réception</dt>
+                        <dd th:text="${paiement.commande.modeReception}"></dd>
+
+                        <dt>Lieu</dt>
+                        <dd th:text="${paiement.commande.pointDeVenteRetrait?.code != null ? paiement.commande.pointDeVenteRetrait.code : paiement.commande.adresseLivraison}"></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="barre-form">
+                <!-- Le reste ne peut être payé qu'une fois les encaissements confirmés. -->
+                <a th:if="${montantRestant.compareTo(T(java.math.BigDecimal).ZERO) > 0
+                            and !paiementService.aDesLignesEnAttente(paiement)}"
+                    th:href="@{|/back/paiements/reste/${paiement.commande.id}|}" class="btn btn-ocre">
+                    <i class="fa-solid fa-money-bill-wave"></i> Payer le reste
+                </a>
+                <a th:href="@{|/facture/${paiement.commande.id}|(print=1)}" target="_blank" class="btn btn-vert"><i class="fa-solid fa-file-invoice"></i> Exporter la facture</a>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
+</html>

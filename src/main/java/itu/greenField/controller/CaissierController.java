@@ -22,6 +22,7 @@ import java.util.Set;
 import itu.greenField.dto.CommandeBackFilterDto;
 import itu.greenField.dto.CommandeBackFormDto;
 import itu.greenField.dto.DetailCommandeBackDto;
+import itu.greenField.dto.PaiementFormDto;
 import itu.greenField.dto.PaiementLigneDto;
 import itu.greenField.filtre.CalculOption;
 import itu.greenField.filtre.FiltreDateBackCommandeOption;
@@ -31,6 +32,7 @@ import itu.greenField.model.Employes;
 import itu.greenField.model.FRole;
 import itu.greenField.model.ModeReception;
 import itu.greenField.model.Paiement;
+import itu.greenField.model.StatutPaiement;
 import itu.greenField.model.TypeCommande;
 import itu.greenField.model.TypePayement;
 import itu.greenField.service.AuthGuard;
@@ -88,7 +90,7 @@ public class CaissierController {
         }
         String code = pdvCode(employe);
         model.addAttribute("employe", employe);
-        model.addAttribute("commandes", commandesService.findByPointDeVenteRetrait(code));
+        model.addAttribute("commandes", commandesService.findByPointDeVenteCreateur(code));
         model.addAttribute("paiements", paiementService.findByPointDeVente(code));
         return "back/caissier/dashboard";
     }
@@ -149,8 +151,10 @@ public class CaissierController {
         }
         model.addAttribute("employe", employe);
         model.addAttribute("commande", commande);
+        Paiement paiementCommande = paiementService.findByCommandeId(commande.getId());
         model.addAttribute("reste", paiementService.getMontantRestant(commande));
-        model.addAttribute("dejaPaye", paiementService.findByCommandeId(commande.getId()) != null);
+        model.addAttribute("dejaPaye", paiementCommande != null);
+        model.addAttribute("paiementCommande", paiementCommande);
         model.addAttribute("typePayements", TypePayement.values());
         boolean estLivrable = commande.getModeReception() == ModeReception.Retrait_Boutique
                 && commande.getStatutActuel().getId() == 1;
@@ -192,10 +196,12 @@ public class CaissierController {
             mv.addObject("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
             mv.addObject("pointDeVenteOptions", pointDeVenteService.getAll());
 
+            // Le reste n'est payable qu'une fois les encaissements déjà versés confirmés.
             Set<Integer> commandesAvecResteAPayer = commandePage.getContent().stream()
                     .filter(cmd -> paiementService.getMontantRestant(cmd).compareTo(java.math.BigDecimal.ZERO) > 0)
                     .filter(cmd -> cmd.getPaiement() != null
-                            && cmd.getPaiement().getStatut() == itu.greenField.model.StatutPaiement.Reste)
+                            && cmd.getPaiement().getStatut() == itu.greenField.model.StatutPaiement.Reste
+                            && !paiementService.aDesLignesEnAttente(cmd.getPaiement()))
                     .map(Commandes::getId)
                     .collect(Collectors.toSet());
             mv.addObject("commandesAvecResteAPayer", commandesAvecResteAPayer);
@@ -203,16 +209,218 @@ public class CaissierController {
     }
 
     @GetMapping("/paiements")
-    public String paiements(HttpSession session, Model model) {
+    public String paiements(@RequestParam(name = "statut", required = false) StatutPaiement statut,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            HttpSession session, Model model) {
         Employes employe = requireCaissier(session);
         if (employe == null) {
             session.invalidate();
             return "redirect:/emp/login";
         }
+
+        List<Paiement> paiements = paiementService.findByPointDeVente(pdvCode(employe));
+        if (statut != null) {
+            paiements = paiements.stream()
+                    .filter(p -> statut.equals(p.getStatut()))
+                    .collect(Collectors.toList());
+        }
+
+        // Pagination en mémoire (« nombre d'éléments par page »), comme côté admin.
+        if (size <= 0) {
+            size = 10;
+        }
+        int total = paiements.size();
+        int totalPages = (int) Math.ceil((double) total / size);
+        if (page < 0) {
+            page = 0;
+        }
+        if (totalPages > 0 && page >= totalPages) {
+            page = totalPages - 1;
+        }
+        int from = Math.min(page * size, total);
+        int to = Math.min(from + size, total);
+
         model.addAttribute("employe", employe);
-        model.addAttribute("paiements", paiementService.findByPointDeVente(pdvCode(employe)));
+        model.addAttribute("paiements", paiements.subList(from, to));
+        model.addAttribute("statut", statut);
+        model.addAttribute("statutsPaiement", StatutPaiement.values());
         model.addAttribute("paiementService", paiementService);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalElements", total);
         return "back/caissier/paiements";
+    }
+
+    // ================= FLUX DE PAIEMENT (limité au point de vente) =================
+
+    @GetMapping("/paiement/choix/{commandeId}")
+    public String choixPaiement(@PathVariable Integer commandeId, HttpSession session, Model model,
+            RedirectAttributes redirectAttributes) {
+        Employes employe = requireCaissier(session);
+        if (employe == null) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        try {
+            Commandes commande = paiementService.verifierCommandeDuPointDeVente(commandeId, pdvCode(employe));
+            model.addAttribute("employe", employe);
+            model.addAttribute("commande", commande);
+            model.addAttribute("montantTotal", paiementService.getMontantTotalCommande(commande));
+            model.addAttribute("montantRestant", paiementService.getMontantRestant(commande));
+            model.addAttribute("paiement", paiementService.findByCommandeId(commandeId));
+            model.addAttribute("paiementService", paiementService);
+            return "back/caissier/paiementChoix";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/caissier/commandes";
+        }
+    }
+
+    @GetMapping("/paiement/avance/{commandeId}")
+    public String formAvance(@PathVariable Integer commandeId, HttpSession session, Model model,
+            RedirectAttributes redirectAttributes) {
+        Employes employe = requireCaissier(session);
+        if (employe == null) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        try {
+            Commandes commande = paiementService.verifierCommandeDuPointDeVente(commandeId, pdvCode(employe));
+            model.addAttribute("employe", employe);
+            model.addAttribute("commande", commande);
+            model.addAttribute("montantTotal", paiementService.getMontantTotalCommande(commande));
+            model.addAttribute("avanceAPayer", paiementService.calculerAvance(commande));
+            model.addAttribute("numerosTransfert", paiementService.getNumerosTransfertMobileMoney());
+            return "back/caissier/paiementAvance";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/caissier/commandes";
+        }
+    }
+
+    @PostMapping("/paiement/avance/{commandeId}")
+    public String payerAvance(@PathVariable Integer commandeId, @RequestParam BigDecimal montant,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+        Employes employe = requireCaissier(session);
+        if (employe == null) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        try {
+            Paiement paiement = paiementService.payerAvanceCaissier(commandeId, montant, pdvCode(employe));
+            redirectAttributes.addFlashAttribute("succes",
+                    "Avance enregistrée. Elle reste à confirmer pour être encaissée.");
+            return "redirect:/caissier/paiement/detail/" + paiement.getId();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/caissier/paiement/avance/" + commandeId;
+        }
+    }
+
+    @GetMapping("/paiement/total/{commandeId}")
+    public String formTotal(@PathVariable Integer commandeId, HttpSession session, Model model,
+            RedirectAttributes redirectAttributes) {
+        return formPaiement(commandeId, false, session, model, redirectAttributes);
+    }
+
+    @GetMapping("/paiement/reste/{commandeId}")
+    public String formReste(@PathVariable Integer commandeId, HttpSession session, Model model,
+            RedirectAttributes redirectAttributes) {
+        return formPaiement(commandeId, true, session, model, redirectAttributes);
+    }
+
+    @PostMapping("/paiement/total/{commandeId}")
+    public String payerTotal(@PathVariable Integer commandeId,
+            @ModelAttribute("paiementFormDto") PaiementFormDto form,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+        return enregistrerPaiement(commandeId, form, session, redirectAttributes, "total");
+    }
+
+    @PostMapping("/paiement/reste/{commandeId}")
+    public String payerReste(@PathVariable Integer commandeId,
+            @ModelAttribute("paiementFormDto") PaiementFormDto form,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+        return enregistrerPaiement(commandeId, form, session, redirectAttributes, "reste");
+    }
+
+    /**
+     * Confirmation manuelle d'un encaissement (espèce ou mobile money) par le
+     * caissier. Le montant saisi est celui réellement reçu : c'est lui qui est
+     * encaissé.
+     */
+    @PostMapping("/paiement/confirmer/{id}")
+    public String confirmerPaiement(@PathVariable Integer id,
+            @RequestParam(required = false) Integer filleId,
+            @RequestParam(required = false) BigDecimal montantRecu,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+        Employes employe = requireCaissier(session);
+        if (employe == null) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        try {
+            paiementService.confirmerPaiementCaissier(id, filleId, montantRecu, pdvCode(employe));
+            redirectAttributes.addFlashAttribute("succes",
+                    "Encaissement confirmé, l'entrée de trésorerie a été créée.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/caissier/paiement/detail/" + id;
+    }
+
+    private String formPaiement(Integer commandeId, boolean reste, HttpSession session, Model model,
+            RedirectAttributes redirectAttributes) {
+        Employes employe = requireCaissier(session);
+        if (employe == null) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        try {
+            Commandes commande = paiementService.verifierCommandeDuPointDeVente(commandeId, pdvCode(employe));
+            Paiement paiement = paiementService.findByCommandeId(commandeId);
+            BigDecimal montantRestant = paiementService.getMontantRestant(commande);
+
+            PaiementFormDto dto = new PaiementFormDto();
+            dto.setCommandeId(commandeId);
+            dto.getLignes().add(new PaiementLigneDto(TypePayement.Espece, montantRestant));
+
+            model.addAttribute("employe", employe);
+            model.addAttribute("commande", commande);
+            model.addAttribute("paiement", paiement);
+            model.addAttribute("fillesExistantes", paiementService.findFilles(paiement));
+            model.addAttribute("paiementFormDto", dto);
+            model.addAttribute("typesPaiement", TypePayement.values());
+            model.addAttribute("numerosTransfert", paiementService.getNumerosTransfertMobileMoney());
+            model.addAttribute("montantTotal", paiementService.getMontantTotalCommande(commande));
+            model.addAttribute("montantPaye", paiementService.getMontantPaye(paiement));
+            model.addAttribute("montantRestant", montantRestant);
+            model.addAttribute("modeReste", reste);
+            return "back/caissier/paiementForm";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/caissier/commandes";
+        }
+    }
+
+    private String enregistrerPaiement(Integer commandeId, PaiementFormDto form, HttpSession session,
+            RedirectAttributes redirectAttributes, String vue) {
+        Employes employe = requireCaissier(session);
+        if (employe == null) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        try {
+            Paiement paiement = paiementService.creerPaiementCaissier(commandeId, form.getLignes(), pdvCode(employe));
+            redirectAttributes.addFlashAttribute("succes", paiementService.aDesLignesEnAttente(paiement)
+                    ? "Paiement enregistré. Il reste à confirmer pour être encaissé."
+                    : "Paiement enregistré avec succès.");
+            return "redirect:/caissier/paiement/detail/" + paiement.getId();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/caissier/paiement/" + vue + "/" + commandeId;
+        }
     }
 
     @GetMapping("/paiement/detail/{id}")
@@ -225,8 +433,8 @@ public class CaissierController {
         }
         Paiement paiement = paiementService.findById(id);
         if (paiement == null || paiement.getCommande() == null
-                || paiement.getCommande().getPointDeVenteRetrait() == null
-                || !pdvCode(employe).equals(paiement.getCommande().getPointDeVenteRetrait().getCode())) {
+                || paiement.getCommande().getPointDeVenteCreateur() == null
+                || !pdvCode(employe).equals(paiement.getCommande().getPointDeVenteCreateur().getCode())) {
             redirectAttributes.addFlashAttribute("error",
                     "Ce paiement n'existe pas ou n'appartient pas à votre point de vente.");
             return "redirect:/caissier/paiements";
@@ -234,6 +442,10 @@ public class CaissierController {
         model.addAttribute("employe", employe);
         model.addAttribute("paiement", paiement);
         model.addAttribute("filles", paiementService.findFilles(paiement));
+        model.addAttribute("montantTotal", paiementService.getMontantTotalCommande(paiement.getCommande()));
+        model.addAttribute("montantPaye", paiementService.getMontantPaye(paiement));
+        model.addAttribute("montantRestant", paiementService.getMontantRestant(paiement.getCommande()));
+        model.addAttribute("montantEnAttente", paiementService.getMontantEnAttente(paiement));
         model.addAttribute("paiementService", paiementService);
         return "back/caissier/paiementDetail";
     }
@@ -277,11 +489,16 @@ public class CaissierController {
         CommandeBackFormDto dto = new CommandeBackFormDto();
         dto.getDetailsCommande().add(new DetailCommandeBackDto());
         model.addAttribute("commandeBackFormDto", dto);
+        remplirFormulaireCommande(model, employe);
+        return "back/caissier/commandeCreate";
+    }
+
+    /** Options communes au formulaire de commande du caissier. */
+    private void remplirFormulaireCommande(Model model, Employes employe) {
+        model.addAttribute("employe", employe);
         model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
         model.addAttribute("produits", produitService.getAllProduits());
         model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-        model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
-        return "back/caissier/commandeCreate";
     }
 
     @PostMapping("/commande/save")
@@ -306,16 +523,20 @@ public class CaissierController {
                         "La province de livraison est obligatoire.");
             }
         }
-        if ("Retrait_Boutique".equalsIgnoreCase(form.getModeReception()) && form.getPointDeVenteId() == null) {
-            bindingResult.rejectValue("pointDeVenteId", "error.pointDeVenteId",
-                    "Le point de vente de retrait est obligatoire.");
+        // Le retrait se fait dans la boutique du caissier : on impose son point de
+        // vente au lieu de le laisser choisir, sinon la commande serait rattachée à
+        // une autre boutique et il ne pourrait plus l'encaisser.
+        if ("Retrait_Boutique".equalsIgnoreCase(form.getModeReception())) {
+            if (employe.getPointDeVente() == null) {
+                bindingResult.rejectValue("pointDeVenteId", "error.pointDeVenteId",
+                        "Aucun point de vente n'est rattaché à votre compte : le retrait en boutique est impossible.");
+            } else {
+                form.setPointDeVenteId(employe.getPointDeVente().getId());
+            }
         }
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("produits", produitService.getAllProduits());
-            model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
-            model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
+            remplirFormulaireCommande(model, employe);
             return "back/caissier/commandeCreate";
         }
 
@@ -325,41 +546,10 @@ public class CaissierController {
             redirectAttributes.addFlashAttribute("succes", "Commande enregistrée avec succès.");
             return "redirect:/caissier/commandes";
         } catch (Exception e) {
-            model.addAttribute("produits", produitService.getAllProduits());
-            model.addAttribute("modeReceptionOptions", ModeReception.getAllModeReception());
-            model.addAttribute("provinceLivraisonOptions", provinceLivraisonService.getAllProvinces());
-            model.addAttribute("pointDeVenteOptions", pointDeVenteService.getAll());
+            remplirFormulaireCommande(model, employe);
             model.addAttribute("globalError", "Erreur lors de la sauvegarde : " + e.getMessage());
             return "back/caissier/commandeCreate";
         }
-    }
-
-    /**
-     * Création d'un paiement par le caissier (côté back-end). Le montant est
-     * réglé pour la totalité du reste à payer de la commande.
-     */
-    @PostMapping("/paiement/save")
-    public String savePaiement(@RequestParam Integer commandeId,
-            @RequestParam BigDecimal montant,
-            @RequestParam(required = false) TypePayement typePayement,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-        Employes employe = requireCaissier(session);
-        if (employe == null) {
-            session.invalidate();
-            return "redirect:/emp/login";
-        }
-        try {
-            PaiementLigneDto ligne = new PaiementLigneDto(
-                    typePayement != null ? typePayement : TypePayement.Espece, montant);
-            List<PaiementLigneDto> lignes = new ArrayList<>();
-            lignes.add(ligne);
-            paiementService.creerPaiementCaissier(commandeId, lignes, pdvCode(employe));
-            redirectAttributes.addFlashAttribute("succes", "Paiement enregistré avec succès.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erreur lors du paiement : " + e.getMessage());
-        }
-        return "redirect:/caissier/paiements";
     }
 
 }

@@ -116,47 +116,28 @@
               <strong><span th:text="${reste}">0</span> Ar</strong>
             </p>
 
-            <form
-              th:if="${reste != null}"
-              th:action="@{/caissier/paiement/save}"
-              method="post"
-              class="grille-form"
+            <div class="barre-form" style="justify-content: flex-start; margin-top: 12px">
+              <a
+                th:if="${reste != null and reste.compareTo(T(java.math.BigDecimal).ZERO) > 0}"
+                th:href="@{|/caissier/paiement/choix/${commande.id}|}"
+                class="btn btn-vert"
+              >
+                <i class="fas fa-cash-register"></i> Encaisser
+              </a>
+              <a
+                th:if="${paiementCommande != null}"
+                th:href="@{|/caissier/paiement/detail/${paiementCommande.id}|}"
+                class="btn btn-ligne"
+              >
+                <i class="fas fa-eye"></i> Voir le paiement
+              </a>
+            </div>
+
+            <p
+              th:if="${reste == null or reste.compareTo(T(java.math.BigDecimal).ZERO) <= 0}"
+              class="texte-vert"
               style="margin-top: 12px"
             >
-              <input
-                type="hidden"
-                name="commandeId"
-                th:value="${commande.id}"
-              />
-              <div class="champ">
-                <label for="typePayement">Type de paiement</label>
-                <select id="typePayement" name="typePayement">
-                  <option
-                    th:each="tp : ${typePayements}"
-                    th:value="${tp}"
-                    th:text="${tp.name()}"
-                  ></option>
-                </select>
-              </div>
-              <div class="champ">
-                <label for="montant">Montant (Ar)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  id="montant"
-                  name="montant"
-                  th:value="${reste}"
-                  required
-                />
-              </div>
-              <div class="champ" style="grid-column: 1 / -1">
-                <button type="submit" class="btn btn-vert">
-                  <i class="fas fa-floppy-disk"></i> Enregistrer le paiement
-                </button>
-              </div>
-            </form>
-
-            <p th:unless="${reste != null}" class="texte-vert">
               <i class="fas fa-circle-check"></i> Cette commande est entièrement
               payée.
             </p>

@@ -1,76 +1,114 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head
+    th:replace="~{front/fragments/layout :: head(pageTitle='Paiement avance - GreenField')}"
+  >
+    <title>Paiement avance - GreenField</title>
+  </head>
 
-<head th:replace="~{back/fragments/layout :: head('Paiement avance')}"></head>
+  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+    <div th:fragment="pageContent">
+      <!-- Single Page Header start -->
+      <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Paiement de l'avance</h1>
+      </div>
+      <!-- Single Page Header End -->
 
-<body class="bo">
-    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
+      <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+          <div class="row g-4 justify-content-center">
+            <div class="col-lg-8">
+              <div class="alert alert-danger" th:if="${alert != null}" th:text="${alert}"></div>
+              <div class="alert alert-success" th:if="${succes != null}" th:text="${succes}"></div>
 
-    <main class="bo-main">
-        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
+              <form th:action="@{|/paiements/avance/${commande.id}|}" method="POST">
+                <div class="card border-0 shadow-sm rounded-4">
+                  <div class="card-body p-4 p-md-5">
+                    <h2 class="mb-4">
+                      <i class="fas fa-hand-holding-usd text-primary me-2"></i>
+                      Commande #<span th:text="${commande.id}"></span>
+                    </h2>
 
-        <div class="bo-contenu bo-contenu-etroit">
+                    <ul class="list-group list-group-flush mb-4">
+                      <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Montant total à payer</span>
+                        <strong th:text="${montantTotal}"></strong>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Frais de livraison</span>
+                        <strong th:text="${commande.fraisLivraison}"></strong>
+                      </li>
+                      <li class="list-group-item d-flex justify-content-between">
+                        <span class="text-muted">Avance à payer</span>
+                        <strong class="text-primary" th:text="${avanceAPayer}"></strong>
+                      </li>
+                    </ul>
 
-            <div class="page-tete">
-                <div>
-                    <p class="fil"><a th:href="@{/paiements/list}">Paiements</a> / Avance</p>
-                    <h1>Paiement de l'avance</h1>
+                    <div class="mb-4">
+                      <label class="form-label fw-bold">Mode de paiement</label>
+                      <div class="form-check" th:each="t : ${typesPaiement}">
+                        <input
+                          class="form-check-input"
+                          type="radio"
+                          th:id="${'type-' + t}"
+                          name="typePayement"
+                          th:value="${t}"
+                          checked
+                        />
+                        <label class="form-check-label" th:for="${'type-' + t}" th:text="${t}"></label>
+                      </div>
+                    </div>
+
+                    <!-- Mobile Money : le montant n'est pas saisi, c'est l'avance calculée. -->
+                    <input type="hidden" name="montant" th:value="${avanceAPayer}" />
+
+                    <div class="mb-4">
+                      <label class="form-label fw-bold">Numéros de transfert</label>
+                      <ul class="list-group mb-3">
+                        <li
+                          class="list-group-item"
+                          th:each="numero : ${numerosTransfert}"
+                          th:text="${numero}"
+                        ></li>
+                      </ul>
+
+                      <label for="messageMobileMoney" class="form-label"
+                        >Message (facultatif)</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="messageMobileMoney"
+                        name="messageMobileMoney"
+                        placeholder="Référence du transfert, remarque..."
+                      />
+                    </div>
+
+                    <div class="alert alert-info">
+                      <i class="fas fa-info-circle me-2"></i>
+                      Effectuez le transfert vers l'un des numéros ci-dessus.
+                      Votre avance sera validée après vérification par la
+                      boutique.
+                    </div>
+
+                    <div class="d-flex gap-2 flex-wrap">
+                      <a
+                        th:href="@{|/paiements/choix/${commande.id}|}"
+                        class="btn btn-outline-secondary rounded-pill px-4"
+                      >
+                        <i class="fas fa-arrow-left me-2"></i> Retour
+                      </a>
+                      <button type="submit" class="btn btn-primary rounded-pill px-4">
+                        <i class="fas fa-check me-2"></i> Valider l'avance
+                      </button>
+                    </div>
+                  </div>
                 </div>
+              </form>
             </div>
-
-            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
-            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
-
-            <form th:action="@{|/paiements/avance/${commande.id}|}" method="POST">
-                <div class="carte">
-                    <div class="carte-tete">
-                        <h2><i class="fa-solid fa-money-bill-wave"></i> Commande #<span th:text="${commande.id}"></span></h2>
-                    </div>
-                    <div class="carte-corps">
-                        <dl class="fiche">
-                            <dt>Montant total à payer</dt>
-                            <dd class="mono texte-ocre" th:text="${montantTotal}"></dd>
-
-                            <dt>Frais de livraison</dt>
-                            <dd class="mono" th:text="${commande.fraisLivraison}"></dd>
-
-                            <dt>Avance à payer</dt>
-                            <dd class="mono texte-ocre" th:text="${avanceAPayer}"></dd>
-                        </dl>
-
-                        <div class="champ">
-                            <label>Mode de paiement</label>
-                            <div class="choix-ligne">
-                                <div th:each="t : ${typesPaiement}" class="choix-pastille">
-                                    <input type="radio" th:id="${'type-' + t}" name="typePayement" th:value="${t}" checked>
-                                    <label th:for="${'type-' + t}" th:text="${t}"></label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="champ">
-                            <label for="montant">Montant de l'avance</label>
-                            <input type="number" id="montant" name="montant" step="0.01" th:value="${avanceAPayer}" required>
-                        </div>
-
-                        <div class="champ">
-                            <label>Numéros de transfert</label>
-                            <div class="liste-coche" style="max-height: none;">
-                                <p th:each="numero : ${numerosTransfert}" th:text="${numero}" style="margin: 0; padding: 4px 0;"></p>
-                            </div>
-                        </div>
-
-                        <div class="barre-form">
-                            <button type="submit" class="btn btn-vert"><i class="fa-solid fa-check"></i> Payer</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
+          </div>
         </div>
-
-        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
-    </main>
-</body>
-
+      </div>
+    </div>
+  </body>
 </html>

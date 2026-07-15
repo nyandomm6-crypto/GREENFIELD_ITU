@@ -28,7 +28,7 @@ public interface CommandesRepository extends JpaRepository<Commandes, Integer> {
     List<Commandes> findByStatutActuel(StatutCommande statutActuel);
 
     /** Commandes rattachées à un point de vente de retrait donné (par code). */
-    List<Commandes> findByPointDeVenteRetrait_CodeOrderByIdDesc(String code);
+    List<Commandes> findByPointDeVenteCreateur_CodeOrderByIdDesc(String code);
 
     @Query(value = "SELECT * FROM commandes c " +
             "WHERE c.statutactuel = 2 " +

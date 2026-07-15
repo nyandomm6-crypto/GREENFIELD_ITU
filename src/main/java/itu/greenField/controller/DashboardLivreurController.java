@@ -2,6 +2,7 @@ package itu.greenField.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import itu.greenField.dto.PaiementLigneDto;
 import itu.greenField.model.Commandes;
 import itu.greenField.model.Employes;
 import itu.greenField.model.FRole;
@@ -159,7 +162,7 @@ public class DashboardLivreurController {
 
         Integer idCommandes = livraisonFille.getCommande().getId();
 
-        if (paiementService.resteByCommande(idCommandes)
+        if (paiementService.getMontantRestant(livraisonFille.getCommande())
                 .compareTo(BigDecimal.ZERO) <= 0) {
 
             livraisonService.validerFille(idLivraisonFille);
@@ -183,12 +186,14 @@ public class DashboardLivreurController {
 
         Paiement paiement = paiementRepository.findByCommande(commande).orElse(null);
 
-        BigDecimal reste = paiementService.resteByCommande(idCommande);
+        // Le reste inclut les frais de livraison : c'est le même montant que celui
+        // exigé à l'enregistrement du paiement.
+        BigDecimal reste = paiementService.getMontantRestant(commande);
 
         model.addAttribute("commande", commande);
         model.addAttribute("paiement", paiement);
         model.addAttribute("reste", reste);
-        model.addAttribute("huhu", 300);
+        model.addAttribute("montantTotal", paiementService.getMontantTotalCommande(commande));
         model.addAttribute("typesPaiement", TypePayement.values());
         if (!livraisonService.isMyCommande(idCommande, employe)) {
             return "redirect:/livreurs/livraisons";
@@ -197,24 +202,100 @@ public class DashboardLivreurController {
         return "back/paiement/paiement-livraison";
     }
 
+    /**
+     * Saisie du paiement par le livreur. Le flux est celui du caissier : la
+     * saisie n'encaisse rien, elle crée des lignes en attente que le livreur
+     * confirme ensuite. C'est la confirmation qui crée l'entrée de trésorerie,
+     * et la clôture du paiement qui sort le stock de son point de vente.
+     */
     @PostMapping("/paiements/ajouter-multiple")
     public String ajouterPaiement(
             @RequestParam Integer idCommande,
             @RequestParam("typePayement") List<TypePayement> types,
-            @RequestParam("valeur") List<BigDecimal> valeurs, HttpSession session) {
+            @RequestParam("valeur") List<BigDecimal> valeurs, HttpSession session,
+            RedirectAttributes redirectAttributes) {
         Employes employe = (Employes) session.getAttribute("employe");
 
         if (employe == null || employe.getRole() != FRole.Livreur) {
             session.invalidate();
             return "redirect:/emp/login";
         }
-        paiementService.ajouterPayement(types, valeurs, idCommande);
-        for (BigDecimal bigDecimal : valeurs) {
-            if (bigDecimal.compareTo(BigDecimal.ZERO) <= 0) {
-                throw new IllegalArgumentException("La valeur du paiement doit être positive");
-            }
+        if (!livraisonService.isMyCommande(idCommande, employe)) {
+            return "redirect:/livreurs/livraisons";
         }
-        return "redirect:/paiements/facture?idCommande=" + idCommande;
+        try {
+            List<PaiementLigneDto> lignes = construireLignes(types, valeurs);
+            Paiement paiement = paiementService.payerTotalOuReste(idCommande, lignes);
+            redirectAttributes.addFlashAttribute("succes", paiementService.aDesLignesEnAttente(paiement)
+                    ? "Paiement enregistré. Confirmez le montant reçu pour l'encaisser."
+                    : "Paiement enregistré avec succès.");
+            return "redirect:/livreurs/paiement/detail/" + paiement.getId();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/livreurs/livraisons/paiement/" + idCommande;
+        }
+    }
+
+    /**
+     * Confirmation d'un encaissement par le livreur : le montant saisi est celui
+     * réellement reçu du client, c'est lui qui part en trésorerie.
+     */
+    @PostMapping("/paiement/confirmer/{id}")
+    public String confirmerPaiement(@PathVariable Integer id,
+            @RequestParam(required = false) Integer filleId,
+            @RequestParam(required = false) BigDecimal montantRecu,
+            HttpSession session, RedirectAttributes redirectAttributes) {
+        Employes employe = (Employes) session.getAttribute("employe");
+
+        if (employe == null || employe.getRole() != FRole.Livreur) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        Paiement paiement = paiementService.findById(id);
+        if (paiement == null || paiement.getCommande() == null
+                || !livraisonService.isMyCommande(paiement.getCommande().getId(), employe)) {
+            return "redirect:/livreurs/livraisons";
+        }
+        try {
+            paiementService.confirmerPaiement(id, filleId, montantRecu);
+            redirectAttributes.addFlashAttribute("succes",
+                    "Encaissement confirmé, l'entrée de trésorerie a été créée.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/livreurs/paiement/detail/" + id;
+    }
+
+    @GetMapping("/paiement/detail/{id}")
+    public String detailPaiement(@PathVariable Integer id, HttpSession session, Model model) {
+        Employes employe = (Employes) session.getAttribute("employe");
+
+        if (employe == null || employe.getRole() != FRole.Livreur) {
+            session.invalidate();
+            return "redirect:/emp/login";
+        }
+        Paiement paiement = paiementService.findById(id);
+        if (paiement == null || paiement.getCommande() == null
+                || !livraisonService.isMyCommande(paiement.getCommande().getId(), employe)) {
+            return "redirect:/livreurs/livraisons";
+        }
+        model.addAttribute("livreur", employe);
+        model.addAttribute("paiement", paiement);
+        model.addAttribute("filles", paiementService.findFilles(paiement));
+        model.addAttribute("montantTotal", paiementService.getMontantTotalCommande(paiement.getCommande()));
+        model.addAttribute("montantRestant", paiementService.getMontantRestant(paiement.getCommande()));
+        model.addAttribute("montantEnAttente", paiementService.getMontantEnAttente(paiement));
+        model.addAttribute("paiementService", paiementService);
+        return "back/livraison/paiementDetail";
+    }
+
+    /** Assemble les lignes « type / montant » saisies dans le formulaire. */
+    private List<PaiementLigneDto> construireLignes(List<TypePayement> types, List<BigDecimal> valeurs) {
+        List<PaiementLigneDto> lignes = new ArrayList<>();
+        for (int i = 0; i < types.size() && i < valeurs.size(); i++) {
+            lignes.add(new PaiementLigneDto(types.get(i), valeurs.get(i)));
+        }
+        return lignes;
     }
 
     @PostMapping("/livraisons/valider")

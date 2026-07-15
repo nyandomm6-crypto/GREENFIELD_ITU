@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head th:replace="~{back/fragments/layout :: head('Choix du paiement')}"></head>
+
+<body class="bo">
+    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
+
+    <main class="bo-main">
+        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
+
+        <div class="bo-contenu bo-contenu-etroit">
+
+            <div class="page-tete">
+                <div>
+                    <p class="fil"><a th:href="@{/back/paiements/list}">Paiements</a> / Choix</p>
+                    <h1>Choix du paiement</h1>
+                </div>
+            </div>
+
+            <div th:if="${commande == null}" class="vide">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p>Commande introuvable.</p>
+            </div>
+
+            <div th:if="${commande != null}" class="carte">
+                <div class="carte-tete">
+                    <h2><i class="fa-solid fa-money-bill-wave"></i> Commande #<span th:text="${commande.id}"></span></h2>
+                </div>
+                <div class="carte-corps">
+                    <dl class="fiche">
+                        <dt>Total produits</dt>
+                        <dd class="mono texte-ocre" th:text="${commande.totalGeneral}"></dd>
+
+                        <dt>Frais de livraison</dt>
+                        <dd class="mono" th:text="${commande.fraisLivraison}"></dd>
+                    </dl>
+
+                    <div class="btn-list barre-form" style="justify-content: center; margin-top: 22px;">
+                        <a th:href="@{|/back/paiements/avance/${commande.id}|}" class="btn btn-doux btn-lg">Payer l'avance</a>
+                        <a th:href="@{|/back/paiements/total/${commande.id}|}" class="btn btn-vert btn-lg">Payer en totalité</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
+    </main>
+</body>
+
+</html>

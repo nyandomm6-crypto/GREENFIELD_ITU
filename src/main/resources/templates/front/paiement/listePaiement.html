@@ -1,107 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
+  <head
+    th:replace="~{front/fragments/layout :: head(pageTitle='Mes paiements - GreenField')}"
+  >
+    <title>Mes paiements - GreenField</title>
+  </head>
 
-<head th:replace="~{back/fragments/layout :: head('Paiements')}"></head>
+  <body th:replace="~{front/fragments/layout :: layout(~{::pageContent})}">
+    <div th:fragment="pageContent">
+      <!-- Single Page Header start -->
+      <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Mes paiements</h1>
+      </div>
+      <!-- Single Page Header End -->
 
-<body class="bo">
-    <aside th:replace="~{back/fragments/layout :: sidebar('paiements')}"></aside>
+      <div class="container-fluid fruite py-5">
+        <div class="container py-5">
+          <div class="row g-4 justify-content-center">
+            <div class="col-lg-10">
+              <div class="alert alert-danger" th:if="${alert != null}" th:text="${alert}"></div>
+              <div class="alert alert-success" th:if="${succes != null}" th:text="${succes}"></div>
 
-    <main class="bo-main">
-        <header th:replace="~{back/fragments/layout :: topbar('Paiements')}"></header>
-
-        <div class="bo-contenu">
-
-            <div class="page-tete">
-                <div>
-                    <p class="fil">Ventes <i class="fas fa-chevron-right"></i> Paiements</p>
-                    <h1>Liste des paiements</h1>
-                </div>
-            </div>
-
-            <div th:if="${alert != null}" th:text="${alert}" class="alerte alerte-erreur"></div>
-            <div th:if="${succes != null}" th:text="${succes}" class="alerte alerte-succes"></div>
-
-            <form th:action="@{/paiements/list}" method="GET" class="section-filtre barre-filtres">
-                <div class="filtre">
-                    <label for="statut">Statut</label>
-                    <select id="statut" name="statut">
-                        <option value="">Tous</option>
-                        <option th:each="s : ${statutsPaiement}" th:value="${s}" th:text="${s}" th:selected="${s == statut}">
-                        </option>
-                    </select>
-                </div>
-                <div class="filtre">
-                    <label for="size">Éléments par page</label>
-                    <select name="size" id="size" onchange="this.form.submit()">
-                        <option th:each="opt : ${ {5, 10, 25, 50, 100} }"
-                                th:value="${opt}" th:text="${opt}"
-                                th:selected="${opt == size}"></option>
-                    </select>
-                </div>
-                <div class="barre-form" style="justify-content: flex-start;">
-                    <button type="submit" class="btn btn-vert btn-sm">Filtrer</button>
-                </div>
-            </form>
-
-            <div class="tableau-scroll">
-                <table>
-                    <thead>
+              <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                  <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                      <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Commande</th>
-                            <th>Date</th>
-                            <th>Statut</th>
-                            <th class="num">Total</th>
-                            <th class="num">Espèce à confirmer</th>
-                            <th>Actions</th>
+                          <th>#</th>
+                          <th>Commande</th>
+                          <th>Date</th>
+                          <th>Statut</th>
+                          <th class="text-end">Total</th>
+                          <th class="text-end">En attente</th>
+                          <th></th>
                         </tr>
-                    </thead>
-                    <tbody>
+                      </thead>
+                      <tbody>
                         <tr th:each="paiement : ${paiements}">
-                            <td class="mono" th:text="${paiement.id}"></td>
-                            <td class="mono" th:text="${paiement.commande.id}"></td>
-                            <td th:text="${paiement.date}"></td>
-                            <td><span class="badge badge-vert" th:text="${paiement.statut}"></span></td>
-                            <td class="num texte-ocre" th:text="${paiementService.getMontantTotalCommande(paiement.commande)}"></td>
-                            <td class="num mono" th:text="${paiementService.getMontantEspece(paiement)}"></td>
-                            <td>
-                                <div class="cellule-actions">
-                                    <a th:href="@{|/paiements/detail/${paiement.id}|}" class="btn btn-sm btn-ligne">Détails</a>
-                                    <form th:if="${paiement.statut.name() == 'Reste' and paiementService.aUnPaiementEnEspece(paiement)}"
-                                        th:action="@{|/paiements/confirmer-espece/${paiement.id}|}" method="POST"
-                                        style="display:inline">
-                                        <button type="submit" class="btn btn-sm btn-doux">Confirmer espèce</button>
-                                    </form>
-                                </div>
-                            </td>
+                          <td th:text="${paiement.id}"></td>
+                          <td th:text="${paiement.commande.id}"></td>
+                          <td th:text="${paiement.date}"></td>
+                          <td>
+                            <span
+                              class="badge"
+                              th:classappend="${paiement.statut.name() == 'Cloture'} ? 'bg-success' : 'bg-warning text-dark'"
+                              th:text="${paiement.statut}"
+                            ></span>
+                          </td>
+                          <td
+                            class="text-end"
+                            th:text="${paiementService.getMontantTotalCommande(paiement.commande)}"
+                          ></td>
+                          <td
+                            class="text-end"
+                            th:text="${paiementService.getMontantEnAttente(paiement)}"
+                          ></td>
+                          <td class="text-end">
+                            <a
+                              th:href="@{|/paiements/detail/${paiement.id}|}"
+                              class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                            >
+                              Détails
+                            </a>
+                          </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(paiements)}">
-                            <td colspan="7">
-                                <div class="vide">
-                                    <i class="fa-solid fa-money-bill-wave"></i>
-                                    <p>Aucun paiement trouvé.</p>
-                                </div>
-                            </td>
+                          <td colspan="7" class="text-center text-muted py-5">
+                            <i class="fas fa-money-bill-wave fa-2x mb-3 d-block"></i>
+                            Aucun paiement pour le moment.
+                          </td>
                         </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section-pagination" th:if="${totalPages > 0}">
-                <span>Total : <strong th:text="${totalElements}">0</strong> paiement(s)</span>
-                <div class="pagination">
-                    <a class="btn-pagination" th:if="${page > 0}"
-                       th:href="@{/paiements/list(statut=${statut},page=${page - 1},size=${size})}">« Précédent</a>
-                    <span>Page <strong th:text="${page + 1}">1</strong> sur <strong th:text="${totalPages}">1</strong></span>
-                    <a class="btn-pagination" th:if="${page + 1 < totalPages}"
-                       th:href="@{/paiements/list(statut=${statut},page=${page + 1},size=${size})}">Suivant »</a>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+              </div>
+
+              <div
+                class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4"
+                th:if="${totalPages > 0}"
+              >
+                <span class="text-muted">
+                  Total : <strong th:text="${totalElements}">0</strong> paiement(s)
+                </span>
+                <div class="d-flex align-items-center gap-3">
+                  <a
+                    class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                    th:if="${page > 0}"
+                    th:href="@{/paiements/list(page=${page - 1},size=${size})}"
+                    >« Précédent</a
+                  >
+                  <span class="text-muted">
+                    Page <strong th:text="${page + 1}">1</strong> sur
+                    <strong th:text="${totalPages}">1</strong>
+                  </span>
+                  <a
+                    class="btn btn-sm btn-outline-secondary rounded-pill px-3"
+                    th:if="${page + 1 < totalPages}"
+                    th:href="@{/paiements/list(page=${page + 1},size=${size})}"
+                    >Suivant »</a
+                  >
+                </div>
+              </div>
             </div>
-
+          </div>
         </div>
-
-        <footer th:replace="~{back/fragments/layout :: pied}"></footer>
-    </main>
-</body>
-
+      </div>
+    </div>
+  </body>
 </html>

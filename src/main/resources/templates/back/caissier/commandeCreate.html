@@ -185,26 +185,21 @@
                 </div>
               </div>
 
+              <!--
+                Le retrait se fait forcément dans la boutique du caissier : le
+                point de vente est celui de l'employé connecté, pas un choix.
+              -->
               <div id="bloc-point-vente" class="d-none">
                 <div class="champ">
-                  <label for="pointDeVenteId">Point de vente de retrait</label>
-                  <select
-                    id="pointDeVenteId"
-                    th:field="*{pointDeVenteId}"
-                    th:classappend="${#fields.hasErrors('pointDeVenteId')} ? 'is-invalid' : ''"
-                  >
-                    <option value="">Sélectionnez un point de vente</option>
-                    <option
-                      th:each="pdv : ${pointDeVenteOptions}"
-                      th:value="${pdv.id}"
-                      th:text="|${pdv.nom} - ${pdv.code}|"
-                    ></option>
-                  </select>
-                  <p
-                    class="text-danger"
-                    th:if="${#fields.hasErrors('pointDeVenteId')}"
-                    th:errors="*{pointDeVenteId}"
-                  ></p>
+                  <label>Point de vente de retrait</label>
+                  <input
+                    type="text"
+                    readonly
+                    th:value="${employe.pointDeVente != null
+                              ? employe.pointDeVente.nom + ' - ' + employe.pointDeVente.code
+                              : 'Aucun point de vente rattaché à votre compte'}"
+                  />
+                  <p class="aide-champ">Votre point de vente.</p>
                 </div>
               </div>
 

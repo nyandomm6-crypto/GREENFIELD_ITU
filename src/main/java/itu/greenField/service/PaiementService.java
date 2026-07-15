@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import itu.greenField.dto.PaiementLigneDto;
 import itu.greenField.model.Commandes;
 import itu.greenField.model.DetailsCommande;
+import itu.greenField.model.LivraisonFille;
 import itu.greenField.model.MvtStock;
 import itu.greenField.model.MvtStockFille;
 import itu.greenField.model.Paiement;
@@ -24,11 +25,11 @@ import itu.greenField.model.TypeFlux;
 import itu.greenField.model.TypeMvt;
 import itu.greenField.model.TypePayement;
 import itu.greenField.repository.CommandesRepository;
+import itu.greenField.repository.LivraisonFilleRepository;
 import itu.greenField.repository.MvtStockFilleRepository;
 import itu.greenField.repository.MvtStockRepository;
 import itu.greenField.repository.PaiementFilleRepository;
 import itu.greenField.repository.PaiementRepository;
-import itu.greenField.repository.StatutCommandeRepository;
 import itu.greenField.repository.TresorerieRepository;
 
 import jakarta.transaction.Transactional;
@@ -46,9 +47,8 @@ public class PaiementService {
     private final MvtStockFilleRepository mvtStockFilleRepository;
     private final CommandesRepository commandesRepository;
     private final CommandesService commandesService;
-    private final PointDeVenteService pointDeVenteService;
+    private final LivraisonFilleRepository livraisonFilleRepository;
     private final StatutCommandeService statutCommandeService;
-    private final StatutCommandeRepository statutCommandeRepository;
 
     public List<String> getNumerosTransfertMobileMoney() {
         return List.of("MVola: 034 00 000 01", "Orange Money: 032 00 000 02", "Airtel Money: 033 00 000 03");
@@ -65,12 +65,26 @@ public class PaiementService {
         return paiementRepository.findByStatut(statut);
     }
 
-    /** Paiements du point de vente de retrait donné (par code) — espace caissier. */
+    /** Paiements des commandes créées par le point de vente donné (par code) — espace caissier. */
     public List<Paiement> findByPointDeVente(String code) {
         if (code == null || code.isBlank()) {
             return new ArrayList<>();
         }
-        return paiementRepository.findByCommande_PointDeVenteRetrait_CodeOrderByIdDesc(code);
+        return paiementRepository.findByCommande_PointDeVenteCreateur_CodeOrderByIdDesc(code);
+    }
+
+    /** Paiements d'un client — front office. */
+    public List<Paiement> findByClient(Integer clientId) {
+        if (clientId == null) {
+            return new ArrayList<>();
+        }
+        return paiementRepository.findByCommande_Client_IdOrderByIdDesc(clientId);
+    }
+
+    /** Vrai si la commande appartient bien au client donné. */
+    public boolean appartientAuClient(Commandes commande, Integer clientId) {
+        return commande != null && clientId != null && commande.getClient() != null
+                && clientId.equals(commande.getClient().getId());
     }
 
     /**
@@ -81,12 +95,42 @@ public class PaiementService {
     @Transactional
     public Paiement creerPaiementCaissier(Integer commandeId, List<PaiementLigneDto> lignes, String pdvCode)
             throws Exception {
+        verifierCommandeDuPointDeVente(commandeId, pdvCode);
+        return payerTotalOuReste(commandeId, lignes);
+    }
+
+    /** Avance payée par le caissier, limitée aux commandes de son point de vente. */
+    @Transactional
+    public Paiement payerAvanceCaissier(Integer commandeId, BigDecimal montant, String pdvCode) throws Exception {
+        verifierCommandeDuPointDeVente(commandeId, pdvCode);
+        return payerAvance(commandeId, montant);
+    }
+
+    /** Confirmation manuelle par le caissier, limitée aux paiements de son point de vente. */
+    @Transactional
+    public Paiement confirmerPaiementCaissier(Integer paiementId, Integer filleId, BigDecimal montantRecu,
+            String pdvCode) throws Exception {
+        Paiement paiement = paiementRepository.findById(paiementId).orElse(null);
+        if (paiement == null) {
+            throw new Exception("Paiement introuvable.");
+        }
+        verifierCommandeDuPointDeVente(paiement.getCommande() == null ? null : paiement.getCommande().getId(), pdvCode);
+        return confirmerPaiement(paiementId, filleId, montantRecu);
+    }
+
+    /**
+     * Vérifie que la commande a bien été créée par le point de vente donné. Un
+     * caissier n'encaisse que les commandes de son point de vente créateur : c'est
+     * la même règle que la liste et le détail des commandes de l'espace caissier,
+     * le point de retrait pouvant être une autre boutique.
+     */
+    public Commandes verifierCommandeDuPointDeVente(Integer commandeId, String pdvCode) throws Exception {
         Commandes commande = getCommandeOuErreur(commandeId);
-        if (pdvCode == null || commande.getPointDeVenteRetrait() == null
-                || !pdvCode.equals(commande.getPointDeVenteRetrait().getCode())) {
+        if (pdvCode == null || commande.getPointDeVenteCreateur() == null
+                || !pdvCode.equals(commande.getPointDeVenteCreateur().getCode())) {
             throw new Exception("Cette commande n'appartient pas à votre point de vente.");
         }
-        return payerTotalOuReste(commandeId, lignes);
+        return commande;
     }
 
     public Paiement findById(Integer id) {
@@ -124,10 +168,9 @@ public class PaiementService {
         return restant.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : restant;
     }
 
-    public boolean aUnPaiementEnEspece(Paiement paiement) {
-        return paiement != null
-                && !paiementFilleRepository.findByPaiementIdAndTypePayement(paiement.getId(), TypePayement.Espece)
-                        .isEmpty();
+    /** Types encaissés seulement après confirmation manuelle (caissier ou admin). */
+    public static boolean estAConfirmer(TypePayement type) {
+        return TypePayement.Espece.equals(type) || TypePayement.Mobile_Money.equals(type);
     }
 
     public List<PaiementFille> findFilles(Paiement paiement) {
@@ -137,13 +180,41 @@ public class PaiementService {
         return paiementFilleRepository.findByPaiementId(paiement.getId());
     }
 
-    public BigDecimal getMontantEspece(Paiement paiement) {
-        if (paiement == null) {
-            return BigDecimal.ZERO;
-        }
-        return paiementFilleRepository.findByPaiementIdAndTypePayement(paiement.getId(), TypePayement.Espece).stream()
+    /** Lignes encore en attente de confirmation manuelle. */
+    public List<PaiementFille> findFillesEnAttente(Paiement paiement) {
+        return findFilles(paiement).stream().filter(PaiementFille::isEnAttente).toList();
+    }
+
+    public boolean aDesLignesEnAttente(Paiement paiement) {
+        return !findFillesEnAttente(paiement).isEmpty();
+    }
+
+    /** Montant saisi mais pas encore encaissé (en attente de confirmation). */
+    public BigDecimal getMontantEnAttente(Paiement paiement) {
+        return findFillesEnAttente(paiement).stream()
                 .map(PaiementFille::getValeur)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /** Montant réellement encaissé (une entrée trésorerie existe pour ces lignes). */
+    public BigDecimal getMontantConfirme(Paiement paiement) {
+        return findFilles(paiement).stream()
+                .filter(f -> !f.isEnAttente())
+                .map(PaiementFille::getValeur)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Le paiement est complet : tout le montant de la commande est saisi et
+     * toutes les lignes sont confirmées. C'est la seule condition qui déclenche
+     * la sortie de stock.
+     */
+    public boolean estCompletEtConfirme(Paiement paiement) {
+        if (paiement == null || paiement.getCommande() == null) {
+            return false;
+        }
+        return !aDesLignesEnAttente(paiement)
+                && getMontantRestant(paiement.getCommande()).compareTo(BigDecimal.ZERO) <= 0;
     }
 
     @Transactional
@@ -157,66 +228,108 @@ public class PaiementService {
         verifierMontantExact(montant, avance, "Le montant de l'avance doit etre egal a " + avance + ".");
 
         Paiement paiement = creerOuRecupererPaiement(commande);
-        PaiementFille fille = creerFille(paiement, TypePayement.Mobile_Money, montant);
-        paiement.setStatut(StatutPaiement.Reste);
-        paiement = paiementRepository.save(paiement);
-
-        creerEntreeTresorerie(commande, fille);
-        creerMouvementStockSortie(commande);
-        return paiement;
+        creerFille(paiement, TypePayement.Mobile_Money, montant);
+        // Mobile Money : ni entrée trésorerie ni sortie de stock tant que
+        // l'avance n'est pas confirmée manuellement.
+        return rafraichirStatut(paiement);
     }
 
     @Transactional
     public Paiement payerTotalOuReste(Integer commandeId, List<PaiementLigneDto> lignes) throws Exception {
         Commandes commande = getCommandeOuErreur(commandeId);
         Paiement paiementExistant = findByCommandeId(commandeId);
+
+        // On ne peut pas payer le reste tant que ce qui a déjà été versé (l'avance
+        // par exemple) n'a pas été confirmé : il faut d'abord saisir le montant
+        // réellement reçu et confirmer la ligne.
+        if (aDesLignesEnAttente(paiementExistant)) {
+            throw new Exception(
+                    "Veuillez d'abord confirmer les encaissements en attente (saisie du montant recu) "
+                            + "avant de payer le reste.");
+        }
+
         BigDecimal montantRestant = getMontantRestant(commande);
         verifierMontantExact(somme(lignes), montantRestant, "Le montant saisi doit etre egal au reste a payer.");
 
-        boolean nouveauPaiement = paiementExistant == null;
-        Paiement paiement = nouveauPaiement ? creerOuRecupererPaiement(commande) : paiementExistant;
+        Paiement paiement = paiementExistant == null ? creerOuRecupererPaiement(commande) : paiementExistant;
         List<PaiementFille> nouvellesFilles = enregistrerFilles(paiement, lignes);
 
-        boolean contientEspece = nouvellesFilles.stream().anyMatch(f -> f.getTypePayement() == TypePayement.Espece);
-        paiement.setStatut(contientEspece ? StatutPaiement.Reste : StatutPaiement.Cloture);
-        paiement = paiementRepository.save(paiement);
-
+        // Seuls les types sans confirmation (carte de fidélité) sont encaissés
+        // immédiatement ; espèce et mobile money attendent une confirmation.
         nouvellesFilles.stream()
-                .filter(f -> f.getTypePayement() != TypePayement.Espece)
+                .filter(f -> !f.isEnAttente())
                 .forEach(f -> creerEntreeTresorerie(commande, f));
 
-        if (nouveauPaiement) {
-            creerMouvementStockSortie(commande);
-        }
-        if (!contientEspece) {
-            marquerCommandePayee(commande);
-        }
-        return paiement;
+        return rafraichirStatut(paiement);
     }
 
+    /**
+     * Confirme manuellement une ligne en attente (espèce, mobile money) : c'est
+     * ce geste qui crée l'entrée de trésorerie correspondante.
+     *
+     * En Mobile Money, l'opérateur reçoit le message de transfert et saisit le
+     * montant réellement reçu ; c'est ce montant qui est encaissé. Si le
+     * transfert ne correspond pas à ce qui était annoncé, l'opérateur ne
+     * confirme simplement pas la ligne.
+     *
+     * @param filleId     ligne à confirmer.
+     * @param montantRecu montant réellement reçu, ou null pour reprendre le
+     *                    montant annoncé sur la ligne.
+     */
     @Transactional
-    public Paiement confirmerPaiementEspece(Integer paiementId) throws Exception {
+    public Paiement confirmerPaiement(Integer paiementId, Integer filleId, BigDecimal montantRecu) throws Exception {
         Paiement paiement = paiementRepository.findById(paiementId).orElse(null);
         if (paiement == null) {
             throw new Exception("Paiement introuvable.");
         }
-
-        List<PaiementFille> fillesEspece = paiementFilleRepository.findByPaiementIdAndTypePayement(paiementId,
-                TypePayement.Espece);
-        if (fillesEspece.isEmpty()) {
-            throw new Exception("Aucun paiement en espece a confirmer.");
+        if (filleId == null) {
+            throw new Exception("Veuillez indiquer la ligne de paiement a confirmer.");
         }
 
-        for (PaiementFille fille : fillesEspece) {
-            creerEntreeTresorerie(paiement.getCommande(), fille);
+        PaiementFille fille = findFillesEnAttente(paiement).stream()
+                .filter(f -> filleId.equals(f.getId()))
+                .findFirst()
+                .orElseThrow(() -> new Exception("Aucun paiement en attente de confirmation."));
+
+        if (montantRecu != null) {
+            if (montantRecu.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new Exception("Le montant recu doit etre superieur a zero.");
+            }
+            // Le montant encaissé est celui réellement reçu : la ligne et la
+            // trésorerie ne peuvent pas diverger.
+            fille.setValeur(montantRecu);
         }
-        paiement.setStatut(StatutPaiement.Cloture);
+
+        creerEntreeTresorerie(paiement.getCommande(), fille);
+        fille.setConfirme(true);
+        paiementFilleRepository.save(fille);
+
+        return rafraichirStatut(paiement);
+    }
+
+    /**
+     * Recalcule le statut du paiement. La sortie de stock et le passage de la
+     * commande à « Payée » n'ont lieu qu'une fois le paiement complet ET
+     * entièrement confirmé, au moment où le paiement se clôture.
+     */
+    private Paiement rafraichirStatut(Paiement paiement) throws Exception {
+        boolean dejaCloture = StatutPaiement.Cloture.equals(paiement.getStatut());
+        boolean complet = estCompletEtConfirme(paiement);
+
+        paiement.setStatut(complet ? StatutPaiement.Cloture : StatutPaiement.Reste);
         paiement = paiementRepository.save(paiement);
-        marquerCommandePayee(paiement.getCommande());
+
+        if (complet && !dejaCloture) {
+            creerMouvementStockSortie(paiement.getCommande());
+            marquerCommandePayee(paiement.getCommande());
+        }
         return paiement;
     }
 
     private Commandes getCommandeOuErreur(Integer commandeId) throws Exception {
+        if (commandeId == null) {
+            throw new Exception("Commande introuvable.");
+        }
         Commandes commande = commandesService.findById(commandeId);
         if (commande == null) {
             throw new Exception("Commande introuvable.");
@@ -252,6 +365,8 @@ public class PaiementService {
         fille.setTypePayement(type);
         fille.setValeur(montant);
         fille.setDate(LocalDate.now());
+        // Espèce et mobile money restent à confirmer ; les autres sont encaissés d'office.
+        fille.setConfirme(!estAConfirmer(type));
         return paiementFilleRepository.save(fille);
     }
 
@@ -265,7 +380,7 @@ public class PaiementService {
         tresorerieRepository.save(tresorerie);
     }
 
-    private void creerMouvementStockSortie(Commandes commande) {
+    private void creerMouvementStockSortie(Commandes commande) throws Exception {
         MvtStock mvtStock = new MvtStock();
         mvtStock.setTypeMouvement(TypeMvt.Vente_Client);
         mvtStock.setPointDeVente(getPointDeVenteStock(commande));
@@ -281,11 +396,32 @@ public class PaiementService {
         }
     }
 
-    private PointDeVente getPointDeVenteStock(Commandes commande) {
+    /**
+     * Point de vente d'où sort le stock : la boutique de retrait quand le client
+     * vient chercher sa commande, sinon celle du livreur affecté à la livraison,
+     * puisque c'est de son point de vente que part la marchandise.
+     */
+    private PointDeVente getPointDeVenteStock(Commandes commande) throws Exception {
         if (commande.getPointDeVenteRetrait() != null) {
             return commande.getPointDeVenteRetrait();
         }
-        return pointDeVenteService.findPointDeVenteById(1);
+        PointDeVente pdvLivreur = getPointDeVenteLivreur(commande);
+        if (pdvLivreur == null) {
+            throw new Exception("Impossible de determiner le point de vente pour la sortie de stock : "
+                    + "la commande n'a ni point de vente de retrait, ni livreur rattache a un point de vente.");
+        }
+        return pdvLivreur;
+    }
+
+    /** Point de vente du livreur affecté à la livraison de cette commande. */
+    private PointDeVente getPointDeVenteLivreur(Commandes commande) {
+        return livraisonFilleRepository.findByCommande(commande).stream()
+                .map(LivraisonFille::getLivraison)
+                .filter(livraison -> livraison != null && livraison.getLivreur() != null)
+                .map(livraison -> livraison.getLivreur().getPointDeVente())
+                .filter(pdv -> pdv != null)
+                .findFirst()
+                .orElse(null);
     }
 
     private void marquerCommandePayee(Commandes commande) {
@@ -316,107 +452,4 @@ public class PaiementService {
         }
     }
 
-    public BigDecimal resteByCommande(Integer idcommande) {
-
-        Commandes commande = commandesRepository.getById(idcommande);
-        BigDecimal somme = BigDecimal.ZERO;
-
-        Paiement paiement = paiementRepository.findByCommande(commande).orElse(null);
-        if (paiement == null) {
-
-            paiement = new Paiement();
-
-            paiement.setCommande(commande);
-
-            paiement.setDate(LocalDate.now());
-
-            paiement.setStatut(StatutPaiement.Cree);
-
-            paiement = paiementRepository.save(paiement);
-
-        }
-
-        if (paiement != null && paiement.getFilles() != null) {
-            for (PaiementFille pf : paiement.getFilles()) {
-                if (pf.getValeur() != null) {
-                    somme = somme.add(pf.getValeur());
-                }
-            }
-        }
-
-        BigDecimal total = commande.getTotalGeneral();
-
-        if (total == null) {
-            return BigDecimal.ZERO;
-        }
-
-        return total.subtract(somme);
-    }
-
-    public void ajouterPayement(List<TypePayement> types, List<BigDecimal> valeurs, Integer idCommande) {
-        Commandes commande = commandesRepository.findById(idCommande)
-
-                .orElseThrow(() -> new RuntimeException("Commande introuvable"));
-
-        Paiement paiement = paiementRepository.findByCommande(commande).orElse(null);
-
-        if (paiement == null) {
-
-            paiement = new Paiement();
-
-            paiement.setCommande(commande);
-
-            paiement.setDate(LocalDate.now());
-            paiement.setStatut(StatutPaiement.Cree);
-
-            paiement = paiementRepository.save(paiement);
-
-        }
-
-        BigDecimal somme = BigDecimal.ZERO;
-
-        for (int i = 0; i < valeurs.size(); i++) {
-
-            if (valeurs.get(i) != null) {
-
-                PaiementFille pf = new PaiementFille();
-
-                pf.setPaiement(paiement);
-
-                pf.setTypePayement(types.get(i));
-
-                pf.setValeur(valeurs.get(i));
-
-                paiementFilleRepository.save(pf);
-
-                somme = somme.add(valeurs.get(i));
-
-            }
-
-        }
-
-        // ================= UPDATE STATUT =================
-
-        BigDecimal reste = this.resteByCommande(commande.getId());
-
-        if (reste.compareTo(BigDecimal.ZERO) <= 0) {
-
-            StatutCommande statut = statutCommandeRepository.findByNom("Payée")
-
-                    .orElseThrow();
-
-            commande.setStatutActuel(statut);
-
-            commandesRepository.save(commande);
-
-        }
-
-        // update statut payement
-        BigDecimal valeur = this.resteByCommande(commande.getId());
-
-        if (valeur.compareTo(BigDecimal.ZERO) <= 0) {
-            paiement.setStatut(StatutPaiement.Cloture);
-            paiementRepository.save(paiement);
-        }
-    }
 }
