@@ -465,3 +465,6 @@ CREATE TABLE IF NOT EXISTS password_reset_token (
 );
 
 CREATE INDEX IF NOT EXISTS idx_password_reset_token_email ON password_reset_token (email);
+
+ALTER TABLE commandes
+ADD COLUMN idptvente_createur VARCHAR(20) REFERENCES PointDeVente (code) ON DELETE SET NULL;
