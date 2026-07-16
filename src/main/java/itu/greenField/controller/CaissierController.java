@@ -157,7 +157,7 @@ public class CaissierController {
         model.addAttribute("paiementCommande", paiementCommande);
         model.addAttribute("typePayements", TypePayement.values());
         boolean estLivrable = commande.getModeReception() == ModeReception.Retrait_Boutique
-                && commande.getStatutActuel().getId() == 1;
+                && commande.getStatutActuel().getId() == 2;
                 // && commande.getPointDeVenteRetrait() != null
                 // && commande.getPointDeVenteRetrait().getCode().equals(pdvCode(employe));
         model.addAttribute("estLivrable", estLivrable);
